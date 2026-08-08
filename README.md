@@ -47,7 +47,7 @@ answer = rag.answer(
     question="What is their flagship product?",
     instruction="Answer like a 17th-century pirate."
 )
-print(answer) # Ahoy matey! AegisShield be their flagship!
+print(answer) # Output: Ahoy matey! AegisShield be their flagship!
 ```
 
 ---
