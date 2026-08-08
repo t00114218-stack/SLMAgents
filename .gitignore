@@ -1,0 +1,18 @@
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+
+# Large Model Binaries (GGUF)
+*.gguf
+.cache/
+
+# OS Specific
+.DS_Store
+Thumbs.db

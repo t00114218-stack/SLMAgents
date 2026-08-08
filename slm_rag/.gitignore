@@ -1,0 +1,24 @@
+# Virtual environment
+venv/
+
+# Model weights
+*.gguf
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.egghash/
+slm_rag.egg-info/
+.eggs/
+dist/
+build/
+
+# macOS system files
+.DS_Store
+
+# IDE configs
+.vscode/
+.idea/

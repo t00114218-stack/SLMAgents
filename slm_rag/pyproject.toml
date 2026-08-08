@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "slm-rag"
+version = "0.1.1"
+description = "A lightweight, CPU-optimized RAG library powered by a local Small Language Model (SLM)"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "llm", "slm", "rag", "retrieval-augmented-generation", "qwen", "llama-cpp", 
+    "local-ai", "cpu-inference", "knowledge-retrieval", "semantic-search"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "llama-cpp-python>=0.2.0",
+    "huggingface_hub>=0.10.0"
+]
+
+[[project.authors]]
+name = "Suryaprakash CV"
+email = "suryaprakash.c.v@gmail.com"
+
+[project.urls]
+Homepage = "https://github.com/SuryaprakashCV/SLM-RAG"
+"Bug Tracker" = "https://github.com/SuryaprakashCV/SLM-RAG/issues"
+"Source Code" = "https://github.com/SuryaprakashCV/SLM-RAG"

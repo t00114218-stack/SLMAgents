@@ -1,0 +1,11 @@
+# Ignored files and folders
+llama-3.2-1b-instruct-q4_k_m.gguf
+venv/
+.vscode/
+__pycache__/
+.cache/
+dist/
+build/
+*.egg-info/
+.DS_Store
+*.pyc
