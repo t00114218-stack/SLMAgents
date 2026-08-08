@@ -4,6 +4,32 @@ import sys
 import math
 from llama_cpp import Llama, LlamaGrammar
 
+def load_config() -> dict:
+    """
+    Searches for config.yaml in environment variables, CWD, parent dirs,
+    and package installation directories.
+    """
+    try:
+        import yaml
+    except ImportError:
+        return {}
+        
+    config_paths = [
+        os.environ.get("SLM_ORCHESTRATOR_CONFIG"),
+        "./config.yaml",
+        "../config.yaml",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml"),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.yaml")
+    ]
+    for path in config_paths:
+        if path and os.path.exists(path):
+            try:
+                with open(path, "r") as f:
+                    return yaml.safe_load(f) or {}
+            except Exception as e:
+                print(f"[SLMOrchestrator] Warning: Failed to load config from {path}: {e}")
+    return {}
+
 class SLMOrchestrator:
     """
     A configurable semantic routing orchestrator powered by a local Small Language Model (SLM).
@@ -37,45 +63,47 @@ class SLMOrchestrator:
             
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         """
-        Locates or downloads the necessary 1B GGUF model.
+        Locates or downloads the necessary GGUF model as defined in config.yaml.
         Precedence:
         1. Explicitly provided `model_path`
-        2. Local workspace directory model file (`llama-3.2-1b-instruct-q4_k_m.gguf`)
-        3. User cache directory (`~/.cache/slm_orchestrator/`)
+        2. Configured path/download via config.yaml
         """
         if model_path:
             if not os.path.exists(model_path):
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
             return os.path.abspath(model_path)
+
+        # Check config.yaml
+        config = load_config()
+        model_config = config.get("models", {}).get("orchestrator")
+        if not model_config:
+            raise ValueError("models.orchestrator configuration is missing in config.yaml")
             
-        # Check current working directory
-        cwd_model = os.path.join(os.getcwd(), "llama-3.2-1b-instruct-q4_k_m.gguf")
-        if os.path.exists(cwd_model):
-            return cwd_model
+        config_path = model_config.get("path")
+        if not config_path:
+            raise ValueError("model path configuration is missing under models.orchestrator in config.yaml")
             
-        # Check user cache directory
-        if cache_dir is None:
-            cache_dir = os.path.expanduser("~/.cache/slm_orchestrator")
-        os.makedirs(cache_dir, exist_ok=True)
-        
-        cached_model = os.path.join(cache_dir, "llama-3.2-1b-instruct-q4_k_m.gguf")
-        if not os.path.exists(cached_model):
-            print(f"[SLMOrchestrator] Model not found locally. Auto-downloading to cache: {cached_model}...")
-            from huggingface_hub import hf_hub_download
+        config_path = os.path.expanduser(config_path)
+        if os.path.exists(config_path):
+            return config_path
             
-            # Download BARTOWSKI quantized Llama-3.2-1B model
-            hf_hub_download(
-                repo_id="bartowski/Llama-3.2-1B-Instruct-GGUF",
-                filename="Llama-3.2-1B-Instruct-Q4_K_M.gguf",
-                local_dir=cache_dir
-            )
+        # Download if configured but not present
+        repo_id = model_config.get("repo_id")
+        filename = model_config.get("filename")
+        if not repo_id or not filename:
+            raise ValueError(f"Model file not found at {config_path} and auto-download parameters (repo_id, filename) are missing in config.yaml")
             
-            # Ensure it is named exactly 'llama-3.2-1b-instruct-q4_k_m.gguf'
-            downloaded_file = os.path.join(cache_dir, "Llama-3.2-1B-Instruct-Q4_K_M.gguf")
-            if os.path.exists(downloaded_file) and downloaded_file != cached_model:
-                os.rename(downloaded_file, cached_model)
-                
-        return cached_model
+        print(f"[SLMOrchestrator] Model not found at configured path. Auto-downloading...")
+        os.makedirs(os.path.dirname(config_path), exist_ok=True)
+        from huggingface_hub import hf_hub_download
+        downloaded = hf_hub_download(
+            repo_id=repo_id,
+            filename=filename,
+            local_dir=os.path.dirname(config_path)
+        )
+        if downloaded != config_path and os.path.exists(downloaded):
+            os.rename(downloaded, config_path)
+        return config_path
 
     def _build_gbnf_grammar(self, agent_names: list) -> LlamaGrammar:
         """
@@ -109,19 +137,28 @@ class SLMOrchestrator:
         # Build dynamic GBNF grammar
         grammar = self._build_gbnf_grammar(agent_names)
         
-        # Build routing system prompt
-        agents_desc = "\n".join([f"- Name: {a['name']}\n  Description: {a['description']}" for a in agents])
+        # Build routing system prompt with JSON descriptions and few-shot examples
+        agents_json = {a["name"]: {"description": a["description"]} for a in agents}
         system_prompt = (
-            "<|start_header_id|>system<|end_header_id|>\n"
-            "You are a routing agent. You are given a list of available agents with their names and descriptions, and a user query.\n"
-            "Based on the agent descriptions, select the single most appropriate agent name to handle the user's query.\n"
+            "<|start_header_id|>system<|end_header_id|>\n\n"
+            "You are a routing agent. You are given a JSON containing agent details and descriptions, and a user query.\n"
+            "Based on the agent descriptions, choose the most appropriate agent to handle the user's query.\n"
             "Output your decision as a valid JSON with the key 'selected_agent'. The value must be EXACTLY one of the available agent names.\n\n"
-            f"Available Agents:\n{agents_desc}\n\n"
+            f"Agent Details JSON:\n{json.dumps(agents_json, indent=2)}\n\n"
+            "Examples:\n"
+            "User: Write a python script called hello.py that prints hello world\n"
+            "Assistant: {\"selected_agent\": \"coding\"}\n"
+            "User: Search the codebase for Fibonacci\n"
+            "Assistant: {\"selected_agent\": \"rag\"}\n"
+            "User: What is git?\n"
+            "Assistant: {\"selected_agent\": \"general\"}\n"
+            "User: explain the benefits of separating a RAG agent from a Coding agent\n"
+            "Assistant: {\"selected_agent\": \"general\"}\n\n"
             "Output format:\n"
             "{\"selected_agent\": \"<agent_name>\"}<|eot_id|>"
         )
         
-        prompt = f"{system_prompt}<|start_header_id|>user<|end_header_id|>\nQuery: {question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n"
+        prompt = f"{system_prompt}<|start_header_id|>user<|end_header_id|>\nUser: {question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n"
         
         # CPU generation with strict grammar rule
         response = self.llm(

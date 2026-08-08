@@ -1,0 +1,5 @@
+models:
+  orchestrator:
+    path: "~/.cache/slm_orchestrator/llama-3.2-1b-instruct-q4_k_m.gguf"
+    repo_id: "bartowski/Llama-3.2-1B-Instruct-GGUF"
+    filename: "Llama-3.2-1B-Instruct-Q4_K_M.gguf"

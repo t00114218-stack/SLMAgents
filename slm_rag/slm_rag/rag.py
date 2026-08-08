@@ -2,6 +2,32 @@ import os
 import sys
 from llama_cpp import Llama
 
+def load_config() -> dict:
+    """
+    Searches for config.yaml in environment variables, CWD, parent dirs,
+    and package installation directories.
+    """
+    try:
+        import yaml
+    except ImportError:
+        return {}
+        
+    config_paths = [
+        os.environ.get("SLM_RAG_CONFIG"),
+        "./config.yaml",
+        "../config.yaml",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml"),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.yaml")
+    ]
+    for path in config_paths:
+        if path and os.path.exists(path):
+            try:
+                with open(path, "r") as f:
+                    return yaml.safe_load(f) or {}
+            except Exception as e:
+                raise ValueError(f"Failed to parse config file at {path}: {e}")
+    raise FileNotFoundError("config.yaml not found in environment, current directory, or package directories.")
+
 class SLMRag:
     """
     A CPU-optimized Retrieval-Augmented Generation (RAG) runner powered by a local
@@ -33,40 +59,47 @@ class SLMRag:
             
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         """
-        Locates or downloads the necessary Qwen 2.5 1.5B GGUF model.
+        Locates or downloads the necessary GGUF model as defined in config.yaml.
         Precedence:
         1. Explicitly provided `model_path`
-        2. Current directory model file (`qwen2.5-1.5b-instruct-q4_k_m.gguf`)
-        3. User cache directory (`~/.cache/slm_rag/`)
+        2. Configured path/download via config.yaml
         """
         if model_path:
             if not os.path.exists(model_path):
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
             return os.path.abspath(model_path)
+
+        # Check config.yaml
+        config = load_config()
+        model_config = config.get("models", {}).get("rag")
+        if not model_config:
+            raise ValueError("models.rag configuration is missing in config.yaml")
             
-        # 1. Check current working directory
-        cwd_model = os.path.join(os.getcwd(), "qwen2.5-1.5b-instruct-q4_k_m.gguf")
-        if os.path.exists(cwd_model):
-            return cwd_model
+        config_path = model_config.get("path")
+        if not config_path:
+            raise ValueError("model path configuration is missing under models.rag in config.yaml")
             
-        # 2. Check user cache directory (~/.cache/slm_rag/)
-        if cache_dir is None:
-            cache_dir = os.path.expanduser("~/.cache/slm_rag")
-        os.makedirs(cache_dir, exist_ok=True)
-        
-        cached_model = os.path.join(cache_dir, "qwen2.5-1.5b-instruct-q4_k_m.gguf")
-        if not os.path.exists(cached_model):
-            print(f"[SLMRag] Model not found locally. Auto-downloading to cache: {cached_model}...")
-            from huggingface_hub import hf_hub_download
+        config_path = os.path.expanduser(config_path)
+        if os.path.exists(config_path):
+            return config_path
             
-            # Download Qwen 2.5 1.5B Instruct model
-            hf_hub_download(
-                repo_id="Qwen/Qwen2.5-1.5B-Instruct-GGUF",
-                filename="qwen2.5-1.5b-instruct-q4_k_m.gguf",
-                local_dir=cache_dir
-            )
+        # Download if configured but not present
+        repo_id = model_config.get("repo_id")
+        filename = model_config.get("filename")
+        if not repo_id or not filename:
+            raise ValueError(f"Model file not found at {config_path} and auto-download parameters (repo_id, filename) are missing in config.yaml")
             
-        return cached_model
+        print(f"[SLMRag] Model not found at configured path. Auto-downloading...")
+        os.makedirs(os.path.dirname(config_path), exist_ok=True)
+        from huggingface_hub import hf_hub_download
+        downloaded = hf_hub_download(
+            repo_id=repo_id,
+            filename=filename,
+            local_dir=os.path.dirname(config_path)
+        )
+        if downloaded != config_path and os.path.exists(downloaded):
+            os.rename(downloaded, config_path)
+        return config_path
 
     def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = 512) -> str:
         """

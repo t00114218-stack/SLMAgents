@@ -3,6 +3,7 @@ exclude llama-3.2-1b-instruct-q4_k_m.gguf
 exclude test_package.py
 exclude run_tests.py
 exclude accuracy_report.md
+include slm_orchestrator/config.yaml
 recursive-exclude venv *
 recursive-exclude .vscode *
 recursive-exclude .cache *

@@ -9,7 +9,23 @@ venv_site_packages = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'v
 if os.path.exists(venv_site_packages) and venv_site_packages not in sys.path:
     sys.path.insert(0, venv_site_packages)
 
-from orchestrator import llm, json_grammar, LocalCodeOrchestrator
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from slm_orchestrator import SLMOrchestrator
+
+AGENTS = [
+    {
+        "name": "coding",
+        "description": "For writing new functions, code generation, refactoring, or creating files in the local workspace."
+    },
+    {
+        "name": "rag",
+        "description": "For looking up code syntax, reading files, documentation, or codebase searches in the local workspace."
+    },
+    {
+        "name": "general",
+        "description": "For explanations, greetings, software design chat, or answering conceptual questions."
+    }
+]
 
 TEST_CASES = [
     # 1. Standard
@@ -98,16 +114,7 @@ TEST_CASES = [
 
 async def run_single_route(orchestrator, query: str) -> str:
     """Executes only the routing step of the orchestrator to verify classification."""
-    prompt = f"{orchestrator.system_prompt}<|start_header_id|>user<|end_header_id|>\nUser Query: {query}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n"
-    response = llm(
-        prompt,
-        max_tokens=32,
-        temperature=0.7,
-        grammar=json_grammar
-    )
-    raw_json = response["choices"][0]["text"].strip()
-    plan = json.loads(raw_json)
-    return plan.get("selected_agent")
+    return orchestrator.route(agents=AGENTS, question=query).lower().strip()
 
 async def main():
     print("=" * 60)
@@ -115,11 +122,11 @@ async def main():
     print("=" * 60)
     print(f"Loading {len(TEST_CASES)} test cases across 4 categories...")
     
-    orchestrator = LocalCodeOrchestrator()
+    orchestrator = SLMOrchestrator()
     results = []
     
     num_runs = 3 # Run each test case 3 times to evaluate non-deterministic reliability
-    print(f"Running each test {num_runs} times at temperature 0.7...")
+    print(f"Running each test {num_runs} times...")
     print("-" * 60)
     
     for idx, tc in enumerate(TEST_CASES):
