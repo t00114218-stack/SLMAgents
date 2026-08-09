@@ -13,6 +13,10 @@
   --accent-cyan: #06b6d4;
   --accent-cyan-glow: rgba(6, 182, 212, 0.35);
   
+  --accent-emerald: #10b981;
+  --accent-emerald-glow: rgba(16, 185, 129, 0.35);
+
+  
   --text-primary: #f3f4f6;
   --text-secondary: #9ca3af;
   --text-muted: #6b7280;
@@ -381,6 +385,11 @@ nav a:hover {
   background: var(--accent-cyan);
 }
 
+.framework-card.summarizer::before {
+  background: var(--accent-emerald);
+}
+
+
 .framework-info {
   display: flex;
   flex-direction: column;
@@ -445,6 +454,11 @@ nav a:hover {
 .framework-card.rag .feature-list li svg {
   color: var(--accent-cyan);
 }
+
+.framework-card.summarizer .feature-list li svg {
+  color: var(--accent-emerald);
+}
+
 
 .framework-actions {
   display: flex;
