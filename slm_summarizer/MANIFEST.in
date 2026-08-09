@@ -1,6 +1,5 @@
-exclude test_rag.py
-exclude stress_test.py
-include slm_rag/config.yaml
+exclude test_summarizer.py
+include slm_summarizer/config.yaml
 recursive-exclude venv *
 recursive-exclude .venv *
 recursive-exclude .vscode *

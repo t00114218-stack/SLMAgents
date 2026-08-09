@@ -3,22 +3,23 @@ requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["slm_orchestrator"]
+packages = ["slm_summarizer"]
 
 
 [project]
-name = "slm_orchestrator"
+name = "slm-summarizer"
 version = "0.1.2"
-description = "A configurable semantic routing orchestrator powered by a local Small Language Model (SLM)"
+description = "A lightweight, CPU-optimized text summarizer powered by a local Small Language Model (SLM)"
 readme = "README.md"
 requires-python = ">=3.9"
 keywords = [
-    "llm", "slm", "agent", "orchestrator", "routing", "semantic-router", "llama-cpp", "local-ai", "structured-output"
+    "llm", "slm", "summarizer", "text-summarization", "qwen", "llama-cpp", 
+    "local-ai", "cpu-inference", "text-compression"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -37,6 +38,6 @@ name = "Suryaprakash CV"
 email = "suryaprakash.c.v@gmail.com"
 
 [project.urls]
-Homepage = "https://github.com/SuryaprakashCV/SLM---Orchestrator"
-"Bug Tracker" = "https://github.com/SuryaprakashCV/SLM---Orchestrator/issues"
-"Source Code" = "https://github.com/SuryaprakashCV/SLM---Orchestrator"
+Homepage = "https://github.com/SuryaprakashCV/SLM-Summarizer"
+"Bug Tracker" = "https://github.com/SuryaprakashCV/SLM-Summarizer/issues"
+"Source Code" = "https://github.com/SuryaprakashCV/SLM-Summarizer"

@@ -7,7 +7,7 @@
 ## Key Features
 
 - **Local & Private**: Runs completely on CPU / RAM. Zero API keys, zero network latency, and complete data privacy.
-- **Resource Efficient**: Uses a 1.5B parameter model (`qwen2.5-1.5b-instruct-q4_k_m.gguf`), consuming only **1.0 GB to 1.5 GB of RAM**.
+- **Resource Efficient**: Uses a 1.5B parameter model (`Qwen 2.5 1.5B Instruct ONNX`), consuming only **1.5 GB to 2.0 GB of RAM** and taking **1.1 GB of disk storage**.
 - **Instruction Adherence**: Formats instructions directly into the system template to enforce constraints (e.g. style, safety, or formatting constraints like JSON).
 
 ---
@@ -24,14 +24,14 @@ Or install locally for development:
 
 ```bash
 # 1. Create a fresh virtual environment
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 
 # 2. Install the package in editable mode
 pip install -e .
 ```
 
-*Note: Requires `llama-cpp-python` and `huggingface_hub`.*
+*Note: Requires `onnxruntime-genai`, `huggingface_hub`, and `pyyaml`.*
 
 ---
 
@@ -68,9 +68,9 @@ print(answer)
 
 ```python
 SLMRag(
-    model_path=None,   # Explicit path to a .gguf file (optional)
-    cache_dir=None,    # Cache directory for auto-downloads (defaults to ~/.cache/slm_rag)
-    n_ctx=2048,        # Context window size (default: 2048)
+    model_path=None,   # Explicit path to an ONNX model directory (optional)
+    cache_dir=None,    # Cache directory for auto-downloads
+    n_ctx=8192,        # Context window size (default: 8192)
     n_threads=4        # Number of CPU threads (default: 4)
 )
 ```

@@ -1,0 +1,10 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/slm_orchestrator",
+    "${workspaceFolder}/slm_rag",
+    "${workspaceFolder}/slm_summarizer"
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": false
+}

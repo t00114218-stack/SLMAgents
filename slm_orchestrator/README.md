@@ -7,8 +7,8 @@
 ## Key Features
 
 - **Local & Private**: Runs completely on CPU / RAM. Zero API keys, zero network latency, and complete data privacy.
-- **Dynamic Grammar Routing**: Automatically constructs a GBNF (GGML Backus-Naur Form) grammar on-the-fly to constrain the model's output to *exactly* one of the agent names you provide.
-- **Transparent Model Download**: Scans your local directory or automatically downloads and caches the required 1B parameter instruct model on first execution.
+- **Robust Semantic Routing**: Utilizes dynamic few-shot prompt mapping and multi-stage fallback parser to map inputs to agents.
+- **Resource Efficient**: Uses a 1.5B parameter model (`Qwen 2.5 1.5B Instruct ONNX`), consuming only **1.5 GB to 2.0 GB of RAM** and taking **1.1 GB of disk storage**.
 - **Highly Configurable**: Perfect for multi-agent systems, intent classification, and fallback routing.
 
 ---
@@ -21,7 +21,7 @@ Install directly via `pip`:
 pip install slm-orchestrator
 ```
 
-*Note: Requires `llama-cpp-python` and `huggingface_hub`.*
+*Note: Requires `onnxruntime-genai`, `huggingface_hub`, and `pyyaml`.*
 
 ---
 
@@ -65,10 +65,10 @@ print(f"Selected: {selected_agent}")
 
 ```python
 SLMOrchestrator(
-    model_path=None,   # Explicit path to a .gguf file (optional)
-    cache_dir=None,    # Where to download the model (defaults to ~/.cache/slm_orchestrator)
-    n_ctx=1024,        # Context size (default: 1024)
-    n_threads=4        # CPU threads to run model generation (default: 4)
+    model_path=None,   # Explicit path to an ONNX model directory (optional)
+    cache_dir=None,    # Where to download the model
+    n_ctx=2048,        # Context size (default: 2048)
+    n_threads=4        # CPU threads (default: 4)
 )
 ```
 

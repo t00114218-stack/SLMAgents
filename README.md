@@ -12,8 +12,9 @@ This monorepo is organized into the following main projects:
 
 | Folder | Description | Installation |
 | :--- | :--- | :--- |
-| [**`slm_orchestrator`**](./slm_orchestrator) | Semantic router powered by 1B Small Language Models using GBNF grammar constraints. | `pip install slm-orchestrator` |
-| [**`slm_rag`**](./slm_rag) | High-efficiency local CPU Retrieval-Augmented Generation library (under 1.5 GB RAM). | `pip install slm-rag` |
+| [**`slm_orchestrator`**](./slm_orchestrator) | Semantic router powered by 1.5B ONNX models with dynamic few-shot mapping. | `pip install slm-orchestrator` |
+| [**`slm_rag`**](./slm_rag) | High-efficiency local CPU Retrieval-Augmented Generation library via ONNX Runtime. | `pip install slm-rag` |
+| [**`slm_summarizer`**](./slm_summarizer) | High-efficiency local CPU text summarization agent via ONNX Runtime. | `pip install slm-summarizer` |
 | [**`website`**](./website) | The developer landing page, portal, and community website. | (See below) |
 
 ---
@@ -21,7 +22,7 @@ This monorepo is organized into the following main projects:
 ## Getting Started
 
 ### 🧠 SLM Orchestrator
-Route user prompts dynamically to specialized agents with strict GBNF output constraints.
+Route user prompts dynamically to specialized agents with robust semantic mapping constraints.
 ```python
 from slm_orchestrator import SLMOrchestrator
 
@@ -49,6 +50,48 @@ answer = rag.answer(
 )
 print(answer) # Output: Ahoy matey! AegisShield be their flagship!
 ```
+
+### 📝 SLM Summarizer
+Summarize short or large documents locally on standard CPUs using single-pass or Map-Reduce methods.
+```python
+from slm_summarizer import SLMSummarizer
+
+summarizer = SLMSummarizer()
+text = "SpaceX successfully launched its Falcon 9 rocket on Friday..."
+summary = summarizer.summarize(
+    text=text,
+    format="bullet_points",
+    instruction="Focus on launch metrics."
+)
+print(summary)
+```
+
+You can also pass inputs as a JSON string or dict mapping prompt and target summary size (number of tokens):
+```python
+import json
+
+json_input = json.dumps({
+    "passage": "SpaceX successfully launched its Falcon 9 rocket...",
+    "prompt": "Focus on launch metrics",
+    "size": 50,
+    "format": "tldr"
+})
+summary = summarizer.summarize_json(json_input)
+print(summary)
+```
+
+
+
+---
+
+## Model Details & Hardware Requirements
+
+All three libraries in this monorepo are optimized for local CPU execution via **ONNX Runtime GenAI** and share a single model cache to minimize resource overhead:
+
+*   **Model**: `tonythethompson/Qwen2.5-1.5B-Instruct-ONNX` (INT4 quantized).
+*   **License**: **Apache 2.0** (100% Permissive). Safe for commercial distribution without restrictive LLM community agreements.
+*   **Memory Footprint (RAM)**: **~1.5 GB to 2.0 GB** during active inference.
+*   **Disk Storage**: **~1.1 GB** total. The model directory is cached under `~/.cache/slm_summarizer/qwen2.5-1.5b-onnx` and shared across orchestrator, RAG, and summarizer libraries to prevent redundant downloads.
 
 ---
 

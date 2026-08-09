@@ -5,5 +5,9 @@ exclude run_tests.py
 exclude accuracy_report.md
 include slm_orchestrator/config.yaml
 recursive-exclude venv *
+recursive-exclude .venv *
 recursive-exclude .vscode *
 recursive-exclude .cache *
+exclude LICENSE
+exclude setup.py
+

@@ -2,9 +2,13 @@
 requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = ["slm_rag"]
+
+
 [project]
 name = "slm-rag"
-version = "0.1.1"
+version = "0.1.2"
 description = "A lightweight, CPU-optimized RAG library powered by a local Small Language Model (SLM)"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -24,8 +28,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 dependencies = [
-    "llama-cpp-python>=0.2.0",
-    "huggingface_hub>=0.10.0"
+    "onnxruntime-genai>=0.2.0",
+    "huggingface_hub>=0.10.0",
+    "pyyaml"
 ]
 
 [[project.authors]]

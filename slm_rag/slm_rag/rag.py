@@ -1,17 +1,17 @@
 import os
 import sys
-from llama_cpp import Llama
+import yaml
+
+try:
+    import onnxruntime_genai as og
+except ImportError:
+    og = None
 
 def load_config() -> dict:
     """
     Searches for config.yaml in environment variables, CWD, parent dirs,
     and package installation directories.
     """
-    try:
-        import yaml
-    except ImportError:
-        return {}
-        
     config_paths = [
         os.environ.get("SLM_RAG_CONFIG"),
         "./config.yaml",
@@ -31,38 +31,28 @@ def load_config() -> dict:
 class SLMRag:
     """
     A CPU-optimized Retrieval-Augmented Generation (RAG) runner powered by a local
-    Small Language Model (SLM). It answers user questions based on provided document chunks
-    while strictly adhering to user instructions.
+    Small Language Model (SLM) running via ONNX Runtime GenAI.
+    Answers user questions based on provided document chunks while strictly adhering
+    to user instructions.
     """
-    def __init__(self, model_path=None, cache_dir=None, n_ctx=131072, n_threads=4):
-        # Resolve the GGUF model path
+    def __init__(self, model_path=None, cache_dir=None, n_ctx=8192, n_threads=4):
+        if og is None:
+            raise ImportError(
+                "onnxruntime-genai is not installed. Please install it using: "
+                "pip install onnxruntime-genai"
+            )
+            
+        # Resolve the ONNX model path
         self.model_path = self._resolve_model_path(model_path, cache_dir)
+        self.n_ctx = n_ctx
         
-        print(f"[SLMRag] Loading model from: {self.model_path}...")
-        try:
-            self.llm = Llama(
-                model_path=self.model_path,
-                n_ctx=n_ctx,
-                n_threads=n_threads,
-                use_mlock=True,
-                verbose=False
-            )
-        except Exception as e:
-            print(f"[SLMRag] Warning: Failed to load with use_mlock=True: {e}. Retrying without mlock...")
-            self.llm = Llama(
-                model_path=self.model_path,
-                n_ctx=n_ctx,
-                n_threads=n_threads,
-                use_mlock=False,
-                verbose=False
-            )
+        print(f"[SLMRag] Loading ONNX model from: {self.model_path}...")
+        self.model = og.Model(self.model_path)
+        self.tokenizer = og.Tokenizer(self.model)
             
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         """
-        Locates or downloads the necessary GGUF model as defined in config.yaml.
-        Precedence:
-        1. Explicitly provided `model_path`
-        2. Configured path/download via config.yaml
+        Locates or downloads the necessary ONNX model as defined in config.yaml.
         """
         if model_path:
             if not os.path.exists(model_path):
@@ -80,25 +70,33 @@ class SLMRag:
             raise ValueError("model path configuration is missing under models.rag in config.yaml")
             
         config_path = os.path.expanduser(config_path)
-        if os.path.exists(config_path):
-            return config_path
+        
+        # Check if genai_config.json exists recursively in config_path
+        for root, dirs, files in os.walk(config_path):
+            if "genai_config.json" in files:
+                return root
             
         # Download if configured but not present
         repo_id = model_config.get("repo_id")
-        filename = model_config.get("filename")
-        if not repo_id or not filename:
-            raise ValueError(f"Model file not found at {config_path} and auto-download parameters (repo_id, filename) are missing in config.yaml")
+        if not repo_id:
+            raise ValueError(f"Model file not found at {config_path} and auto-download parameters (repo_id) are missing in config.yaml")
             
-        print(f"[SLMRag] Model not found at configured path. Auto-downloading...")
-        os.makedirs(os.path.dirname(config_path), exist_ok=True)
-        from huggingface_hub import hf_hub_download
-        downloaded = hf_hub_download(
+        print(f"[SLMRag] ONNX Model not found at configured path. Auto-downloading...")
+        os.makedirs(config_path, exist_ok=True)
+        
+        from huggingface_hub import snapshot_download
+        snapshot_download(
             repo_id=repo_id,
-            filename=filename,
-            local_dir=os.path.dirname(config_path)
+            local_dir=config_path,
+            ignore_patterns=["*cuda*", "*directml*"]
         )
-        if downloaded != config_path and os.path.exists(downloaded):
-            os.rename(downloaded, config_path)
+        
+        # Scan again to find actual directory containing genai_config.json
+        for root, dirs, files in os.walk(config_path):
+            if "genai_config.json" in files:
+                print(f"[SLMRag] Resolved model directory containing genai_config.json: {root}")
+                return root
+                
         return config_path
 
     def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = 512) -> str:
@@ -110,7 +108,7 @@ class SLMRag:
         for i, chunk in enumerate(chunks):
             formatted_chunks += f"--- Chunk {i+1} ---\n{chunk.strip()}\n\n"
             
-        # Build strict ChatML template prompt for Qwen 2.5
+        # Build strict ChatML template prompt
         system_prompt = (
             "You are a precise and helpful assistant. Your task is to answer the user's question "
             "based ONLY on the provided text chunks. If the chunks do not contain the answer, say "
@@ -128,13 +126,25 @@ class SLMRag:
             "<|im_start|>assistant\n"
         )
         
-        # Generation configuration for CPU inference
-        response = self.llm(
-            prompt,
-            max_tokens=max_tokens,
-            temperature=temperature,
-            stop=["<|im_end|>", "<|im_start|>", "--- Chunk"] # Prevent hallucinating or spilling over
-        )
+        input_tokens = self.tokenizer.encode(prompt)
         
-        answer_text = response["choices"][0]["text"].strip()
-        return answer_text
+        params = og.GeneratorParams(self.model)
+        
+        total_max_length = len(input_tokens) + max_tokens
+        search_options = {
+            "max_length": total_max_length,
+            "temperature": temperature
+        }
+        params.set_search_options(**search_options)
+        
+        generator = og.Generator(self.model, params)
+        generator.append_tokens(input_tokens)
+        
+        output_tokens = []
+        while not generator.is_done():
+            generator.generate_next_token()
+            new_tokens = generator.get_next_tokens()
+            if len(new_tokens) > 0:
+                output_tokens.append(int(new_tokens[0]))
+                
+        return self.tokenizer.decode(output_tokens).strip()
