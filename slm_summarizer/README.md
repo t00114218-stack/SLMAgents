@@ -1,4 +1,4 @@
-# SLM Summarizer 🧠📝
+# SLM Summarizer
 
 `slm_summarizer` is a lightweight, local text summarization library powered entirely by a Small Language Model (SLM) running on CPU. It allows developers to summarize short or large documents locally with high privacy, low resource usage, and zero API costs. 
 

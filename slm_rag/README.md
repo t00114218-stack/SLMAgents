@@ -1,4 +1,4 @@
-# SLM RAG 🧠🔍
+# SLM RAG
 
 `slm_rag` is a lightweight, local Retrieval-Augmented Generation (RAG) library powered entirely by a Small Language Model (SLM) running on CPU. It allows developers to pass a list of document chunks, a user question, and arbitrary guidelines/instructions to answer queries locally with high privacy, low resource usage, and zero API costs.
 

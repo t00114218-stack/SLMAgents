@@ -1,0 +1,14 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+setup.py
+slm_text_to_sql/__init__.py
+slm_text_to_sql/config.yaml
+slm_text_to_sql/fine_tune.py
+slm_text_to_sql/text_to_sql.py
+slm_text_to_sql.egg-info/PKG-INFO
+slm_text_to_sql.egg-info/SOURCES.txt
+slm_text_to_sql.egg-info/dependency_links.txt
+slm_text_to_sql.egg-info/requires.txt
+slm_text_to_sql.egg-info/top_level.txt

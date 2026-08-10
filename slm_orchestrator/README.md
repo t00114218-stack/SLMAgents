@@ -1,4 +1,4 @@
-# SLM Orchestrator 🧠🚀
+# SLM Orchestrator
 
 `slm_orchestrator` is a lightweight, local semantic routing orchestrator powered entirely by a Small Language Model (SLM) running on CPU. It enables you to route user prompts dynamically to a custom list of agents with strict structured output constraints.
 

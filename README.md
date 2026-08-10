@@ -1,8 +1,8 @@
-# SLM Agents 🧠⚡
+# SLM Agents
 
-Welcome to the **SLM Agents** community! This repository is a unified developer portal and codebase for running highly-constrained, secure, and privacy-first agentic workflows locally on standard CPUs.
+Welcome to the **SLM Agents** community! This repository is a unified open-source developer portal and Python codebase for running highly-constrained, secure, and privacy-first AI agent workflows locally on standard CPUs using Small Language Models (SLMs). 
 
-No GPU rigs, no subscription costs, and zero network latency.
+If you are looking for a **local AI framework**, **CPU inference library**, or **privacy-first LLM orchestrator**, you are in the right place! No GPU rigs, no subscription costs, and zero network latency. Powered by ONNX Runtime GenAI for maximum speed.
 
 ---
 
@@ -15,13 +15,14 @@ This monorepo is organized into the following main projects:
 | [**`slm_orchestrator`**](./slm_orchestrator) | Semantic router powered by 1.5B ONNX models with dynamic few-shot mapping. | `pip install slm-orchestrator` |
 | [**`slm_rag`**](./slm_rag) | High-efficiency local CPU Retrieval-Augmented Generation library via ONNX Runtime. | `pip install slm-rag` |
 | [**`slm_summarizer`**](./slm_summarizer) | High-efficiency local CPU text summarization agent via ONNX Runtime. | `pip install slm-summarizer` |
+| [**`slm_text_to_sql`**](./slm_text_to_sql) | CPU-optimized Text-to-SQL agent via ONNX Runtime, with built-in QLoRA TPU/GPU fine-tuning. | `pip install slm-text-to-sql` |
 | [**`website`**](./website) | The developer landing page, portal, and community website. | (See below) |
 
 ---
 
 ## Getting Started
 
-### 🧠 SLM Orchestrator
+### SLM Orchestrator
 Route user prompts dynamically to specialized agents with robust semantic mapping constraints.
 ```python
 from slm_orchestrator import SLMOrchestrator
@@ -36,7 +37,7 @@ selected = orchestrator.route(agents=agents, question="I need invoice help")
 print(selected) # Output: Billing Support
 ```
 
-### 🔍 SLM RAG
+### SLM RAG
 Answer queries locally using context documents with strict guideline compliance.
 ```python
 from slm_rag import SLMRag
@@ -51,7 +52,7 @@ answer = rag.answer(
 print(answer) # Output: Ahoy matey! AegisShield be their flagship!
 ```
 
-### 📝 SLM Summarizer
+### SLM Summarizer
 Summarize short or large documents locally on standard CPUs using single-pass or Map-Reduce methods.
 ```python
 from slm_summarizer import SLMSummarizer
@@ -78,6 +79,18 @@ json_input = json.dumps({
 })
 summary = summarizer.summarize_json(json_input)
 print(summary)
+```
+
+### SLM Text-to-SQL
+Generate SQL queries from natural language database questions on standard CPUs.
+```python
+from slm_text_to_sql import SLMTextToSQL
+
+agent = SLMTextToSQL()
+schema = "CREATE TABLE employees (id INT, name VARCHAR(50), salary INT);"
+question = "Get the names of employees earning more than 50000."
+query = agent.generate_sql(schema=schema, question=question)
+print(query) # Output: SELECT name FROM employees WHERE salary > 50000;
 ```
 
 

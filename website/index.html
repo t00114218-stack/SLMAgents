@@ -4,8 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="SLM Agents: Lightweight, local, private, and CPU-powered AI agent frameworks for developers. Built on Small Language Models (SLMs) with zero API costs.">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.slmagents.ai/">
+  <meta property="og:title" content="SLM Agents | Local CPU-powered AI Agent Frameworks">
+  <meta property="og:description" content="Lightweight, local, private, and CPU-powered AI agent frameworks for developers. Built on Small Language Models (SLMs) with zero API costs.">
+  <meta property="og:image" content="https://www.slmagents.ai/assets/preview.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://www.slmagents.ai/">
+  <meta property="twitter:title" content="SLM Agents | Local CPU-powered AI Agent Frameworks">
+  <meta property="twitter:description" content="Lightweight, local, private, and CPU-powered AI agent frameworks for developers. Built on Small Language Models (SLMs) with zero API costs.">
+  <meta property="twitter:image" content="https://www.slmagents.ai/assets/preview.png">
+
+  <!-- Canonical Link -->
+  <link rel="canonical" href="https://www.slmagents.ai/">
+
   <title>SLM Agents | Local CPU-powered AI Agent Frameworks</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Structured Data / Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SLM Agents",
+    "operatingSystem": "Windows, macOS, Linux",
+    "applicationCategory": "DeveloperApplication",
+    "description": "Lightweight, local, private, and CPU-powered AI agent frameworks for developers. Built on Small Language Models (SLMs) with zero API costs.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0.00",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
 </head>
 <body>
   <!-- Background glows -->
@@ -16,7 +51,11 @@
   <header>
     <div class="container nav-container">
       <a href="#" class="logo">
-        <div class="logo-icon">🧠</div>
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
         <span>SLM Agents</span>
       </a>
       <nav>
@@ -51,8 +90,23 @@
           <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 4px;">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
           </svg>
-          Join Our Community
+          ⭐ Star us on GitHub
         </a>
+      </div>
+
+      <!-- Quick Install Snippet -->
+      <div class="code-panel" style="max-width: 600px; margin: 2rem auto; text-align: left;">
+        <div class="code-header">
+          <div class="code-dots">
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+            <div class="code-dot"></div>
+          </div>
+          <div class="code-title">Terminal</div>
+        </div>
+        <div class="code-content" style="display: block; padding: 1.5rem;">
+          <pre><code>pip install slm-orchestrator slm-rag slm-text-to-sql</code></pre>
+        </div>
       </div>
 
       <!-- Quick stats -->
@@ -353,6 +407,89 @@ summary = summarizer.<span class="function">summarize</span>(
             </div>
           </div>
         </div>
+
+        <!-- Text-to-SQL Card -->
+        <div class="framework-card sql">
+          <div class="framework-info">
+            <div>
+              <div class="framework-meta">
+                <span class="badge-cpu">CPU Only</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+              </div>
+              <h3 class="framework-title">SLM Text-to-SQL</h3>
+              <p class="framework-description">
+                A CPU-optimized Text-to-SQL translation agent powered by a 1.5B ONNX Small Language Model. Includes native QLoRA adapters training workflows for GPU/TPU.
+              </p>
+              <ul class="feature-list">
+                <li>
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span><strong>Database-to-SQL Mapping:</strong> Translates natural queries into precise SQL statements based on table schemas.</span>
+                </li>
+                <li>
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span><strong>Hugging Face Integration:</strong> Uses Qwen chat templates directly for prompt tokenization and schema mapping.</span>
+                </li>
+                <li>
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span><strong>Built-in QLoRA Trainer:</strong> Complete training, validation, and adapter-merging scripts for fine-tuning.</span>
+                </li>
+              </ul>
+            </div>
+            <div class="framework-actions">
+              <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_text_to_sql" class="btn btn-secondary" target="_blank">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                GitHub Repo
+              </a>
+            </div>
+          </div>
+
+          <!-- Code Panel -->
+          <div class="code-panel">
+            <div class="code-header">
+              <div class="code-dots">
+                <div class="code-dot"></div>
+                <div class="code-dot"></div>
+                <div class="code-dot"></div>
+              </div>
+              <div class="code-title">Text-to-SQL Setup</div>
+            </div>
+            <div class="code-tabs">
+              <button class="code-tab-btn active" onclick="switchTab(this, 'sql-install')">Install</button>
+              <button class="code-tab-btn" onclick="switchTab(this, 'sql-quickstart')">Quick Start</button>
+            </div>
+            <div id="sql-install" class="code-content">
+              <pre><code><span class="comment"># Install via pip</span>
+pip install slm-text-to-sql
+
+<span class="comment"># Note: Requires onnxruntime-genai and huggingface-hub</span>
+<span class="comment"># Shares the same cached model to save local disk storage</span></code></pre>
+            </div>
+            <div id="sql-quickstart" class="code-content" style="display: none;">
+              <pre><code><span class="keyword">from</span> slm_text_to_sql <span class="keyword">import</span> SLMTextToSQL
+
+# Init engine (downloads/caches 1.5B Qwen ONNX)
+agent = <span class="function">SLMTextToSQL</span>()
+
+schema = <span class="string">"CREATE TABLE employees (id INT, salary INT);"</span>
+
+# Generate SQL locally on CPU
+query = agent.<span class="function">generate_sql</span>(
+    schema=schema,
+    question=<span class="string">"Average salary?"</span>
+)
+<span class="function">print</span>(query)
+# Output: SELECT AVG(salary) FROM employees;</code></pre>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -367,11 +504,11 @@ summary = summarizer.<span class="function">summarize</span>(
 
       <div class="upcoming-grid">
         <!-- SQL Agent -->
-        <div class="upcoming-card">
-          <div class="badge-soon">In Development</div>
-          <h3>SLM SQL Agent</h3>
+        <div class="upcoming-card" style="border-color: var(--primary);">
+          <div class="badge-soon" style="background: var(--primary); color: #000; font-weight: bold;">LIVE NOW</div>
+          <h3>SLM Text-to-SQL</h3>
           <p>
-            An offline text-to-SQL generation and execution agent. Safe schemas, locally generated query logic, and direct CPU SQLite databases query tools.
+            An offline text-to-SQL generation and adapter-training library. Available now in the frameworks list above. Fully CPU-optimized for inference.
           </p>
         </div>
 
@@ -408,6 +545,7 @@ summary = summarizer.<span class="function">summarize</span>(
           <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_orchestrator" class="btn btn-primary" target="_blank">Orchestrator</a>
           <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_rag" class="btn btn-secondary" target="_blank">RAG</a>
           <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_summarizer" class="btn btn-secondary" target="_blank">Summarizer</a>
+          <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_text_to_sql" class="btn btn-secondary" target="_blank">Text-to-SQL</a>
         </div>
       </div>
     </div>
@@ -419,7 +557,11 @@ summary = summarizer.<span class="function">summarize</span>(
       <div class="footer-grid">
         <div class="footer-brand">
           <a href="#" class="logo" style="margin-bottom: 12px;">
-            <div class="logo-icon">🧠</div>
+            <div class="logo-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
             <span style="color: var(--text-primary);">SLM Agents</span>
           </a>
           <p>Open source developer community building lightweight, local CPU agentic AI frameworks.</p>
@@ -430,6 +572,7 @@ summary = summarizer.<span class="function">summarize</span>(
             <li><a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_orchestrator" target="_blank">SLM Orchestrator</a></li>
             <li><a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_rag" target="_blank">SLM RAG</a></li>
             <li><a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_summarizer" target="_blank">SLM Summarizer</a></li>
+            <li><a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_text_to_sql" target="_blank">SLM Text-to-SQL</a></li>
           </ul>
         </div>
         <div class="footer-links">
