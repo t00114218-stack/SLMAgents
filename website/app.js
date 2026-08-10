@@ -19,3 +19,41 @@ function switchTab(btn, targetId) {
     target.style.display = 'block';
   }
 }
+
+// Category filtering and Search for 20+ upcoming agents
+let activeCategory = 'all';
+
+function filterCategory(btn, category) {
+  // Update active tab styling
+  const tabContainer = btn.parentElement;
+  const buttons = tabContainer.querySelectorAll('.category-tab-btn');
+  buttons.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  activeCategory = category;
+  applyFilters();
+}
+
+function applyFilters() {
+  const searchInput = document.getElementById('agent-search');
+  if (!searchInput) return;
+  
+  const searchQuery = searchInput.value.toLowerCase();
+  const cards = document.querySelectorAll('.upcoming-card');
+  
+  cards.forEach(card => {
+    const title = card.querySelector('h3').innerText.toLowerCase();
+    const description = card.querySelector('p').innerText.toLowerCase();
+    const cardCategory = card.getAttribute('data-category');
+    
+    const matchesSearch = title.includes(searchQuery) || description.includes(searchQuery);
+    const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
+    
+    if (matchesSearch && matchesCategory) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
