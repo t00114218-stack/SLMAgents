@@ -93,7 +93,23 @@ query = agent.generate_sql(schema=schema, question=question)
 print(query) # Output: SELECT name FROM employees WHERE salary > 50000;
 ```
 
+### Claude-Style Streaming & Reasoning
+All three generation agents (`SLMSummarizer`, `SLMRag`, `SLMTextToSQL`) support Claude-style streaming. When `stream=True` is passed, the model will output its step-by-step thinking inside `<thought>...</thought>` tags first, followed by the final answer. The method returns a Python generator yielding decoded tokens in real-time.
 
+```python
+# Real-time streaming with thought-process parsing
+stream = rag.answer(
+    chunks=["NebulaCorp released AegisShield in 2025."],
+    question="What is the release year of AegisShield?",
+    instruction="State only the year.",
+    stream=True
+)
+
+for token in stream:
+    # Outputs the reasoning block first in <thought>...</thought> tags,
+    # then the final clean answer.
+    print(token, end="", flush=True)
+```
 
 ---
 

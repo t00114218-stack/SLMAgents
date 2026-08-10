@@ -8,15 +8,16 @@ try:
 except ImportError:
     og = None
 
-def load_config() -> dict:
+def load_config() -> tuple[dict, str]:
     """
     Searches for config.yaml in environment variables, CWD, parent dirs,
     and package installation directories.
+    Returns a tuple of (config_dict, config_file_path).
     """
     try:
         import yaml
     except ImportError:
-        return {}
+        return {}, ""
         
     config_paths = [
         os.environ.get("SLM_ORCHESTRATOR_CONFIG"),
@@ -29,10 +30,10 @@ def load_config() -> dict:
         if path and os.path.exists(path):
             try:
                 with open(path, "r") as f:
-                    return yaml.safe_load(f) or {}
+                    return yaml.safe_load(f) or {}, os.path.abspath(path)
             except Exception as e:
                 print(f"[SLMOrchestrator] Warning: Failed to load config from {path}: {e}")
-    return {}
+    return {}, ""
 
 class SLMOrchestrator:
     """
@@ -80,7 +81,7 @@ class SLMOrchestrator:
             return os.path.abspath(model_path)
 
         # Check config.yaml
-        config = load_config()
+        config, config_file_path = load_config()
         model_config = config.get("models", {}).get("orchestrator")
         if not model_config:
             raise ValueError("models.orchestrator configuration is missing in config.yaml")
@@ -90,6 +91,8 @@ class SLMOrchestrator:
             raise ValueError("model path configuration is missing under models.orchestrator in config.yaml")
             
         config_path = os.path.expanduser(config_path)
+        if not os.path.isabs(config_path) and config_file_path:
+            config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
         
         # Check if genai_config.json exists recursively in config_path
         for root, dirs, files in os.walk(config_path):

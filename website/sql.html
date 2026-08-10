@@ -202,6 +202,7 @@ export SLM_TEXT_TO_SQL_MAX_TOKENS=256</code></pre>
           <tr><td>question</td><td>str</td><td><strong>Required.</strong> Natural language database query.</td></tr>
           <tr><td>temperature</td><td>float | 0.0</td><td>Generation temperature. 0.0 = deterministic (strongly recommended for SQL queries).</td></tr>
           <tr><td>max_tokens</td><td>int | 256</td><td>Max tokens for generated query. Lower = faster. Also settable via <span class="env-tag">SLM_TEXT_TO_SQL_MAX_TOKENS</span>.</td></tr>
+          <tr><td>stream</td><td>bool | False</td><td>If True, enables Claude-style token streaming. The model will stream its thinking process inside <code>&lt;thought&gt;...&lt;/thought&gt;</code> tags first, followed by the final SQL query. Returns a Python generator.</td></tr>
         </tbody>
       </table>
 

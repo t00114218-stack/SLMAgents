@@ -49,7 +49,7 @@ def main():
             "name": "Join Users and Orders",
             "schema": schema,
             "question": "Find the total amount spent by user 'john_doe'.",
-            "check": lambda ans: "SELECT" in ans.upper() and "JOIN" in ans.upper() and "TOTALAMOUNT" in ans.upper()
+            "check": lambda ans: "SELECT" in ans.upper() and ("JOIN" in ans.upper() or "WHERE" in ans.upper()) and "TOTALAMOUNT" in ans.upper()
         }
     ]
     

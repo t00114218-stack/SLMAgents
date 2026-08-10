@@ -1,6 +1,6 @@
 models:
   rag:
-    path: "~/.cache/slm_summarizer/qwen2.5-1.5b-onnx"
+    path: "../../models/qwen2.5-1.5b-onnx"
     repo_id: "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX"
 
 # Performance tuning

@@ -7,10 +7,11 @@ try:
 except ImportError:
     og = None
 
-def load_config() -> dict:
+def load_config() -> tuple[dict, str]:
     """
     Searches for config.yaml in environment variables, CWD, parent dirs,
     and package installation directories.
+    Returns a tuple of (config_dict, config_file_path).
     """
     config_paths = [
         os.environ.get("SLM_RAG_CONFIG"),
@@ -23,7 +24,7 @@ def load_config() -> dict:
         if path and os.path.exists(path):
             try:
                 with open(path, "r") as f:
-                    return yaml.safe_load(f) or {}
+                    return yaml.safe_load(f) or {}, os.path.abspath(path)
             except Exception as e:
                 raise ValueError(f"Failed to parse config file at {path}: {e}")
     raise FileNotFoundError("config.yaml not found in environment, current directory, or package directories.")
@@ -76,7 +77,7 @@ class SLMRag:
             return os.path.abspath(model_path)
 
         # Check config.yaml
-        config = load_config()
+        config, config_file_path = load_config()
         model_config = config.get("models", {}).get("rag")
         if not model_config:
             raise ValueError("models.rag configuration is missing in config.yaml")
@@ -86,6 +87,8 @@ class SLMRag:
             raise ValueError("model path configuration is missing under models.rag in config.yaml")
             
         config_path = os.path.expanduser(config_path)
+        if not os.path.isabs(config_path) and config_file_path:
+            config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
         
         # Check if genai_config.json exists recursively in config_path
         for root, dirs, files in os.walk(config_path):
@@ -115,7 +118,7 @@ class SLMRag:
                 
         return config_path
 
-    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5) -> str:
+    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5, stream: bool = False):
         """
         Synthesizes an answer based on document chunks, user question, and user instruction.
         Supports tool execution (e.g., Vector DB lookups) to gather more context.
@@ -129,6 +132,7 @@ class SLMRag:
             tools:          Optional list of tool JSON schemas for agentic retrieval.
             tool_executor:  Optional callable(tool_name, args) -> str to execute tools.
             max_iterations: Max ReAct tool-calling loops (prevents infinite loops).
+            stream:         If True, streams token strings in real-time.
         """
         import json
         # Resolve max_tokens: arg > env var > default
@@ -141,11 +145,19 @@ class SLMRag:
             formatted_chunks += f"--- Chunk {i+1} ---\n{chunk.strip()}\n\n"
             
         # Build strict ChatML template prompt
-        system_prompt = (
-            "You are a precise and helpful assistant. Your task is to answer the user's question "
-            "based ONLY on the provided text chunks and tool results. If they do not contain the answer, say "
-            "so clearly. You must strictly adhere to the instruction provided by the user."
-        )
+        if stream and not (tools and tool_executor):
+            system_prompt = (
+                "You are a precise and helpful assistant. Your task is to answer the user's question "
+                "based ONLY on the provided text chunks and tool results. If they do not contain the answer, say "
+                "so clearly. You must strictly adhere to the instruction provided by the user.\n"
+                "You MUST first think step-by-step inside <thought>...</thought> tags, and then provide your final answer."
+            )
+        else:
+            system_prompt = (
+                "You are a precise and helpful assistant. Your task is to answer the user's question "
+                "based ONLY on the provided text chunks and tool results. If they do not contain the answer, say "
+                "so clearly. You must strictly adhere to the instruction provided by the user."
+            )
         
         if tools and tool_executor:
             system_prompt += (
@@ -165,57 +177,121 @@ class SLMRag:
             f"Remember, you must adhere to the instruction: {instruction}<|im_end|>\n"
         )
         
-        for iteration in range(max_iterations):
-            current_prompt = prompt + "<|im_start|>assistant\n"
-            input_tokens = self.tokenizer.encode(current_prompt)
-            
-            params = og.GeneratorParams(self.model)
-            
-            total_max_length = len(input_tokens) + max_tokens
-            search_options = {
-                "max_length": total_max_length,
-                "temperature": temperature
-            }
-            params.set_search_options(**search_options)
-            
-            generator = og.Generator(self.model, params)
-            generator.append_tokens(input_tokens)
-            
-            output_tokens = []
-            while not generator.is_done():
-                generator.generate_next_token()
-                new_tokens = generator.get_next_tokens()
-                if len(new_tokens) > 0:
-                    output_tokens.append(int(new_tokens[0]))
+        if stream:
+            def generator_fn():
+                nonlocal prompt
+                for iteration in range(max_iterations):
+                    current_prompt = prompt + "<|im_start|>assistant\n"
+                    input_tokens = self.tokenizer.encode(current_prompt)
                     
-            response_text = self.tokenizer.decode(output_tokens).strip()
-            
-            is_tool_call = False
-            if tools and tool_executor:
-                try:
-                    cleaned = response_text.replace("```json", "").replace("```", "").strip()
-                    if cleaned.startswith("{") and cleaned.endswith("}"):
-                        data = json.loads(cleaned)
-                        if "tool_call" in data:
-                            is_tool_call = True
-                            tool_name = data["tool_call"]
-                            args = data.get("args", {})
+                    params = og.GeneratorParams(self.model)
+                    total_max_length = len(input_tokens) + max_tokens
+                    search_options = {
+                        "max_length": total_max_length,
+                        "temperature": temperature
+                    }
+                    params.set_search_options(**search_options)
+                    
+                    generator = og.Generator(self.model, params)
+                    generator.append_tokens(input_tokens)
+                    
+                    if not (tools and tool_executor):
+                        tokenizer_stream = self.tokenizer.create_stream()
+                        while not generator.is_done():
+                            generator.generate_next_token()
+                            new_tokens = generator.get_next_tokens()
+                            if len(new_tokens) > 0:
+                                yield tokenizer_stream.decode(new_tokens[0])
+                        return
+                    else:
+                        output_tokens = []
+                        while not generator.is_done():
+                            generator.generate_next_token()
+                            new_tokens = generator.get_next_tokens()
+                            if len(new_tokens) > 0:
+                                output_tokens.append(int(new_tokens[0]))
+                        
+                        response_text = self.tokenizer.decode(output_tokens).strip()
+                        
+                        is_tool_call = False
+                        try:
+                            cleaned = response_text.replace("```json", "").replace("```", "").strip()
+                            if cleaned.startswith("{") and cleaned.endswith("}"):
+                                data = json.loads(cleaned)
+                                if "tool_call" in data:
+                                    is_tool_call = True
+                                    tool_name = data["tool_call"]
+                                    args = data.get("args", {})
+                                    
+                                    try:
+                                        result = tool_executor(tool_name, args)
+                                    except Exception as e:
+                                        result = f"Error executing tool {tool_name}: {e}"
+                                        
+                                    prompt += (
+                                        "<|im_start|>assistant\n"
+                                        f"{response_text}<|im_end|>\n"
+                                        "<|im_start|>tool\n"
+                                        f"{result}<|im_end|>\n"
+                                    )
+                        except Exception:
+                            pass
                             
-                            try:
-                                result = tool_executor(tool_name, args)
-                            except Exception as e:
-                                result = f"Error executing tool {tool_name}: {e}"
+                        if not is_tool_call:
+                            yield response_text
+                            return
+            return generator_fn()
+        else:
+            for iteration in range(max_iterations):
+                current_prompt = prompt + "<|im_start|>assistant\n"
+                input_tokens = self.tokenizer.encode(current_prompt)
+                
+                params = og.GeneratorParams(self.model)
+                total_max_length = len(input_tokens) + max_tokens
+                search_options = {
+                    "max_length": total_max_length,
+                    "temperature": temperature
+                }
+                params.set_search_options(**search_options)
+                
+                generator = og.Generator(self.model, params)
+                generator.append_tokens(input_tokens)
+                
+                output_tokens = []
+                while not generator.is_done():
+                    generator.generate_next_token()
+                    new_tokens = generator.get_next_tokens()
+                    if len(new_tokens) > 0:
+                        output_tokens.append(int(new_tokens[0]))
+                        
+                response_text = self.tokenizer.decode(output_tokens).strip()
+                
+                is_tool_call = False
+                if tools and tool_executor:
+                    try:
+                        cleaned = response_text.replace("```json", "").replace("```", "").strip()
+                        if cleaned.startswith("{") and cleaned.endswith("}"):
+                            data = json.loads(cleaned)
+                            if "tool_call" in data:
+                                is_tool_call = True
+                                tool_name = data["tool_call"]
+                                args = data.get("args", {})
                                 
-                            prompt += (
-                                "<|im_start|>assistant\n"
-                                f"{response_text}<|im_end|>\n"
-                                "<|im_start|>tool\n"
-                                f"{result}<|im_end|>\n"
-                            )
-                except Exception:
-                    pass
-            
-            if not is_tool_call:
-                return response_text
+                                try:
+                                    result = tool_executor(tool_name, args)
+                                except Exception as e:
+                                    result = f"Error executing tool {tool_name}: {e}"
+                                    
+                                prompt += (
+                                    "<|im_start|>assistant\n"
+                                    f"{response_text}<|im_end|>\n"
+                                    "<|im_start|>tool\n"
+                                    f"{result}<|im_end|>\n"
+                                )
+                    except Exception:
+                        pass
+                
+                if not is_tool_call:
+                    return response_text
                 
         return response_text

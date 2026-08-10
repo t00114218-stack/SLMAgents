@@ -209,6 +209,7 @@ export SLM_RAG_MAX_TOKENS=128</code></pre>
           <tr><td>tools</td><td>list | None</td><td>Optional list of JSON-schema tool definitions for agentic Vector DB retrieval. See Tool Use section.</td></tr>
           <tr><td>tool_executor</td><td>callable | None</td><td>Optional <code>fn(tool_name: str, args: dict) -> str</code>. Called when the model needs additional context via a tool.</td></tr>
           <tr><td>max_iterations</td><td>int | 5</td><td>Maximum ReAct tool-calling loops. Prevents runaway inference. Set to 1 or 2 for most use cases.</td></tr>
+          <tr><td>stream</td><td>bool | False</td><td>If True, enables Claude-style token streaming. The model will stream its thinking process inside <code>&lt;thought&gt;...&lt;/thought&gt;</code> tags first, followed by the final answer. Returns a Python generator.</td></tr>
         </tbody>
       </table>
 

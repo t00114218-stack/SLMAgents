@@ -12,6 +12,7 @@ env/
 # Large Model Binaries (GGUF)
 *.gguf
 .cache/
+models/
 
 # OS Specific
 .DS_Store

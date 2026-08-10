@@ -6,10 +6,11 @@ try:
 except ImportError:
     og = None
 
-def load_config() -> dict:
+def load_config() -> tuple[dict, str]:
     """
     Searches for config.yaml in environment variables, CWD, parent dirs,
     and package installation directories.
+    Returns a tuple of (config_dict, config_file_path).
     """
     config_paths = [
         os.environ.get("SLM_TEXT_TO_SQL_CONFIG"),
@@ -22,10 +23,10 @@ def load_config() -> dict:
         if path and os.path.exists(path):
             try:
                 with open(path, "r") as f:
-                    return yaml.safe_load(f) or {}
+                    return yaml.safe_load(f) or {}, os.path.abspath(path)
             except Exception as e:
                 print(f"[SLMTextToSQL] Warning: Failed to load config from {path}: {e}")
-    return {}
+    return {}, ""
 
 class SLMTextToSQL:
     """
@@ -60,7 +61,7 @@ class SLMTextToSQL:
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
             return os.path.abspath(model_path)
 
-        config = load_config()
+        config, config_file_path = load_config()
         model_config = config.get("models", {}).get("text_to_sql")
         if not model_config:
             raise ValueError("models.text_to_sql configuration is missing in config.yaml")
@@ -70,6 +71,8 @@ class SLMTextToSQL:
             raise ValueError("model path configuration is missing under models.text_to_sql in config.yaml")
             
         config_path = os.path.expanduser(config_path)
+        if not os.path.isabs(config_path) and config_file_path:
+            config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
         
         # Check if genai_config.json exists recursively in config_path
         for root, dirs, files in os.walk(config_path):
@@ -98,14 +101,20 @@ class SLMTextToSQL:
                 
         return config_path
 
-    def generate_sql(self, schema: str, question: str, temperature: float = 0.0, max_tokens: int = None) -> str:
+    def generate_sql(self, schema: str, question: str, temperature: float = 0.0, max_tokens: int = None, stream: bool = False):
         """
         Translates a natural language question into an SQL query based on the database schema.
         """
         if max_tokens is None:
             max_tokens = int(os.environ.get("SLM_TEXT_TO_SQL_MAX_TOKENS", 256))
             
-        system_prompt = "You are an expert SQL assistant."
+        if stream:
+            system_prompt = (
+                "You are an expert SQL assistant. You MUST first think step-by-step about the database joins, "
+                "column selections, or filters inside <thought>...</thought> tags, and then provide the final SQL query answer."
+            )
+        else:
+            system_prompt = "You are an expert SQL assistant."
         
         prompt = (
             "<|im_start|>system\n"
@@ -128,11 +137,21 @@ class SLMTextToSQL:
         generator = og.Generator(self.model, params)
         generator.append_tokens(input_tokens)
         
-        output_tokens = []
-        while not generator.is_done():
-            generator.generate_next_token()
-            new_tokens = generator.get_next_tokens()
-            if len(new_tokens) > 0:
-                output_tokens.append(int(new_tokens[0]))
-                
-        return self.tokenizer.decode(output_tokens).strip()
+        if stream:
+            def token_generator():
+                tokenizer_stream = self.tokenizer.create_stream()
+                while not generator.is_done():
+                    generator.generate_next_token()
+                    new_tokens = generator.get_next_tokens()
+                    if len(new_tokens) > 0:
+                        yield tokenizer_stream.decode(new_tokens[0])
+            return token_generator()
+        else:
+            output_tokens = []
+            while not generator.is_done():
+                generator.generate_next_token()
+                new_tokens = generator.get_next_tokens()
+                if len(new_tokens) > 0:
+                    output_tokens.append(int(new_tokens[0]))
+                    
+            return self.tokenizer.decode(output_tokens).strip()

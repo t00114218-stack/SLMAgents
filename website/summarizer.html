@@ -214,6 +214,7 @@ export SLM_SUMMARIZER_MAX_CORRECTION_LOOPS=1</code></pre>
           <tr><td>chunk_size</td><td>int | 4000</td><td>Character length threshold for Map-Reduce. Texts longer than this are auto-chunked. Decrease to 1000 for very constrained RAM.</td></tr>
           <tr><td>temperature</td><td>float | 0.0</td><td>0.0 = deterministic (fastest, most accurate). Use 0.5–0.8 for creative summaries.</td></tr>
           <tr><td>max_correction_loops</td><td>int | 0</td><td>Evaluator-corrector iterations. 0 = disabled (fastest). 1 = one evaluate+correct pass. Also settable via <span class="env-tag">SLM_SUMMARIZER_MAX_CORRECTION_LOOPS</span>.</td></tr>
+          <tr><td>stream</td><td>bool | False</td><td>If True, enables Claude-style token streaming. The model will stream its thinking process inside <code>&lt;thought&gt;...&lt;/thought&gt;</code> tags first, followed by the final summary. Returns a Python generator (bypasses evaluator loops).</td></tr>
         </tbody>
       </table>
 
