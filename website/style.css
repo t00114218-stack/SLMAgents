@@ -913,3 +913,219 @@ footer {
 .dropdown:hover .dropdown-trigger svg {
   transform: rotate(180deg);
 }
+
+/* Sidebar Layout */
+.layout-container {
+  display: flex;
+  min-height: calc(100vh - 72px);
+  position: relative;
+}
+
+.sidebar {
+  width: 280px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--card-border);
+  padding: 2rem 1.25rem;
+  overflow-y: auto;
+  height: calc(100vh - 72px);
+  position: sticky;
+  top: 72px;
+  flex-shrink: 0;
+  z-index: 99;
+  transition: transform var(--transition-normal);
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 2rem 24px;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Sidebar Nav Groups */
+.sidebar-group {
+  margin-bottom: 2rem;
+}
+
+.sidebar-group-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+.sidebar-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sidebar-item {
+  width: 100%;
+}
+
+.sidebar-item a, 
+.sidebar-item button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  border-radius: 8px;
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-family: var(--font-sans);
+}
+
+.sidebar-item a:hover, 
+.sidebar-item button:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+}
+
+.sidebar-item.active a, 
+.sidebar-item.active button {
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--accent-purple);
+  font-weight: 600;
+}
+
+/* Mobile Sidebar Toggle Button */
+.sidebar-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Modal for Upcoming Agent Details */
+.agent-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(7, 10, 19, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.agent-modal.open {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  position: relative;
+  animation: modal-slide-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modal-slide-in {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.8rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body ul {
+  padding-left: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.modal-body li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+/* Responsive Rules for Layout */
+@media (max-width: 968px) {
+  .layout-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 72px;
+    height: calc(100vh - 72px);
+    transform: translateX(-100%);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .sidebar-toggle {
+    display: flex;
+  }
+  
+  .main-content {
+    padding: 1.5rem 16px;
+  }
+}
