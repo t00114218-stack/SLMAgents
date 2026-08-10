@@ -52,7 +52,8 @@ def run_fine_tuning(
     max_seq_length=512,
     run_training=False,
     merge_after_training=False,
-    no_quant=False
+    no_quant=False,
+    max_samples=None
 ):
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
@@ -139,6 +140,11 @@ def run_fine_tuning(
 
     # Apply the formatting function to the dataset
     dataset = raw_dataset.map(format_example, remove_columns=raw_dataset.column_names)
+
+    # Cap dataset samples if requested
+    if max_samples is not None:
+        print(f"Capping dataset size to {max_samples} samples (original: {len(dataset)})...")
+        dataset = dataset.select(range(min(max_samples, len(dataset))))
 
     print("\nFormatted Dataset Example (first entry):")
     print(dataset[0]["text"])
@@ -250,6 +256,7 @@ if __name__ == "__main__":
     parser.add_argument("--model-id", type=str, default="Qwen/Qwen2.5-Coder-1.5B-Instruct", help="Hugging Face base model ID.")
     parser.add_argument("--dataset", type=str, default="trl-lab/SQaLe-text-to-SQL", help="Hugging Face dataset name.")
     parser.add_argument("--no-quant", action="store_true", help="Disable 4-bit quantization on GPU (use full bfloat16 instead).")
+    parser.add_argument("--max-samples", type=int, default=None, help="Maximum number of dataset samples to use (prevents disk space or RAM overflow).")
     
     args = parser.parse_args()
     
@@ -263,5 +270,6 @@ if __name__ == "__main__":
         batch_size=args.batch_size,
         run_training=args.train,
         merge_after_training=args.merge,
-        no_quant=args.no_quant
+        no_quant=args.no_quant,
+        max_samples=args.max_samples
     )
