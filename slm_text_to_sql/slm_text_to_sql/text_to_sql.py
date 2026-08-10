@@ -32,17 +32,25 @@ class SLMTextToSQL:
     A CPU-optimized Text-to-SQL translation agent powered by a local Small Language Model (SLM)
     running via ONNX Runtime GenAI.
     """
-    def __init__(self, model_path=None, cache_dir=None, n_ctx=2048, n_threads=4):
+    def __init__(self, model_path=None, cache_dir=None, n_ctx=None, n_threads=None):
         if og is None:
             raise ImportError(
                 "onnxruntime-genai is not installed. Please install it using: "
                 "pip install onnxruntime-genai"
             )
             
+        n_threads = n_threads or int(os.environ.get("SLM_TEXT_TO_SQL_N_THREADS", 4))
+        n_ctx     = n_ctx     or int(os.environ.get("SLM_TEXT_TO_SQL_N_CTX", 2048))
+        cache_dir = cache_dir or os.environ.get("SLM_TEXT_TO_SQL_CACHE_DIR")
+
+        # Wire thread count to ONNX Runtime (must be set before model load)
+        os.environ["OMP_NUM_THREADS"] = str(n_threads)
+        os.environ["MKL_NUM_THREADS"] = str(n_threads)
+
         self.model_path = self._resolve_model_path(model_path, cache_dir)
         self.n_ctx = n_ctx
         
-        print(f"[SLMTextToSQL] Loading ONNX model from: {self.model_path}...")
+        print(f"[SLMTextToSQL] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
         self.model = og.Model(self.model_path)
         self.tokenizer = og.Tokenizer(self.model)
 
@@ -90,10 +98,13 @@ class SLMTextToSQL:
                 
         return config_path
 
-    def generate_sql(self, schema: str, question: str, temperature: float = 0.0, max_tokens: int = 256) -> str:
+    def generate_sql(self, schema: str, question: str, temperature: float = 0.0, max_tokens: int = None) -> str:
         """
         Translates a natural language question into an SQL query based on the database schema.
         """
+        if max_tokens is None:
+            max_tokens = int(os.environ.get("SLM_TEXT_TO_SQL_MAX_TOKENS", 256))
+            
         system_prompt = "You are an expert SQL assistant."
         
         prompt = (

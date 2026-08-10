@@ -50,20 +50,37 @@
   <!-- Header -->
   <header>
     <div class="container nav-container">
-      <a href="#" class="logo">
-        <div class="logo-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
-        </div>
-        <span>SLM Agents</span>
-      </a>
+        </button>
+        <a href="index.html" class="logo">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span>SLM Agents</span>
+        </a>
+      </div>
       <nav>
         <ul>
-          <li><a href="#frameworks">Frameworks</a></li>
-          <li><a href="orchestrator.html">Orchestrator Docs</a></li>
-          <li><a href="rag.html">RAG Docs</a></li>
-          <li><a href="summarizer.html">Summarizer Docs</a></li>
+          <li><a href="index.html">Home</a></li>
+          <li class="dropdown">
+            <a class="dropdown-trigger">
+              Frameworks
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </a>
+            <div class="dropdown-content">
+              <a href="orchestrator.html">Orchestrator Docs</a>
+              <a href="rag.html">RAG Docs</a>
+              <a href="summarizer.html">Summarizer Docs</a>
+              <a href="sql.html">Text-to-SQL Docs</a>
+            </div>
+          </li>
+          <li><a href="#upcoming">Roadmap</a></li>
           <li><a href="https://github.com/t00114218-stack/SLMAgents" class="btn-github-nav" target="_blank">
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
@@ -75,8 +92,21 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
+  <div class="layout-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Active Libraries</div>
+        <ul class="sidebar-list" id="sidebar-active-list"></ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Upcoming Ecosystem</div>
+        <ul class="sidebar-list" id="sidebar-upcoming-list"></ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <!-- Hero Section -->
+      <section class="hero">
     <div class="container">
       <div class="hero-badge">
         <span>⚡ 100% CPU-Based Frameworks</span>
@@ -143,355 +173,78 @@
     </div>
   </section>
 
-  <!-- Frameworks Detail Section -->
   <section class="frameworks-section" id="frameworks">
     <div class="container">
       <div class="section-header">
         <h2 class="section-title">Open Source Local AI Frameworks for Python</h2>
         <p class="section-subtitle">A collection of modular libraries designed to perform specialized agentic tasks using small models.</p>
       </div>
-
-      <div class="framework-grid">
+      <div class="framework-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
         <!-- Orchestrator Card -->
-        <div class="framework-card">
-          <div class="framework-info">
-            <div>
-              <div class="framework-meta">
-                <span class="badge-cpu">CPU Only</span>
-                <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.2</span>
-              </div>
-              <h3 class="framework-title">SLM Orchestrator: Offline LLM Routing on CPU</h3>
-              <p class="framework-description">
-                A lightweight, local semantic router powered by a 1.5B ONNX Small Language Model. Automatically routes user queries to specialized sub-agents with robust JSON constraints.
-              </p>
-              <ul class="feature-list">
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Structured Routing Output:</strong> Constrains response structure to exact agent schemas.</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Agentic Tool Use:</strong> Pass custom tools (like Vector DB search) for autonomous execution before routing.</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Highly Configurable:</strong> Set custom thread counts and context limits optimized for CPU.</span>
-                </li>
-              </ul>
+        <div class="framework-card" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.2</span>
             </div>
-            <div class="framework-actions">
-              <a href="orchestrator.html" class="btn btn-primary">Full Docs</a>
-              <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_orchestrator" class="btn btn-secondary" target="_blank">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
-                </svg>
-                GitHub Repo
-              </a>
-            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Orchestrator</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              A lightweight, local semantic router. Dynamically maps user queries to specialized sub-agents with JSON constraints and ReAct tool use.
+            </p>
           </div>
-
-          <!-- Code Snippet -->
-          <div class="code-panel">
-            <div class="code-header">
-              <div class="code-dots">
-                <div class="code-dot"></div>
-                <div class="code-dot"></div>
-                <div class="code-dot"></div>
-              </div>
-              <div class="code-title">Orchestrator Setup</div>
-            </div>
-            <div class="code-tabs">
-              <button class="code-tab-btn active" onclick="switchTab(this, 'orchestrator-install')">Install</button>
-              <button class="code-tab-btn" onclick="switchTab(this, 'orchestrator-quickstart')">Quick Start</button>
-            </div>
-            <div id="orchestrator-install" class="code-content">
-              <pre><code><span class="comment"># Install via pip</span>
-pip install slm-orchestrator
-
-<span class="comment"># Note: Requires onnxruntime-genai and huggingface-hub</span>
-<span class="comment"># Installs pre-compiled wheel files for CPU execution</span></code></pre>
-            </div>
-            <div id="orchestrator-quickstart" class="code-content" style="display: none;">
-              <pre><code><span class="keyword">from</span> slm_orchestrator <span class="keyword">import</span> SLMOrchestrator
-
-<span class="comment"># Initialize router (runs locally on CPU via ONNX)</span>
-orchestrator = <span class="function">SLMOrchestrator</span>()
-
-<span class="comment"># Define agents to route to</span>
-agents = [
-    {<span class="string">"name"</span>: <span class="string">"Billing"</span>, <span class="string">"description"</span>: <span class="string">"Payments"</span>},
-    {<span class="string">"name"</span>: <span class="string">"Support"</span>, <span class="string">"description"</span>: <span class="string">"Tech bugs"</span>}
-]
-
-<span class="comment"># Classify with JSON post-processing constraint</span>
-selected = orchestrator.<span class="function">route</span>(
-    agents=agents,
-    question=<span class="string">"Invoices and payment help"</span>
-)
-<span class="function">print</span>(selected) <span class="comment"># Output: Billing</span></code></pre>
-            </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="orchestrator.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
           </div>
         </div>
 
         <!-- RAG Card -->
-        <div class="framework-card rag">
-          <div class="framework-info">
-            <div>
-              <div class="framework-meta">
-                <span class="badge-cpu">CPU Only</span>
-                <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.2</span>
-              </div>
-              <h3 class="framework-title">SLM RAG: Local Retrieval-Augmented Generation</h3>
-              <p class="framework-description">
-                A local Retrieval-Augmented Generation library built around a 1.5B model. Provides privacy-first context querying using highly optimized ONNX Runtime pipelines.
-              </p>
-              <ul class="feature-list">
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Strict Guidelines:</strong> Integrates system-level instruction filters directly into Qwen templates.</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Agentic Tool Use:</strong> Let the RAG agent autonomously fetch missing context before answering.</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Local Execution:</strong> Fully self-contained pipeline utilizing quantized Qwen ONNX weights.</span>
-                </li>
-              </ul>
+        <div class="framework-card rag" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.2</span>
             </div>
-            <div class="framework-actions">
-              <a href="rag.html" class="btn btn-primary">Full Docs</a>
-              <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_rag" class="btn btn-secondary" target="_blank">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
-                </svg>
-                GitHub Repo
-              </a>
-            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM RAG</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Local Retrieval-Augmented Generation library. Answers user questions offline using secure, CPU-optimized ONNX models and custom tools.
+            </p>
           </div>
-
-          <!-- Code Snippet -->
-          <div class="code-panel">
-            <div class="code-header">
-              <div class="code-dots">
-                <div class="code-dot"></div>
-                <div class="code-dot"></div>
-                <div class="code-dot"></div>
-              </div>
-              <div class="code-title">RAG Setup</div>
-            </div>
-            <div class="code-tabs">
-              <button class="code-tab-btn active" onclick="switchTab(this, 'rag-install')">Install</button>
-              <button class="code-tab-btn" onclick="switchTab(this, 'rag-quickstart')">Quick Start</button>
-            </div>
-            <div id="rag-install" class="code-content">
-              <pre><code><span class="comment"># Install via pip</span>
-pip install slm-rag
-
-<span class="comment"># Note: Requires onnxruntime-genai and huggingface-hub</span>
-<span class="comment"># Shares the same cached model to save local disk storage</span></code></pre>
-            </div>
-            <div id="rag-quickstart" class="code-content" style="display: none;">
-              <pre><code><span class="keyword">from</span> slm_rag <span class="keyword">import</span> SLMRag
-
-# Init engine (downloads/caches 1.5B Qwen ONNX)
-rag = <span class="function">SLMRag</span>()
-
-# Define context chunks
-chunks = [
-    <span class="string">"NebulaCorp was founded in 2024 by Dr. Helena."</span>,
-    <span class="string">"Their flagship product is AegisShield."</span>
-]
-
-# Run local query with pirate guidelines
-answer = rag.<span class="function">answer</span>(
-    chunks=chunks,
-    question=<span class="string">"What is their flagship product?"</span>,
-    instruction=<span class="string">"Answer like a 17th-century pirate."</span>
-)
-<span class="function">print</span>(answer)
-# Output: Ahoy! AegisShield be their flagship!</code></pre>
-            </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="rag.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
           </div>
         </div>
 
         <!-- Summarizer Card -->
-        <div class="framework-card summarizer">
-          <div class="framework-info">
-            <div>
-              <div class="framework-meta">
-                <span class="badge-cpu">CPU Only</span>
-                <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.2</span>
-              </div>
-              <h3 class="framework-title">SLM Summarizer: Text Summarization without GPU</h3>
-              <p class="framework-description">
-                A local text summarization agent powered by a 1.5B ONNX Small Language Model. Automatically condenses documents using single-pass or Map-Reduce methods on standard CPUs.
-              </p>
-              <ul class="feature-list">
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Map-Reduce Support:</strong> Chunk and summarize large local text files without exceeding memory limits.</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Evaluator-Corrector Loop:</strong> Automatically self-reflects, critiques, and corrects its own summaries.</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Format Constraints:</strong> Choose between bullet points, paragraphs, or concise TL;DR outputs.</span>
-                </li>
-              </ul>
+        <div class="framework-card summarizer" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.2</span>
             </div>
-            <div class="framework-actions">
-              <a href="summarizer.html" class="btn btn-primary">Full Docs</a>
-              <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_summarizer" class="btn btn-secondary" target="_blank">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
-                </svg>
-                GitHub Repo
-              </a>
-            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Summarizer</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Local CPU text summarizer agent. Supports Map-Reduce for large documents and an evaluator-corrector reflection loop.
+            </p>
           </div>
-
-          <!-- Code Snippet -->
-          <div class="code-panel">
-            <div class="code-header">
-              <div class="code-dots">
-                <div class="code-dot"></div>
-                <div class="code-dot"></div>
-                <div class="code-dot"></div>
-              </div>
-              <div class="code-title">Summarizer Setup</div>
-            </div>
-            <div class="code-tabs">
-              <button class="code-tab-btn active" onclick="switchTab(this, 'summarizer-install')">Install</button>
-              <button class="code-tab-btn" onclick="switchTab(this, 'summarizer-quickstart')">Quick Start</button>
-            </div>
-            <div id="summarizer-install" class="code-content">
-              <pre><code><span class="comment"># Install via pip</span>
-pip install slm-summarizer
-
-<span class="comment"># Note: Requires onnxruntime-genai and huggingface-hub</span>
-<span class="comment"># Shares the same cached model to save local disk storage</span></code></pre>
-            </div>
-            <div id="summarizer-quickstart" class="code-content" style="display: none;">
-              <pre><code><span class="keyword">from</span> slm_summarizer <span class="keyword">import</span> SLMSummarizer
-
-# Init engine (downloads/caches 1.5B Qwen ONNX)
-summarizer = <span class="function">SLMSummarizer</span>()
-
-text = <span class="string">"SpaceX successfully launched its Falcon 9 rocket on Friday..."</span>
-
-# Summarize locally with format constraints
-summary = summarizer.<span class="function">summarize</span>(
-    text=text,
-    format=<span class="string">"bullet_points"</span>,
-    instruction=<span class="string">"Focus on launch metrics."</span>
-)
-<span class="function">print</span>(summary)</code></pre>
-            </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="summarizer.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
           </div>
         </div>
 
         <!-- Text-to-SQL Card -->
-        <div class="framework-card sql">
-          <div class="framework-info">
-            <div>
-              <div class="framework-meta">
-                <span class="badge-cpu">CPU Only</span>
-                <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
-              </div>
-              <h3 class="framework-title">SLM Text-to-SQL: Database Queries using Local AI</h3>
-              <p class="framework-description">
-                A CPU-optimized Text-to-SQL translation agent powered by a 1.5B ONNX Small Language Model. Includes native QLoRA adapters training workflows for GPU/TPU.
-              </p>
-              <ul class="feature-list">
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Database-to-SQL Mapping:</strong> Translates natural queries into precise SQL statements based on table schemas.</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Hugging Face Integration:</strong> Uses Qwen chat templates directly for prompt tokenization and schema mapping.</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                  </svg>
-                  <span><strong>Built-in QLoRA Trainer:</strong> Complete training, validation, and adapter-merging scripts for fine-tuning.</span>
-                </li>
-              </ul>
+        <div class="framework-card sql" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
             </div>
-            <div class="framework-actions">
-              <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_text_to_sql" class="btn btn-secondary" target="_blank">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
-                </svg>
-                GitHub Repo
-              </a>
-            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Text-to-SQL</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Translate natural language questions into database queries locally. Includes QLoRA adapter training workflows.
+            </p>
           </div>
-
-          <!-- Code Panel -->
-          <div class="code-panel">
-            <div class="code-header">
-              <div class="code-dots">
-                <div class="code-dot"></div>
-                <div class="code-dot"></div>
-                <div class="code-dot"></div>
-              </div>
-              <div class="code-title">Text-to-SQL Setup</div>
-            </div>
-            <div class="code-tabs">
-              <button class="code-tab-btn active" onclick="switchTab(this, 'sql-install')">Install</button>
-              <button class="code-tab-btn" onclick="switchTab(this, 'sql-quickstart')">Quick Start</button>
-            </div>
-            <div id="sql-install" class="code-content">
-              <pre><code><span class="comment"># Install via pip</span>
-pip install slm-text-to-sql
-
-<span class="comment"># Note: Requires onnxruntime-genai and huggingface-hub</span>
-<span class="comment"># Shares the same cached model to save local disk storage</span></code></pre>
-            </div>
-            <div id="sql-quickstart" class="code-content" style="display: none;">
-              <pre><code><span class="keyword">from</span> slm_text_to_sql <span class="keyword">import</span> SLMTextToSQL
-
-# Init engine (downloads/caches 1.5B Qwen ONNX)
-agent = <span class="function">SLMTextToSQL</span>()
-
-schema = <span class="string">"CREATE TABLE employees (id INT, salary INT);"</span>
-
-# Generate SQL locally on CPU
-query = agent.<span class="function">generate_sql</span>(
-    schema=schema,
-    question=<span class="string">"Average salary?"</span>
-)
-<span class="function">print</span>(query)
-# Output: SELECT AVG(salary) FROM employees;</code></pre>
-            </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="sql.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
           </div>
         </div>
       </div>
@@ -787,7 +540,21 @@ query = agent.<span class="function">generate_sql</span>(
         </div>
       </div>
     </div>
-  </footer>
+    </main>
+  </div>
+
+  <!-- Agent Details Modal -->
+  <div class="agent-modal" id="agent-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title" style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">Agent Name</h3>
+        <button class="modal-close" onclick="closeAgentModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

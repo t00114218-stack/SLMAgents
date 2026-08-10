@@ -85,20 +85,37 @@
 
   <header>
     <div class="container nav-container">
-      <a href="index.html" class="logo">
-        <div class="logo-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
-        </div>
-        <span>SLM Agents</span>
-      </a>
+        </button>
+        <a href="index.html" class="logo">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span>SLM Agents</span>
+        </a>
+      </div>
       <nav>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="orchestrator.html" style="color:var(--primary)">Orchestrator</a></li>
-          <li><a href="rag.html">RAG</a></li>
-          <li><a href="summarizer.html">Summarizer</a></li>
+          <li class="dropdown">
+            <a class="dropdown-trigger">
+              Frameworks
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </a>
+            <div class="dropdown-content">
+              <a href="orchestrator.html">Orchestrator Docs</a>
+              <a href="rag.html">RAG Docs</a>
+              <a href="summarizer.html">Summarizer Docs</a>
+              <a href="sql.html">Text-to-SQL Docs</a>
+            </div>
+          </li>
+          <li><a href="index.html#upcoming">Roadmap</a></li>
           <li><a href="https://github.com/t00114218-stack/SLMAgents" class="btn-github-nav" target="_blank">
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
             GitHub
@@ -107,6 +124,20 @@
       </nav>
     </div>
   </header>
+
+  <div class="layout-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Active Libraries</div>
+        <ul class="sidebar-list" id="sidebar-active-list"></ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Upcoming Ecosystem</div>
+        <ul class="sidebar-list" id="sidebar-upcoming-list"></ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
 
   <section class="doc-hero">
     <div class="container">
@@ -407,7 +438,22 @@ result = orchestrator.<span class="function">route</span>(agents=agents, questio
         </div>
       </div>
     </div>
-  </footer>
+    </main>
+  </div>
+
+  <!-- Agent Details Modal -->
+  <div class="agent-modal" id="agent-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title" style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">Agent Name</h3>
+        <button class="modal-close" onclick="closeAgentModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
