@@ -59,7 +59,7 @@ def run_fine_tuning(
     from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
     from datasets import load_dataset
     from peft import LoraConfig, PeftModel
-    from trl import SFTTrainer
+    from trl import SFTTrainer, SFTConfig
     from transformers import TrainingArguments
 
     # Load tokenizer
@@ -118,7 +118,7 @@ def run_fine_tuning(
     print(f"2. Loading and formatting dataset '{dataset_name}'...")
     
     def format_example(example):
-        schema = example["db_schema"]
+        schema = example["schema"]
         question = example["question"]
         sql_query = example["query"]
 
@@ -129,14 +129,8 @@ def run_fine_tuning(
         ]
         return {"text": tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)}
 
-    # Correct way to load a dataset from the Hugging Face Hub when it's a specific file type within a repository
-    raw_dataset = load_dataset(
-        "parquet",
-        data_files={
-            "train": f"hf://datasets/{dataset_name}/data/train.parquet",
-        },
-        split="train"
-    )
+    # Load dataset directly from Hugging Face Hub
+    raw_dataset = load_dataset(dataset_name, split="train")
 
     # Apply the formatting function to the dataset
     dataset = raw_dataset.map(format_example, remove_columns=raw_dataset.column_names)
@@ -179,7 +173,7 @@ def run_fine_tuning(
         dataset = dataset.select(range(min(2, len(dataset))))
 
     # Training arguments
-    training_arguments = TrainingArguments(
+    training_arguments = SFTConfig(
         output_dir=output_dir,
         per_device_train_batch_size=batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
@@ -194,6 +188,8 @@ def run_fine_tuning(
         optim=optim_val,
         lr_scheduler_type="cosine",
         warmup_ratio=0.03,
+        dataset_text_field="text",
+        max_length=max_seq_length,
     )
 
     # Initialize SFTTrainer
@@ -201,9 +197,7 @@ def run_fine_tuning(
         model=model,
         train_dataset=dataset,
         peft_config=lora_config,
-        dataset_text_field="text",
-        max_seq_length=max_seq_length,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         args=training_arguments,
     )
 
@@ -254,7 +248,7 @@ if __name__ == "__main__":
     parser.add_argument("--epochs", type=int, default=3, help="Number of training epochs.")
     parser.add_argument("--batch-size", type=int, default=1, help="Training batch size per device.")
     parser.add_argument("--model-id", type=str, default="Qwen/Qwen2.5-Coder-1.5B-Instruct", help="Hugging Face base model ID.")
-    parser.add_argument("--dataset", type=str, default="trl-lab/SQaLe-text-to-SQL", help="Hugging Face dataset name.")
+    parser.add_argument("--dataset", type=str, default="trl-lab/SQaLe-text-to-SQL-dataset", help="Hugging Face dataset name.")
     parser.add_argument("--no-quant", action="store_true", help="Disable 4-bit quantization on GPU (use full bfloat16 instead).")
     parser.add_argument("--max-samples", type=int, default=None, help="Maximum number of dataset samples to use (prevents disk space or RAM overflow).")
     
