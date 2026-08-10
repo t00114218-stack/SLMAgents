@@ -8,6 +8,7 @@
 
 - **Local & Private**: Runs completely on CPU / RAM. Zero API keys, zero network latency, and complete data privacy.
 - **Robust Semantic Routing**: Utilizes dynamic few-shot prompt mapping and multi-stage fallback parser to map inputs to agents.
+- **Agentic Tool Use**: Optional ReAct loop support. Pass custom tools (like Vector DB search) for the orchestrator to execute autonomously before routing.
 - **Resource Efficient**: Uses a 1.5B parameter model (`Qwen 2.5 1.5B Instruct ONNX`), consuming only **1.5 GB to 2.0 GB of RAM** and taking **1.1 GB of disk storage**.
 - **Highly Configurable**: Perfect for multi-agent systems, intent classification, and fallback routing.
 
@@ -69,6 +70,18 @@ SLMOrchestrator(
     cache_dir=None,    # Where to download the model
     n_ctx=2048,        # Context size (default: 2048)
     n_threads=4        # CPU threads (default: 4)
+)
+```
+
+### Routing API
+
+```python
+orchestrator.route(
+    agents: list,                 # List of agent dicts with 'name' and 'description'
+    question: str,                # User query / question
+    tools: list = None,           # Optional JSON schemas for tool use
+    tool_executor: callable = None, # Optional callback function to execute tools
+    max_iterations: int = 5       # Max ReAct tool execution loops
 )
 ```
 

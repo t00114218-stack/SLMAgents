@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SLM RAG docs: Answer questions from your own documents locally on CPU. Vector DB integration, tool use, performance tuning, accuracy and security guide.">
+  <meta name="keywords" content="SLM RAG, retrieval augmented generation, local AI, CPU inference, ONNX Runtime, Vector DB, ChromaDB, Python, pip, offline RAG, no GPU, privacy">
+  <meta name="author" content="SLM Agents Community">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.slmagents.ai/rag">
+  <meta property="og:title" content="SLM RAG | Local CPU Retrieval-Augmented Generation — SLM Agents">
+  <meta property="og:description" content="Answer questions from your own documents locally on CPU. Full docs: Vector DB integration, agentic tool use, performance tuning, accuracy & security.">
+  <meta property="og:image" content="https://www.slmagents.ai/assets/preview.png">
+  <meta property="og:site_name" content="SLM Agents">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://www.slmagents.ai/rag">
+  <meta name="twitter:title" content="SLM RAG | Local CPU Retrieval-Augmented Generation — SLM Agents">
+  <meta name="twitter:description" content="Answer questions from your own documents locally on CPU. Full docs: Vector DB integration, agentic tool use, performance tuning, accuracy & security.">
+  <meta name="twitter:image" content="https://www.slmagents.ai/assets/preview.png">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.slmagents.ai/rag">
+
+  <title>SLM RAG | Documentation</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "SLM RAG — Local CPU Retrieval-Augmented Generation Documentation",
+    "description": "Complete documentation for SLM RAG: a local CPU-powered RAG library. Covers installation, configuration, Vector DB integration, agentic tool use, performance tuning, accuracy, and security.",
+    "url": "https://www.slmagents.ai/rag",
+    "author": { "@type": "Organization", "name": "SLM Agents Community" },
+    "publisher": { "@type": "Organization", "name": "SLM Agents", "url": "https://www.slmagents.ai" },
+    "dateModified": "2026-08-10",
+    "keywords": "RAG, retrieval augmented generation, Vector DB, CPU inference, ONNX, local AI, Python, pip install"
+  }
+  </script>
+
+  <style>
+    .doc-hero { padding: 5rem 0 3rem; text-align: center; }
+    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+    .doc-hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.1rem; }
+    .doc-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
+    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
+    .doc-nav a:hover { border-color: var(--primary); color: var(--primary); }
+    .doc-section { padding: 3rem 0; border-top: 1px solid var(--border); }
+    .doc-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--primary); }
+    .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
+    .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
+    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; }
+    .param-table th { text-align: left; padding: 0.6rem 1rem; background: rgba(255,255,255,0.04); color: var(--text-primary); border-bottom: 1px solid var(--border); }
+    .param-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+    .param-table tr:last-child td { border-bottom: none; }
+    .param-table td:first-child { font-family: 'Courier New', monospace; color: var(--primary); font-size: 0.85rem; white-space: nowrap; }
+    .param-table td:nth-child(2) { color: #a78bfa; font-size: 0.82rem; white-space: nowrap; }
+    .param-table td:last-child { color: var(--text-secondary); }
+    .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
+    .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .tip-box strong { color: #4ade80; }
+    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #fbbf24; }
+    .security-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .security-box strong { color: #f87171; }
+    .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .perf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .perf-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+    .perf-card .metric { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+    .perf-card .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .flow-steps { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+    .flow-step { display: flex; gap: 1rem; align-items: flex-start; padding: 0.75rem; background: rgba(255,255,255,0.02); border-radius: 8px; border-left: 3px solid var(--primary); }
+    .flow-step-num { font-weight: 700; color: var(--primary); min-width: 24px; }
+    .flow-step p { margin: 0; color: var(--text-secondary); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+
+  <header>
+    <div class="container nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span>SLM Agents</span>
+      </a>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="orchestrator.html">Orchestrator</a></li>
+          <li><a href="rag.html" style="color:var(--primary)">RAG</a></li>
+          <li><a href="summarizer.html">Summarizer</a></li>
+          <li><a href="https://github.com/t00114218-stack/SLMAgents" class="btn-github-nav" target="_blank">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
+            GitHub
+          </a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="doc-hero">
+    <div class="container">
+      <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <span>SLM RAG</span></div>
+      <div class="hero-badge"><span>📚 Retrieval-Augmented Generation</span></div>
+      <h1>SLM RAG</h1>
+      <p>Answer questions from your own documents — locally, privately, with zero API costs. Supports custom tools, agentic Vector DB retrieval, and strict instruction adherence.</p>
+      <div class="hero-ctas">
+        <a href="#install" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_rag" class="btn btn-secondary" target="_blank">GitHub Repo</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <nav class="doc-nav">
+      <a href="#install">Installation</a>
+      <a href="#config">Configuration</a>
+      <a href="#env-vars">Env Variables</a>
+      <a href="#performance">Performance</a>
+      <a href="#tool-use">Tool Use & Vector DB</a>
+      <a href="#accuracy">Accuracy</a>
+      <a href="#security">Security</a>
+    </nav>
+
+    <!-- INSTALL -->
+    <section class="doc-section" id="install">
+      <h2>Installation</h2>
+      <div class="code-panel" style="max-width:100%">
+        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
+        <div class="code-content" style="display:block;padding:1.5rem">
+          <pre><code><span class="comment"># Install from PyPI</span>
+pip install slm-rag
+
+<span class="comment"># Configure via env vars (optional)</span>
+export SLM_RAG_N_THREADS=8
+export SLM_RAG_MAX_TOKENS=128</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section class="doc-section" id="config">
+      <h2>Configuration API</h2>
+      <h3>Constructor Parameters</h3>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>model_path</td><td>str | None</td><td>Explicit path to an ONNX model directory. If omitted, auto-resolves from config.yaml or downloads the model.</td></tr>
+          <tr><td>cache_dir</td><td>str | None</td><td>Directory to download/cache the model. Also settable via <span class="env-tag">SLM_RAG_CACHE_DIR</span>.</td></tr>
+          <tr><td>n_ctx</td><td>int | 8192</td><td>Context window size in tokens. Increase if you're providing very large chunks. Also settable via <span class="env-tag">SLM_RAG_N_CTX</span>.</td></tr>
+          <tr><td>n_threads</td><td>int | 4</td><td>CPU threads for inference. Set to your physical core count for best speed. Also settable via <span class="env-tag">SLM_RAG_N_THREADS</span>.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>answer() Parameters</h3>
+      <table class="param-table">
+        <thead><tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>chunks</td><td>list[str]</td><td><strong>Required.</strong> List of document text strings to use as context. Can be empty — the model will then say it doesn't know.</td></tr>
+          <tr><td>question</td><td>str</td><td><strong>Required.</strong> The user's question to answer.</td></tr>
+          <tr><td>instruction</td><td>str</td><td><strong>Required.</strong> A style or constraint directive the model must follow. E.g., "Answer concisely in JSON", "Use a formal tone".</td></tr>
+          <tr><td>temperature</td><td>float | 0.0</td><td>Generation randomness. 0.0 = deterministic (fastest, most accurate for factual tasks). Use 0.5–0.8 for creative writing.</td></tr>
+          <tr><td>max_tokens</td><td>int | 256</td><td>Max tokens to generate. Lower = faster. Also settable via <span class="env-tag">SLM_RAG_MAX_TOKENS</span>.</td></tr>
+          <tr><td>tools</td><td>list | None</td><td>Optional list of JSON-schema tool definitions for agentic Vector DB retrieval. See Tool Use section.</td></tr>
+          <tr><td>tool_executor</td><td>callable | None</td><td>Optional <code>fn(tool_name: str, args: dict) -> str</code>. Called when the model needs additional context via a tool.</td></tr>
+          <tr><td>max_iterations</td><td>int | 5</td><td>Maximum ReAct tool-calling loops. Prevents runaway inference. Set to 1 or 2 for most use cases.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-panel" style="max-width:100%">
+        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Quick Start</div></div>
+        <div class="code-content" style="display:block;padding:1.5rem">
+          <pre><code><span class="keyword">from</span> slm_rag <span class="keyword">import</span> SLMRag
+
+rag = <span class="function">SLMRag</span>(n_threads=8)
+
+chunks = [
+    <span class="string">"NebulaCorp was founded in 2024 by Dr. Helena Vance."</span>,
+    <span class="string">"Their flagship product is AegisShield, used in financial organizations."</span>,
+]
+
+answer = rag.<span class="function">answer</span>(
+    chunks=chunks,
+    question=<span class="string">"Who founded NebulaCorp?"</span>,
+    instruction=<span class="string">"Answer in one sentence."</span>,
+    max_tokens=128,
+)
+<span class="function">print</span>(answer)</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENV VARS -->
+    <section class="doc-section" id="env-vars">
+      <h2>Environment Variables</h2>
+      <table class="param-table">
+        <thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>SLM_RAG_N_THREADS</td><td>4</td><td>CPU thread count for ONNX inference.</td></tr>
+          <tr><td>SLM_RAG_N_CTX</td><td>8192</td><td>Context window size in tokens.</td></tr>
+          <tr><td>SLM_RAG_CACHE_DIR</td><td>~/.cache/slm_summarizer</td><td>Model download and cache directory.</td></tr>
+          <tr><td>SLM_RAG_MAX_TOKENS</td><td>256</td><td>Default max tokens for answer generation.</td></tr>
+          <tr><td>SLM_RAG_CONFIG</td><td>(auto)</td><td>Explicit path to a config.yaml file.</td></tr>
+        </tbody>
+      </table>
+      <div class="code-panel" style="max-width:100%">
+        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Setting env vars</div></div>
+        <div class="code-content" style="display:block;padding:1.5rem">
+          <pre><code><span class="comment"># Add to ~/.zshrc or ~/.bashrc for system-wide defaults</span>
+export SLM_RAG_N_THREADS=8
+export SLM_RAG_MAX_TOKENS=128
+
+<span class="comment"># Or set just for one run</span>
+SLM_RAG_N_THREADS=8 SLM_RAG_MAX_TOKENS=128 python my_rag_app.py
+
+<span class="comment"># Or in a .env file (with python-dotenv)</span>
+<span class="comment"># SLM_RAG_N_THREADS=8</span>
+<span class="comment"># SLM_RAG_MAX_TOKENS=128</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE -->
+    <section class="doc-section" id="performance">
+      <h2>Performance Tuning</h2>
+      <div class="perf-grid">
+        <div class="perf-card"><div class="metric">5–10s</div><div class="label">Short answer (128 tokens, 8 threads)</div></div>
+        <div class="perf-card"><div class="metric">8 GB</div><div class="label">Minimum recommended system RAM</div></div>
+        <div class="perf-card"><div class="metric">8192</div><div class="label">Max context window (tokens)</div></div>
+        <div class="perf-card"><div class="metric">~50%</div><div class="label">Speed gain from max n_threads</div></div>
+      </div>
+
+      <h3>1. Reduce max_tokens</h3>
+      <p>The single biggest lever for latency. Token generation is the bottleneck — every token takes ~65–200ms on CPU. Keep <code>max_tokens</code> as low as your use case permits.</p>
+      <ul>
+        <li><strong>128</strong> — Short factual answers (~5–10s)</li>
+        <li><strong>256</strong> — Detailed answers (~10–20s) — default</li>
+        <li><strong>512</strong> — Long explanations (~20–40s)</li>
+      </ul>
+
+      <h3>2. Use temperature=0.0 (Greedy Decoding)</h3>
+      <p>Setting <code>temperature=0.0</code> uses greedy (deterministic) decoding which is slightly faster and significantly more consistent for factual RAG tasks.</p>
+
+      <h3>3. Keep Chunks Short and Pre-processed</h3>
+      <p>Each chunk is injected into the prompt as input tokens. Fewer input tokens = faster first token time. Aim for chunks under 500 characters. Remove boilerplate, headers, and formatting before passing to the RAG.</p>
+
+      <h3>4. Limit the Number of Chunks</h3>
+      <p>Passing 20 chunks is 20× the prompt overhead compared to 1 chunk. Pre-filter with a lightweight embedding similarity search to pass only the top 3–5 most relevant chunks.</p>
+
+      <div class="code-panel" style="max-width:100%">
+        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Optimal usage pattern</div></div>
+        <div class="code-content" style="display:block;padding:1.5rem">
+          <pre><code><span class="comment"># Pre-filter with a fast embedding model first</span>
+top_chunks = embedding_search(all_docs, question, top_k=3)
+
+<span class="comment"># Then pass only the top-k to the SLM RAG</span>
+answer = rag.<span class="function">answer</span>(
+    chunks=top_chunks,
+    question=question,
+    instruction=<span class="string">"Answer concisely."</span>,
+    max_tokens=128,         <span class="comment"># keep small</span>
+    temperature=0.0,        <span class="comment"># greedy</span>
+)</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOOL USE -->
+    <section class="doc-section" id="tool-use">
+      <h2>Agentic Tool Use &amp; Vector DB Integration</h2>
+      <p>When provided chunks are insufficient, the model can autonomously call tools (like a Vector DB search) to retrieve additional context before answering.</p>
+
+      <h3>How the ReAct Loop Works</h3>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="flow-step-num">1</div><p>You call <code>rag.answer(chunks, question, tools=tools, tool_executor=fn)</code></p></div>
+        <div class="flow-step"><div class="flow-step-num">2</div><p>The model reads the chunks. If it can answer, it outputs text directly → done in one pass.</p></div>
+        <div class="flow-step"><div class="flow-step-num">3</div><p>If chunks are insufficient, the model outputs a JSON tool call: <code>{"tool_call": "search_vector_db", "args": {"query": "..."}}</code></p></div>
+        <div class="flow-step"><div class="flow-step-num">4</div><p>Your <code>tool_executor</code> function runs, queries your actual Vector DB, and returns a result string.</p></div>
+        <div class="flow-step"><div class="flow-step-num">5</div><p>The result is injected back into the context and the model generates a final answer.</p></div>
+      </div>
+
+      <h3>Full Vector DB Integration Example (ChromaDB)</h3>
+      <div class="code-panel" style="max-width:100%">
+        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">ChromaDB + SLM RAG</div></div>
+        <div class="code-content" style="display:block;padding:1.5rem">
+          <pre><code><span class="keyword">import</span> chromadb
+<span class="keyword">from</span> slm_rag <span class="keyword">import</span> SLMRag
+
+<span class="comment"># Setup ChromaDB</span>
+client = chromadb.<span class="function">PersistentClient</span>(path=<span class="string">"./my_db"</span>)
+collection = client.<span class="function">get_collection</span>(<span class="string">"my_docs"</span>)
+
+<span class="comment"># Define tool schema</span>
+tools = [{
+    <span class="string">"name"</span>: <span class="string">"search_vector_db"</span>,
+    <span class="string">"description"</span>: <span class="string">"Searches the document database for relevant passages."</span>,
+    <span class="string">"parameters"</span>: {
+        <span class="string">"type"</span>: <span class="string">"object"</span>,
+        <span class="string">"properties"</span>: {<span class="string">"query"</span>: {<span class="string">"type"</span>: <span class="string">"string"</span>}}
+    }
+}]
+
+<span class="comment"># Define executor that calls ChromaDB</span>
+<span class="keyword">def</span> <span class="function">executor</span>(tool_name: str, args: dict) -> str:
+    <span class="keyword">if</span> tool_name == <span class="string">"search_vector_db"</span>:
+        results = collection.<span class="function">query</span>(
+            query_texts=[args[<span class="string">"query"</span>]],
+            n_results=3
+        )
+        docs = results[<span class="string">"documents"</span>][0]
+        <span class="keyword">return</span> <span class="string">"\n"</span>.<span class="function">join</span>(docs)[:1000]  <span class="comment"># truncate for safety</span>
+    <span class="keyword">return</span> <span class="string">"Tool not found."</span>
+
+<span class="comment"># Run RAG with agentic retrieval</span>
+rag = <span class="function">SLMRag</span>(n_threads=8)
+answer = rag.<span class="function">answer</span>(
+    chunks=[],  <span class="comment"># start with no chunks — model will use tool</span>
+    question=<span class="string">"What is NebulaCorp's revenue model?"</span>,
+    instruction=<span class="string">"Answer formally in 2-3 sentences."</span>,
+    tools=tools,
+    tool_executor=executor,
+    max_iterations=2,
+)
+<span class="function">print</span>(answer)</code></pre>
+        </div>
+      </div>
+
+      <div class="tip-box"><strong>💡 Tip:</strong> You can pass initial chunks <em>and</em> tools. If the initial chunks are sufficient, the model will answer directly (fast). If not, it will call the tool to get more. This is the most efficient pattern.</div>
+    </section>
+
+    <!-- ACCURACY -->
+    <section class="doc-section" id="accuracy">
+      <h2>Improving Accuracy</h2>
+
+      <h3>1. Write Precise Instructions</h3>
+      <p>The <code>instruction</code> parameter is your primary accuracy lever. Be specific — vague instructions produce vague answers.</p>
+      <table class="param-table">
+        <thead><tr><th>Vague (❌)</th><th>Precise (✅)</th></tr></thead>
+        <tbody>
+          <tr><td>"Be helpful"</td><td>"Answer in exactly 1-2 sentences. Only state facts present in the provided chunks."</td></tr>
+          <tr><td>"Answer in JSON"</td><td>"Return a valid JSON object with keys: 'answer' (string), 'confidence' ('high'|'medium'|'low')."</td></tr>
+          <tr><td>"Be concise"</td><td>"Answer in under 50 words. Never mention information not in the provided context."</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2. Chunk Quality Over Quantity</h3>
+      <p>3 high-quality, relevant chunks are far better than 20 random chunks. Pre-filter with semantic embedding search before passing to SLM RAG.</p>
+
+      <h3>3. Use temperature=0.0 for Factual Tasks</h3>
+      <p>Greedy decoding at <code>temperature=0.0</code> produces the most consistent, factual answers. Only use higher temperatures for creative or stylistic tasks.</p>
+
+      <h3>4. Tell the Model to Refuse if Unsure</h3>
+      <div class="code-panel" style="max-width:100%">
+        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Anti-hallucination instruction</div></div>
+        <div class="code-content" style="display:block;padding:1.25rem">
+          <pre><code>instruction = (
+    <span class="string">"Answer ONLY from the provided context. "</span>
+    <span class="string">"If the answer is not in the context, respond with exactly: "</span>
+    <span class="string">"'I cannot find this information in the provided documents.'"</span>
+)</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECURITY -->
+    <section class="doc-section" id="security">
+      <h2>Security</h2>
+      <div class="security-box"><strong>🔒 Zero data egress:</strong> All inference runs on your CPU. No queries, documents, or answers are sent to any external server. Complete GDPR/HIPAA-friendly local deployment.</div>
+
+      <h3>Document Access Control</h3>
+      <p>SLM RAG does not enforce document access control — it answers from whatever chunks you provide. You are responsible for filtering chunks based on the user's permissions before passing them to <code>answer()</code>.</p>
+
+      <h3>Chunk Content Sanitization</h3>
+      <ul>
+        <li>Remove PII from chunks before indexing if you don't want the model to reveal it.</li>
+        <li>Truncate very large chunks to prevent context overflow: keep chunks under 2000 characters each.</li>
+        <li>Don't embed binary content (PDFs, images) directly — extract text first.</li>
+      </ul>
+
+      <h3>Prompt Injection in Questions</h3>
+      <div class="code-panel" style="max-width:100%">
+        <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Sanitize user input</div></div>
+        <div class="code-content" style="display:block;padding:1.25rem">
+          <pre><code><span class="keyword">def</span> <span class="function">sanitize</span>(text: str, max_len: int = 1000) -> str:
+    <span class="keyword">import</span> re
+    text = text[:max_len]
+    text = re.<span class="function">sub</span>(<span class="string">r'[\x00-\x1F\x7F]'</span>, <span class="string">''</span>, text)
+    <span class="keyword">return</span> text.strip()
+
+answer = rag.<span class="function">answer</span>(
+    chunks=chunks,
+    question=<span class="function">sanitize</span>(user_question),
+    instruction=<span class="function">sanitize</span>(user_instruction, max_len=200),
+)</code></pre>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 SLM Agents Community. Released under the MIT License.</p>
+        <div class="footer-socials">
+          <a href="https://github.com/t00114218-stack/SLMAgents" target="_blank">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

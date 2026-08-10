@@ -2,3 +2,10 @@ models:
   orchestrator:
     path: "~/.cache/slm_summarizer/qwen2.5-1.5b-onnx"
     repo_id: "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX"
+
+# Performance tuning
+# n_threads: Number of CPU threads for ONNX Runtime inference.
+#   Increase to match your physical core count for faster generation.
+#   Recommended: 4 (default), 8 (modern desktop), or nproc output.
+inference:
+  n_threads: 4

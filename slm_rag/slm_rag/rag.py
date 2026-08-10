@@ -34,19 +34,35 @@ class SLMRag:
     Small Language Model (SLM) running via ONNX Runtime GenAI.
     Answers user questions based on provided document chunks while strictly adhering
     to user instructions.
+
+    Configuration can be set via constructor arguments OR environment variables:
+      SLM_RAG_CACHE_DIR   — Override model download/cache directory
+      SLM_RAG_N_THREADS   — Number of CPU threads (default: 4)
+      SLM_RAG_N_CTX       — Context window size (default: 8192)
+      SLM_RAG_MAX_TOKENS  — Default max tokens per answer (default: 256)
+      SLM_RAG_CONFIG      — Path to a custom config.yaml file
     """
-    def __init__(self, model_path=None, cache_dir=None, n_ctx=8192, n_threads=4):
+    def __init__(self, model_path=None, cache_dir=None, n_ctx=None, n_threads=None):
         if og is None:
             raise ImportError(
                 "onnxruntime-genai is not installed. Please install it using: "
                 "pip install onnxruntime-genai"
             )
+
+        # Resolve parameters: constructor args > env vars > defaults
+        n_threads = n_threads or int(os.environ.get("SLM_RAG_N_THREADS", 4))
+        n_ctx     = n_ctx     or int(os.environ.get("SLM_RAG_N_CTX", 8192))
+        cache_dir = cache_dir or os.environ.get("SLM_RAG_CACHE_DIR")
+
+        # Wire thread count to ONNX Runtime (must be set before model load)
+        os.environ["OMP_NUM_THREADS"] = str(n_threads)
+        os.environ["MKL_NUM_THREADS"] = str(n_threads)
             
         # Resolve the ONNX model path
         self.model_path = self._resolve_model_path(model_path, cache_dir)
         self.n_ctx = n_ctx
         
-        print(f"[SLMRag] Loading ONNX model from: {self.model_path}...")
+        print(f"[SLMRag] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
         self.model = og.Model(self.model_path)
         self.tokenizer = og.Tokenizer(self.model)
             
@@ -99,10 +115,26 @@ class SLMRag:
                 
         return config_path
 
-    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = 512) -> str:
+    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5) -> str:
         """
         Synthesizes an answer based on document chunks, user question, and user instruction.
+        Supports tool execution (e.g., Vector DB lookups) to gather more context.
+
+        Args:
+            chunks:         List of document text strings to use as context.
+            question:       The user's question.
+            instruction:    Style or constraint the model must follow.
+            temperature:    Generation randomness. 0.0 = deterministic (fastest, most consistent).
+            max_tokens:     Max tokens to generate. Lower = faster. Env: SLM_RAG_MAX_TOKENS.
+            tools:          Optional list of tool JSON schemas for agentic retrieval.
+            tool_executor:  Optional callable(tool_name, args) -> str to execute tools.
+            max_iterations: Max ReAct tool-calling loops (prevents infinite loops).
         """
+        import json
+        # Resolve max_tokens: arg > env var > default
+        if max_tokens is None:
+            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 256))
+        
         # Format the text chunks for context
         formatted_chunks = ""
         for i, chunk in enumerate(chunks):
@@ -111,9 +143,17 @@ class SLMRag:
         # Build strict ChatML template prompt
         system_prompt = (
             "You are a precise and helpful assistant. Your task is to answer the user's question "
-            "based ONLY on the provided text chunks. If the chunks do not contain the answer, say "
+            "based ONLY on the provided text chunks and tool results. If they do not contain the answer, say "
             "so clearly. You must strictly adhere to the instruction provided by the user."
         )
+        
+        if tools and tool_executor:
+            system_prompt += (
+                f"\n\nAvailable Tools:\n{json.dumps(tools, indent=2)}\n"
+                "If you need more information (e.g., the provided chunks are insufficient), you can use a tool by outputting a JSON object with 'tool_call' and 'args' keys. Example:\n"
+                "{\"tool_call\": \"search_vector_db\", \"args\": {\"query\": \"something\"}}\n"
+                "If you have enough information, output your final answer directly as text (not JSON)."
+            )
         
         prompt = (
             "<|im_start|>system\n"
@@ -123,28 +163,59 @@ class SLMRag:
             f"Text Chunks:\n{formatted_chunks}"
             f"User Question: {question}\n\n"
             f"Remember, you must adhere to the instruction: {instruction}<|im_end|>\n"
-            "<|im_start|>assistant\n"
         )
         
-        input_tokens = self.tokenizer.encode(prompt)
-        
-        params = og.GeneratorParams(self.model)
-        
-        total_max_length = len(input_tokens) + max_tokens
-        search_options = {
-            "max_length": total_max_length,
-            "temperature": temperature
-        }
-        params.set_search_options(**search_options)
-        
-        generator = og.Generator(self.model, params)
-        generator.append_tokens(input_tokens)
-        
-        output_tokens = []
-        while not generator.is_done():
-            generator.generate_next_token()
-            new_tokens = generator.get_next_tokens()
-            if len(new_tokens) > 0:
-                output_tokens.append(int(new_tokens[0]))
+        for iteration in range(max_iterations):
+            current_prompt = prompt + "<|im_start|>assistant\n"
+            input_tokens = self.tokenizer.encode(current_prompt)
+            
+            params = og.GeneratorParams(self.model)
+            
+            total_max_length = len(input_tokens) + max_tokens
+            search_options = {
+                "max_length": total_max_length,
+                "temperature": temperature
+            }
+            params.set_search_options(**search_options)
+            
+            generator = og.Generator(self.model, params)
+            generator.append_tokens(input_tokens)
+            
+            output_tokens = []
+            while not generator.is_done():
+                generator.generate_next_token()
+                new_tokens = generator.get_next_tokens()
+                if len(new_tokens) > 0:
+                    output_tokens.append(int(new_tokens[0]))
+                    
+            response_text = self.tokenizer.decode(output_tokens).strip()
+            
+            is_tool_call = False
+            if tools and tool_executor:
+                try:
+                    cleaned = response_text.replace("```json", "").replace("```", "").strip()
+                    if cleaned.startswith("{") and cleaned.endswith("}"):
+                        data = json.loads(cleaned)
+                        if "tool_call" in data:
+                            is_tool_call = True
+                            tool_name = data["tool_call"]
+                            args = data.get("args", {})
+                            
+                            try:
+                                result = tool_executor(tool_name, args)
+                            except Exception as e:
+                                result = f"Error executing tool {tool_name}: {e}"
+                                
+                            prompt += (
+                                "<|im_start|>assistant\n"
+                                f"{response_text}<|im_end|>\n"
+                                "<|im_start|>tool\n"
+                                f"{result}<|im_end|>\n"
+                            )
+                except Exception:
+                    pass
+            
+            if not is_tool_call:
+                return response_text
                 
-        return self.tokenizer.decode(output_tokens).strip()
+        return response_text

@@ -39,19 +39,34 @@ class SLMOrchestrator:
     A configurable semantic routing orchestrator powered by a local Small Language Model (SLM)
     running via ONNX Runtime GenAI.
     Routes user queries dynamically to custom lists of agents with robust JSON parsing constraints.
+
+    Configuration can be set via constructor arguments OR environment variables:
+      SLM_ORCHESTRATOR_CACHE_DIR  — Override model download/cache directory
+      SLM_ORCHESTRATOR_N_THREADS  — Number of CPU threads (default: 4)
+      SLM_ORCHESTRATOR_N_CTX      — Context window size (default: 2048)
+      SLM_ORCHESTRATOR_CONFIG     — Path to a custom config.yaml file
     """
-    def __init__(self, model_path=None, cache_dir=None, n_ctx=2048, n_threads=4):
+    def __init__(self, model_path=None, cache_dir=None, n_ctx=None, n_threads=None):
         if og is None:
             raise ImportError(
                 "onnxruntime-genai is not installed. Please install it using: "
                 "pip install onnxruntime-genai"
             )
+
+        # Resolve parameters: constructor args > env vars > defaults
+        n_threads = n_threads or int(os.environ.get("SLM_ORCHESTRATOR_N_THREADS", 4))
+        n_ctx     = n_ctx     or int(os.environ.get("SLM_ORCHESTRATOR_N_CTX", 2048))
+        cache_dir = cache_dir or os.environ.get("SLM_ORCHESTRATOR_CACHE_DIR")
+
+        # Wire thread count to ONNX Runtime (must be set before model load)
+        os.environ["OMP_NUM_THREADS"] = str(n_threads)
+        os.environ["MKL_NUM_THREADS"] = str(n_threads)
             
         # Resolve the ONNX model path
         self.model_path = self._resolve_model_path(model_path, cache_dir)
         self.n_ctx = n_ctx
         
-        print(f"[SLMOrchestrator] Loading ONNX model from: {self.model_path}...")
+        print(f"[SLMOrchestrator] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
         self.model = og.Model(self.model_path)
         self.tokenizer = og.Tokenizer(self.model)
             
@@ -104,9 +119,10 @@ class SLMOrchestrator:
                 
         return config_path
 
-    def route(self, agents: list, question: str) -> str:
+    def route(self, agents: list, question: str, tools: list = None, tool_executor: callable = None, max_iterations: int = 5) -> str:
         """
         Routes a user query to one of the custom agents based on their name and description.
+        Supports tool execution (e.g., Vector DB lookups) to gather more context before routing.
         Returns the exact name of the selected agent.
         """
         if not agents:
@@ -139,7 +155,17 @@ class SLMOrchestrator:
         system_prompt = (
             "You are a precise routing assistant. You are given a JSON containing agent details and descriptions, and a user query.\n"
             "Based on the agent descriptions, choose the most appropriate agent to handle the user's query.\n"
-            "Output your decision as a valid JSON with the key 'selected_agent'. The value must be EXACTLY one of the available agent names.\n\n"
+        )
+        
+        if tools and tool_executor:
+            system_prompt += (
+                f"\nAvailable Tools:\n{json.dumps(tools, indent=2)}\n"
+                "If you need more information to decide, you can use a tool by outputting a JSON object with 'tool_call' and 'args' keys. Example:\n"
+                "{\"tool_call\": \"search_vector_db\", \"args\": {\"query\": \"something\"}}\n"
+            )
+            
+        system_prompt += (
+            "Output your final routing decision as a valid JSON with the key 'selected_agent'. The value must be EXACTLY one of the available agent names.\n\n"
             f"Agent Details JSON:\n{json.dumps(agents_json, indent=2)}\n\n"
             "Examples:\n"
             "User: Write a python script called hello.py that prints hello world\n"
@@ -148,7 +174,7 @@ class SLMOrchestrator:
             f"Assistant: {{\"selected_agent\": \"{rag_agent}\"}}\n"
             "User: What is git?\n"
             f"Assistant: {{\"selected_agent\": \"{general_agent}\"}}\n\n"
-            "Output format:\n"
+            "Output format for final routing decision:\n"
             "{\"selected_agent\": \"<agent_name>\"}"
         )
         
@@ -157,86 +183,114 @@ class SLMOrchestrator:
             f"{system_prompt}<|im_end|>\n"
             "<|im_start|>user\n"
             f"User Query: {question}<|im_end|>\n"
-            "<|im_start|>assistant\n"
         )
         
-        input_tokens = self.tokenizer.encode(prompt)
-        
-        params = og.GeneratorParams(self.model)
-        
-        total_max_length = len(input_tokens) + 64
-        search_options = {
-            "max_length": total_max_length,
-            "temperature": 0.0 # Greedy decoding for exact semantic routing matching
-        }
-        params.set_search_options(**search_options)
-        
-        generator = og.Generator(self.model, params)
-        generator.append_tokens(input_tokens)
-        
-        output_tokens = []
-        while not generator.is_done():
-            generator.generate_next_token()
-            new_tokens = generator.get_next_tokens()
-            if len(new_tokens) > 0:
-                output_tokens.append(int(new_tokens[0]))
-                
-        response_text = self.tokenizer.decode(output_tokens).strip()
-        
-        # Robust post-processing to extract and map routing decision
-        # 1. Direct JSON parsing
-        try:
-            cleaned = response_text.replace("```json", "").replace("```", "").strip()
-            data = json.loads(cleaned)
-            selected = data.get("selected_agent")
-            if selected:
-                for name in agent_names:
-                    if name.lower() == selected.lower():
-                        return name
-        except Exception:
-            pass
+        for iteration in range(max_iterations):
+            current_prompt = prompt + "<|im_start|>assistant\n"
+            input_tokens = self.tokenizer.encode(current_prompt)
             
-        # 2. Regex fallback
-        import re
-        match = re.search(r'"selected_agent"\s*:\s*"([^"]+)"', response_text, re.IGNORECASE)
-        if match:
-            selected = match.group(1).strip()
-            for name in agent_names:
-                if name.lower() == selected.lower():
-                    return name
+            params = og.GeneratorParams(self.model)
+            
+            total_max_length = len(input_tokens) + 64  # routing JSON only needs ~20 tokens
+            search_options = {
+                "max_length": total_max_length,
+                "temperature": 0.0 # Greedy decoding for exact semantic routing matching
+            }
+            params.set_search_options(**search_options)
+            
+            generator = og.Generator(self.model, params)
+            generator.append_tokens(input_tokens)
+            
+            output_tokens = []
+            while not generator.is_done():
+                generator.generate_next_token()
+                new_tokens = generator.get_next_tokens()
+                if len(new_tokens) > 0:
+                    output_tokens.append(int(new_tokens[0]))
                     
-        # 3. Direct substring search fallback on agent names
-        for name in agent_names:
-            if name.lower() in response_text.lower():
-                return name
+            response_text = self.tokenizer.decode(output_tokens).strip()
+            
+            is_tool_call = False
+            if tools and tool_executor:
+                try:
+                    cleaned = response_text.replace("```json", "").replace("```", "").strip()
+                    data = json.loads(cleaned)
+                    if "tool_call" in data:
+                        is_tool_call = True
+                        tool_name = data["tool_call"]
+                        args = data.get("args", {})
+                        
+                        try:
+                            result = tool_executor(tool_name, args)
+                        except Exception as e:
+                            result = f"Error executing tool {tool_name}: {e}"
+                            
+                        prompt += (
+                            "<|im_start|>assistant\n"
+                            f"{response_text}<|im_end|>\n"
+                            "<|im_start|>tool\n"
+                            f"{result}<|im_end|>\n"
+                        )
+                except Exception:
+                    pass
+            
+            if not is_tool_call:
+                # Robust post-processing to extract and map routing decision
+                # 1. Direct JSON parsing
+                try:
+                    cleaned = response_text.replace("```json", "").replace("```", "").strip()
+                    data = json.loads(cleaned)
+                    selected = data.get("selected_agent")
+                    if selected:
+                        for name in agent_names:
+                            if name.lower() == selected.lower():
+                                return name
+                except Exception:
+                    pass
+                    
+                # 2. Regex fallback
+                import re
+                match = re.search(r'"selected_agent"\s*:\s*"([^"]+)"', response_text, re.IGNORECASE)
+                if match:
+                    selected = match.group(1).strip()
+                    for name in agent_names:
+                        if name.lower() == selected.lower():
+                            return name
+                            
+                # 3. Direct substring search fallback on agent names
+                for name in agent_names:
+                    if name.lower() in response_text.lower():
+                        return name
+                        
+                # 4. Semantic mapping for common short outputs (like coding, rag, general)
+                selected_to_use = selected if 'selected' in locals() and selected else response_text
+                selected_lower = selected_to_use.lower()
                 
-        # 4. Semantic mapping for common short outputs (like coding, rag, general)
-        selected_to_use = selected if selected else response_text
-        selected_lower = selected_to_use.lower()
-        
-        # 4a. Coding category
-        if any(w in selected_lower for w in ["coding", "code", "write", "develop", "program"]):
-            for agent in agents:
-                desc = agent.get("description", "").lower()
-                name = agent["name"].lower()
-                if any(w in desc or w in name for w in ["code", "write", "develop", "program", "coding", "technical"]):
-                    return agent["name"]
-                    
-        # 4b. RAG/Search category
-        if any(w in selected_lower for w in ["rag", "search", "retrieval", "find", "read"]):
-            for agent in agents:
-                desc = agent.get("description", "").lower()
-                name = agent["name"].lower()
-                if any(w in desc or w in name for w in ["search", "retriev", "read", "scan", "find", "info"]):
-                    return agent["name"]
-                    
-        # 4c. General support category
-        if any(w in selected_lower for w in ["general", "support", "chat", "explain"]):
-            for agent in agents:
-                desc = agent.get("description", "").lower()
-                name = agent["name"].lower()
-                if any(w in desc or w in name for w in ["general", "support", "chat", "explain", "greet"]):
-                    return agent["name"]
-                    
-        # 5. Safe default fallback
+                # 4a. Coding category
+                if any(w in selected_lower for w in ["coding", "code", "write", "develop", "program"]):
+                    for agent in agents:
+                        desc = agent.get("description", "").lower()
+                        name = agent["name"].lower()
+                        if any(w in desc or w in name for w in ["code", "write", "develop", "program", "coding", "technical"]):
+                            return agent["name"]
+                            
+                # 4b. RAG/Search category
+                if any(w in selected_lower for w in ["rag", "search", "retrieval", "find", "read"]):
+                    for agent in agents:
+                        desc = agent.get("description", "").lower()
+                        name = agent["name"].lower()
+                        if any(w in desc or w in name for w in ["search", "retriev", "read", "scan", "find", "info"]):
+                            return agent["name"]
+                            
+                # 4c. General support category
+                if any(w in selected_lower for w in ["general", "support", "chat", "explain"]):
+                    for agent in agents:
+                        desc = agent.get("description", "").lower()
+                        name = agent["name"].lower()
+                        if any(w in desc or w in name for w in ["general", "support", "chat", "explain", "greet"]):
+                            return agent["name"]
+                            
+                # 5. Safe default fallback
+                return agent_names[0]
+                
         return agent_names[0]

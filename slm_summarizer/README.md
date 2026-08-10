@@ -11,6 +11,7 @@ For longer documents that exceed typical memory/compute profiles, it dynamically
 - **Local & Private**: Runs completely on CPU / RAM. Zero API keys, zero network latency, and complete data privacy.
 - **Resource Efficient**: Uses a 1.5B parameter model (`qwen2.5-1.5b-instruct-q4_k_m.gguf`), consuming only **1.0 GB to 1.5 GB of RAM**.
 - **Map-Reduce for Large Text**: Automatically chunks long documents, summarizes each chunk independently, and recursively merges them into a final high-quality summary.
+- **Evaluator-Corrector Loop**: Self-reflects on its own summaries. If a summary misses key points or fails the instruction, it automatically critiques and corrects itself.
 - **Multiple Output Formats**: Supports bullet points (`bullet_points`), cohesive paragraphs (`paragraph`), and single-sentence TL;DRs (`tldr`).
 
 ---
@@ -91,6 +92,7 @@ summarizer.summarize(
     max_length: int = 256,     # Max token count for the final output
     instruction: str = "",     # Custom style or focus constraints
     chunk_size: int = 4000,    # Max character size per chunk for Map-Reduce chunking
-    temperature: float = 0.0   # 0.0 for deterministic summaries
+    temperature: float = 0.0,  # 0.0 for deterministic summaries
+    max_correction_loops: int = 1 # Max evaluator-corrector iterations (default 1)
 )
 ```

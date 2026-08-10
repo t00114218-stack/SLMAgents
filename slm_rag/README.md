@@ -9,6 +9,7 @@
 - **Local & Private**: Runs completely on CPU / RAM. Zero API keys, zero network latency, and complete data privacy.
 - **Resource Efficient**: Uses a 1.5B parameter model (`Qwen 2.5 1.5B Instruct ONNX`), consuming only **1.5 GB to 2.0 GB of RAM** and taking **1.1 GB of disk storage**.
 - **Instruction Adherence**: Formats instructions directly into the system template to enforce constraints (e.g. style, safety, or formatting constraints like JSON).
+- **Agentic Tool Use**: Optional ReAct loop support. Pass custom tools (like Vector DB search) for the RAG agent to autonomously fetch missing context before answering.
 
 ---
 
@@ -83,6 +84,9 @@ rag.answer(
     question: str,          # User query / question
     instruction: str,       # Instruction or constraint the model must follow
     temperature: float = 0.0, # Generation temperature (0.0 for deterministic answers)
-    max_tokens: int = 512    # Maximum token limit for the response
+    max_tokens: int = 512,    # Maximum token limit for the response
+    tools: list = None,       # Optional JSON schemas for tool use
+    tool_executor: callable = None, # Optional callback function to execute tools
+    max_iterations: int = 5   # Max ReAct tool execution loops
 )
 ```
