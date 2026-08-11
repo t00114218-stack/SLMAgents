@@ -1,36 +1,35 @@
 /* Premium CSS Stylesheet for SLM Agents Developer Portal */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --bg-primary: #070a13;
-  --bg-secondary: #0c101f;
-  --bg-tertiary: #12182b;
-  --card-bg: rgba(18, 24, 43, 0.7);
-  --card-border: rgba(255, 255, 255, 0.07);
+  --bg-primary: #030712;
+  --bg-secondary: #0b0f19;
+  --bg-tertiary: #111827;
+  --card-bg: rgba(17, 24, 39, 0.55);
+  --card-border: rgba(255, 255, 255, 0.05);
   
   --accent-purple: #8b5cf6;
-  --accent-purple-glow: rgba(139, 92, 246, 0.35);
+  --accent-purple-glow: rgba(139, 92, 246, 0.25);
   --accent-cyan: #06b6d4;
-  --accent-cyan-glow: rgba(6, 182, 212, 0.35);
+  --accent-cyan-glow: rgba(6, 182, 212, 0.25);
   
   --accent-emerald: #10b981;
-  --accent-emerald-glow: rgba(16, 185, 129, 0.35);
+  --accent-emerald-glow: rgba(16, 185, 129, 0.25);
 
-  
-  --text-primary: #f3f4f6;
+  --text-primary: #f9fafb;
   --text-secondary: #9ca3af;
   --text-muted: #6b7280;
   
-  --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+  --gradient-primary: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
   --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  --gradient-text: linear-gradient(135deg, #f3f4f6 30%, #a855f7 100%);
-  --gradient-glow: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.15));
+  --gradient-text: linear-gradient(135deg, #f9fafb 20%, #a855f7 100%);
+  --gradient-glow: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
   
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: 'Fira Code', 'Courier New', Courier, monospace;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   --border-radius: 12px;
 }
 
@@ -54,6 +53,21 @@ body {
   overflow-x: hidden;
   position: relative;
   min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center top;
+  z-index: -2;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at 50% 35%, black 65%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 35%, black 65%, transparent 100%);
 }
 
 /* Custom Scrollbar */
@@ -108,10 +122,10 @@ body {
 header {
   position: sticky;
   top: 0;
-  background: rgba(7, 10, 19, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--card-border);
+  background: rgba(3, 7, 18, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   z-index: 100;
   transition: var(--transition-normal);
 }
@@ -351,42 +365,35 @@ nav a:hover {
 }
 
 .framework-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
   padding: 40px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   position: relative;
   overflow: hidden;
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  transition: var(--transition-normal);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .framework-card:hover {
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 30px 60px -15px rgba(139, 92, 246, 0.15), 0 0 0 1px rgba(139, 92, 246, 0.08);
 }
 
-.framework-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--accent-purple);
+.framework-card.rag:hover {
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: 0 30px 60px -15px rgba(6, 182, 212, 0.15), 0 0 0 1px rgba(6, 182, 212, 0.08);
 }
 
-.framework-card.rag::before {
-  background: var(--accent-cyan);
-}
-
-.framework-card.summarizer::before {
-  background: var(--accent-emerald);
+.framework-card.summarizer:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 30px 60px -15px rgba(16, 185, 129, 0.15), 0 0 0 1px rgba(16, 185, 129, 0.08);
 }
 
 
@@ -468,8 +475,8 @@ nav a:hover {
 
 /* Code Snippet Container */
 .code-panel {
-  background: #090c15;
-  border: 1px solid var(--card-border);
+  background: rgba(17, 24, 39, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 12px;
   overflow: hidden;
   display: flex;
@@ -477,9 +484,9 @@ nav a:hover {
 }
 
 .code-header {
-  background: #0f1322;
+  background: rgba(255, 255, 255, 0.015);
   padding: 12px 18px;
-  border-bottom: 1px solid var(--card-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -509,8 +516,8 @@ nav a:hover {
 
 .code-tabs {
   display: flex;
-  background: #0d111d;
-  border-bottom: 1px solid var(--card-border);
+  background: rgba(3, 7, 18, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .code-tab-btn {
@@ -522,12 +529,12 @@ nav a:hover {
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
-  border-right: 1px solid var(--card-border);
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
   font-family: var(--font-sans);
 }
 
 .code-tab-btn.active {
-  background: #090c15;
+  background: rgba(17, 24, 39, 0.4);
   color: var(--text-primary);
   border-bottom: 1px solid transparent;
 }
@@ -923,8 +930,10 @@ footer {
 
 .sidebar {
   width: 280px;
-  background: var(--bg-secondary);
-  border-right: 1px solid var(--card-border);
+  background: rgba(3, 7, 18, 0.4);
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   padding: 2rem 1.25rem;
   overflow-y: auto;
   height: calc(100vh - 72px);
