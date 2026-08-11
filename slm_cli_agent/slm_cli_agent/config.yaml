@@ -1,0 +1,8 @@
+models:
+  cli_agent:
+    path: "../../models/qwen2.5-1.5b-onnx"
+    repo_id: "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX"
+
+inference:
+  n_threads: 4
+  n_ctx: 2048

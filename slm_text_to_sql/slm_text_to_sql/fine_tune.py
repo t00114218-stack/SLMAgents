@@ -48,7 +48,7 @@ def run_fine_tuning(
     epochs=3,
     batch_size=1,
     gradient_accumulation_steps=4,
-    learning_rate=2e-4,
+    learning_rate=5e-5,
     max_seq_length=512,
     run_training=False,
     merge_after_training=False,
@@ -117,14 +117,27 @@ def run_fine_tuning(
 
     print(f"2. Loading and formatting dataset '{dataset_name}'...")
     
+    SYSTEM_PROMPT = (
+        "You are an expert SQL query writer. Follow these rules strictly:\n"
+        "1. Only use tables and columns that exist in the provided schema.\n"
+        "2. Use correlated subqueries or JOINs when a value must be derived from another table.\n"
+        "3. Use IS NULL / IS NOT NULL for null checks, never != '' or = ''.\n"
+        "4. Use the correct aggregation: SUM for totals, COUNT for row counts, AVG for averages.\n"
+        "5. Write syntactically valid SQL: WHERE must come after all JOINs.\n"
+        "6. Return only the SQL query with no explanation or markdown."
+    )
+
     def format_example(example):
         schema = example["schema"]
         question = example["question"]
         sql_query = example["query"]
 
+        # Strip trailing semicolons inconsistency — normalise to no trailing whitespace
+        sql_query = sql_query.strip()
+
         messages = [
-            {"role": "system", "content": "You are an expert SQL assistant."},
-            {"role": "user", "content": f"Schema:\n{schema}\n\nQuestion: {question}"},
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": f"### Database Schema\n{schema}\n\n### Question\n{question}\n\n### SQL Query"},
             {"role": "assistant", "content": sql_query}
         ]
         return {"text": tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)}
@@ -146,8 +159,8 @@ def run_fine_tuning(
     print("3. Configuring LoRA and SFTTrainer...")
     
     lora_config = LoraConfig(
-        r=16,
-        lora_alpha=32,
+        r=64,
+        lora_alpha=128,
         target_modules=["q_proj", "v_proj", "k_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
         lora_dropout=0.05,
         bias="none",
@@ -180,16 +193,20 @@ def run_fine_tuning(
         learning_rate=learning_rate,
         num_train_epochs=epochs if max_steps_val == -1 else 1,
         max_steps=max_steps_val,
-        logging_steps=1,
-        save_steps=50,
+        logging_steps=10,
+        save_steps=100,
         save_total_limit=2,
         fp16=False,
         bf16=bf16_val,
         optim=optim_val,
         lr_scheduler_type="cosine",
-        warmup_ratio=0.03,
+        warmup_ratio=0.05,
+        weight_decay=0.01,
         dataset_text_field="text",
         max_length=max_seq_length,
+        # Pack short sequences together to fill the context window — improves throughput
+        # and reduces padding bias that causes the model to generate short/incomplete SQL.
+        packing=False,
     )
 
     # Initialize SFTTrainer

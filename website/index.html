@@ -78,6 +78,10 @@
               <a href="rag.html">RAG Docs</a>
               <a href="summarizer.html">Summarizer Docs</a>
               <a href="sql.html">Text-to-SQL Docs</a>
+              <a href="cli.html">CLI Agent Docs</a>
+              <a href="code_interpreter.html">Code Interpreter Docs</a>
+              <a href="git_copilot.html">Git Co-pilot Docs</a>
+              <a href="json_cleaner.html">JSON Cleaner Docs</a>
             </div>
           </li>
           <li><a href="#upcoming">Roadmap</a></li>
@@ -247,6 +251,74 @@
             <a href="sql.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
           </div>
         </div>
+
+        <!-- CLI Agent Card -->
+        <div class="framework-card cli" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM CLI Agent</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Lightweight shell execution and CLI automation companion. Translates queries to platform-specific scripts with sandbox safety.
+            </p>
+          </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="cli.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+          </div>
+        </div>
+
+        <!-- Code Interpreter Card -->
+        <div class="framework-card code-interpreter" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Code Interpreter</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Secure local Python execution sandbox. Iteratively runs code blocks on CPU with automated self-correction tracebacks.
+            </p>
+          </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="code_interpreter.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+          </div>
+        </div>
+
+        <!-- Git Co-pilot Card -->
+        <div class="framework-card git-copilot" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Git Co-pilot</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Commit generation helper. Automatically reviews branch updates and structures beautiful conventional commit messages locally.
+            </p>
+          </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="git_copilot.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+          </div>
+        </div>
+
+        <!-- JSON Cleaner Card -->
+        <div class="framework-card json-cleaner" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM JSON Cleaner</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Lightweight string sanitizer. Repairs broken brackets, missing keys, and compliance types to output valid structured JSON.
+            </p>
+          </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="json_cleaner.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -274,41 +346,6 @@
 
       <div class="upcoming-grid">
         <!-- Developer Tools Category -->
-        <div class="upcoming-card" data-category="dev">
-          <div class="badge-soon">In Development</div>
-          <div>
-            <span class="agent-cat-tag badge-dev">Developer Tools</span>
-            <h3>SLM Code Interpreter</h3>
-          </div>
-          <p>Safe local Python code execution sandbox. Write, refactor, and run snippets on CPU with custom GBNF grammar constraints to prevent harmful system calls.</p>
-        </div>
-
-        <div class="upcoming-card" data-category="dev">
-          <div class="badge-soon">Planning Phase</div>
-          <div>
-            <span class="agent-cat-tag badge-dev">Developer Tools</span>
-            <h3>SLM Git Co-pilot</h3>
-          </div>
-          <p>Auto-generate structured git commits, review branch diffs, and generate release documentation locally without pushing credentials or code off-device.</p>
-        </div>
-
-        <div class="upcoming-card" data-category="dev">
-          <div class="badge-soon">Planning Phase</div>
-          <div>
-            <span class="agent-cat-tag badge-dev">Developer Tools</span>
-            <h3>SLM CLI Agent</h3>
-          </div>
-          <p>Offline shell helper that translates natural language commands to safe, platform-specific shell scripts and explains CLI flags before execution.</p>
-        </div>
-
-        <div class="upcoming-card" data-category="dev">
-          <div class="badge-soon">In Development</div>
-          <div>
-            <span class="agent-cat-tag badge-dev">Developer Tools</span>
-            <h3>SLM JSON Cleaner</h3>
-          </div>
-          <p>Correction agent specialized in auto-fixing truncated, malformed, or dirty JSON outputs generated by smaller-parameter language models.</p>
-        </div>
 
         <div class="upcoming-card" data-category="dev">
           <div class="badge-soon">Planning Phase</div>

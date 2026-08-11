@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="slm_orchestrator",
-    version="0.1.2",
+    version="0.1.3",
     description="A configurable semantic routing orchestrator powered by a local Small Language Model (SLM)",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

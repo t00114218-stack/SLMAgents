@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SLM CLI Agent docs: Translate natural language requests into precise system shell commands locally on CPU. Full configuration, parameters, and safety guides.">
+  <meta name="keywords" content="SLM CLI Agent, shell automation, local AI, CPU inference, ONNX Runtime, Python, pip, offline execution, safety sandbox">
+  <meta name="author" content="SLM Agents Community">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.slmagents.ai/cli">
+  <meta property="og:title" content="SLM CLI Agent | Local CPU CLI Helper — SLM Agents">
+  <meta property="og:description" content="Translate natural language requests into precise system shell commands locally on CPU. Security sandbox, parameters, and quick start guides.">
+  <meta property="og:image" content="https://www.slmagents.ai/assets/preview.png">
+  <meta property="og:site_name" content="SLM Agents">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://www.slmagents.ai/cli">
+  <meta name="twitter:title" content="SLM CLI Agent | Local CPU CLI Helper — SLM Agents">
+  <meta name="twitter:description" content="Translate natural language requests into precise system shell commands locally on CPU. Security sandbox, parameters, and quick start guides.">
+  <meta name="twitter:image" content="https://www.slmagents.ai/assets/preview.png">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.slmagents.ai/cli">
+
+  <title>SLM CLI Agent | Documentation</title>
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "SLM CLI Agent — Local CPU CLI Generation Documentation",
+    "description": "Complete documentation for SLM CLI Agent: a local CPU-powered command line assistant. Covers installation, constructor parameters, and safety sandbox validations.",
+    "url": "https://www.slmagents.ai/cli",
+    "author": { "@type": "Organization", "name": "SLM Agents Community" },
+    "publisher": { "@type": "Organization", "name": "SLM Agents", "url": "https://www.slmagents.ai" },
+    "dateModified": "2026-08-11",
+    "keywords": "cli helper, command generation, shell automation, CPU inference, ONNX, safety sandbox"
+  }
+  </script>
+
+  <style>
+    .doc-hero { padding: 5rem 0 3rem; text-align: center; }
+    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+    .doc-hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.1rem; }
+    .doc-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
+    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
+    .doc-nav a:hover { border-color: var(--primary); color: var(--primary); }
+    .doc-section { padding: 3rem 0; border-top: 1px solid var(--border); }
+    .doc-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--primary); }
+    .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
+    .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
+    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; }
+    .param-table th { text-align: left; padding: 0.6rem 1rem; background: rgba(255,255,255,0.04); color: var(--text-primary); border-bottom: 1px solid var(--border); }
+    .param-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+    .param-table tr:last-child td { border-bottom: none; }
+    .param-table td:first-child { font-family: 'Courier New', monospace; color: var(--primary); font-size: 0.85rem; white-space: nowrap; }
+    .param-table td:nth-child(2) { color: #a78bfa; font-size: 0.82rem; white-space: nowrap; }
+    .param-table td:last-child { color: var(--text-secondary); }
+    .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
+    .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .tip-box strong { color: #4ade80; }
+    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #fbbf24; }
+    .security-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .security-box strong { color: #f87171; }
+    .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .perf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .perf-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+    .perf-card .metric { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+    .perf-card .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+  </style>
+</head>
+<body>
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+
+  <!-- NAVIGATION HEADER -->
+  <header>
+    <div class="container nav-container">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <a href="index.html" class="logo">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span>SLM Agents</span>
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li class="dropdown">
+            <a class="dropdown-trigger" style="color:var(--primary)">
+              Frameworks
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </a>
+            <div class="dropdown-content">
+              <a href="orchestrator.html">Orchestrator Docs</a>
+              <a href="rag.html">RAG Docs</a>
+              <a href="summarizer.html">Summarizer Docs</a>
+              <a href="sql.html">Text-to-SQL Docs</a>
+              <a href="cli.html">CLI Agent Docs</a>
+              <a href="code_interpreter.html">Code Interpreter Docs</a>
+              <a href="git_copilot.html">Git Co-pilot Docs</a>
+              <a href="json_cleaner.html">JSON Cleaner Docs</a>
+            </div>
+          </li>
+          <li><a href="index.html#upcoming">Roadmap</a></li>
+          <li><a href="https://github.com/t00114218-stack/SLMAgents" class="btn-github-nav" target="_blank">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
+            GitHub
+          </a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="layout-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Active Libraries</div>
+        <ul class="sidebar-list" id="sidebar-active-list"></ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Upcoming Ecosystem</div>
+        <ul class="sidebar-list" id="sidebar-upcoming-list"></ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="doc-hero">
+        <div class="container">
+          <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <span>SLM CLI Agent</span></div>
+          <div class="hero-badge"><span>⚡ CLI Execution Agent</span></div>
+          <h1>SLM CLI Agent</h1>
+          <p>Lightweight shell helper that translates natural language commands to safe, platform-specific shell scripts and executes them locally on CPU with built-in command security constraints.</p>
+          <div class="hero-ctas">
+            <a href="#install" class="btn btn-primary">Get Started</a>
+            <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_cli_agent" class="btn btn-secondary" target="_blank">GitHub Repo</a>
+          </div>
+        </div>
+      </section>
+
+      <div class="container">
+        <nav class="doc-nav">
+          <a href="#install">Installation</a>
+          <a href="#config">Configuration</a>
+          <a href="#execution">Safe Execution</a>
+          <a href="#streaming">Streaming</a>
+          <a href="#security">Security</a>
+        </nav>
+
+        <!-- INSTALLATION -->
+        <section class="doc-section" id="install">
+          <h2>Installation</h2>
+          <div class="code-panel" style="max-width:100%">
+            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
+            <div class="code-content" style="display:block;padding:1.5rem">
+              <pre><code><span class="comment"># Install in editable mode locally</span>
+pip install -e ./slm_cli_agent
+
+<span class="comment"># Set performance environment parameters</span>
+export SLM_CLI_AGENT_N_THREADS=4
+export SLM_CLI_AGENT_N_CTX=2048</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONFIGURATION -->
+        <section class="doc-section" id="config">
+          <h2>Configuration API</h2>
+          <h3>Constructor Parameters</h3>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>model_path</td><td>str | None</td><td>Explicit path to the ONNX model directory. Defaults to caching/sharing the main model in the monorepo.</td></tr>
+              <tr><td>cache_dir</td><td>str | None</td><td>HF model directory path. Also settable via <span class="env-tag">SLM_CLI_AGENT_CACHE_DIR</span>.</td></tr>
+              <tr><td>n_ctx</td><td>int | 2048</td><td>Context window size in tokens. Also settable via <span class="env-tag">SLM_CLI_AGENT_N_CTX</span>.</td></tr>
+              <tr><td>n_threads</td><td>int | 4</td><td>CPU threads for ONNX Runtime. Also settable via <span class="env-tag">SLM_CLI_AGENT_N_THREADS</span>.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>generate_command() Parameters</h3>
+          <table class="param-table">
+            <thead><tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td>query</td><td>str</td><td><strong>Required.</strong> Natural language description of what you want to achieve.</td></tr>
+              <tr><td>stream</td><td>bool | False</td><td>If True, enables token streaming of the model's explanation and thinking process. Returns a Python generator.</td></tr>
+            </tbody>
+          </table>
+
+          <div class="code-panel" style="max-width:100%">
+            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Python Quick Start</div></div>
+            <div class="code-content" style="display:block;padding:1.5rem">
+              <pre><code><span class="keyword">from</span> slm_cli_agent.cli_agent <span class="keyword">import</span> SLMCLIAgent
+
+agent = <span class="function">SLMCLIAgent</span>()
+
+<span class="comment"># Generate command from query</span>
+cmd, explanation = agent.<span class="function">generate_command</span>(<span class="string">"find all files ending with .py in current folder"</span>)
+<span class="function">print</span>(cmd)
+<span class="comment"># Output: find . -name "*.py"</span></code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SAFE EXECUTION -->
+        <section class="doc-section" id="execution">
+          <h2>Safe Command Execution</h2>
+          <p>The CLI Agent provides a safe command execution API that screens script blocks for destructive patterns prior to invoking them in the local environment.</p>
+
+          <div class="code-panel" style="max-width:100%">
+            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Executing Command</div></div>
+            <div class="code-content" style="display:block;padding:1.5rem">
+              <pre><code>code, stdout, stderr = agent.<span class="function">execute_command</span>(<span class="string">"echo 'Hello CLI Agent'"</span>)
+<span class="function">print</span>(f<span class="string">"Return code: {code}"</span>)
+<span class="function">print</span>(f<span class="string">"Stdout: {stdout}"</span>)</code></pre>
+            </div>
+          </div>
+
+          <div class="warn-box">
+            <strong>⚠️ Dry-Run Checks:</strong> Destructive patterns (e.g. <code>rm -rf /</code>, <code>mkfs</code>, <code>dd if=</code>, <code>shutdown</code>) are caught by the protection engine, resulting in a return code of <code>-1</code> and an error returned to prevent command-line accidents.
+          </div>
+        </section>
+
+        <!-- STREAMING -->
+        <section class="doc-section" id="streaming">
+          <h2>Real-Time Streaming</h2>
+          <p>Pass <code>stream=True</code> to output token streams of the model's step-by-step thinking process inside <code>&lt;thought&gt;</code> tags followed by the markdown command block.</p>
+          
+          <div class="code-panel" style="max-width:100%">
+            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Streaming Example</div></div>
+            <div class="code-content" style="display:block;padding:1.5rem">
+              <pre><code>stream = agent.<span class="function">generate_command</span>(<span class="string">"kill process on port 8000"</span>, stream=<span class="keyword">True</span>)
+<span class="keyword">for</span> token <span class="keyword">in</span> stream:
+    <span class="function">print</span>(token, end=<span class="string">""</span>, flush=<span class="keyword">True</span>)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECURITY -->
+        <section class="doc-section" id="security">
+          <h2>Security &amp; Hardening</h2>
+          <div class="security-box">
+            <strong>🔒 Restricted Access:</strong> While the agent blocks common destructive commands, always review the generated script before execution. It is highly recommended to run the agent in environment profiles with restricted write access and minimal administrative rights.
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <div class="container">
+          <div class="footer-bottom">
+            <p>&copy; 2026 SLM Agents Community. Released under the MIT License.</p>
+            <div class="footer-socials">
+              <a href="https://github.com/t00114218-stack/SLMAgents" target="_blank">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Agent Details Modal -->
+  <div class="agent-modal" id="agent-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title" style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">Agent Name</h3>
+        <button class="modal-close" onclick="closeAgentModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

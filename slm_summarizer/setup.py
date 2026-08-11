@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="slm-summarizer",
-    version="0.1.2",
+    version="0.1.3",
     description="A lightweight, CPU-optimized text summarizer powered by a local Small Language Model (SLM)",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

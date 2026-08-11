@@ -9,6 +9,7 @@
 - **Local & Private**: Runs completely on CPU / RAM. Zero API keys, zero network latency, and complete data privacy.
 - **Resource Efficient**: Uses a 1.5B parameter model (`Qwen 2.5 1.5B Instruct ONNX`), consuming only **1.5 GB to 2.0 GB of RAM** and taking **1.1 GB of disk storage**.
 - **Instruction Adherence**: Formats instructions directly into the system template to enforce constraints (e.g. style, safety, or formatting constraints like JSON).
+- **Streaming Support**: Stream token-by-token output in real-time via a Python generator.
 - **Agentic Tool Use**: Optional ReAct loop support. Pass custom tools (like Vector DB search) for the RAG agent to autonomously fetch missing context before answering.
 
 ---
@@ -63,6 +64,30 @@ print(answer)
 # Output: "Ahoy matey! AegisShield be the flagship product of NebulaCorp, savvy?"
 ```
 
+### Streaming Example
+
+```python
+from slm_rag import SLMRag
+
+rag = SLMRag()
+
+chunks = [
+    "The James Webb Space Telescope was launched on December 25, 2021.",
+    "It is the largest and most powerful space telescope ever built.",
+    "Its primary mirror is 6.5 meters in diameter, composed of 18 hexagonal gold-coated segments."
+]
+
+# Stream tokens as they are generated
+for token in rag.answer(
+    chunks=chunks,
+    question="What is special about the James Webb Space Telescope?",
+    instruction="Answer concisely in one paragraph.",
+    stream=True
+):
+    print(token, end="", flush=True)
+print()
+```
+
 ---
 
 ## Configuration API
@@ -80,13 +105,34 @@ SLMRag(
 
 ```python
 rag.answer(
-    chunks: list[str],      # Document text chunks
-    question: str,          # User query / question
-    instruction: str,       # Instruction or constraint the model must follow
-    temperature: float = 0.0, # Generation temperature (0.0 for deterministic answers)
-    max_tokens: int = 512,    # Maximum token limit for the response
-    tools: list = None,       # Optional JSON schemas for tool use
+    chunks: list[str],              # Document text chunks
+    question: str,                  # User query / question
+    instruction: str,               # Instruction or constraint the model must follow
+    temperature: float = 0.0,       # Generation temperature (0.0 for deterministic answers)
+    max_tokens: int = 256,          # Maximum token limit for the response
+    tools: list = None,             # Optional JSON schemas for tool use
     tool_executor: callable = None, # Optional callback function to execute tools
-    max_iterations: int = 5   # Max ReAct tool execution loops
+    max_iterations: int = 5,        # Max ReAct tool execution loops
+    stream: bool = False            # If True, returns a generator that yields token strings
 )
 ```
+
+---
+
+## Environment Variables
+
+All constructor parameters can be overridden via environment variables:
+
+| Variable | Description | Default |
+|---|---|---|
+| `SLM_RAG_CONFIG` | Path to a custom `config.yaml` file | — |
+| `SLM_RAG_CACHE_DIR` | Override model download/cache directory | — |
+| `SLM_RAG_N_THREADS` | Number of CPU threads | `4` |
+| `SLM_RAG_N_CTX` | Context window size | `8192` |
+| `SLM_RAG_MAX_TOKENS` | Default max tokens per answer | `256` |
+
+---
+
+## License
+
+Apache License 2.0.

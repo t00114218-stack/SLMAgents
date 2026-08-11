@@ -16,7 +16,12 @@ This monorepo is organized into the following main projects:
 | [**`slm_rag`**](./slm_rag) | High-efficiency local CPU Retrieval-Augmented Generation library via ONNX Runtime with autonomous tool use. | `pip install slm-rag` |
 | [**`slm_summarizer`**](./slm_summarizer) | High-efficiency local CPU text summarization agent via ONNX Runtime with an evaluator-corrector loop. | `pip install slm-summarizer` |
 | [**`slm_text_to_sql`**](./slm_text_to_sql) | CPU-optimized Text-to-SQL agent via ONNX Runtime, with built-in QLoRA TPU/GPU fine-tuning. | `pip install slm-text-to-sql` |
+| [**`slm_cli_agent`**](./slm_cli_agent) | CPU-optimized command line helper translating language to safe executable commands. | `pip install -e ./slm_cli_agent` |
+| [**`slm_code_interpreter`**](./slm_code_interpreter) | Sandboxed Python execution context with auto self-correction traceback recovery loops. | `pip install -e ./slm_code_interpreter` |
+| [**`slm_git_copilot`**](./slm_git_copilot) | Git diff helper translating raw diff streams to conventional commits. | `pip install -e ./slm_git_copilot` |
+| [**`slm_json_cleaner`**](./slm_json_cleaner) | Pattern mapping utility repairing malformed/broken JSON strings to fit target schemas. | `pip install -e ./slm_json_cleaner` |
 | [**`website`**](./website) | The developer landing page, portal, and community website. | (See below) |
+
 
 ---
 
