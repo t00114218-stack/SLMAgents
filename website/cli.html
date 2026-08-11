@@ -213,13 +213,25 @@ export SLM_CLI_AGENT_N_CTX=2048</code></pre>
             <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Python Quick Start</div></div>
             <div class="code-content" style="display:block;padding:1.5rem">
               <pre><code><span class="keyword">from</span> slm_cli_agent.cli_agent <span class="keyword">import</span> SLMCLIAgent
-
+ 
 agent = <span class="function">SLMCLIAgent</span>()
-
+ 
 <span class="comment"># Generate command from query</span>
 cmd, explanation = agent.<span class="function">generate_command</span>(<span class="string">"find all files ending with .py in current folder"</span>)
 <span class="function">print</span>(cmd)
 <span class="comment"># Output: find . -name "*.py"</span></code></pre>
+            </div>
+          </div>
+
+          <h3>Unified Command Execution (`run()`)</h3>
+          <p>For convenience, you can translate and execute shell instructions in a single method call:</p>
+          <div class="code-panel" style="max-width:100%">
+            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Unified Execution</div></div>
+            <div class="code-content" style="display:block;padding:1.5rem">
+              <pre><code>result = agent.<span class="function">run</span>(<span class="string">"list directory contents in clean format"</span>)
+<span class="function">print</span>(f<span class="string">"Executed Command: {result['command']}"</span>)
+<span class="function">print</span>(f<span class="string">"Success: {result['success']}"</span>)
+<span class="function">print</span>(f<span class="string">"Output:\n{result['stdout']}"</span>)</code></pre>
             </div>
           </div>
         </section>

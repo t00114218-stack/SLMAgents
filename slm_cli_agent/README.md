@@ -58,11 +58,42 @@ Executes the proposed command.
 - **Returns**:
   - `tuple[int, str, str]`: `(return_code, stdout, stderr)`. Returns `-1` with a security warning in `stderr` if the command contains dangerous destructive patterns.
 
+#### `run(query: str) -> dict`
+Translates, explains, and runs the instruction in one method call.
+- **Arguments**:
+  - `query` (str): Natural language instruction.
+- **Returns**:
+  - `dict`:
+    ```python
+    {
+        "success": True/False,
+        "command": str,       # Extracted executable bash command
+        "explanation": str,   # Model explanation and thought process
+        "stdout": str,        # Execution standard output logs
+        "stderr": str,        # Execution error logs
+        "returncode": int     # Subprocess exit status code
+    }
+    ```
+
 ---
 
 ## Usage Examples
 
-### 1. Basic Generation and Execution
+### 1. Unified Natural Language Execution (`run`)
+```python
+from slm_cli_agent.cli_agent import SLMCLIAgent
+
+agent = SLMCLIAgent()
+
+# Translate and execute in a single call
+result = agent.run("list directory contents in clean format")
+
+print(f"Success: {result['success']}")
+print(f"Command Executed: {result['command']}")
+print(f"Stdout:\n{result['stdout']}")
+```
+
+### 2. Manual Generation and Execution
 ```python
 from slm_cli_agent.cli_agent import SLMCLIAgent
 

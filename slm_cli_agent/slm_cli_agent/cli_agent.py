@@ -162,3 +162,29 @@ class SLMCLIAgent:
             return res.returncode, res.stdout, res.stderr
         except subprocess.TimeoutExpired:
             return -1, "", "Command Execution Timed Out after 20 seconds."
+
+    def run(self, query: str) -> dict:
+        """
+        Translates a natural language query into a command, executes it safely,
+        and returns a structured dict of the results.
+        """
+        command, explanation = self.generate_command(query)
+        if not command:
+            return {
+                "success": False,
+                "command": "",
+                "explanation": explanation,
+                "stdout": "",
+                "stderr": "Could not extract executable command from the model response.",
+                "returncode": -1
+            }
+
+        ret_code, stdout, stderr = self.execute_command(command)
+        return {
+            "success": ret_code == 0,
+            "command": command,
+            "explanation": explanation,
+            "stdout": stdout.strip(),
+            "stderr": stderr.strip(),
+            "returncode": ret_code
+        }
