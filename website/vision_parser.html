@@ -170,19 +170,7 @@ print(result)</code></pre>
 
         <div class="tip-box">
           <strong>OCR Coordinates Response Output:</strong><br>
-          <pre><code class="language-json">{
-  "&lt;OCR_WITH_REGION&gt;": {
-    "labels": ["box", "text", "arrow"],
-    "boxes": [
-      [120, 85, 240, 310],
-      [250, 190, 420, 195]
-    ],
-    "parse_results": [
-      {"label": "box", "text": "Start Process", "box": [120, 85, 240, 310]},
-      {"label": "arrow", "text": "Next Step Link", "box": [250, 190, 420, 195]}
-    ]
-  }
-}</code></pre>
+          <pre><code class="language-python">"{'quad_boxes': [[120, 85, 240, 85, 240, 310, 120, 310], [250, 190, 420, 190, 420, 195, 250, 195]], 'labels': ['Start Process', 'Next Step Link']}"</code></pre>
         </div>
       </section>
     </main>

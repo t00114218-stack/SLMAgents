@@ -114,7 +114,7 @@ Parses target image file and executes the requested visual query.
 
 ## 🚀 5. Usage Example
 
-Here is a realistic example using the `<OCR_WITH_REGION>` task tag to extract coordinate bounding boxes alongside the text contents of a flowchart diagram:
+Here is a realistic example using the `<OCR_WITH_REGION>` task tag to extract coordinate bounding boxes (four quadrilateral coordinates `[x1, y1, x2, y2, x3, y3, x4, y4]`) alongside the text contents of a flowchart diagram:
 
 ```python
 from slm_vision_parser.vision_parser import SLMVisionParser
@@ -128,19 +128,6 @@ print(output)
 ```
 
 ### Generated Output Response:
-```json
-{
-  "<OCR_WITH_REGION>": {
-    "labels": ["box", "text", "arrow"],
-    "boxes": [
-      [120, 85, 240, 310],
-      [150, 100, 210, 280],
-      [250, 190, 420, 195]
-    ],
-    "parse_results": [
-      {"label": "box", "text": "Start Process", "box": [120, 85, 240, 310]},
-      {"label": "arrow", "text": "Next Step Link", "box": [250, 190, 420, 195]}
-    ]
-  }
-}
+```python
+"{'quad_boxes': [[120, 85, 240, 85, 240, 310, 120, 310], [250, 190, 420, 190, 420, 195, 250, 195]], 'labels': ['Start Process', 'Next Step Link']}"
 ```
