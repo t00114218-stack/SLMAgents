@@ -1001,6 +1001,37 @@ footer {
   font-weight: 600;
 }
 
+.sidebar-icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+
+.sidebar-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.sidebar-item.active .sidebar-bullet {
+  background: var(--accent-purple);
+}
+
+.sidebar-item:hover .sidebar-icon {
+  stroke: var(--text-primary);
+}
+
+
 /* Mobile Sidebar Toggle Button */
 .sidebar-toggle {
   display: none;

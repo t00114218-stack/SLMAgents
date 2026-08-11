@@ -321,20 +321,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const activeList = document.getElementById("sidebar-active-list");
   if (activeList) {
     activeList.innerHTML = `
-      <li class="sidebar-item" id="nav-home"><a href="index.html">🏠 Home</a></li>
-      <li class="sidebar-item" id="nav-orchestrator"><a href="orchestrator.html">🎯 SLM Orchestrator</a></li>
-      <li class="sidebar-item" id="nav-rag"><a href="rag.html">📚 SLM RAG</a></li>
-      <li class="sidebar-item" id="nav-summarizer"><a href="summarizer.html">📝 SLM Summarizer</a></li>
-      <li class="sidebar-item" id="nav-sql"><a href="sql.html">🗄️ SLM Text-to-SQL</a></li>
-      <li class="sidebar-item" id="nav-cli"><a href="cli.html">💻 SLM CLI Agent</a></li>
-      <li class="sidebar-item" id="nav-code-interpreter"><a href="code_interpreter.html">🐍 SLM Code Interpreter</a></li>
-      <li class="sidebar-item" id="nav-git-copilot"><a href="git_copilot.html">🐙 SLM Git Co-pilot</a></li>
-      <li class="sidebar-item" id="nav-json-cleaner"><a href="json_cleaner.html">🧹 SLM JSON Cleaner</a></li>
-      <li class="sidebar-item" id="nav-document-parser"><a href="document_parser.html">📂 SLM Document Parser</a></li>
-      <li class="sidebar-item" id="nav-vision-parser"><a href="vision_parser.html">👁️ SLM Vision Parser</a></li>
-      <li class="sidebar-item" id="nav-web-agent"><a href="web_agent.html">🌐 SLM Web Agent</a></li>
-      <li class="sidebar-item" id="nav-web-scraper"><a href="web_scraper.html">🔍 SLM Web Scraper</a></li>
-      <li class="sidebar-item" id="nav-search-orchestrator"><a href="search_orchestrator.html">🔎 SLM Search Orchestrator</a></li>
+      <li class="sidebar-item" id="nav-home"><a href="index.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home</a></li>
+      <li class="sidebar-item" id="nav-orchestrator"><a href="orchestrator.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg> SLM Orchestrator</a></li>
+      <li class="sidebar-item" id="nav-rag"><a href="rag.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-2.239 10-5V5c0-2.761-4.477-5-10-5S2 2.239 2 5v12c0 2.761 4.477 5 10 5z"></path><path d="M2 5c0 2.761 4.477 5 10 5s10-2.239 10-5"></path><path d="M2 11c0 2.761 4.477 5 10 5s10-2.239 10-5"></path></svg> SLM RAG</a></li>
+      <li class="sidebar-item" id="nav-summarizer"><a href="summarizer.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> SLM Summarizer</a></li>
+      <li class="sidebar-item" id="nav-sql"><a href="sql.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> SLM Text-to-SQL</a></li>
+      <li class="sidebar-item" id="nav-cli"><a href="cli.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg> SLM CLI Agent</a></li>
+      <li class="sidebar-item" id="nav-code-interpreter"><a href="code_interpreter.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg> SLM Code Interpreter</a></li>
+      <li class="sidebar-item" id="nav-git-copilot"><a href="git_copilot.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 15V9a4 4 0 0 0-4-4H9"></path><line x1="6" y1="9" x2="6" y2="15"></line></svg> SLM Git Co-pilot</a></li>
+      <li class="sidebar-item" id="nav-json-cleaner"><a href="json_cleaner.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg> SLM JSON Cleaner</a></li>
+      <li class="sidebar-item" id="nav-document-parser"><a href="document_parser.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> SLM Document Parser</a></li>
+      <li class="sidebar-item" id="nav-vision-parser"><a href="vision_parser.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> SLM Vision Parser</a></li>
+      <li class="sidebar-item" id="nav-web-agent"><a href="web_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect><line x1="2" y1="8" x2="22" y2="8"></line><line x1="6" y1="6" x2="6" y2="6"></line><line x1="10" y1="6" x2="10" y2="6"></line></svg> SLM Web Agent</a></li>
+      <li class="sidebar-item" id="nav-web-scraper"><a href="web_scraper.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> SLM Web Scraper</a></li>
+      <li class="sidebar-item" id="nav-search-orchestrator"><a href="search_orchestrator.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> SLM Search Orchestrator</a></li>
     `;
     
     // Highlight currently active page
@@ -377,38 +377,38 @@ document.addEventListener("DOMContentLoaded", () => {
     let listHtml = "";
     
     // Developer Tools
-    listHtml += `<div class="sidebar-group-title" style="margin-top:1rem; font-size:0.7rem; color:#8b5cf6;">⚙️ Developer Tools</div>`;
+    listHtml += `<div class="sidebar-group-title" style="margin-top:1rem; font-size:0.7rem; color:#8b5cf6;">Developer Tools</div>`;
     Object.keys(UPCOMING_AGENTS).forEach(key => {
       const a = UPCOMING_AGENTS[key];
       if (a.category === "Developer Tools") {
-        listHtml += `<li class="sidebar-item"><button onclick="openAgentModal('${key}')">💡 ${a.name}</button></li>`;
+        listHtml += `<li class="sidebar-item"><button onclick="openAgentModal('${key}')"><span class="sidebar-bullet"></span> ${a.name}</button></li>`;
       }
     });
 
     // Web & Scraping
-    listHtml += `<div class="sidebar-group-title" style="margin-top:1rem; font-size:0.7rem; color:#06b6d4;">🌐 Web & Scraping</div>`;
+    listHtml += `<div class="sidebar-group-title" style="margin-top:1rem; font-size:0.7rem; color:#06b6d4;">Web & Scraping</div>`;
     Object.keys(UPCOMING_AGENTS).forEach(key => {
       const a = UPCOMING_AGENTS[key];
       if (a.category === "Web & Scraping") {
-        listHtml += `<li class="sidebar-item"><button onclick="openAgentModal('${key}')">🔍 ${a.name}</button></li>`;
+        listHtml += `<li class="sidebar-item"><button onclick="openAgentModal('${key}')"><span class="sidebar-bullet"></span> ${a.name}</button></li>`;
       }
     });
 
     // Productivity
-    listHtml += `<div class="sidebar-group-title" style="margin-top:1rem; font-size:0.7rem; color:#f59e0b;">⚡ Productivity</div>`;
+    listHtml += `<div class="sidebar-group-title" style="margin-top:1rem; font-size:0.7rem; color:#f59e0b;">Productivity</div>`;
     Object.keys(UPCOMING_AGENTS).forEach(key => {
       const a = UPCOMING_AGENTS[key];
       if (a.category === "Productivity") {
-        listHtml += `<li class="sidebar-item"><button onclick="openAgentModal('${key}')">📋 ${a.name}</button></li>`;
+        listHtml += `<li class="sidebar-item"><button onclick="openAgentModal('${key}')"><span class="sidebar-bullet"></span> ${a.name}</button></li>`;
       }
     });
 
     // Data & Utilities
-    listHtml += `<div class="sidebar-group-title" style="margin-top:1rem; font-size:0.7rem; color:#10b981;">📊 Data & Utilities</div>`;
+    listHtml += `<div class="sidebar-group-title" style="margin-top:1rem; font-size:0.7rem; color:#10b981;">Data & Utilities</div>`;
     Object.keys(UPCOMING_AGENTS).forEach(key => {
       const a = UPCOMING_AGENTS[key];
       if (a.category === "Data & Utilities") {
-        listHtml += `<li class="sidebar-item"><button onclick="openAgentModal('${key}')">🛠️ ${a.name}</button></li>`;
+        listHtml += `<li class="sidebar-item"><button onclick="openAgentModal('${key}')"><span class="sidebar-bullet"></span> ${a.name}</button></li>`;
       }
     });
 
