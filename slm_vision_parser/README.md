@@ -129,5 +129,5 @@ print(output)
 
 ### Generated Output Response:
 ```python
-"A flowchart diagram displaying a 'Start Process' box connected to a 'Next Step Link' box by a teal arrow on a dark grid background."
+"A flowchart showing a start step ('Start Process') and a next step ('Next Step Link') connected with two arrows from the start step to the next step."
 ```
