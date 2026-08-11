@@ -1,0 +1,8 @@
+models:
+  web_agent:
+    path: "../../models/phi-3.5-mini-instruct-onnx"
+    repo_id: "microsoft/Phi-3.5-mini-instruct-onnx"
+
+inference:
+  n_threads: 4
+  n_ctx: 4096

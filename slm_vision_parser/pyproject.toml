@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["slm_vision_parser"]
+
+[project]
+name = "slm-vision-parser"
+version = "0.1.0"
+description = "A lightweight local CPU-optimized Visual PDF, chart, and diagram parser agent via ONNX Runtime"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "llm", "slm", "vision", "ocr", "chart", "diagram", "local-ai"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3"
+]
+dependencies = [
+    "onnxruntime>=1.15.0",
+    "transformers>=4.38.0",
+    "huggingface_hub>=0.10.0",
+    "pyyaml",
+    "pillow"
+]
+
+[[project.authors]]
+name = "Suryaprakash CV"
+email = "suryaprakash.c.v@gmail.com"

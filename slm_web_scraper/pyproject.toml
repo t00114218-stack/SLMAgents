@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["slm_web_scraper"]
+
+[project]
+name = "slm-web-scraper"
+version = "0.1.0"
+description = "A lightweight local CPU-optimized web HTML parser and layout scraper agent"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "llm", "slm", "scrape", "parser", "html", "local-ai"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3"
+]
+dependencies = [
+    "onnxruntime-genai>=0.2.0",
+    "huggingface_hub>=0.10.0",
+    "pyyaml",
+    "beautifulsoup4",
+    "lxml"
+]
+
+[[project.authors]]
+name = "Suryaprakash CV"
+email = "suryaprakash.c.v@gmail.com"
