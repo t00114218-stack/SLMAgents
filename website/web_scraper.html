@@ -157,75 +157,49 @@ scraper = SLMWebScraper()</code></pre>
         </table>
 
         <h3>`scrape_url` Method</h3>
-        <p>Fetches a URL, filters out header/footer menus, dropdown lists, sidebars, and ads, returning the clean body text. If `schema_dict` is provided, returns parsed JSON.</p>
+        <p>Fetches a URL directly, filters out header/footer menus, dropdown lists, sidebars, and ads, and processes structured elements:</p>
+
+        <h4>Example 1: Webpage Table Parsing (Natural Language Description)</h4>
+        <p>If the page contains a table, the scraper translates it into a clean, text-based description rather than raw cells:</p>
         <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
-# Extract clean main content text from local or online URL
+# Scrapes page and converts tables to text descriptions automatically
 clean_text = scraper.scrape_url("https://www.slmagents.ai/rag.html")
-print(clean_text[:500])</code></pre>
+print(clean_text)</code></pre>
 
         <div class="tip-box">
-          <strong>Cleaned Webpage Text Output (No Menus, Sidebars, or Ads):</strong><br>
+          <strong>Cleaned Webpage Text Output with Table Description:</strong><br>
           <pre><code>SLM RAG | Documentation
-Home
-›
-SLM RAG
+Home › SLM RAG
 📚 Retrieval-Augmented Generation
-SLM RAG
-Answer questions from your own documents — locally, privately, with zero API costs. Supports custom tools, agentic Vector DB retrieval, and strict instruction adherence.
-Get Started
-GitHub Repo
+Answer questions from your own documents locally and privately with zero API costs.
 
-Installation
-Terminal
-# Install from PyPI
-pip install slm-rag
-# Configure via env vars (optional)
-export SLM_RAG_N_THREADS=8
-export SLM_RAG_MAX_TOKENS=128
-
-Configuration API
-Constructor Parameters
-Parameter | Type / Default | Description
-model_path | str | None | Explicit path to an ONNX model directory.
-cache_dir | str | None | Directory to download/cache the model.
-n_ctx | int | 8192 | Context window size in tokens.
-n_threads | int | 4 | CPU threads for inference.</code></pre>
+[Table Description: The table outlines the constructor configuration parameters for the RAG API, containing four parameters:
+- model_path (string or None, specifying the explicit path to an ONNX model directory)
+- cache_dir (string or None, indicating the directory to cache the model)
+- n_ctx (integer with a default of 8192, representing context window size in tokens)
+- n_threads (integer with a default of 4, configuring the CPU thread count for inference)]</code></pre>
         </div>
 
-        <h3>`scrape` Method</h3>
-        <p>Strips DOM layout noise from an raw HTML string block and extracts schema-matching targets:</p>
+        <h4>Example 2: Webpage Image Parsing (OCR Visual Description)</h4>
+        <p>If the page contains image tags (<code>&lt;img&gt;</code>), the scraper downloads the image and calls the vision model to summarize its visual elements in-place:</p>
         <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
-# Product catalog html block to parse
-raw_html = """
-<div class="product-item">
-  <span class="title">Local CPU Node Core-1</span>
-  <span class="price">$150.00</span>
-  <div class="rating">Rating: 4.8</div>
-</div>
-"""
-
-target_schema = {
-    "products": [
-        {"product_name": "string", "price_usd": "number", "rating": "number"}
-    ]
-}
-
-result = scraper.scrape(html_content=raw_html, schema_dict=target_schema)
-print(result)</code></pre>
+# Scrapes page and parses flowchart.png via vision parser
+clean_text = scraper.scrape_url("https://www.slmagents.ai/vision_parser.html")
+print(clean_text)</code></pre>
 
         <div class="tip-box">
-          <strong>Extracted Structured JSON Output:</strong><br>
-          <pre><code class="language-json">{
-  "products": [
-    {"product_name": "Local CPU Node Core-1", "price_usd": 150.00, "rating": 4.8}
-  ]
-}</code></pre>
+          <strong>Cleaned Webpage Text Output with Image Caption:</strong><br>
+          <pre><code>SLM Vision Parser | Documentation
+Overview: Translates image structures directly into text labels.
+
+Below is the input flowchart diagram processed by the vision model:
+[Image Description: A flowchart showing a start step ('Start Process') and a next step ('Next Step Link') connected with two arrows from the start step to the next step.]</code></pre>
         </div>
       </section>
     </main>

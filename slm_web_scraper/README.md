@@ -125,75 +125,51 @@ Fetches webpage HTML, removes menus/navs/ads, and extracts data. If `schema_dict
 
 ## 🚀 5. Usage Examples
 
-### Example 1: Webpage URL Scraping (Clean Text Extraction)
+### Example 1: Webpage Table Parsing (Natural Language Description)
+Scrapes a page containing a configuration table and automatically represents it as a clean text description rather than raw pipe-delimited Markdown cells:
+
 ```python
 from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
-# Scrapes page and removes ads, header menus, and footers automatically
+# Scrapes a page containing the RAG API parameter table
 clean_text = scraper.scrape_url("https://www.slmagents.ai/rag.html")
-print(clean_text[:500])
+print(clean_text)
 ```
 
 #### Output:
 ```text
 SLM RAG | Documentation
-Home
-›
-SLM RAG
+Home › SLM RAG
 📚 Retrieval-Augmented Generation
-SLM RAG
-Answer questions from your own documents — locally, privately, with zero API costs. Supports custom tools, agentic Vector DB retrieval, and strict instruction adherence.
-Get Started
-GitHub Repo
+Answer questions from your own documents locally and privately with zero API costs.
 
-Installation
-Terminal
-# Install from PyPI
-pip install slm-rag
-# Configure via env vars (optional)
-export SLM_RAG_N_THREADS=8
-export SLM_RAG_MAX_TOKENS=128
-
-Configuration API
-Constructor Parameters
-Parameter | Type / Default | Description
-model_path | str | None | Explicit path to an ONNX model directory.
-cache_dir | str | None | Directory to download/cache the model.
-n_ctx | int | 8192 | Context window size in tokens.
-n_threads | int | 4 | CPU threads for inference.
+[Table Description: The table outlines the constructor configuration parameters for the RAG API, containing four parameters:
+- model_path (string or None, specifying the explicit path to an ONNX model directory)
+- cache_dir (string or None, indicating the directory to cache the model)
+- n_ctx (integer with a default of 8192, representing context window size in tokens)
+- n_threads (integer with a default of 4, configuring the CPU thread count for inference)]
 ```
 
-### Example 2: HTML String Content Scraping (Structured JSON Extraction)
+### Example 2: Webpage Image Parsing (OCR Visual Description)
+Scrapes a webpage containing an image tag and uses the vision parser (Florence-2) to describe its contents inside the body text context:
+
 ```python
 from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
-raw_html_content = """
-<div class="product-item">
-  <span class="title">Local CPU Node Core-1</span>
-  <span class="price">$150.00</span>
-  <div class="rating">Rating: 4.8</div>
-</div>
-"""
-
-target_schema = {
-    "products": [
-        {"product_name": "string", "price_usd": "number", "rating": "number"}
-    ]
-}
-
-result = scraper.scrape(html_content=raw_html_content, schema_dict=target_schema)
-print(result)
+# Scrapes a page containing flowchart.png image tag
+clean_text = scraper.scrape_url("https://www.slmagents.ai/vision_parser.html")
+print(clean_text)
 ```
 
-#### Generated Output Response:
-```json
-{
-  "products": [
-    {"product_name": "Local CPU Node Core-1", "price_usd": 150.00, "rating": 4.8}
-  ]
-}
+#### Output:
+```text
+SLM Vision Parser | Documentation
+Overview: Translates image structures directly into text labels.
+
+Below is the input flowchart diagram processed by the vision model:
+[Image Description: A flowchart showing a start step ('Start Process') and a next step ('Next Step Link') connected with two arrows from the start step to the next step.]
 ```
