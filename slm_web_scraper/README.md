@@ -138,13 +138,30 @@ print(clean_text[:500])
 #### Output:
 ```text
 SLM RAG | Documentation
-Home › SLM RAG
+Home
+›
+SLM RAG
 📚 Retrieval-Augmented Generation
 SLM RAG
-Answer questions from your own documents — locally, privately, with zero API costs.
+Answer questions from your own documents — locally, privately, with zero API costs. Supports custom tools, agentic Vector DB retrieval, and strict instruction adherence.
+Get Started
+GitHub Repo
+
 Installation
+Terminal
 # Install from PyPI
 pip install slm-rag
+# Configure via env vars (optional)
+export SLM_RAG_N_THREADS=8
+export SLM_RAG_MAX_TOKENS=128
+
+Configuration API
+Constructor Parameters
+Parameter | Type / Default | Description
+model_path | str | None | Explicit path to an ONNX model directory.
+cache_dir | str | None | Directory to download/cache the model.
+n_ctx | int | 8192 | Context window size in tokens.
+n_threads | int | 4 | CPU threads for inference.
 ```
 
 ### Example 2: HTML String Content Scraping (Structured JSON Extraction)
