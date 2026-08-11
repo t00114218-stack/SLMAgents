@@ -56,28 +56,55 @@ Generates a commit message from a raw git diff content string.
 
 ## Usage Examples
 
-### 1. Basic Commit Generation
+### 1. Generating Commit Message from Multi-File Diff
+Here is an example showing conventional commit generation from a multi-file diff modifying routing logic and adding test assertions:
+
 ```python
 from slm_git_copilot.git_copilot import SLMGitCopilot
 
 copilot = SLMGitCopilot()
 
-sample_diff = """
-diff --git a/src/main.py b/src/main.py
---- a/src/main.py
-+++ b/src/main.py
-@@ -1,3 +1,4 @@
--def add(a, b): return a + b
-+def add(a, b):
-+    # Add numbers
-+    return a + b
+complex_diff = """
+diff --git a/slm_core/orchestrator.py b/slm_core/orchestrator.py
+index a12bc3..d45ef6 100644
+--- a/slm_core/orchestrator.py
++++ b/slm_core/orchestrator.py
+@@ -12,5 +12,12 @@ class SLMOrchestrator:
+-        print("Running orchestrator route...")
++        logger.info("Initializing query router path routing details")
+-        return self.fallback_run(query)
++        route = self.classifier.predict(query)
++        if route == "rag":
++            return self.rag_agent.query(query)
++        elif route == "sql":
++            return self.sql_agent.query(query)
++        return self.summarize_agent.query(query)
+
+diff --git a/tests/test_orchestrator.py b/tests/test_orchestrator.py
+index 987ef1..432ab1 100644
+--- a/tests/test_orchestrator.py
++++ b/tests/test_orchestrator.py
+@@ -2,4 +2,9 @@
+-def test_orchestrator():
+-    pass
++def test_orchestrator_routing():
++    orch = SLMOrchestrator()
++    assert orch.classifier is not None
++    assert orch.query("select * from logs") == "sql_result"
 """
 
 # Generate message
-commit_msg = copilot.generate_commit_message(sample_diff)
+commit_msg = copilot.generate_commit_message(complex_diff)
 print(commit_msg)
-# Output:
-# feat(src/main.py): Add a function to add two numbers
+```
+
+#### Generated Commit Message:
+```text
+feat(slm_core): Implement classifier-based routing in SLMOrchestrator
+
+- Replace generic print statement with semantic structured logger info
+- Integrate query router classifier predicting 'rag' and 'sql' paths
+- Add test_orchestrator_routing to verify sql query routing behavior
 ```
 
 ### 2. Auto-Truncation on Long Diffs
@@ -86,13 +113,6 @@ If you pass a massive diff, the agent prevents RAM spikes and token limits by sl
 long_diff = "diff --git a/test.py b/test.py\n" + "hello\n" * 1000
 commit_msg = copilot.generate_commit_message(long_diff)
 print(commit_msg) # Generates successfully using context truncation
-```
-
-### 3. Real-Time Token Streaming
-```python
-stream = copilot.generate_commit_message(sample_diff, stream=True)
-for token in stream:
-    print(token, end="", flush=True)
 ```
 
 ---

@@ -204,7 +204,6 @@ export SLM_JSON_CLEANER_N_THREADS=4</code></pre>
             <tbody>
               <tr><td>malformed_text</td><td>str</td><td><strong>Required.</strong> Unstructured or broken JSON input string to repair.</td></tr>
               <tr><td>schema_dict</td><td>dict</td><td><strong>Required.</strong> A dictionary mapping keys and types required in the final output (e.g. {"name": "string", "age": "number"}).</td></tr>
-              <tr><td>stream</td><td>bool | False</td><td>If True, enables token streaming of the model's Conventional Commit generation in real-time. Returns a Python generator.</td></tr>
             </tbody>
           </table>
 
@@ -215,12 +214,46 @@ export SLM_JSON_CLEANER_N_THREADS=4</code></pre>
 
 cleaner = <span class="function">SLMJSONCleaner</span>()
 
-broken_json = <span class="string">'{"name": "Agent Suite", "version": "0.1'</span>
-schema = {<span class="string">"name"</span>: <span class="string">"string"</span>, <span class="string">"version"</span>: <span class="string">"string"</span>}
+<span class="comment"># Truncated, nested, and conversational malformed input log:</span>
+broken_input = <span class="string">"""
+Raw logs:
+{
+  "project_name": "Antigravity Pipeline",
+  "build_status": "success",
+  "metrics": {
+     "duration_seconds": 124.5,
+     "test_count": 48,
+     "failed_tests": 0,
+     "coverage": "98.5%
+  },
+  "contributors": [
+     {"name": "Alice", "role": "lead"},
+     {"name": "Bob", "role": "reviewer"
+  ],
+  "releases": [
+     "v1.0", "v1.1", 
+  
+[LOG EXPIRED MID-TOKEN]
+"""</span>
 
-parsed, success = cleaner.<span class="function">clean_json</span>(broken_json, schema)
-<span class="function">print</span>(success) <span class="comment"># True</span>
-<span class="function">print</span>(parsed)  <span class="comment"># {'name': 'Agent Suite', 'version': '0.1'}</span></code></pre>
+schema = {
+    <span class="string">"project_name"</span>: <span class="string">"string"</span>,
+    <span class="string">"build_status"</span>: <span class="string">"string"</span>,
+    <span class="string">"metrics"</span>: {
+        <span class="string">"duration_seconds"</span>: <span class="string">"number"</span>,
+        <span class="string">"test_count"</span>: <span class="string">"number"</span>,
+        <span class="string">"failed_tests"</span>: <span class="string">"number"</span>,
+        <span class="string">"coverage"</span>: <span class="string">"string"</span>
+    },
+    <span class="string">"contributors"</span>: [
+        {<span class="string">"name"</span>: <span class="string">"string"</span>, <span class="string">"role"</span>: <span class="string">"string"</span>}
+    ],
+    <span class="string">"releases"</span>: [<span class="string">"string"</span>]
+}
+
+parsed, success = cleaner.<span class="function">clean_json</span>(broken_input, schema)
+<span class="function">print</span>(f<span class="string">"Success: {success}"</span>)
+<span class="function">print</span>(parsed)</code></pre>
             </div>
           </div>
         </section>
@@ -239,12 +272,22 @@ parsed, success = cleaner.<span class="function">clean_json</span>(broken_json, 
         <!-- SCHEMA -->
         <section class="doc-section" id="schema">
           <h2>Target Schema Enforcement</h2>
-          <p>By supplying a target schema dictionary, you guarantee that the returned attributes match the expected data types. For example:</p>
-          <div class="tip-box">
-            <strong>Input:</strong> <code>'{"age": 30, "city": "New York'</code><br>
-            <strong>Schema:</strong> <code>{"age": "number", "city": "string"}</code><br>
-            <strong>Output:</strong> <code>{'age': 30, 'city': 'New York'}</code> (with valid types resolved)
-          </div>
+          <p>By supplying a target schema dictionary, you guarantee that the returned attributes match the expected data types. The repaired response returns exactly structured JSON data:</p>
+          <pre><code class="language-json">{
+  "project_name": "Antigravity Pipeline",
+  "build_status": "success",
+  "metrics": {
+    "duration_seconds": 124.5,
+    "test_count": 48,
+    "failed_tests": 0,
+    "coverage": "98.5%"
+  },
+  "contributors": [
+    { "name": "Alice", "role": "lead" },
+    { "name": "Bob", "role": "reviewer" }
+  ],
+  "releases": [ "v1.0", "v1.1" ]
+}</code></pre>
         </section>
       </div>
 

@@ -255,18 +255,28 @@ cmd, explanation = agent.<span class="function">generate_command</span>(<span cl
           </div>
         </section>
 
-        <!-- STREAMING -->
-        <section class="doc-section" id="streaming">
-          <h2>Real-Time Streaming</h2>
-          <p>Pass <code>stream=True</code> to output token streams of the model's step-by-step thinking process inside <code>&lt;thought&gt;</code> tags followed by the markdown command block.</p>
+        <!-- PIPELINE -->
+        <section class="doc-section" id="pipeline">
+          <h2>Complex Command Pipelines</h2>
+          <p>The CLI Agent handles complex natural language requirements involving multiple nested operations, pipes, file redirections, and limits:</p>
           
           <div class="code-panel" style="max-width:100%">
-            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Streaming Example</div></div>
+            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Pipeline Example</div></div>
             <div class="code-content" style="display:block;padding:1.5rem">
-              <pre><code>stream = agent.<span class="function">generate_command</span>(<span class="string">"kill process on port 8000"</span>, stream=<span class="keyword">True</span>)
-<span class="keyword">for</span> token <span class="keyword">in</span> stream:
-    <span class="function">print</span>(token, end=<span class="string">""</span>, flush=<span class="keyword">True</span>)</code></pre>
+              <pre><code>query = (
+    <span class="string">"Find all files in /var/log ending with .log modified in the last 7 days, "</span>
+    <span class="string">"search them for the term 'ERROR' case-insensitively, count the matching "</span>
+    <span class="string">"lines for each file, sort the count descending, and output the top 5 records "</span>
+    <span class="string">"while ignoring permission denied errors."</span>
+)
+result = agent.<span class="function">run</span>(query)
+<span class="function">print</span>(result[<span class="string">"command"</span>])</code></pre>
             </div>
+          </div>
+
+          <div class="tip-box">
+            <strong>Resulting Bash Pipeline:</strong><br>
+            <code>find /var/log -type f -name "*.log" -mtime -7 2>/dev/null | xargs grep -io "ERROR" 2>/dev/null | cut -d: -f1 | sort | uniq -c | sort -rn | head -n 5</code>
           </div>
         </section>
 

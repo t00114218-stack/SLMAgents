@@ -217,10 +217,13 @@ export SLM_CODE_INTERPRETER_N_CTX=2048</code></pre>
 
 interpreter = <span class="function">SLMCodeInterpreter</span>()
 
-result = interpreter.<span class="function">run</span>(<span class="string">"Compute the 10th Fibonacci number"</span>)
-<span class="function">print</span>(result[<span class="string">"success"</span>])       <span class="comment"># True</span>
-<span class="function">print</span>(result[<span class="string">"stdout"</span>])        <span class="comment"># "55"</span>
-<span class="function">print</span>(result[<span class="string">"code"</span>])          <span class="comment"># (Python script)</span></code></pre>
+query = (
+    <span class="string">"Load CSV text: date,department,revenue. Group by department, "</span>
+    <span class="string">"extract quarter, sum revenue, filter &gt;= 40000 and print table."</span>
+)
+result = interpreter.<span class="function">run</span>(query)
+<span class="function">print</span>(result[<span class="string">"success"</span>])
+<span class="function">print</span>(result[<span class="string">"stdout"</span>])  <span class="comment"># Prints markdown summary table of results</span></code></pre>
             </div>
           </div>
         </section>

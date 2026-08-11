@@ -39,50 +39,116 @@ cleaner = SLMJSONCleaner(
 )
 ```
 
+## API Reference
+
+### `SLMJSONCleaner`
+
+```python
+from slm_json_cleaner.json_cleaner import SLMJSONCleaner
+
+cleaner = SLMJSONCleaner(
+    model_path=None,   # Path to the ONNX model directory (defaults to models/qwen2.5-1.5b-onnx)
+    cache_dir=None,    # Alternative HF cache dir
+    n_ctx=2048,        # Context length (defaults to 2048)
+    n_threads=4        # Number of CPU threads to use for execution
+)
+```
+
 #### Methods
 
-#### `clean_json(malformed_text: str, schema_dict: dict, stream: bool = False)`
+#### `clean_json(malformed_text: str, schema_dict: dict)`
 Cleans broken or unstructured text to conform with `schema_dict`.
 - **Arguments**:
-  - `malformed_text` (str): Raw string containing malformed JSON.
+  - `malformed_text` (str): Raw string containing malformed or cut-off JSON.
   - `schema_dict` (dict): A reference dictionary representing the expected keys and value types.
-  - `stream` (bool): If `True`, returns a generator yielding output tokens in real-time.
 - **Returns**:
-  - `tuple[dict, bool]` (when `stream=False`): `(parsed_json_dict, success_flag)`. Returns `{"raw_output": text, "error": msg}` and `False` if parsing fails completely.
-  - `Generator` (when `stream=True`): Token yield generator.
+  - `tuple[dict, bool]`: `(parsed_json_dict, success_flag)`. Returns `{"raw_output": text, "error": msg}` and `False` if parsing fails completely.
 
 ---
 
 ## Usage Examples
 
-### 1. Repairing Broken JSON Output
+### 1. Repairing Complex Truncated & Nested JSON
+Here is a realistic scenario where an LLM's response was abruptly cut off mid-token due to context window limits, leaving unclosed brackets, missing keys, and dangling commas intermingled with conversational logs:
+
 ```python
 from slm_json_cleaner.json_cleaner import SLMJSONCleaner
 
 cleaner = SLMJSONCleaner()
 
-broken_json = '{"name": "Agent Suite", "version": "0.1'
-schema = {"name": "string", "version": "string"}
+# A highly malformed, cut-off raw string block:
+malformed_input = """
+Below is the output log matching build parameters:
+{
+  "project_name": "Antigravity Pipeline",
+  "build_status": "success",
+  "metrics": {
+     "duration_seconds": 124.5,
+     "test_count": 48,
+     "failed_tests": 0,
+     "coverage": "98.5%
+  },
+  "contributors": [
+     {"name": "Alice", "role": "lead"},
+     {"name": "Bob", "role": "reviewer"
+  ],
+  "releases": [
+     "v1.0", "v1.1", 
+  
+  
+[LOG EXPIRED - TOKEN LIMIT REACHED]
+"""
 
-# Repair the JSON
-parsed, success = cleaner.clean_json(broken_json, schema)
+# The target schema we want to enforce:
+target_schema = {
+    "project_name": "string",
+    "build_status": "string",
+    "metrics": {
+        "duration_seconds": "number",
+        "test_count": "number",
+        "failed_tests": "number",
+        "coverage": "string"
+    },
+    "contributors": [
+        {"name": "string", "role": "string"}
+    ],
+    "releases": ["string"]
+}
+
+# Repair and sanitize the input
+parsed_dict, success = cleaner.clean_json(malformed_input, target_schema)
 
 print(f"Success: {success}")
-print(f"Parsed Dict: {parsed}")
-# Output:
-# Success: True
-# Parsed Dict: {'name': 'Agent Suite', 'version': '0.1'}
+import json
+print(json.dumps(parsed_dict, indent=2))
 ```
 
-### 2. Schema Compliance Alignment
-You can enforce matching keys and value types:
-```python
-unstructured = '{"age": 30, "city": "New York'
-schema = {"age": "number", "city": "string"}
-
-parsed, success = cleaner.clean_json(unstructured, schema)
-print(parsed)
-# Output: {'age': 30, 'city': 'New York'}
+### Response Output (Successfully Repaired):
+```json
+{
+  "project_name": "Antigravity Pipeline",
+  "build_status": "success",
+  "metrics": {
+    "duration_seconds": 124.5,
+    "test_count": 48,
+    "failed_tests": 0,
+    "coverage": "98.5%"
+  },
+  "contributors": [
+    {
+      "name": "Alice",
+      "role": "lead"
+    },
+    {
+      "name": "Bob",
+      "role": "reviewer"
+    }
+  ],
+  "releases": [
+    "v1.0",
+    "v1.1"
+  ]
+}
 ```
 
 ---

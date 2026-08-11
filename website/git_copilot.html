@@ -214,17 +214,31 @@ export SLM_GIT_COPILOT_N_THREADS=4</code></pre>
 
 copilot = <span class="function">SLMGitCopilot</span>()
 
-diff_data = <span class="string">"""diff --git a/main.py b/main.py
---- a/main.py
-+++ b/main.py
-@@ -1,2 +1,2 @@
--def add(a, b): return a+b
-+def add(a, b): return a + b # Add numbers
+diff_data = <span class="string">"""diff --git a/slm_core/orchestrator.py b/slm_core/orchestrator.py
+--- a/slm_core/orchestrator.py
++++ b/slm_core/orchestrator.py
+@@ -12,5 +12,12 @@ class SLMOrchestrator:
+-        print("Running orchestrator route...")
++        logger.info("Initializing query router path routing details")
+-        return self.fallback_run(query)
++        route = self.classifier.predict(query)
++        if route == "rag":
++            return self.rag_agent.query(query)
+
+diff --git a/tests/test_orchestrator.py b/tests/test_orchestrator.py
+--- a/tests/test_orchestrator.py
++++ b/tests/test_orchestrator.py
+@@ -2,4 +2,9 @@
+-def test_orchestrator():
++def test_orchestrator_routing():
 """</span>
 
 msg = copilot.<span class="function">generate_commit_message</span>(diff_data)
 <span class="function">print</span>(msg)
-<span class="comment"># Output: style(main.py): add descriptive comment to add function</span></code></pre>
+<span class="comment"># Output:
+# feat(slm_core): Implement classifier-based routing in SLMOrchestrator
+# - Replace print statement with structured logger info
+# - Add test_orchestrator_routing to verify query routing</span></code></pre>
             </div>
           </div>
         </section>

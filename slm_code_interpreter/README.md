@@ -102,11 +102,51 @@ print(f"Attempts: {result['attempts']}")  # Recovered in 1 or more runs dependin
 print(f"Stdout: {result['stdout']}")       # Output: Recovered Output
 ```
 
-### 4. Real-Time Token Streaming
+### 4. Complex Data Processing Example
+The interpreter agent can handle robust multi-stage scripts using advanced third-party libraries (e.g. `pandas`, `numpy`, `matplotlib`) for data munging:
+
 ```python
-stream = interpreter.run("Create a list of numbers 1-5 and print their squares", stream=True)
-for token in stream:
-    print(token, end="", flush=True)
+from slm_code_interpreter.code_interpreter import SLMCodeInterpreter
+
+interpreter = SLMCodeInterpreter()
+
+query = (
+    "Load raw CSV text with employee records containing department, sales, and dates. "
+    "Parse the dates, extract the quarter, group by department and quarter, "
+    "aggregate total sales, filter out combinations below $40,000, and print "
+    "a structured markdown summary table."
+)
+
+result = interpreter.run(query)
+
+print("Success Status:", result["success"])
+print("Generated Code:\n", result["code"])
+print("Execution Output:\n", result["stdout"])
+```
+
+#### Generated Python Script:
+```python
+import pandas as pd
+from io import StringIO
+
+csv_data = """date,department,revenue
+2026-01-15,Sales,32000
+2026-02-10,Marketing,15000
+2026-03-01,Sales,45000
+2026-04-12,Engineering,60000
+2026-05-18,Marketing,45000
+2026-06-22,Sales,12000
+"""
+
+df = pd.read_csv(StringIO(csv_data))
+df['date'] = pd.to_datetime(df['date'])
+df['quarter'] = df['date'].dt.to_period('Q')
+
+# Aggregate and group
+agg = df.groupby(['department', 'quarter'])['revenue'].sum().reset_index()
+filtered = agg[agg['revenue'] >= 40000]
+
+print(filtered.to_markdown(index=False))
 ```
 
 ---

@@ -118,11 +118,34 @@ print(code)    # Output: -1
 print(stderr)  # Output: Execution Blocked: Destructive or dangerous command pattern detected.
 ```
 
-### 3. Real-Time Token Streaming
+### 3. Complex Command Pipeline Generation and Run
+The agent can translate and execute complex pipelines combining search, filtering, counting, and head limitations securely:
+
 ```python
-stream = agent.generate_command("Show docker containers running in background", stream=True)
-for token in stream:
-    print(token, end="", flush=True)
+from slm_cli_agent.cli_agent import SLMCLIAgent
+
+agent = SLMCLIAgent()
+
+# A dense multi-stage pipeline command request
+query = (
+    "Find all files in /var/log ending with .log modified in the last 7 days, "
+    "search them for the term 'ERROR' case-insensitively, count the matching "
+    "lines for each file, sort the count descending, and output the top 5 records "
+    "while ignoring permission denied errors."
+)
+
+result = agent.run(query)
+
+print("Exit code:", result["returncode"])
+print("Generated Pipeline Command:")
+print(result["command"])
+print("\nExplanation:")
+print(result["explanation"])
+```
+
+#### Generated Command:
+```bash
+find /var/log -type f -name "*.log" -mtime -7 2>/dev/null | xargs grep -io "ERROR" 2>/dev/null | cut -d: -f1 | sort | uniq -c | sort -rn | head -n 5
 ```
 
 ---
