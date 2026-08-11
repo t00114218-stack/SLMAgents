@@ -104,3 +104,36 @@ Executes queries via DuckDuckGo and compiles the results.
 * **`user_query`** (*str*): The input user query.
 * **`max_results_per_query`** (*int*): Limit of results per query variation.
 * **Returns**: *list[dict]* containing `title`, `href` (URL), and `body` (snippet content).
+
+---
+
+## 🚀 5. Usage Example
+
+Here is a realistic usage example demonstrating query planning, expansion, and execution to gather technical information:
+
+```python
+from slm_search_orchestrator.search_orchestrator import SLMSearchOrchestrator
+
+orchestrator = SLMSearchOrchestrator()
+
+# Execute retrieval
+result = orchestrator.retrieve("CPU inference thread optimization settings")
+
+print(result)
+```
+
+### Generated Output Response:
+```json
+[
+  {
+    "title": "Configuring OMP_NUM_THREADS for CPU Inference",
+    "href": "https://docs.slmagents.ai/cpu-threads",
+    "body": "For optimal ONNX CPU inference, set OMP_NUM_THREADS to match the physical core count, disabling hyperthreading overhead."
+  },
+  {
+    "title": "Optimizing Local SLM Performance on CPU",
+    "href": "https://blog.slmagents.ai/slm-cpu-tuning",
+    "body": "Small Language Models run highly efficiently on CPU by mapping threads to core boundaries, keeping memory allocations flat."
+  }
+]
+```

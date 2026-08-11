@@ -112,3 +112,43 @@ Extracts and structures data from target path matching the JSON schema specifica
 * **`schema_dict`** (*dict*): Output JSON blueprint (keys and values indicating expected types/descriptions).
 * **`max_retries`** (*int*): Number of self-correction feedback iterations.
 * **Returns**: *dict* representing clean, validated JSON output.
+
+---
+
+## 🚀 5. Usage Example
+
+Here is a realistic usage example parsing an invoice Word document (`invoice.docx`) to extract line items and amounts into structured JSON:
+
+```python
+from slm_document_parser.document_parser import SLMDocumentParser
+
+parser = SLMDocumentParser()
+
+# Define a complex target schema
+target_schema = {
+    "invoice_id": "string",
+    "billing_date": "string",
+    "line_items": [
+        {"item": "string", "quantity": "number", "price": "number"}
+    ],
+    "total_amount": "number"
+}
+
+# Execute the self-correcting parsing agent
+result = parser.parse("invoice.docx", schema_dict=target_schema)
+
+print(result)
+```
+
+### Generated Output Response:
+```json
+{
+  "invoice_id": "INV-2026-9874",
+  "billing_date": "2026-08-11",
+  "line_items": [
+    {"item": "Local CPU Inference Node Setup", "quantity": 1, "price": 450.00},
+    {"item": "ONNX Model Conversion Package", "quantity": 2, "price": 1200.00}
+  ],
+  "total_amount": 2850.00
+}
+```

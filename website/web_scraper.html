@@ -156,7 +156,37 @@ scraper = SLMWebScraper()</code></pre>
         </table>
 
         <h3>`scrape` Method</h3>
-        <pre><code class="language-python">result = scraper.scrape(html_content=raw_html, schema_dict=target_schema)</code></pre>
+        <p>Strips DOM layout noise and extracts schema-matching targets. Include webpage contents and target layouts:</p>
+        <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
+
+scraper = SLMWebScraper()
+
+# Product catalog html block to parse
+raw_html = """
+<div class="product-item">
+  <span class="title">Local CPU Node Core-1</span>
+  <span class="price">$150.00</span>
+  <div class="rating">Rating: 4.8 out of 5 stars</div>
+</div>
+"""
+
+target_schema = {
+    "products": [
+        {"product_name": "string", "price_usd": "number", "rating": "number"}
+    ]
+}
+
+result = scraper.scrape(html_content=raw_html, schema_dict=target_schema)
+print(result)</code></pre>
+
+        <div class="tip-box">
+          <strong>Extracted Structured JSON Output:</strong><br>
+          <pre><code class="language-json">{
+  "products": [
+    {"product_name": "Local CPU Node Core-1", "price_usd": 150.00, "rating": 4.8}
+  ]
+}</code></pre>
+        </div>
       </section>
     </main>
   </div>

@@ -113,3 +113,54 @@ Strips webpage noise and compiles structured data into the target JSON layout.
 * **`schema_dict`** (*dict*): Targeted JSON structure blueprint.
 * **`max_retries`** (*int*): Number of self-correcting schema retry cycles.
 * **Returns**: *dict* of structured data.
+
+---
+
+## 🚀 5. Usage Example
+
+Here is a realistic usage example scraping product listings, ratings, and prices from a raw HTML string block:
+
+```python
+from slm_web_scraper.web_scraper import SLMWebScraper
+
+scraper = SLMWebScraper()
+
+raw_html_content = """
+<html>
+  <body>
+    <header><h1>SLM Products Portal</h1></header>
+    <div class="product-item">
+      <span class="title">Local CPU Node Core-1</span>
+      <span class="price">$150.00</span>
+      <div class="rating">Rating: 4.8 out of 5 stars</div>
+    </div>
+    <div class="product-item">
+      <span class="title">Local OCR Bundle Node-2</span>
+      <span class="price">$280.00</span>
+      <div class="rating">Rating: 4.9 out of 5 stars</div>
+    </div>
+    <footer>Contact support at info@slmagents.ai</footer>
+  </body>
+</html>
+"""
+
+# Extract schema
+target_schema = {
+    "products": [
+        {"product_name": "string", "price_usd": "number", "rating": "number"}
+    ]
+}
+
+result = scraper.scrape(html_content=raw_html_content, schema_dict=target_schema)
+print(result)
+```
+
+### Generated Output Response:
+```json
+{
+  "products": [
+    {"product_name": "Local CPU Node Core-1", "price_usd": 150.00, "rating": 4.8},
+    {"product_name": "Local OCR Bundle Node-2", "price_usd": 280.00, "rating": 4.9}
+  ]
+}
+```

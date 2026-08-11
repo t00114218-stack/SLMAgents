@@ -159,7 +159,31 @@ parser = SLMVisionParser()</code></pre>
         </table>
 
         <h3>`parse_image` Method</h3>
-        <pre><code class="language-python">ocr_text = parser.parse_image("flowchart.png", task="&lt;OCR&gt;")</code></pre>
+        <p>Run coordinate mappings or caption generation by supplying task tags. Here is the flowchart diagram parsing configuration:</p>
+        <pre><code class="language-python">from slm_vision_parser.vision_parser import SLMVisionParser
+
+parser = SLMVisionParser()
+
+# Extract bounding boxes and text from flowchart
+result = parser.parse_image("flowchart.png", task="&lt;OCR_WITH_REGION&gt;")
+print(result)</code></pre>
+
+        <div class="tip-box">
+          <strong>OCR Coordinates Response Output:</strong><br>
+          <pre><code class="language-json">{
+  "&lt;OCR_WITH_REGION&gt;": {
+    "labels": ["box", "text", "arrow"],
+    "boxes": [
+      [120, 85, 240, 310],
+      [250, 190, 420, 195]
+    ],
+    "parse_results": [
+      {"label": "box", "text": "Start Process", "box": [120, 85, 240, 310]},
+      {"label": "arrow", "text": "Next Step Link", "box": [250, 190, 420, 195]}
+    ]
+  }
+}</code></pre>
+        </div>
       </section>
     </main>
   </div>

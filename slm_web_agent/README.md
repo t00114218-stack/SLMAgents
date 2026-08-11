@@ -120,3 +120,54 @@ Navigates the browser step-by-step to fulfill the goal.
 * **`start_url`** (*str*): Starting URL.
 * **`max_steps`** (*int*): Maximum browsing transitions allowed.
 * **Returns**: *dict* containing execution success, history trace lists, final URL, and text output.
+
+---
+
+## 🚀 5. Usage Example
+
+Here is a realistic usage example where the agent plans, navigates, and validates form fields on a signup portal:
+
+```python
+from slm_web_agent.web_agent import SLMWebAgent
+
+agent = SLMWebAgent()
+
+# Set navigation goal
+result = agent.browse(
+    goal="Locate the developer signup button, enter test details, and submit",
+    start_url="https://portal.slmagents.ai/test-login"
+)
+
+print(result)
+```
+
+### Generated Output Response:
+```json
+{
+  "success": true,
+  "final_url": "https://portal.slmagents.ai/dashboard",
+  "steps_taken": 3,
+  "history": [
+    {
+      "step": 1,
+      "action": "click",
+      "target": "Developer Sign Up",
+      "thought": "I observe a 'Developer Sign Up' link on the main page. I will click it to go to the register form."
+    },
+    {
+      "step": 2,
+      "action": "fill",
+      "target": "Username Input",
+      "value": "dev_test_user",
+      "thought": "I am on the signup form page. I need to enter a username to proceed."
+    },
+    {
+      "step": 3,
+      "action": "click",
+      "target": "Submit Registration",
+      "thought": "Form fields are completed. I will now click the submit button to complete the registration goal."
+    }
+  ],
+  "message": "Successfully navigated and completed form submission."
+}
+```

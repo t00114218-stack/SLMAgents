@@ -109,3 +109,38 @@ Parses target image file and executes the requested visual query.
 * **`image_path`** (*str*): Local path to target image file.
 * **`task`** (*str*): The specific Florence-2 task tag.
 * **Returns**: *str* containing text content, coordinate points, or layout details.
+
+---
+
+## 🚀 5. Usage Example
+
+Here is a realistic example using the `<OCR_WITH_REGION>` task tag to extract coordinate bounding boxes alongside the text contents of a flowchart diagram:
+
+```python
+from slm_vision_parser.vision_parser import SLMVisionParser
+
+parser = SLMVisionParser()
+
+# Parse the flowchart image to map nodes and coordinates
+output = parser.parse_image("flowchart.png", task="<OCR_WITH_REGION>")
+
+print(output)
+```
+
+### Generated Output Response:
+```json
+{
+  "<OCR_WITH_REGION>": {
+    "labels": ["box", "text", "arrow"],
+    "boxes": [
+      [120, 85, 240, 310],
+      [150, 100, 210, 280],
+      [250, 190, 420, 195]
+    ],
+    "parse_results": [
+      {"label": "box", "text": "Start Process", "box": [120, 85, 240, 310]},
+      {"label": "arrow", "text": "Next Step Link", "box": [250, 190, 420, 195]}
+    ]
+  }
+}
+```

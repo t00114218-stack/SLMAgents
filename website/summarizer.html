@@ -250,12 +250,16 @@ text = <span class="string">"SpaceX launched Falcon 9 from Cape Canaveral, landi
 
 <span class="comment"># Bullet points (default)</span>
 bullets = summarizer.<span class="function">summarize</span>(text, format=<span class="string">"bullet_points"</span>)
+<span class="comment"># Output: - SpaceX launched the Falcon 9 rocket from Cape Canaveral.</span>
+<span class="comment">#         - The booster successfully landed for the 15th time.</span>
 
 <span class="comment"># Paragraph</span>
 para = summarizer.<span class="function">summarize</span>(text, format=<span class="string">"paragraph"</span>, max_length=128)
+<span class="comment"># Output: SpaceX successfully launched a Falcon 9 rocket from Cape Canaveral and completed the booster's 15th milestone landing return.</span>
 
 <span class="comment"># TL;DR</span>
 tldr = summarizer.<span class="function">summarize</span>(text, format=<span class="string">"tldr"</span>, max_length=64)
+<span class="comment"># Output: SpaceX lands booster for 15th time after Falcon 9 Cape Canaveral launch.</span>
 
 <span class="comment"># With instruction and evaluator-corrector</span>
 accurate = summarizer.<span class="function">summarize</span>(

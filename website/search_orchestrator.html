@@ -156,7 +156,30 @@ orchestrator = SLMSearchOrchestrator()</code></pre>
         </table>
 
         <h3>`retrieve` Method</h3>
-        <pre><code class="language-python">snippets = orchestrator.retrieve(user_query="CPU inference limits")</code></pre>
+        <p>Expands the query into 3 variations, scrapes search engines, and formats snippets. Include search inputs:</p>
+        <pre><code class="language-python">from slm_search_orchestrator.search_orchestrator import SLMSearchOrchestrator
+
+orchestrator = SLMSearchOrchestrator()
+
+# Run query planner and retrieval
+result = orchestrator.retrieve("CPU inference thread optimization settings")
+print(result)</code></pre>
+
+        <div class="tip-box">
+          <strong>Retrieved Search Results Output:</strong><br>
+          <pre><code class="language-json">[
+  {
+    "title": "Configuring OMP_NUM_THREADS for CPU Inference",
+    "href": "https://docs.slmagents.ai/cpu-threads",
+    "body": "For optimal ONNX CPU inference, set OMP_NUM_THREADS to match the physical core count, disabling hyperthreading overhead."
+  },
+  {
+    "title": "Optimizing Local SLM Performance on CPU",
+    "href": "https://blog.slmagents.ai/slm-cpu-tuning",
+    "body": "Small Language Models run highly efficiently on CPU by mapping threads to core boundaries, keeping memory allocations flat."
+  }
+]</code></pre>
+        </div>
       </section>
     </main>
   </div>

@@ -160,7 +160,47 @@ agent = SLMWebAgent()</code></pre>
         </table>
 
         <h3>`browse` Method</h3>
-        <pre><code class="language-python">result = agent.browse(goal="Confirm transaction", start_url="https://bank.com")</code></pre>
+        <p>Routes natural language instructions through Playwright pages. Include target URL parameters:</p>
+        <pre><code class="language-python">from slm_web_agent.web_agent import SLMWebAgent
+
+agent = SLMWebAgent()
+
+# Run goal-oriented web navigation task
+result = agent.browse(
+    goal="Locate the developer signup button, enter username details, and submit",
+    start_url="https://portal.slmagents.ai/test-login"
+)
+print(result)</code></pre>
+
+        <div class="tip-box">
+          <strong>Browsing Steps History Response Output:</strong><br>
+          <pre><code class="language-json">{
+  "success": true,
+  "final_url": "https://portal.slmagents.ai/dashboard",
+  "steps_taken": 3,
+  "history": [
+    {
+      "step": 1,
+      "action": "click",
+      "target": "Developer Sign Up",
+      "thought": "I observe a 'Developer Sign Up' link on the main page. I will click it to go to the register form."
+    },
+    {
+      "step": 2,
+      "action": "fill",
+      "target": "Username Input",
+      "value": "dev_test_user",
+      "thought": "I am on the signup form page. I need to enter a username to proceed."
+    },
+    {
+      "step": 3,
+      "action": "click",
+      "target": "Submit Registration",
+      "thought": "Form fields are completed. I will now click the submit button to complete the registration goal."
+    }
+  ]
+}</code></pre>
+        </div>
       </section>
     </main>
   </div>

@@ -162,7 +162,37 @@ parser = SLMDocumentParser(n_threads=4)</code></pre>
         </table>
 
         <h3>`parse` Method</h3>
-        <pre><code class="language-python">result = parser.parse(file_path="financials.docx", schema_dict=target_schema)</code></pre>
+        <p>Extracts data matching your target structure. Include the generated output validation schema in your script:</p>
+        <pre><code class="language-python">from slm_document_parser.document_parser import SLMDocumentParser
+
+parser = SLMDocumentParser()
+
+# Complex invoice target structure
+target_schema = {
+    "invoice_id": "string",
+    "billing_date": "string",
+    "line_items": [
+        {"item": "string", "quantity": "number", "price": "number"}
+    ],
+    "total_amount": "number"
+}
+
+# Run offline parsing
+result = parser.parse(file_path="invoice.docx", schema_dict=target_schema)
+print(result)</code></pre>
+
+        <div class="tip-box">
+          <strong>Parsed JSON Response Output:</strong><br>
+          <pre><code class="language-json">{
+  "invoice_id": "INV-2026-9874",
+  "billing_date": "2026-08-11",
+  "line_items": [
+    {"item": "Local CPU Inference Node Setup", "quantity": 1, "price": 450.00},
+    {"item": "ONNX Model Conversion Package", "quantity": 2, "price": 1200.00}
+  ],
+  "total_amount": 2850.00
+}</code></pre>
+        </div>
       </section>
     </main>
   </div>
