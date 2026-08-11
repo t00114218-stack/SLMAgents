@@ -123,53 +123,34 @@ Fetches webpage HTML, removes menus/navs/ads, and extracts data. If `schema_dict
 
 ---
 
-## 🚀 5. Usage Examples
+## 🚀 5. Usage Example: Hybrid Web Scraper (Tables & Images)
 
-### Example 1: Webpage Table Parsing (Natural Language Description)
-Scrapes a page containing a configuration table and automatically represents it as a clean text description rather than raw pipe-delimited Markdown cells:
-
-```python
-from slm_web_scraper.web_scraper import SLMWebScraper
-
-scraper = SLMWebScraper()
-
-# Scrapes a page containing the RAG API parameter table
-clean_text = scraper.scrape_url("https://www.slmagents.ai/rag.html")
-print(clean_text)
-```
-
-#### Output:
-```text
-SLM RAG | Documentation
-Home › SLM RAG
-📚 Retrieval-Augmented Generation
-Answer questions from your own documents locally and privately with zero API costs.
-
-[Table Description: The table outlines the constructor configuration parameters for the RAG API, containing four parameters:
-- model_path (string or None, specifying the explicit path to an ONNX model directory)
-- cache_dir (string or None, indicating the directory to cache the model)
-- n_ctx (integer with a default of 8192, representing context window size in tokens)
-- n_threads (integer with a default of 4, configuring the CPU thread count for inference)]
-```
-
-### Example 2: Webpage Image Parsing (OCR Visual Description)
-Scrapes a webpage containing an image tag and uses the vision parser (Florence-2) to describe its contents inside the body text context:
+Here is a unified usage example scraping `https://www.slmagents.ai/vision_parser.html` (which contains both a parameters table and a flowchart image). The scraper automatically converts the table into a clean natural language paragraph and describes the image tag:
 
 ```python
 from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
-# Scrapes a page containing flowchart.png image tag
+# Scrapes the vision parser page, describing tables and images automatically
 clean_text = scraper.scrape_url("https://www.slmagents.ai/vision_parser.html")
 print(clean_text)
 ```
 
-#### Output:
+### Cleaned Webpage Text Output:
 ```text
 SLM Vision Parser | Documentation
-Overview: Translates image structures directly into text labels.
+Overview
+The SLM Vision Parser uses the sequence-to-sequence Florence-2-large model to translate image structures directly.
 
-Below is the input flowchart diagram processed by the vision model:
+API Reference
+`SLMVisionParser` Initialization
+from slm_vision_parser.vision_parser import SLMVisionParser
+parser = SLMVisionParser()
+
+[Table Description: The HTML table represents the constructor parameter configuration for SLMVisionParser, detailing the "model_path" parameter of type string (str), which references the local directory containing pre-downloaded checkpoints and defaults to "../../models/florence-2-large".]
+
+`parse_image` Method
+Run coordinate mappings or caption generation by supplying task tags. Below is the input flowchart diagram processed by the vision model:
 [Image Description: A flowchart showing a start step ('Start Process') and a next step ('Next Step Link') connected with two arrows from the start step to the next step.]
 ```

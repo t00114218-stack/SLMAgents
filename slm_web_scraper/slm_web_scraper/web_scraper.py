@@ -200,6 +200,57 @@ class SLMWebScraper:
                     
         return str(soup)
 
+    def describe_tables_in_html(self, html_content: str) -> str:
+        """Finds all <table> elements and describes them using the local Phi-3.5 model, replacing them in-place."""
+        soup = BeautifulSoup(html_content, "lxml")
+        tables = soup.find_all("table")
+        
+        if not tables:
+            return html_content
+            
+        for table in tables:
+            table_str = str(table)
+            
+            # Phi-3.5 instructions for translating tabular DOM tree to natural text paragraph
+            system_prompt = (
+                "You are an offline HTML table explainer.\n"
+                "Read the HTML table and generate a natural language text description summarizing the columns, rows, entries, and parameters clearly. Do not output markdown tables or pipes."
+            )
+            user_prompt = f"HTML Table:\n{table_str}\n\nGenerate a clean natural language paragraph describing this table:"
+            
+            messages = [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ]
+            
+            full_prompt = ""
+            for msg in messages:
+                full_prompt += f"<|{msg['role']}|>\n{msg['content']}<|end|>\n"
+            full_prompt += "<|assistant|>\n"
+            
+            try:
+                input_tokens = self.tokenizer.encode(full_prompt)
+                params = og.GeneratorParams(self.model)
+                params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.0)
+                
+                generator = og.Generator(self.model, params)
+                generator.append_tokens(input_tokens)
+                
+                response_text = ""
+                while not generator.is_done():
+                    generator.generate_next_token()
+                    new_tokens = generator.get_next_tokens()
+                    if len(new_tokens) > 0:
+                        response_text += self.tokenizer.decode(new_tokens)
+                
+                desc = response_text.strip()
+                if desc:
+                    table.replace_with(soup.new_string(f" [Table Description: {desc}] "))
+            except Exception as e:
+                print(f"[SLMWebScraper] Table description failed: {e}")
+                
+        return str(soup)
+
     def scrape_url(self, url: str, schema_dict: dict = None, max_retries: int = 3):
         """Fetches html from URL and extracts cleaned main content text, avoiding navigation/menus and ads."""
         if "slmagents.ai" in url or "localhost" in url:
@@ -220,6 +271,7 @@ class SLMWebScraper:
                 html_content = response.read().decode("utf-8", errors="ignore")
                 
         html_content = self.process_images_in_html(html_content, base_url=url)
+        html_content = self.describe_tables_in_html(html_content)
         if schema_dict is None:
             return self.clean_html(html_content)
             
@@ -237,6 +289,7 @@ class SLMWebScraper:
     def scrape(self, html_content: str, schema_dict: dict, max_retries: int = 3) -> dict:
         """Strips HTML content and parses the remainder into a schema compliant JSON structure."""
         html_content = self.process_images_in_html(html_content)
+        html_content = self.describe_tables_in_html(html_content)
         cleaned_text = self.clean_html(html_content)
         
         system_prompt = (

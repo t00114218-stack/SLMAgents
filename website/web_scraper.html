@@ -157,48 +157,33 @@ scraper = SLMWebScraper()</code></pre>
         </table>
 
         <h3>`scrape_url` Method</h3>
-        <p>Fetches a URL directly, filters out header/footer menus, dropdown lists, sidebars, and ads, and processes structured elements:</p>
+        <p>Fetches a URL, filters out header/footer menus, dropdown lists, sidebars, and ads, and automatically parses tables and image content:</p>
 
-        <h4>Example 1: Webpage Table Parsing (Natural Language Description)</h4>
-        <p>If the page contains a table, the scraper translates it into a clean, text-based description rather than raw cells:</p>
+        <h4>Hybrid Visual Scraping (Tables & Images)</h4>
+        <p>This example scrapes the vision parser documentation page <code>https://www.slmagents.ai/vision_parser.html</code>, describing its parameters table and flowchart image automatically:</p>
         <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
-# Scrapes page and converts tables to text descriptions automatically
-clean_text = scraper.scrape_url("https://www.slmagents.ai/rag.html")
-print(clean_text)</code></pre>
-
-        <div class="tip-box">
-          <strong>Cleaned Webpage Text Output with Table Description:</strong><br>
-          <pre><code>SLM RAG | Documentation
-Home › SLM RAG
-📚 Retrieval-Augmented Generation
-Answer questions from your own documents locally and privately with zero API costs.
-
-[Table Description: The table outlines the constructor configuration parameters for the RAG API, containing four parameters:
-- model_path (string or None, specifying the explicit path to an ONNX model directory)
-- cache_dir (string or None, indicating the directory to cache the model)
-- n_ctx (integer with a default of 8192, representing context window size in tokens)
-- n_threads (integer with a default of 4, configuring the CPU thread count for inference)]</code></pre>
-        </div>
-
-        <h4>Example 2: Webpage Image Parsing (OCR Visual Description)</h4>
-        <p>If the page contains image tags (<code>&lt;img&gt;</code>), the scraper downloads the image and calls the vision model to summarize its visual elements in-place:</p>
-        <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
-
-scraper = SLMWebScraper()
-
-# Scrapes page and parses flowchart.png via vision parser
+# Scrapes page and converts tables/images to descriptions automatically
 clean_text = scraper.scrape_url("https://www.slmagents.ai/vision_parser.html")
 print(clean_text)</code></pre>
 
         <div class="tip-box">
-          <strong>Cleaned Webpage Text Output with Image Caption:</strong><br>
+          <strong>Cleaned Webpage Text Output with Visual Descriptions:</strong><br>
           <pre><code>SLM Vision Parser | Documentation
-Overview: Translates image structures directly into text labels.
+Overview
+The SLM Vision Parser uses the sequence-to-sequence Florence-2-large model to translate image structures directly.
 
-Below is the input flowchart diagram processed by the vision model:
+API Reference
+`SLMVisionParser` Initialization
+from slm_vision_parser.vision_parser import SLMVisionParser
+parser = SLMVisionParser()
+
+[Table Description: The HTML table represents the constructor parameter configuration for SLMVisionParser, detailing the "model_path" parameter of type string (str), which references the local directory containing pre-downloaded checkpoints and defaults to "../../models/florence-2-large".]
+
+`parse_image` Method
+Run coordinate mappings or caption generation by supplying task tags. Below is the input flowchart diagram processed by the vision model:
 [Image Description: A flowchart showing a start step ('Start Process') and a next step ('Next Step Link') connected with two arrows from the start step to the next step.]</code></pre>
         </div>
       </section>
