@@ -1,7 +1,7 @@
 models:
   vision_parser:
-    path: "../../models/florence-2-large-onnx"
-    repo_id: "onnx-community/Florence-2-large-ONNX"
+    path: "../../models/florence-2-large"
+    repo_id: "microsoft/Florence-2-large"
 
 inference:
   n_threads: 4

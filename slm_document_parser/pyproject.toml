@@ -25,7 +25,11 @@ dependencies = [
     "huggingface_hub>=0.10.0",
     "pyyaml",
     "pypdf",
-    "python-docx"
+    "python-docx",
+    "pypdfium2",
+    "openpyxl",
+    "python-pptx",
+    "olefile"
 ]
 
 [[project.authors]]

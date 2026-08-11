@@ -105,93 +105,101 @@
         </div>
       </section>
 
-      <section class="doc-section">
+      <section class="doc-section" id="overview">
         <h2>Overview</h2>
-        <p>The SLM Document Parser leverages Microsoft's MIT-licensed <strong>Phi-3.5-mini-instruct</strong> model optimized via ONNX Runtime GenAI to parse multi-formatted documents offline. It parses text layouts, lists, and tables (spanning both paragraphs and Word table grid entities) to output structured JSON matching a targeted validation schema.</p>
+        <p>The SLM Document Parser leverages Microsoft's MIT-licensed <strong>Phi-3.5-mini-instruct</strong> and <strong>Florence-2-large</strong> models optimized via ONNX Runtime GenAI to parse multi-formatted documents offline. It supports high-fidelity layout preservation for scanned PDFs and legacied formats (<code>.pdf</code>, <code>.docx</code>, <code>.doc</code>, <code>.pptx</code>, <code>.ppt</code>, <code>.txt</code>) to output structured text and semantic RAG database chunks.</p>
       </section>
 
-      <section class="doc-section">
-        <h2>🤖 Truly Agentic Workflow</h2>
-        <p>The Document Parser does not just extract text; it operates a self-correcting validation loop:</p>
+      <section class="doc-section" id="workflow">
+        <h2>🤖 Truly Agentic Hybrid Visual Pipeline</h2>
+        <p>The Document Parser handles layout mapping by combining visual coordinate classifiers with standard extraction loops:</p>
         <ul>
-          <li><strong>Layout Assembly:</strong> Paragraphs and table structures are aligned to match spatial configurations.</li>
-          <li><strong>Prompt Tag Mapping:</strong> Injects text into correct Phi-3.5 instruction wrappers.</li>
-          <li><strong>Schema Verification:</strong> Analyzes outputs against target schemas. If the model outputs bad JSON formats or invalid keys, the agent triggers a self-correction repair request, passing the traceback error back to the LLM to fix the formatting.</li>
+          <li><strong>LibreOffice Conversion Layer:</strong> Converts complex formats (DOC/PPT/PPTX) into intermediate PDFs in the background using headless <code>soffice</code> conversions.</li>
+          <li><strong>Page Image Rendering:</strong> Renders PDF page indices to images sequentially using <code>pypdfium2</code>.</li>
+          <li><strong>Florence-2 OCR &amp; OD:</strong> Scans rendered page layouts, running Object Detection (<code>&lt;OD&gt;</code>) to locate table and figure boxes. Crops table boxes to OCR them individually, and runs detailed caption generation (<code>&lt;DETAILED_CAPTION&gt;</code>) for diagrams.</li>
+          <li><strong>Layout Reconstruction:</strong> Passes text, parsed tables, and diagram captions to Phi-3.5 to synthesize a unified, formatted Markdown page representation.</li>
+          <li><strong>Semantic Chunker &amp; Linker:</strong> Segments markdown into structured paragraph chunks, extracts heading hierarchies, resolves product entities, and links related sections together.</li>
         </ul>
       </section>
 
-      <section class="doc-section">
+      <section class="doc-section" id="tuning">
         <h2>⚡ CPU Performance Tuning Guidelines</h2>
-        <p>Follow these configuration rules to maximize execution performance on local CPUs:</p>
+        <p>Follow these configuration rules to optimize latency on standard CPUs:</p>
         <ul>
-          <li><strong>Core Alignment:</strong> Limit <code>n_threads</code> strictly to the number of physical CPU cores (e.g., 4 or 8) to avoid context-switching overhead.</li>
-          <li><strong>Context Size Control:</strong> Limit the context size <code>n_ctx</code> (default: 4096) to match the document size, which reduces token evaluation latency.</li>
-          <li><strong>Environment Variables:</strong> Configure shell flags to prevent thread conflicts:
+          <li><strong>Core Thread Cap:</strong> Set <code>n_threads</code> strictly to the number of physical cores to avoid context switching thread collisions.</li>
+          <li><strong>Sequential Processing:</strong> Process multi-page images sequentially instead of in parallel batches to keep the memory footprint under 2.0 GB.</li>
+          <li><strong>OpenMP Settings:</strong> Keep thread counts aligned in your shell environment:
             <pre><code>export OMP_NUM_THREADS=4
 export MKL_NUM_THREADS=4</code></pre>
           </li>
         </ul>
       </section>
 
-      <section class="doc-section">
-        <h2>🎯 Accuracy Improvement Tips</h2>
-        <div class="tip-box">
-          <strong>Tip for Tabular Data:</strong> When processing tables inside PDF or Word files, flat text parsing loses row and column associations. Preprocess tables into a flat string structure using row delimiters (e.g., <code>"Col 1 | Col 2"</code>) before passing the content to the model.
-        </div>
-        <div class="warn-box">
-          <strong>Schema Isolation Warning:</strong> Explicitly instruct the model to use <code>null</code> or <code>""</code> for missing fields to prevent the model from inventing fallback values.
-        </div>
-      </section>
-
-      <section class="doc-section">
+      <section class="doc-section" id="api">
         <h2>API Reference</h2>
+        
         <h3>`SLMDocumentParser` Initialization</h3>
         <pre><code class="language-python">from slm_document_parser.document_parser import SLMDocumentParser
 
-parser = SLMDocumentParser(n_threads=4)</code></pre>
+parser = SLMDocumentParser(n_ctx=4096, n_threads=4)</code></pre>
         
         <table class="param-table">
           <thead>
-            <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+            <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
           </thead>
           <tbody>
-            <tr><td>model_path</td><td>str</td><td>Optional custom directory containing the ONNX model files. Defaults to "../../models/phi-3.5-mini-instruct-onnx".</td></tr>
-            <tr><td>n_ctx</td><td>int</td><td>The maximum context window size (default: 4096). Supports up to 128,000 tokens.</td></tr>
-            <tr><td>n_threads</td><td>int</td><td>Number of hardware threads allocated on CPU (default: 4).</td></tr>
+            <tr><td>model_path</td><td>str | None</td><td>Local path to Phi-3.5 weight checkpoints. Defaults to "../../models/phi-3.5-mini-instruct-onnx".</td></tr>
+            <tr><td>n_ctx</td><td>int | 4096</td><td>Inference token window size. Phi-3.5 supports up to 128K context tokens.</td></tr>
+            <tr><td>n_threads</td><td>int | 4</td><td>Allocated CPU cores for ORT execution.</td></tr>
           </tbody>
         </table>
 
-        <h3>`parse` Method</h3>
-        <p>Extracts data matching your target structure. Include the generated output validation schema in your script:</p>
-        <pre><code class="language-python">from slm_document_parser.document_parser import SLMDocumentParser
+        <h3>`extract_text` Method</h3>
+        <p>Converts document layouts and images into a single reconstructed Markdown text string:</p>
+        <pre><code class="language-python">markdown_content = parser.extract_text("financial_report.pdf")</code></pre>
 
-parser = SLMDocumentParser()
-
-# Complex invoice target structure
-target_schema = {
-    "invoice_id": "string",
-    "billing_date": "string",
-    "line_items": [
-        {"item": "string", "quantity": "number", "price": "number"}
-    ],
-    "total_amount": "number"
-}
-
-# Run offline parsing
-result = parser.parse(file_path="invoice.docx", schema_dict=target_schema)
-print(result)</code></pre>
+        <h3>`chunk_document` Method</h3>
+        <p>Extracts markdown text and slices it into linked semantic chunks with metadata properties:</p>
+        <pre><code class="language-python">chunks = parser.chunk_document("financial_report.pdf")
+print(chunks[0])</code></pre>
 
         <div class="tip-box">
-          <strong>Parsed JSON Response Output:</strong><br>
+          <strong>Extracted Semantic Chunk Output (JSON):</strong><br>
           <pre><code class="language-json">{
-  "invoice_id": "INV-2026-9874",
-  "billing_date": "2026-08-11",
-  "line_items": [
-    {"item": "Local CPU Inference Node Setup", "quantity": 1, "price": 450.00},
-    {"item": "ONNX Model Conversion Package", "quantity": 2, "price": 1200.00}
-  ],
-  "total_amount": 2850.00
+  "text": "SpaceX successfully launched the Falcon 9 rocket from Cape Canaveral Space Force Station, landing the booster return flight for the 15th time. The mission delivered communication payloads into low Earth orbit.",
+  "metadata": {
+    "source": "financial_report.pdf",
+    "heading": "1. Launch Milestones",
+    "subheading": "Falcon 9 Performance",
+    "product": "SpaceX",
+    "key_terms": ["Falcon 9", "Cape Canaveral", "booster"],
+    "format": "pdf",
+    "chunk_index": 0,
+    "related_chunks": [1, 2]
+  }
 }</code></pre>
+        </div>
+
+        <h3>`parse_and_chunk_stream` Method</h3>
+        <p>Streaming generator yielding semantic chunks page-by-page as they are processed to reduce first-chunk response times (TTFT):</p>
+        <pre><code class="language-python">for chunk in parser.parse_and_chunk_stream("multi_page_manual.pdf"):
+    print(f"Processed Chunk: {chunk['text'][:100]}...")</code></pre>
+
+        <h3>`export_chunks_to_excel` Method</h3>
+        <p>Saves the parsed chunks to an Excel spreadsheet:</p>
+        <pre><code class="language-python"># Exports to workbook. Set append=True to write to an existing sheet
+parser.export_chunks_to_excel(chunks, "rag_dataset.xlsx", append=False)</code></pre>
+
+        <div class="tip-box">
+          <strong>Output Excel Table Layout:</strong><br>
+          <table class="param-table">
+            <thead>
+              <tr><th>Chunk Index</th><th>Source File</th><th>Heading</th><th>Subheading</th><th>Product</th><th>Related Chunks</th><th>Text</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0</td><td>financial_report.pdf</td><td>1. Launch Milestones</td><td>Falcon 9 Performance</td><td>SpaceX</td><td>1,2</td><td>SpaceX successfully launched the Falcon 9...</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </main>

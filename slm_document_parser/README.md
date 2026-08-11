@@ -1,96 +1,72 @@
 # SLM Document Parser
 
-A local CPU-optimized document structure and text parser agent powered by Microsoft's MIT-licensed **Phi-3.5-mini-instruct** model running via ONNX Runtime GenAI. It extracts content from PDFs, DOCX, and text layout structures into clean, structured schema-compliant JSON representations.
+A local CPU-optimized document structure and text parser agent powered by Microsoft's MIT-licensed **Phi-3.5-mini-instruct** and **Florence-2-large** models running via ONNX Runtime GenAI. 
+
+It handles complex document parsing workflows by combining a **Hybrid Visual OCR Pipeline** (rendering PDF/Office pages to images, detecting tables/figures, running block OCR, and assembling layouts using LLM reasoning) with native layout-aware parsing fallbacks. It also features **Semantic Graph-Chunking** to slice text into RAG-compliant chunks with cross-linked metadata, and can export results directly to Microsoft Excel.
 
 ---
 
 ## 🧠 1. Agentic Architecture & Workflow
 
-The SLM Document Parser does not simply extract text; it operates as an autonomous data routing and validation loop.
+The SLM Document Parser operates as an autonomous visual-to-text routing and validation loop:
 
 ```
-+---------------------+
-| Raw Document File   |
-+----------+----------+
-           |
-           v
-+------------------------------------------+
-| Text Pre-processing & Layout Assembly    |
-| (Extract paragraphs, parse tables, etc.)  |
-+----------+----------+
-           |
-           v
-+------------------------------------------+
-| Phi-3.5 Parser Prompt Generation         |
-| (Format instructions & schema metadata)  |
-+----------+----------+
-           |
-           v
-+------------------------------------------+
-| Local ONNX CPU Inference                 |
-+----------+----------+
-           |
-           v
-+----------+----------+
-| JSON & Schema Validation  <----------------+
-+----------+----------+                      |
-           |                                  |
-     [Is Invalid]                             |
-           |                                  |
-           v                                  |
-+------------------------------------------+  |
-| Self-Correction Feedback Generator       |--+
-| (Re-query LLM with traceback warnings)   |
-+------------------------------------------+
++-----------------------------------------------------------+
+|                      Raw Input File                       |
+|           (PDF, DOCX, DOC, PPTX, PPT, TXT, MD)           |
++-----------------------------+-----------------------------+
+                              |
+                     [Convert to PDF / Image]
+                              v
++-----------------------------------------------------------+
+|             Hybrid Visual OCR Pipeline (Florence-2)       |
+|  - Render PDF page index to PNG image via pypdfium2       |
+|  - Run Object Detection (<OD>) to localize tables/figures  |
+|  - Crop detected boxes and run local OCR / Captions       |
++-----------------------------+-----------------------------+
+                              |
+                              v
++-----------------------------------------------------------+
+|              Layout Assembly & Markdown Synthesis          |
+|  - Combine OCR text, markdown tables, and captions       |
+|  - Self-correct formatting trace errors via Phi-3.5 ONNX  |
++-----------------------------+-----------------------------+
+                              |
+                              v
++-----------------------------------------------------------+
+|               Semantic Graph Chunker & Linker             |
+|  - Group text into RAG chunks (minimum 15-20 words)       |
+|  - Extract headings, keywords, and product references     |
+|  - Link related sibling paragraphs together               |
++-----------------------------+-----------------------------+
+                              |
+                              v
++-----------------------------------------------------------+
+|                       Output Formats                      |
+|             (Structured JSON, Excel spreadsheet)          |
++-----------------------------------------------------------+
 ```
 
-### Self-Correction & Repair Loop:
-1. **Extraction:** The parser extracts raw text blocks. If the file is a `.docx`, it scans paragraphs and renders tables into clear columnar strings (e.g., `Header 1 | Header 2 \n Cell 1 | Cell 2`) to preserve spatial context.
-2. **Schema Integration:** The agent constructs a validation template showing the model exactly how the final JSON fields must be styled.
-3. **Execution:** The ONNX engine runs inference using greedy search (temperature = 0.0) to maximize structural consistency.
-4. **Validation:** If the model outputs broken bracket layouts or deviates from the target schema keys, the agent triggers a feedback prompt. It sends the bad output, the traceback description, and demands a corrected JSON block.
+### Advanced Features:
+1. **Hybrid Visual OCR Pipeline**: Converts scanned pages or low-text layout pages to images using `pypdfium2`. Runs Florence-2 `<OD>` to localize tables and figures, crops and OCRs tables, captions figures, and uses the local LLM to reconstruct the page back into perfect Markdown.
+2. **Office Document Conversions**: Leverages LibreOffice (`soffice --headless`) on Darwin/Linux to convert formats like `.docx`, `.doc`, `.pptx`, `.ppt` into clean PDFs for visual parsing, falling back to zip XML extractors and OLE stream readers (`olefile`).
+3. **Semantic Linkage Chunking**: Divide documents by topics and paragraphs instead of simple character counts. Extract active section headings, subheadings, key terms, and map cross-linked references between sibling chunks.
+4. **Excel spreadsheet export**: Save chunk tables (`[Index, Source, Heading, Subheading, Product, Related, Text]`) into `.xlsx` documents.
 
 ---
 
 ## ⚡ 2. CPU Performance Tuning Guidelines
 
-To run document processing efficiently on typical server or workstation processors:
-
 1. **Allocating Threads (`n_threads`):**
-   * Do not exceed physical CPU cores (hyperthreads cause cache thrashing). Set `n_threads` strictly to physical core count (e.g., `4` or `8`).
-   * Example:
-     ```python
-     parser = SLMDocumentParser(n_threads=4)
-     ```
+   * Limit `n_threads` to your CPU's physical core count (excluding hyperthreads) to avoid cache thrashing and lockups.
 2. **Context Window Configuration (`n_ctx`):**
-   * Keep `n_ctx` as tight as possible for the document size. Although Phi-3.5 supports up to 128K context tokens, larger contexts increase CPU latency.
-   * If parsing documents under 10 pages, configure `n_ctx=4096` or `n_ctx=8192`.
-3. **Threading Environment Settings:**
-   Ensure your shell environment limits competing OpenMP pools:
-   ```bash
-   export OMP_NUM_THREADS=4
-   export MKL_NUM_THREADS=4
-   ```
+   * Keep `n_ctx` as tight as possible (e.g., `4096` or `8192`) to reduce token evaluation latency.
+3. **Memory Limits & Garbage Collection**:
+   * Florence-2 is memory-intensive. The parser runs page extractions sequentially and cleans temporary page PNG images immediately after synthesis to keep the RAM footprint under 2.0 GB.
 
 ---
 
-## 🎯 3. Accuracy Optimization Tips
-
-*   **Spatial Table Handling:** When extracting tables from Word or PDF layouts, flat paragraphs lose row associations. Ensure tables are processed into flat, delimited string lists (`row_cell_1 | row_cell_2`) before sending them to the model context.
-*   **Prompt Boundary Alignment:** Use exact Phi-3.5 tags to isolate instructions from document text:
-    ```text
-    <|system|>
-    Extract data into JSON matching the schema.<|end|>
-    <|user|>
-    Document Content: {document_text}
-    Schema: {schema_dict}<|end|>
-    <|assistant|>
-    ```
-*   **Preventing Schema Hallucinations:** If a target key is not present in the document, explicitly instruct the model to populate it as `null` or `""` instead of inventing dummy data.
-
----
-
-## 📂 4. API Reference
+## 📂 3. API Reference
 
 ### `SLMDocumentParser`
 
@@ -98,57 +74,82 @@ To run document processing efficiently on typical server or workstation processo
 from slm_document_parser.document_parser import SLMDocumentParser
 
 parser = SLMDocumentParser(
-    model_path="../../models/phi-3.5-mini-instruct-onnx",
-    n_ctx=4096,
-    n_threads=4
+    model_path=None,   # Path to the ONNX model directory (defaults to models/phi-3.5-mini-instruct-onnx)
+    cache_dir=None,    # Alternative HF cache dir
+    n_ctx=4096,        # Context length (defaults to 4096)
+    n_threads=4        # Number of CPU threads to use for execution
 )
 ```
 
 #### Methods
 
-##### `parse(file_path: str, schema_dict: dict, max_retries: int = 3) -> dict`
-Extracts and structures data from target path matching the JSON schema specifications.
-* **`file_path`** (*str*): Path to target file (`.docx`, `.pdf`, `.txt`, `.md`).
-* **`schema_dict`** (*dict*): Output JSON blueprint (keys and values indicating expected types/descriptions).
-* **`max_retries`** (*int*): Number of self-correction feedback iterations.
-* **Returns**: *dict* representing clean, validated JSON output.
+##### `extract_text(file_path: str) -> str`
+Extracts layout-reconstructed markdown text from target document file. Runs the hybrid visual OCR pipeline for PDFs and converts office formats automatically if LibreOffice is present.
+* **`file_path`** (*str*): Local path to target document.
+* **Returns**: *str* representing document Markdown.
+
+##### `chunk_document(file_path: str) -> list[dict]`
+Extracts text and splits it into semantic chunks with metadata linkages.
+* **`file_path`** (*str*): Local path to target document.
+* **Returns**: *list[dict]* containing text and structured metadata headers.
+
+##### `parse_and_chunk_stream(file_path: str) -> Generator`
+Streaming generator yielding semantic chunks page-by-page as they are processed.
+* **`file_path`** (*str*): Local path to target document.
+* **Returns**: *Generator* yielding chunk dicts.
+
+##### `export_chunks_to_excel(chunks: list[dict], output_path: str, append: bool = False) -> None`
+Saves the extracted chunks to an Excel spreadsheet.
+* **`chunks`** (*list[dict]*): Chunks generated by the parser.
+* **`output_path`** (*str*): Target Excel file path.
+* **`append`** (*bool*): Set to True to append to an existing Excel worksheet.
 
 ---
 
-## 🚀 5. Usage Example
+## 🚀 4. Usage Example
 
-Here is a realistic usage example parsing an invoice Word document (`invoice.docx`) to extract line items and amounts into structured JSON:
+Here is an end-to-end usage example showing document text extraction, semantic chunking, and Excel sheet exporting:
 
 ```python
 from slm_document_parser.document_parser import SLMDocumentParser
 
+# Initialize the parser
 parser = SLMDocumentParser()
 
-# Define a complex target schema
-target_schema = {
-    "invoice_id": "string",
-    "billing_date": "string",
-    "line_items": [
-        {"item": "string", "quantity": "number", "price": "number"}
-    ],
-    "total_amount": "number"
-}
+file_path = "financial_report.pdf"
 
-# Execute the self-correcting parsing agent
-result = parser.parse("invoice.docx", schema_dict=target_schema)
+# 1. Parse document text (runs visual OCR pipeline for scanned tables)
+markdown_content = parser.extract_text(file_path)
+print("--- Document Markdown Output ---")
+print(markdown_content[:500])
 
-print(result)
+# 2. Extract semantic RAG chunks with cross-linked indexes
+chunks = parser.chunk_document(file_path)
+
+# 3. Export chunks directly to Excel
+parser.export_chunks_to_excel(chunks, "rag_database.xlsx")
 ```
 
-### Generated Output Response:
+### Generated Output Chunks (JSON):
 ```json
-{
-  "invoice_id": "INV-2026-9874",
-  "billing_date": "2026-08-11",
-  "line_items": [
-    {"item": "Local CPU Inference Node Setup", "quantity": 1, "price": 450.00},
-    {"item": "ONNX Model Conversion Package", "quantity": 2, "price": 1200.00}
-  ],
-  "total_amount": 2850.00
-}
+[
+  {
+    "text": "SpaceX successfully launched the Falcon 9 rocket from Cape Canaveral Space Force Station, landing the booster return flight for the 15th time. The mission delivered communication payloads into low Earth orbit.",
+    "metadata": {
+      "source": "financial_report.pdf",
+      "heading": "1. Launch Milestones",
+      "subheading": "Falcon 9 Performance",
+      "product": "SpaceX",
+      "key_terms": ["Falcon 9", "Cape Canaveral", "booster"],
+      "format": "pdf",
+      "chunk_index": 0,
+      "related_chunks": [1, 2]
+    }
+  }
+]
 ```
+
+### Generated Output Excel Spreadsheet Layout:
+| Chunk Index | Source File | Heading | Subheading | Product | Related Chunks | Text |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 0 | financial_report.pdf | 1. Launch Milestones | Falcon 9 Performance | SpaceX | 1,2 | SpaceX successfully launched... |
