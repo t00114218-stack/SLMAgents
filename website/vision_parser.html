@@ -116,7 +116,8 @@
         <ul>
           <li><strong>OCR Node Extraction:</strong> Translates raster text strings from diagrams.</li>
           <li><strong>Region Mapping:</strong> Generates bounding box parameters mapping visual coordinates for web rendering.</li>
-          <li><strong>Semantic Image Captioning:</strong> Extracts visual flow relationships (e.g., arrow directions, shapes) into descriptions.</li>
+          <li><strong>Semantic Image Captioning:</strong> Extracts visual flow structures (e.g., arrows, shapes, labels) into a raw description.</li>
+          <li><strong>Agentic LLM Refinement:</strong> Pipe Florence-2's raw description or OCR nodes directly into the local Phi-3.5 ONNX model. By guiding the text model with a template prompt, you can synthesize exact custom descriptions (e.g., describing step hierarchies and the exact count of connecting arrows).</li>
         </ul>
       </section>
 
