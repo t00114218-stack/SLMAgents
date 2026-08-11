@@ -31,48 +31,6 @@ const UPCOMING_AGENTS = {
     ],
     code: "from slm_db_migration import SLMDBMigrator\n\nmigrator = SLMDBMigrator()\nmigration_sql = migrator.generate_migration(from_schema, to_schema)\nprint(migration_sql)"
   },
-  "web_agent": {
-    name: "SLM Web Agent",
-    category: "Web & Scraping",
-    catClass: "badge-web",
-    stage: "In Development",
-    desc: "Local browser automation and navigation companion. Crawls pages, extracts structures, and maps visual DOM nodes to functional locator selectors.",
-    features: [
-      "Interactive DOM tree parsing and node mapping",
-      "Generates Playwright/Selenium locator expressions dynamically",
-      "Extracts visible text fields and handles multi-page form paths",
-      "Runs fully locally on CPU without external API scrapers"
-    ],
-    code: "from slm_web_agent import SLMWebAgent\n\nagent = SLMWebAgent()\nsteps = agent.find_elements(html_source, \"login button\")\nprint(steps)"
-  },
-  "web_scraper": {
-    name: "SLM Web Scraper",
-    category: "Web & Scraping",
-    catClass: "badge-web",
-    stage: "Planning Phase",
-    desc: "High-speed local parsing engine that takes raw HTML documents and turns them into clean, structured JSON schemas without external dependencies.",
-    features: [
-      "Fast HTML-to-Text structure parser and compiler",
-      "Maps tables and repeating cards into clean list-of-dicts JSON",
-      "Strips script tags, styling blocks, and ads before parsing",
-      "Lightweight footprint fitting easily in under 1.5 GB RAM"
-    ],
-    code: "from slm_web_scraper import SLMWebScraper\n\nscraper = SLMWebScraper()\ndata = scraper.extract(html_string, schema=target_json_schema)\nprint(data)"
-  },
-  "search_orchestrator": {
-    name: "SLM Search Orchestrator",
-    category: "Web & Scraping",
-    catClass: "badge-web",
-    stage: "In Development",
-    desc: "Off-grid query expansion and multi-step routing companion. Connects to local search indexes to aggregate web knowledge before answering.",
-    features: [
-      "Translates complex user queries into sub-search strings",
-      "Aggregates search snippets from local directories or mock search APIs",
-      "Cross-references snippets to remove duplicates and irrelevant links",
-      "Feeds consolidated snippets directly into local RAG systems"
-    ],
-    code: "from slm_search import SLMSearchOrchestrator\n\norc = SLMSearchOrchestrator()\ncontext = orc.retrieve(\"Who won the latest launch award?\")\nprint(context)"
-  },
   "email_assistant": {
     name: "SLM Email Assistant",
     category: "Productivity",
@@ -184,20 +142,6 @@ const UPCOMING_AGENTS = {
       "100% offline analysis of highly sensitive company sheets"
     ],
     code: "from slm_data import SLMDataAnalyst\n\nanalyst = SLMDataAnalyst()\nscript = analyst.generate_analysis(\"sales.csv\", \"plot revenue by department\")\nprint(script)"
-  },
-  "document_parser": {
-    name: "SLM Document Parser",
-    category: "Data & Utilities",
-    catClass: "badge-data",
-    stage: "In Development",
-    desc: "Locally parses docx, txt, and markdown logs to output semantic hierarchies, key-value configurations, and structural elements.",
-    features: [
-      "DOCX XML layout structures parser",
-      "Translates unstructured text files into structured schemas",
-      "Filters out headers, footer pagination, and signatures",
-      "Fast, lightweight C-level token compilation on CPU"
-    ],
-    code: "from slm_document_parser import SLMDocumentParser\n\nparser = SLMDocumentParser()\ndocs = parser.parse(\"contract.docx\")\nprint(docs)"
   },
   "translation_hub": {
     name: "SLM Translation Hub",
@@ -386,6 +330,11 @@ document.addEventListener("DOMContentLoaded", () => {
       <li class="sidebar-item" id="nav-code-interpreter"><a href="code_interpreter.html">🐍 SLM Code Interpreter</a></li>
       <li class="sidebar-item" id="nav-git-copilot"><a href="git_copilot.html">🐙 SLM Git Co-pilot</a></li>
       <li class="sidebar-item" id="nav-json-cleaner"><a href="json_cleaner.html">🧹 SLM JSON Cleaner</a></li>
+      <li class="sidebar-item" id="nav-document-parser"><a href="document_parser.html">📂 SLM Document Parser</a></li>
+      <li class="sidebar-item" id="nav-vision-parser"><a href="vision_parser.html">👁️ SLM Vision Parser</a></li>
+      <li class="sidebar-item" id="nav-web-agent"><a href="web_agent.html">🌐 SLM Web Agent</a></li>
+      <li class="sidebar-item" id="nav-web-scraper"><a href="web_scraper.html">🔍 SLM Web Scraper</a></li>
+      <li class="sidebar-item" id="nav-search-orchestrator"><a href="search_orchestrator.html">🔎 SLM Search Orchestrator</a></li>
     `;
     
     // Highlight currently active page
@@ -409,6 +358,16 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("nav-git-copilot")?.classList.add("active");
     } else if (page === "json_cleaner.html") {
       document.getElementById("nav-json-cleaner")?.classList.add("active");
+    } else if (page === "document_parser.html") {
+      document.getElementById("nav-document-parser")?.classList.add("active");
+    } else if (page === "vision_parser.html") {
+      document.getElementById("nav-vision-parser")?.classList.add("active");
+    } else if (page === "web_agent.html") {
+      document.getElementById("nav-web-agent")?.classList.add("active");
+    } else if (page === "web_scraper.html") {
+      document.getElementById("nav-web-scraper")?.classList.add("active");
+    } else if (page === "search_orchestrator.html") {
+      document.getElementById("nav-search-orchestrator")?.classList.add("active");
     }
   }
 

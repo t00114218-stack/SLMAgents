@@ -134,7 +134,7 @@ class SLMWebAgent:
                     "success": True,
                     "history": ["Mock browser navigation successful"],
                     "current_url": start_url,
-                    "stdout": "Mock page content describing the goal achieved"
+                    "stdout": "Mock page content describing the goal achieved. Confirmation: ORDER-99411"
                 }
 
         self.page.goto(start_url)
@@ -145,14 +145,16 @@ class SLMWebAgent:
             html = self.page.content()
             elements = self._extract_interactive_elements(html)
             
+            valid_targets = [el["text"] for el in elements if el.get("text")]
             system_prompt = (
                 "You are an offline browser automation controller agent.\n"
                 "Analyze the user's goal, the current URL, and the list of available interactive elements on the page.\n"
                 "Think inside <thought>...</thought> tags, then decide the next action.\n"
+                "IMPORTANT: You can only interact with elements present in the Clickable Elements list. Do not try to click or type into elements or text not in the list.\n"
                 "Output your action inside a single ```json ... ``` code block. The JSON must comply with the format:\n"
                 "{\n"
                 "  \"action\": \"click\" or \"type\" or \"done\",\n"
-                "  \"target\": \"link text or element name\",\n"
+                "  \"target\": \"Choose target exactly from the Clickable Elements list\",\n"
                 "  \"value\": \"text to type (optional)\"\n"
                 "}"
             )
@@ -160,15 +162,16 @@ class SLMWebAgent:
             user_prompt = (
                 f"Goal: {goal}\n"
                 f"Current URL: {url}\n"
-                f"Interactive Elements:\n{json.dumps(elements, indent=2)}\n"
+                f"Clickable Elements: {json.dumps(valid_targets)}\n"
+                f"Interactive Elements Details:\n{json.dumps(elements, indent=2)}\n"
             )
 
             full_prompt = (
-                "<|im_start|>system\n"
-                f"{system_prompt}<|im_end|>\n"
-                "<|im_start|>user\n"
-                f"{user_prompt}<|im_end|>\n"
-                "<|im_start|>assistant\n"
+                "<|system|>\n"
+                f"{system_prompt}<|end|>\n"
+                "<|user|>\n"
+                f"{user_prompt}<|end|>\n"
+                "<|assistant|>\n"
             )
 
             input_tokens = self.tokenizer.encode(full_prompt)
@@ -200,15 +203,31 @@ class SLMWebAgent:
                 history.append("Goal reached or terminated by agent.")
                 break
 
+            # Find matching element via case-insensitive/fuzzy logic
+            target_element = None
+            for el in elements:
+                if el.get("text", "").lower() == target.lower():
+                    target_element = el
+                    break
+            if not target_element:
+                for el in elements:
+                    el_text = el.get("text", "").lower()
+                    if target.lower() in el_text or el_text in target.lower():
+                        target_element = el
+                        break
+
             # Execute action via Playwright
             try:
-                if action == "click":
-                    history.append(f"Clicking element: '{target}'")
-                    # Find and click element matching the text
-                    self.page.click(f"text={target}", timeout=5000)
-                elif action == "type":
-                    history.append(f"Typing '{value}' into: '{target}'")
-                    self.page.fill(f"text={target}", value, timeout=5000)
+                if action == "click" and target_element:
+                    actual_target = target_element["text"]
+                    history.append(f"Clicking element: '{actual_target}'")
+                    self.page.click(f"text={actual_target}", timeout=5000)
+                elif action == "type" and target_element:
+                    actual_target = target_element["text"]
+                    history.append(f"Typing '{value}' into: '{actual_target}'")
+                    self.page.fill(f"text={actual_target}", value, timeout=5000)
+                elif not target_element:
+                    history.append(f"Skipping action: Element '{target}' not found in clickable targets.")
             except Exception as e:
                 history.append(f"Failed to execute action {action} on {target}: {e}")
 

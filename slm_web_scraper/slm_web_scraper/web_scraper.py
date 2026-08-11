@@ -117,13 +117,14 @@ class SLMWebScraper:
         
         system_prompt = (
             "You are a local Web Scraper utility.\n"
-            "Analyze the cleaned web text and extract the data complying with the required target schema inside a ```json ... ``` code block.\n"
-            "Never output explanation headers or footers."
+            "Analyze the cleaned web text and extract the data to populate a structured JSON block matching the target schema. "
+            "IMPORTANT: Output actual extracted data. Never copy schema type descriptors (such as 'string', 'integer', 'boolean') or templates. "
+            "Return the final completed JSON inside a ```json ... ``` code block. Never output explanation headers or footers."
         )
 
         user_prompt = (
             f"Web Page Content:\n{cleaned_text[:8000]}\n\n"
-            f"Target JSON Schema:\n{json.dumps(schema_dict, indent=2)}"
+            f"Target JSON Schema Structure to Populate:\n{json.dumps(schema_dict, indent=2)}"
         )
 
         messages = [
@@ -134,8 +135,8 @@ class SLMWebScraper:
         for attempt in range(max_retries):
             full_prompt = ""
             for msg in messages:
-                full_prompt += f"<|im_start|>{msg['role']}\n{msg['content']}<|im_end|>\n"
-            full_prompt += "<|im_start|>assistant\n"
+                full_prompt += f"<|{msg['role']}|>\n{msg['content']}<|end|>\n"
+            full_prompt += "<|assistant|>\n"
 
             input_tokens = self.tokenizer.encode(full_prompt)
             params = og.GeneratorParams(self.model)

@@ -82,6 +82,11 @@
               <a href="code_interpreter.html">Code Interpreter Docs</a>
               <a href="git_copilot.html">Git Co-pilot Docs</a>
               <a href="json_cleaner.html">JSON Cleaner Docs</a>
+              <a href="document_parser.html">Document Parser Docs</a>
+              <a href="vision_parser.html">Vision Parser Docs</a>
+              <a href="web_agent.html">Web Agent Docs</a>
+              <a href="web_scraper.html">Web Scraper Docs</a>
+              <a href="search_orchestrator.html">Search Orchestrator Docs</a>
             </div>
           </li>
           <li><a href="#upcoming">Roadmap</a></li>
@@ -303,20 +308,88 @@
           </div>
         </div>
 
-        <!-- JSON Cleaner Card -->
-        <div class="framework-card json-cleaner" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+        <!-- Document Parser Card -->
+        <div class="framework-card document-parser" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
           <div>
             <div class="framework-meta" style="margin-bottom: 12px;">
               <span class="badge-cpu">CPU Only</span>
               <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
             </div>
-            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM JSON Cleaner</h3>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Document Parser</h3>
             <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
-              Lightweight string sanitizer. Repairs broken brackets, missing keys, and compliance types to output valid structured JSON.
+              Parse docx, txt, and PDF structures locally to extract semantic hierarchies and configurations matching strict JSON schemas.
             </p>
           </div>
           <div class="framework-actions" style="margin-top: auto;">
-            <a href="json_cleaner.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+            <a href="document_parser.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+          </div>
+        </div>
+
+        <!-- Vision Parser Card -->
+        <div class="framework-card vision-parser" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Vision Parser</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Offline chart, diagram, and whiteboard reader. Converts scanned infographics and drawings to structured text layouts.
+            </p>
+          </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="vision_parser.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+          </div>
+        </div>
+
+        <!-- Web Agent Card -->
+        <div class="framework-card web-agent" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Web Agent</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Local browser automation and navigation companion. Crawls pages and maps visual DOM nodes to selectors autonomously.
+            </p>
+          </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="web_agent.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+          </div>
+        </div>
+
+        <!-- Web Scraper Card -->
+        <div class="framework-card web-scraper" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Web Scraper</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              High-speed local parsing engine that converts raw HTML documents into structured schema JSON layouts.
+            </p>
+          </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="web_scraper.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
+          </div>
+        </div>
+
+        <!-- Search Orchestrator Card -->
+        <div class="framework-card search-orchestrator" style="grid-template-columns: 1fr; display: flex; flex-direction: column; justify-content: space-between; padding: 30px;">
+          <div>
+            <div class="framework-meta" style="margin-bottom: 12px;">
+              <span class="badge-cpu">CPU Only</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem;">v0.1.0</span>
+            </div>
+            <h3 class="framework-title" style="font-size: 1.4rem; margin-bottom: 12px;">SLM Search Orchestrator</h3>
+            <p class="framework-description" style="font-size: 0.925rem; margin-bottom: 20px; line-height: 1.5; color: var(--text-secondary);">
+              Off-grid query expansion and multi-step routing companion. Integrates with DuckDuckGo to aggregate search snippets locally.
+            </p>
+          </div>
+          <div class="framework-actions" style="margin-top: auto;">
+            <a href="search_orchestrator.html" class="btn btn-primary" style="width: 100%; padding: 10px 0; font-size: 0.9rem;">View Documentation</a>
           </div>
         </div>
       </div>
@@ -356,33 +429,7 @@
           <p>Analyzes legacy database schemas and generates zero-downtime, CPU-optimized migrations and modern ORM model definitions offline.</p>
         </div>
 
-        <!-- Web & Scraping Category -->
-        <div class="upcoming-card" data-category="web">
-          <div class="badge-soon">In Development</div>
-          <div>
-            <span class="agent-cat-tag badge-web">Web &amp; Scraping</span>
-            <h3>SLM Web Agent</h3>
-          </div>
-          <p>Local browser automation and navigation companion. Crawls pages, extracts structures, and maps visual DOM nodes to functional locator selectors.</p>
-        </div>
-
-        <div class="upcoming-card" data-category="web">
-          <div class="badge-soon">Planning Phase</div>
-          <div>
-            <span class="agent-cat-tag badge-web">Web &amp; Scraping</span>
-            <h3>SLM Web Scraper</h3>
-          </div>
-          <p>High-speed local parsing engine that takes raw HTML documents and turns them into clean, structured JSON schemas without external dependencies.</p>
-        </div>
-
-        <div class="upcoming-card" data-category="web">
-          <div class="badge-soon">In Development</div>
-          <div>
-            <span class="agent-cat-tag badge-web">Web &amp; Scraping</span>
-            <h3>SLM Search Orchestrator</h3>
-          </div>
-          <p>Off-grid query expansion and multi-step routing companion. Connects to local search indexes to aggregate web knowledge before answering.</p>
-        </div>
+        <!-- Productivity Category -->
 
         <!-- Productivity Category -->
         <div class="upcoming-card" data-category="productivity">
@@ -462,15 +509,6 @@
           <div class="badge-soon">In Development</div>
           <div>
             <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
-            <h3>SLM Document Parser</h3>
-          </div>
-          <p>Locally parses docx, txt, and markdown logs to output semantic hierarchies, key-value configurations, and structural elements.</p>
-        </div>
-
-        <div class="upcoming-card" data-category="data">
-          <div class="badge-soon">In Development</div>
-          <div>
-            <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
             <h3>SLM Translation Hub</h3>
           </div>
           <p>Quantized multilingual translation library designed for offline local document conversion across 20+ language profiles.</p>
@@ -483,15 +521,6 @@
             <h3>SLM Math Agent</h3>
           </div>
           <p>Specialized arithmetic reasoning model. Handles math formulations, algebraic simplifications, and steps through complex equations offline.</p>
-        </div>
-
-        <div class="upcoming-card" data-category="data">
-          <div class="badge-soon">Planning Phase</div>
-          <div>
-            <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
-            <h3>SLM Vision Parser</h3>
-          </div>
-          <p>Offline chart, diagram, and whiteboard reader. Converts scanned infographics and drawings to clean structured text summaries.</p>
         </div>
 
         <div class="upcoming-card" data-category="data">

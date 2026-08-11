@@ -105,11 +105,11 @@ class SLMSearchOrchestrator:
         )
 
         full_prompt = (
-            "<|im_start|>system\n"
-            f"{system_prompt}<|im_end|>\n"
-            "<|im_start|>user\n"
-            f"Query: {user_query}<|im_end|>\n"
-            "<|im_start|>assistant\n"
+            "<|system|>\n"
+            f"{system_prompt}<|end|>\n"
+            "<|user|>\n"
+            f"Query: {user_query}<|end|>\n"
+            "<|assistant|>\n"
         )
 
         input_tokens = self.tokenizer.encode(full_prompt)

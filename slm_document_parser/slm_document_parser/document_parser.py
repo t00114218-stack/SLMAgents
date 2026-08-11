@@ -96,7 +96,16 @@ class SLMDocumentParser:
         
         if ext == ".docx":
             doc = Document(file_path)
-            return "\n".join([p.text for p in doc.paragraphs])
+            text_blocks = []
+            for p in doc.paragraphs:
+                if p.text.strip():
+                    text_blocks.append(p.text)
+            for table in doc.tables:
+                for row in table.rows:
+                    row_text = " | ".join([cell.text.strip() for cell in row.cells if cell.text.strip()])
+                    if row_text:
+                        text_blocks.append(row_text)
+            return "\n".join(text_blocks)
         elif ext == ".pdf":
             reader = PdfReader(file_path)
             text = ""
@@ -123,13 +132,14 @@ class SLMDocumentParser:
         
         system_prompt = (
             "You are a local Document Parser agent.\n"
-            "Analyze the document text and extract the information into a structured JSON block matching the target schema inside a ```json ... ``` code block.\n"
-            "Never output explanations outside of the code block."
+            "Analyze the document text and extract the data to populate a structured JSON block matching the target schema. "
+            "IMPORTANT: Output actual extracted data. Never copy schema type descriptors (such as 'string', 'integer', 'boolean') or templates. "
+            "Return the final completed JSON inside a ```json ... ``` code block. Never output explanations outside of the code block."
         )
 
         user_prompt = (
             f"Document Text:\n{raw_text[:8000]}\n\n"
-            f"Required Target JSON Schema:\n{json.dumps(schema_dict, indent=2)}"
+            f"Target JSON Schema Structure to Populate:\n{json.dumps(schema_dict, indent=2)}"
         )
 
         messages = [
@@ -140,8 +150,8 @@ class SLMDocumentParser:
         for attempt in range(max_retries):
             full_prompt = ""
             for msg in messages:
-                full_prompt += f"<|im_start|>{msg['role']}\n{msg['content']}<|im_end|>\n"
-            full_prompt += "<|im_start|>assistant\n"
+                full_prompt += f"<|{msg['role']}|>\n{msg['content']}<|end|>\n"
+            full_prompt += "<|assistant|>\n"
 
             input_tokens = self.tokenizer.encode(full_prompt)
             params = og.GeneratorParams(self.model)
