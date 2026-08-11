@@ -134,3 +134,128 @@ class SLMGitCopilot:
                 response_text += self.tokenizer.decode(new_tokens)
 
         return response_text
+
+    def commit(self, message: str = None) -> tuple[bool, str]:
+        """
+        Stages all tracked modified changes, generates a commit message, and commits.
+        """
+        import subprocess
+        subprocess.run("git add -u", shell=True)
+        
+        diff_res = subprocess.run("git diff --staged", shell=True, capture_output=True, text=True)
+        if not diff_res.stdout.strip():
+            return False, "No staged modifications found to commit."
+            
+        if not message:
+            message = self.generate_commit_message(diff_res.stdout)
+            
+        commit_res = subprocess.run(f"git commit -m '{message}'", shell=True, capture_output=True, text=True)
+        if commit_res.returncode == 0:
+            return True, f"Committed successfully with message:\n{message}"
+        return False, f"Git commit failed:\n{commit_res.stderr}"
+
+    def merge(self, branch: str) -> tuple[bool, str]:
+        """
+        Merges the specified branch. Detects if conflicts occur.
+        """
+        import subprocess
+        res = subprocess.run(f"git merge {branch}", shell=True, capture_output=True, text=True)
+        if res.returncode == 0:
+            return True, f"Merged branch '{branch}' successfully."
+            
+        conflict_res = subprocess.run("git diff --name-only --diff-filter=U", shell=True, capture_output=True, text=True)
+        conflicted_files = conflict_res.stdout.strip().splitlines()
+        if conflicted_files:
+            return False, f"Merge conflicts detected in: {', '.join(conflicted_files)}"
+            
+        return False, f"Merge failed:\n{res.stderr}"
+
+    def resolve_conflicts(self) -> dict:
+        """
+        Scans for conflict markers, asks the SLM to merge conflict hunks, rewrites files, and stages them.
+        """
+        import subprocess
+        import re
+        conflict_res = subprocess.run("git diff --name-only --diff-filter=U", shell=True, capture_output=True, text=True)
+        conflicted_files = conflict_res.stdout.strip().splitlines()
+        if not conflicted_files:
+            return {"success": True, "details": "No merge conflicts to resolve."}
+            
+        resolved = []
+        failed = []
+        
+        for filepath in conflicted_files:
+            if not os.path.exists(filepath):
+                continue
+            try:
+                with open(filepath, "r") as f:
+                    content = f.read()
+                
+                # Check for standard conflict markers
+                pattern = r"<<<<<<< (.*?)\n(.*?)\n=======\n(.*?)\n>>>>>>> (.*?)\n"
+                matches = list(re.finditer(pattern, content, re.DOTALL))
+                if not matches:
+                    continue
+                    
+                new_content = content
+                for m in reversed(matches):
+                    full_match = m.group(0)
+                    local_code = m.group(2)
+                    incoming_code = m.group(3)
+                    
+                    resolution = self._ask_model_to_resolve(filepath, local_code, incoming_code)
+                    new_content = new_content.replace(full_match, resolution + "\n")
+                    
+                with open(filepath, "w") as f:
+                    f.write(new_content)
+                
+                subprocess.run(f"git add {filepath}", shell=True)
+                resolved.append(filepath)
+            except Exception as e:
+                failed.append((filepath, str(e)))
+                
+        return {
+            "success": len(failed) == 0,
+            "resolved": resolved,
+            "failed": failed
+        }
+
+    def _ask_model_to_resolve(self, filepath: str, local: str, incoming: str) -> str:
+        """
+        Internal assistant to combine conflicting hunks.
+        """
+        system_prompt = (
+            "You are an expert developer resolving git merge conflicts.\n"
+            "Combine the two code blocks logically, resolving any duplicate code or API parameters. "
+            "Output ONLY the final resolved clean code. Do not include conflict markers or markdown wraps."
+        )
+        
+        user_prompt = (
+            f"File: {filepath}\n"
+            f"--- LOCAL BLOCK ---\n{local}\n"
+            f"--- INCOMING BLOCK ---\n{incoming}\n"
+            "Resolved clean output code:"
+        )
+        
+        full_prompt = (
+            "<|im_start|>system\n"
+            f"{system_prompt}<|im_end|>\n"
+            "<|im_start|>user\n"
+            f"{user_prompt}<|im_end|>\n"
+            "<|im_start|>assistant\n"
+        )
+        
+        input_tokens = self.tokenizer.encode(full_prompt)
+        params = og.GeneratorParams(self.model)
+        params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.0)
+        
+        generator = og.Generator(self.model, params)
+        generator.append_tokens(input_tokens)
+        resolved_text = ""
+        while not generator.is_done():
+            generator.generate_next_token()
+            new_tokens = generator.get_next_tokens()
+            if len(new_tokens) > 0:
+                resolved_text += self.tokenizer.decode(new_tokens)
+                
+        return resolved_text.strip()

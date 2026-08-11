@@ -254,6 +254,47 @@ msg = copilot.<span class="function">generate_commit_message</span>(diff_data)
           </ul>
         </section>
 
+        <!-- ADVANCED WORKFLOWS -->
+        <section class="doc-section" id="workflows">
+          <h2>🔀 Advanced Git Workflows</h2>
+          <p>Git Co-pilot exposes advanced instance methods to automate local staging, commits, merges, and auto-conflict resolutions:</p>
+          
+          <h3>1. Automated Conventional Commit</h3>
+          <p>Stages tracked changes, generates a message, and commits in a single line:</p>
+          <pre><code>success, log_msg = copilot.commit()</code></pre>
+
+          <h3>2. Branch Merge and Conflict Resolution</h3>
+          <p>Merges developer branches and automatically rewrites standard git conflict markers with combined resolutions from the local SLM model:</p>
+          <pre><code>success, merge_status = copilot.merge("feature-branch")
+if not success:
+    resolution_results = copilot.resolve_conflicts()
+    print("Resolved files:", resolution_results["resolved"])</code></pre>
+        </section>
+
+        <!-- VS CODE TASK RUNNER -->
+        <section class="doc-section" id="vscode-tasks">
+          <h2>🔌 VS Code Task Integration</h2>
+          <p>You can run commit and conflict resolution workflows directly within your VS Code workspace using the task runner config. Add the following to your <code>.vscode/tasks.json</code>:</p>
+          <pre><code class="language-json">{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "SLM Git: Auto-Commit Changes",
+      "type": "shell",
+      "command": "python -c \"from slm_git_copilot.git_copilot import SLMGitCopilot; print(SLMGitCopilot().commit()[1])\"",
+      "problemMatcher": []
+    },
+    {
+      "label": "SLM Git: Resolve Merge Conflicts",
+      "type": "shell",
+      "command": "python -c \"from slm_git_copilot.git_copilot import SLMGitCopilot; print(SLMGitCopilot().resolve_conflicts())\"",
+      "problemMatcher": []
+    }
+  ]
+}</code></pre>
+          <p>Run these tasks by triggering the Command Palette (<code>Cmd+Shift+P</code> or <code>Ctrl+Shift+P</code>), selecting <strong>Run Task</strong>, and choosing the desired Git helper task.</p>
+        </section>
+
         <!-- TRUNCATION -->
         <section class="doc-section" id="truncation">
           <h2>Context Truncation Safeguard</h2>

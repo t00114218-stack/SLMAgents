@@ -126,3 +126,67 @@ models:
     path: "../../models/qwen2.5-1.5b-onnx"
     repo_id: "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX"
 ```
+
+---
+
+## 🔀 Advanced Git Workflow APIs
+
+### 1. Auto Commit Staged Changes (`commit`)
+Stages all tracked files, queries the local SLM to summarize modifications, writes a conventional commit message, and executes the commit automatically:
+```python
+from slm_git_copilot.git_copilot import SLMGitCopilot
+
+copilot = SLMGitCopilot()
+success, logs = copilot.commit()
+print(logs)
+```
+
+### 2. Auto Merge & Conflict Resolution (`resolve_conflicts`)
+Merges branches and automatically resolves code hunks containing conflict markers:
+```python
+# Try merging developer branch
+success, status = copilot.merge("feature-branch")
+if not success:
+    print("Conflict encountered! Resolving...")
+    results = copilot.resolve_conflicts()
+    print("Resolved files:", results["resolved"])
+```
+
+---
+
+## 🔌 VS Code Task Integration
+
+To run Git Co-pilot workflow triggers directly inside VS Code, add the following configuration to your `.vscode/tasks.json` workspace file:
+
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "SLM Git: Auto-Commit Changes",
+      "type": "shell",
+      "command": "python -c \"from slm_git_copilot.git_copilot import SLMGitCopilot; print(SLMGitCopilot().commit()[1])\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    },
+    {
+      "label": "SLM Git: Resolve Merge Conflicts",
+      "type": "shell",
+      "command": "python -c \"from slm_git_copilot.git_copilot import SLMGitCopilot; print(SLMGitCopilot().resolve_conflicts())\"",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      }
+    }
+  ]
+}
+```
+
+### How to Run:
+1. Open the Command Palette (`Cmd+Shift+P` on Mac / `Ctrl+Shift+P` on Windows).
+2. Type **"Run Task"** and select **"SLM Git: Auto-Commit Changes"** or **"SLM Git: Resolve Merge Conflicts"**.
+3. The integrated terminal will display the generation progress, show the conventional commit message, and complete the action.
