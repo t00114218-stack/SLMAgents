@@ -28,6 +28,8 @@
     .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
     .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
     .tip-box strong { color: #4ade80; }
+    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #fbbf24; }
     .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
     .breadcrumb a:hover { color: var(--primary); }
@@ -106,6 +108,35 @@
       <section class="doc-section">
         <h2>Overview</h2>
         <p>The SLM Search Orchestrator acts as a pre-retrieval query planner. It expands inputs into 3 targeted terms, crawls DuckDuckGo, and structures raw search snippets into clean markdown segments ready for RAG injection.</p>
+      </section>
+
+      <section class="doc-section">
+        <h2>🤖 Truly Agentic Pre-Retrieval Planning</h2>
+        <p>The Search Orchestrator implements an offline planning logic:</p>
+        <ul>
+          <li><strong>Query Expansion:</strong> Automatically translates raw technical prompts into exactly 3 diverse query terms to cover synonyms and sub-topics.</li>
+          <li><strong>Consolidation & De-duplication:</strong> Groups search result snippets, removing redundant links to reduce noise.</li>
+          <li><strong>Off-Grid Fail-safe:</strong> Automatically switches to mock local data sources if internet connectivity is missing.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>⚡ CPU Performance Tuning Guidelines</h2>
+        <p>Follow these guidelines to optimize retrieval latency:</p>
+        <ul>
+          <li><strong>Result Throttling:</strong> Set <code>max_results_per_query=2</code> (default) to limit snippet processing overhead on CPU threads.</li>
+          <li><strong>In-Memory Keep-alive:</strong> Avoid re-loading the ONNX session for each search query; keep the orchestrator class instantiated to reuse cache keys.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>🎯 Accuracy Improvement Tips</h2>
+        <div class="tip-box">
+          <strong>Tip for Query Expansion:</strong> Instruct the model to return a strict, parsable JSON array of strings (e.g. <code>["query_1", "query_2", "query_3"]</code>) without conversational filler.
+        </div>
+        <div class="warn-box">
+          <strong>De-duplication:</strong> De-duplicate URLs before routing snippets to RAG models to avoid wasting context tokens on duplicate content.
+        </div>
       </section>
 
       <section class="doc-section">

@@ -28,6 +28,8 @@
     .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
     .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
     .tip-box strong { color: #4ade80; }
+    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #fbbf24; }
     .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
     .breadcrumb a:hover { color: var(--primary); }
@@ -106,6 +108,38 @@
       <section class="doc-section">
         <h2>Overview</h2>
         <p>The SLM Vision Parser uses the sequence-to-sequence <strong>Florence-2-large</strong> model to translate image structures directly. It is designed to run offline on CPU under 1.5 GB memory footprint, making it ideal for visual PDF OCR, diagram relationship mappings, and whiteboard extractions.</p>
+      </section>
+
+      <section class="doc-section">
+        <h2>🤖 Truly Agentic Workflow</h2>
+        <p>The Vision Parser maps visual coordinate dimensions into clean layout logs:</p>
+        <ul>
+          <li><strong>OCR Node Extraction:</strong> Translates raster text strings from diagrams.</li>
+          <li><strong>Region Mapping:</strong> Generates bounding box parameters mapping visual coordinates for web rendering.</li>
+          <li><strong>Semantic Image Captioning:</strong> Extracts visual flow relationships (e.g., arrow directions, shapes) into descriptions.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>⚡ CPU Performance Tuning Guidelines</h2>
+        <p>Florence-2 utilizes complex visual transformers. To run model prediction tasks efficiently on CPU under 2.0 GB memory:</p>
+        <ul>
+          <li><strong>Sequential execution:</strong> Process page scans sequentially rather than in batches to avoid CPU memory thrashing.</li>
+          <li><strong>Garbage Collection:</strong> Clear cache blocks after processing high-resolution images:
+            <pre><code>import gc
+gc.collect()</code></pre>
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>🎯 Accuracy Improvement Tips</h2>
+        <div class="tip-box">
+          <strong>Tip for Scanned Diagrams:</strong> Contrast is key for visual OCR models. Preprocess low-contrast diagram images by resizing them to a standard width of <code>1024px</code> and scaling contrast values using Pillow before parsing.
+        </div>
+        <div class="warn-box">
+          <strong>Task Tag Wrapper:</strong> Always encapsulate Florence-2 model instructions in explicit brackets (e.g., <code>"&lt;OCR&gt;"</code> or <code>"&lt;DETAILED_CAPTION&gt;"</code>) to trigger correct task headers.
+        </div>
       </section>
 
       <section class="doc-section">

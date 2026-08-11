@@ -28,6 +28,8 @@
     .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
     .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
     .tip-box strong { color: #4ade80; }
+    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #fbbf24; }
     .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
     .breadcrumb a:hover { color: var(--primary); }
@@ -106,6 +108,35 @@
       <section class="doc-section">
         <h2>Overview</h2>
         <p>The SLM Web Scraper parses raw HTML strings, stripping scripts, styles, duplicate nav tags, and ads. The sanitized flat content is compiled locally into structured formats using target JSON schemas.</p>
+      </section>
+
+      <section class="doc-section">
+        <h2>🤖 Truly Agentic Workflow</h2>
+        <p>The Web Scraper filters raw DOM elements to produce clean extractions:</p>
+        <ul>
+          <li><strong>DOM Pruning:</strong> Automatically strips scripts, styles, metadata tags, and ad headers using BeautifulSoup.</li>
+          <li><strong>Whitespaces Compacting:</strong> Collapses contiguous whitespace blocks into single space delimiters.</li>
+          <li><strong>Schema Alignment:</strong> Instructs the local Phi-3.5 model to match and structure the sanitized text into clean JSON.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>⚡ CPU Performance Tuning Guidelines</h2>
+        <p>Follow these configuration rules to maximize scraping speed on standard hardware:</p>
+        <ul>
+          <li><strong>Sanitize First:</strong> Always clean webpage source code before parsing. Running raw HTML through the model increases token count and latency.</li>
+          <li><strong>Memory Management:</strong> Clear page memory scopes after heavy parsing cycles to keep footprint under 1.5 GB RAM.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>🎯 Accuracy Improvement Tips</h2>
+        <div class="tip-box">
+          <strong>Tip for Layout Cleaning:</strong> Condensing tables or pricing matrices into columnar string lists (e.g. <code>"Item 1 | Price 1"</code>) preserves formatting structure for the model, improving data extraction accuracy.
+        </div>
+        <div class="warn-box">
+          <strong>Keep Schema Flat:</strong> Keep the target schema flat. Deep nesting can confuse smaller models, causing schema validation errors.
+        </div>
       </section>
 
       <section class="doc-section">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SLM Document Parser: Local CPU-optimized PDF, DOCX, and text layout structure parser matching strict target schemas offline using Phi-3.5.">
+  <meta name="description" content="SLM Document Parser: Local CPU-optimized PDF, DOCX, and text layout structure parser matching target schemas offline using Phi-3.5.">
   <title>SLM Document Parser | Documentation</title>
   <link rel="stylesheet" href="style.css">
   <style>
@@ -28,6 +28,8 @@
     .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
     .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
     .tip-box strong { color: #4ade80; }
+    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #fbbf24; }
     .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
     .breadcrumb a:hover { color: var(--primary); }
@@ -106,6 +108,39 @@
       <section class="doc-section">
         <h2>Overview</h2>
         <p>The SLM Document Parser leverages Microsoft's MIT-licensed <strong>Phi-3.5-mini-instruct</strong> model optimized via ONNX Runtime GenAI to parse multi-formatted documents offline. It parses text layouts, lists, and tables (spanning both paragraphs and Word table grid entities) to output structured JSON matching a targeted validation schema.</p>
+      </section>
+
+      <section class="doc-section">
+        <h2>🤖 Truly Agentic Workflow</h2>
+        <p>The Document Parser does not just extract text; it operates a self-correcting validation loop:</p>
+        <ul>
+          <li><strong>Layout Assembly:</strong> Paragraphs and table structures are aligned to match spatial configurations.</li>
+          <li><strong>Prompt Tag Mapping:</strong> Injects text into correct Phi-3.5 instruction wrappers.</li>
+          <li><strong>Schema Verification:</strong> Analyzes outputs against target schemas. If the model outputs bad JSON formats or invalid keys, the agent triggers a self-correction repair request, passing the traceback error back to the LLM to fix the formatting.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>⚡ CPU Performance Tuning Guidelines</h2>
+        <p>Follow these configuration rules to maximize execution performance on local CPUs:</p>
+        <ul>
+          <li><strong>Core Alignment:</strong> Limit <code>n_threads</code> strictly to the number of physical CPU cores (e.g., 4 or 8) to avoid context-switching overhead.</li>
+          <li><strong>Context Size Control:</strong> Limit the context size <code>n_ctx</code> (default: 4096) to match the document size, which reduces token evaluation latency.</li>
+          <li><strong>Environment Variables:</strong> Configure shell flags to prevent thread conflicts:
+            <pre><code>export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4</code></pre>
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>🎯 Accuracy Improvement Tips</h2>
+        <div class="tip-box">
+          <strong>Tip for Tabular Data:</strong> When processing tables inside PDF or Word files, flat text parsing loses row and column associations. Preprocess tables into a flat string structure using row delimiters (e.g., <code>"Col 1 | Col 2"</code>) before passing the content to the model.
+        </div>
+        <div class="warn-box">
+          <strong>Schema Isolation Warning:</strong> Explicitly instruct the model to use <code>null</code> or <code>""</code> for missing fields to prevent the model from inventing fallback values.
+        </div>
       </section>
 
       <section class="doc-section">

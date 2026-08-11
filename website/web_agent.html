@@ -28,6 +28,8 @@
     .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
     .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
     .tip-box strong { color: #4ade80; }
+    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #fbbf24; }
     .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
     .breadcrumb a:hover { color: var(--primary); }
@@ -106,6 +108,39 @@
       <section class="doc-section">
         <h2>Overview</h2>
         <p>The SLM Web Agent uses Microsoft's MIT-licensed <strong>Phi-3.5-mini-instruct</strong> as a ReAct loop controller. It scrapes DOM nodes dynamically and translates raw visual structures into precise locator calls to execute headless browser steps via <strong>Playwright</strong>.</p>
+      </section>
+
+      <section class="doc-section">
+        <h2>🤖 Truly Agentic ReAct Loop</h2>
+        <p>The agent navigates step-by-step using a structured reasoning feedback cycle:</p>
+        <ul>
+          <li><strong>Step-by-Step Observation:</strong> Retrieves active page URLs and details elements from Playwright.</li>
+          <li><strong>Action Space Reduction:</strong> Extracts visible text tags, listing clickable targets explicitly inside the prompt to prevent model hallucinations.</li>
+          <li><strong>JSON Instruction Choice:</strong> Model chooses actions inside <code>&lt;thought&gt;</code> markers.</li>
+          <li><strong>Fuzzy Match Verification:</strong> Fuzzy matches target text variables before clicking to handle capitalization or naming discrepancies.</li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>⚡ CPU Performance Tuning Guidelines</h2>
+        <p>Follow these instructions to optimize browser execution speed on CPU:</p>
+        <ul>
+          <li><strong>Headless Mode:</strong> Always launch browser instances in headless mode (default: True) to prevent high CPU GUI overhead.</li>
+          <li><strong>Timeout Caps:</strong> Set short element timeouts (e.g., 5000ms) on clicks/fill tasks to fail fast and trigger correction loops.</li>
+          <li><strong>Thread Control:</strong> Limit thread parameters to core bounds:
+            <pre><code>agent = SLMWebAgent(n_threads=4)</code></pre>
+          </li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>🎯 Accuracy Improvement Tips</h2>
+        <div class="tip-box">
+          <strong>Tip for Selector Mapping:</strong> Standardize available choices by formatting active links and buttons into plain list formats (e.g. <code>["Log In", "Sign Up"]</code>). Restricting instructions to explicit lists guarantees high selector accuracy.
+        </div>
+        <div class="warn-box">
+          <strong>Input Preprocessing:</strong> Clean script elements from the DOM source before parsing layout tags to save context window tokens.
+        </div>
       </section>
 
       <section class="doc-section">
