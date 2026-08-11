@@ -119,6 +119,87 @@ class SLMWebScraper:
         lines = [line.strip() for line in text.splitlines() if line.strip()]
         return "\n".join(lines)
 
+    def _get_vision_parser(self):
+        if not hasattr(self, "_vision_parser") or self._vision_parser is None:
+            try:
+                from slm_vision_parser.vision_parser import SLMVisionParser  # type: ignore
+            except ImportError:
+                base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                workspace_dir = os.path.dirname(base_dir)
+                vision_parser_path = os.path.join(workspace_dir, "slm_vision_parser")
+                if vision_parser_path not in sys.path:
+                    sys.path.insert(0, vision_parser_path)
+                from slm_vision_parser.vision_parser import SLMVisionParser  # type: ignore
+            
+            self._vision_parser = SLMVisionParser()
+        return self._vision_parser
+
+    def process_images_in_html(self, html_content: str, base_url: str = None) -> str:
+        """Locates all <img> tags, downloads them, describes them via SLMVisionParser, and replaces tags with descriptions."""
+        soup = BeautifulSoup(html_content, "lxml")
+        img_tags = soup.find_all("img")
+        
+        if not img_tags:
+            return html_content
+            
+        try:
+            vision = self._get_vision_parser()
+        except Exception as e:
+            print(f"[SLMWebScraper] Vision parser import failed: {e}. Skipping image extraction.")
+            return html_content
+            
+        import urllib.request
+        import urllib.parse
+        import tempfile
+        
+        for img in img_tags:
+            src = img.get("src", "")
+            if not src:
+                continue
+                
+            # Resolve relative URLs
+            if base_url:
+                src_url = urllib.parse.urljoin(base_url, src)
+            else:
+                src_url = src
+                
+            temp_path = None
+            try:
+                print(f"[SLMWebScraper] Extracting and parsing image: {src_url} ...")
+                
+                # Fetch image data
+                if "slmagents.ai" in src_url or src_url.startswith("file://") or not src_url.startswith("http"):
+                    # Check locally
+                    basename = src_url.split("/")[-1]
+                    local_path = f"/Users/revathysuryaprakash/Documents/SLMAgents/website/{basename}"
+                    if not os.path.exists(local_path):
+                        local_path = f"/Users/revathysuryaprakash/Documents/SLMAgentsPortal/{basename}"
+                    if os.path.exists(local_path):
+                        temp_path = local_path
+                else:
+                    headers = {"User-Agent": "Mozilla/5.0"}
+                    req = urllib.request.Request(src_url, headers=headers)
+                    with urllib.request.urlopen(req, timeout=8) as response:
+                        img_data = response.read()
+                    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
+                        f.write(img_data)
+                        temp_path = f.name
+                        
+                if temp_path and os.path.exists(temp_path):
+                    # Run vision parser
+                    desc = vision.parse_image(temp_path, task="<DETAILED_CAPTION>")
+                    if desc.strip():
+                        desc_text = f" [Image Description: {desc.strip()}] "
+                        img.replace_with(soup.new_string(desc_text))
+            except Exception as e:
+                print(f"[SLMWebScraper] Failed to parse image {src}: {e}")
+            finally:
+                # Only remove downloaded temp files
+                if temp_path and temp_path.startswith(tempfile.gettempdir()) and os.path.exists(temp_path):
+                    os.remove(temp_path)
+                    
+        return str(soup)
+
     def scrape_url(self, url: str, schema_dict: dict = None, max_retries: int = 3):
         """Fetches html from URL and extracts cleaned main content text, avoiding navigation/menus and ads."""
         if "slmagents.ai" in url or "localhost" in url:
@@ -138,6 +219,7 @@ class SLMWebScraper:
             with urllib.request.urlopen(req, timeout=10) as response:
                 html_content = response.read().decode("utf-8", errors="ignore")
                 
+        html_content = self.process_images_in_html(html_content, base_url=url)
         if schema_dict is None:
             return self.clean_html(html_content)
             
@@ -154,6 +236,7 @@ class SLMWebScraper:
 
     def scrape(self, html_content: str, schema_dict: dict, max_retries: int = 3) -> dict:
         """Strips HTML content and parses the remainder into a schema compliant JSON structure."""
+        html_content = self.process_images_in_html(html_content)
         cleaned_text = self.clean_html(html_content)
         
         system_prompt = (

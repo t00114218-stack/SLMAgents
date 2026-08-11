@@ -334,10 +334,10 @@ class SLMDocumentParser:
                         
                     try:
                         if label == "table":
-                            table_ocr = vision.parse_image(tmp_path, task="<OCR>")
-                            if table_ocr.strip():
-                                tables.append(table_ocr.strip())
-                        elif label in ["figure", "image"]:
+                            table_desc = vision.parse_image(tmp_path, task="<DETAILED_CAPTION>")
+                            if table_desc.strip():
+                                tables.append(table_desc.strip())
+                        elif label in ["figure", "image", "chart", "diagram", "graph"]:
                             caption = vision.parse_image(tmp_path, task="<DETAILED_CAPTION>")
                             if caption.strip():
                                 captions.append(caption.strip())
@@ -354,13 +354,14 @@ class SLMDocumentParser:
     def _assemble_and_correct_page_markdown(self, page_data: dict, page_num: int) -> str:
         """Uses Phi-3.5 ONNX to structure and self-correct page OCR text, tables, and captions into clean Markdown."""
         page_text = page_data.get("page_text", "")
-        tables_str = "\n\n".join([f"Table Area Content:\n{t}" for t in page_data.get("tables", [])])
-        captions_str = "\n\n".join([f"Image Description: {c}" for c in page_data.get("captions", [])])
+        tables_str = "\n\n".join([f"Table Area Description:\n{t}" for t in page_data.get("tables", [])])
+        captions_str = "\n\n".join([f"Image/Chart Description: {c}" for c in page_data.get("captions", [])])
         
         system_prompt = (
             "You are a local Document Structuring Agent.\n"
-            "Format the raw page OCR text, detected tables, and image captions into a clean structured Markdown page.\n"
-            "Represent tables as valid Markdown tables. Integrate image captions close to their context.\n"
+            "Format the raw page OCR text, detected tables, and image/chart captions into a clean structured Markdown page.\n"
+            "CRITICAL: Do NOT output tables as raw grid structures or pipe-delimited data. Instead, write a natural language text description explaining the table name, headers, columns, data fields, and values clearly.\n"
+            "Integrate image/chart/diagram captions and descriptions close to their context.\n"
             "Maintain correct heading hierarchy (use #, ##, ###). Do not include any preamble or chatter, output ONLY Markdown."
         )
         

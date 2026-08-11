@@ -124,21 +124,21 @@
 
       <section class="doc-section" id="visual-demo">
         <h2>📊 Complex Table Visual OCR Extraction</h2>
-        <p>When the visual parser encounters complex tables inside a document scan, it crops the table coordinates and generates a structured Markdown representation. Below is an example of an input expense table and its corresponding parsed output:</p>
+        <p>When the visual parser encounters complex tables inside a document scan, it crops the table coordinates, routes it to the vision parser, and synthesizes a natural language text description. Below is an example of an input expense table and its corresponding parsed description:</p>
         
         <div style="margin: 20px 0; max-width: 600px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
           <img src="complex_table.png" alt="Input Corporate Expense Table" style="width: 100%; height: auto; display: block;">
         </div>
 
         <div class="tip-box">
-          <strong>Extracted Markdown Table Representation Output:</strong><br>
-          <pre><code>| Expense Category | Q1 Budget (USD) | Q2 Actuals (USD) | Variance (%) |
-| :--- | :--- | :--- | :--- |
-| Infrastructure | $1,250,000 | $1,195,450 | -4.36% |
-| AI Compute Nodes | $3,500,000 | $3,842,910 | +9.80% |
-| Model Conversion | $450,000 | $412,300 | -8.38% |
-| Data Storage | $800,000 | $845,600 | +5.70% |
-| GPU Clusters | $2,100,000 | $2,215,800 | +5.51% |</code></pre>
+          <strong>Extracted Natural Language Table Description Output:</strong><br>
+          <pre><code>### Q2 FY2024 Company Expense Summary
+The table outlines corporate expenditures across multiple categories:
+- **Infrastructure**: Spent $1,195,450 against a $1,250,000 budget (a decrease of 4.36%).
+- **AI Compute Nodes**: Spent $3,842,910 against a $3,500,000 budget (an increase of 9.80%).
+- **Model Conversion**: Spent $412,300 against a $450,000 budget (a decrease of 8.38%).
+- **Data Storage**: Spent $845,600 against a $800,000 budget (an increase of 5.70%).
+- **GPU Clusters**: Spent $2,215,800 against a $2,100,000 budget (an increase of 5.51%).</code></pre>
         </div>
       </section>
 

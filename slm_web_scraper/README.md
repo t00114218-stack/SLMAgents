@@ -49,10 +49,11 @@ The SLM Web Scraper isolates product catalogs, details lists, and metadata grids
 ```
 
 ### Sanitization Stages:
-1. **Script & Style Removal:** Automatically removes `<script>`, `<style>`, `<noscript>`, `<nav>`, `<footer>`, `<header>`, and `<link>` elements. This strips out up to **80% of raw HTML bytes**, preventing input context overflow.
-2. **Whitespace Collapse:** Condenses consecutive tabs and spacing characters, collapsing the DOM content into a flat, readable block.
-3. **Schema Injection:** Injects user-specified output schemas into the prompt, asking the model to map variables to the schema directly from the sanitized markup.
-4. **Validation Check:** Verifies JSON layout, initiating a self-correcting feedback cycle if brackets or structures fail validation.
+1. **Image Visual Extraction:** Automatically identifies `<img>` tags on the page, fetches the image data (resolving relative URLs and offline mockup routes), processes the image using the local `SLMVisionParser` under the `<DETAILED_CAPTION>` task, and replaces the `<img>` tag with the generated natural language description (e.g. `[Image Description: ...]`).
+2. **Script & Style Removal:** Automatically removes `<script>`, `<style>`, `<noscript>`, `<nav>`, `<footer>`, `<header>`, and `<link>` elements. This strips out up to **80% of raw HTML bytes**, preventing input context overflow.
+3. **Whitespace Collapse:** Condenses consecutive tabs and spacing characters, collapsing the DOM content into a flat, readable block.
+4. **Schema Injection:** Injects user-specified output schemas into the prompt, asking the model to map variables to the schema directly from the sanitized markup.
+5. **Validation Check:** Verifies JSON layout, initiating a self-correcting feedback cycle if brackets or structures fail validation.
 
 ---
 

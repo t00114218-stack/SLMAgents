@@ -115,6 +115,7 @@
         <p>The Web Scraper filters raw DOM elements to produce clean extractions:</p>
         <ul>
           <li><strong>DOM Pruning:</strong> Automatically strips scripts, styles, metadata tags, and ad headers using BeautifulSoup.</li>
+          <li><strong>Visual Image OCR:</strong> Identifies image tags (<code>&lt;img&gt;</code>) on the page, downloads them, and runs them through the local <strong>SLMVisionParser</strong> to generate natural language text descriptions, replacing the tags with the descriptions.</li>
           <li><strong>Whitespaces Compacting:</strong> Collapses contiguous whitespace blocks into single space delimiters.</li>
           <li><strong>Schema Alignment:</strong> Instructs the local Phi-3.5 model to match and structure the sanitized text into clean JSON.</li>
         </ul>
