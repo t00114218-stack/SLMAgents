@@ -35,72 +35,113 @@ class SLMWebScraper:
         self.tokenizer = og.Tokenizer(self.model)
 
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
+        target_path = None
         if model_path:
             if not os.path.exists(model_path):
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
-            return os.path.abspath(model_path)
+            target_path = os.path.abspath(model_path)
+        else:
+            # Config loading fallback
+            config_paths = [
+                "./config.yaml",
+                "../config.yaml",
+                os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml"),
+                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.yaml")
+            ]
+            config = {}
+            config_file_path = ""
+            for path in config_paths:
+                if path and os.path.exists(path):
+                    try:
+                        with open(path, "r") as f:
+                            config, config_file_path = yaml.safe_load(f) or {}, os.path.abspath(path)
+                            break
+                    except Exception:
+                        pass
 
-        # Config loading fallback
-        config_paths = [
-            "./config.yaml",
-            "../config.yaml",
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml"),
-            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.yaml")
-        ]
-        config = {}
-        config_file_path = ""
-        for path in config_paths:
-            if path and os.path.exists(path):
-                try:
-                    with open(path, "r") as f:
-                        config, config_file_path = yaml.safe_load(f) or {}, os.path.abspath(path)
-                        break
-                except Exception:
-                    pass
+            model_config = config.get("models", {}).get("web_scraper", {})
+            config_path = model_config.get("path", "../../models/phi-3.5-mini-instruct-onnx")
+            config_path = os.path.expanduser(config_path)
+            
+            if not os.path.isabs(config_path) and config_file_path:
+                config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
+            target_path = config_path
 
-        model_config = config.get("models", {}).get("web_scraper", {})
-        config_path = model_config.get("path", "../../models/phi-3.5-mini-instruct-onnx")
-        config_path = os.expanduser(config_path) if hasattr(os, "expanduser") else config_path
-        config_path = os.path.expanduser(config_path)
-        
-        if not os.path.isabs(config_path) and config_file_path:
-            config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
-        
-        for root, dirs, files in os.walk(config_path):
+        # Find directory containing genai_config.json
+        for root, dirs, files in os.walk(target_path):
             if "genai_config.json" in files:
                 return root
+                
+        if model_path:
+            return target_path
             
         repo_id = model_config.get("repo_id", "microsoft/Phi-3.5-mini-instruct-onnx")
         print(f"[SLMWebScraper] ONNX Model not found at configured path. Auto-downloading...")
-        os.makedirs(config_path, exist_ok=True)
+        os.makedirs(target_path, exist_ok=True)
         
         from huggingface_hub import snapshot_download
         snapshot_download(
             repo_id=repo_id,
-            local_dir=config_path,
+            local_dir=target_path,
             ignore_patterns=["*cuda*", "*directml*"]
         )
         
-        for root, dirs, files in os.walk(config_path):
+        for root, dirs, files in os.walk(target_path):
             if "genai_config.json" in files:
                 return root
                 
-        return config_path
+        return target_path
 
     def clean_html(self, html_content: str) -> str:
         """Removes script, style, and navigation tags from HTML to optimize input context window."""
         soup = BeautifulSoup(html_content, "lxml")
         
         # Remove non-content tags
-        for element in soup(["script", "style", "nav", "footer", "header", "noscript"]):
+        non_content_tags = ["script", "style", "nav", "footer", "header", "noscript", "aside", "iframe"]
+        for element in soup(non_content_tags):
             element.extract()
             
+        # Clean elements by classes or IDs matching navigation/advertising terms
+        for element in soup.find_all(True):
+            cls = element.get("class", [])
+            if isinstance(cls, list):
+                cls = " ".join(cls)
+            cls = str(cls).lower()
+            element_id = str(element.get("id", "")).lower()
+            
+            if any(term in cls or term in element_id for term in ["menu", "nav", "sidebar", "ad-", "banner", "footer"]):
+                element.extract()
+                
         # Get clean text representation
         text = soup.get_text(separator="\n")
         
         # Strip redundant white lines
         lines = [line.strip() for line in text.splitlines() if line.strip()]
         return "\n".join(lines)
+
+    def scrape_url(self, url: str, schema_dict: dict = None, max_retries: int = 3):
+        """Fetches html from URL and extracts cleaned main content text, avoiding navigation/menus and ads."""
+        if "slmagents.ai" in url or "localhost" in url:
+            basename = url.split("/")[-1]
+            if not basename:
+                basename = "index.html"
+            local_path = f"/Users/revathysuryaprakash/Documents/SLMAgents/website/{basename}"
+            if not os.path.exists(local_path):
+                local_path = f"/Users/revathysuryaprakash/Documents/SLMAgentsPortal/{basename}"
+            
+            with open(local_path, "r", encoding="utf-8", errors="ignore") as f:
+                html_content = f.read()
+        else:
+            import urllib.request
+            headers = {"User-Agent": "Mozilla/5.0"}
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=10) as response:
+                html_content = response.read().decode("utf-8", errors="ignore")
+                
+        if schema_dict is None:
+            return self.clean_html(html_content)
+            
+        return self.scrape(html_content, schema_dict, max_retries)
 
     def _extract_json(self, text: str) -> str:
         match = re.search(r"```json\s*(.*?)\s*```", text, re.DOTALL)

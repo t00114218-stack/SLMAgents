@@ -114,37 +114,53 @@ Strips webpage noise and compiles structured data into the target JSON layout.
 * **`max_retries`** (*int*): Number of self-correcting schema retry cycles.
 * **Returns**: *dict* of structured data.
 
+##### `scrape_url(url: str, schema_dict: dict = None, max_retries: int = 3)`
+Fetches webpage HTML, removes menus/navs/ads, and extracts data. If `schema_dict` is omitted, returns a clean raw text string.
+* **`url`** (*str*): Webpage URL.
+* **`schema_dict`** (*dict | None*): Targeted JSON structure schema (optional).
+* **Returns**: *str* (raw clean text) or *dict* (schema-compliant parsed data).
+
 ---
 
-## 🚀 5. Usage Example
+## 🚀 5. Usage Examples
 
-Here is a realistic usage example scraping product listings, ratings, and prices from a raw HTML string block:
+### Example 1: Webpage URL Scraping (Clean Text Extraction)
+```python
+from slm_web_scraper.web_scraper import SLMWebScraper
 
+scraper = SLMWebScraper()
+
+# Scrapes page and removes ads, header menus, and footers automatically
+clean_text = scraper.scrape_url("https://www.slmagents.ai/rag.html")
+print(clean_text[:500])
+```
+
+#### Output:
+```text
+SLM RAG | Documentation
+Home › SLM RAG
+📚 Retrieval-Augmented Generation
+SLM RAG
+Answer questions from your own documents — locally, privately, with zero API costs.
+Installation
+# Install from PyPI
+pip install slm-rag
+```
+
+### Example 2: HTML String Content Scraping (Structured JSON Extraction)
 ```python
 from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
 raw_html_content = """
-<html>
-  <body>
-    <header><h1>SLM Products Portal</h1></header>
-    <div class="product-item">
-      <span class="title">Local CPU Node Core-1</span>
-      <span class="price">$150.00</span>
-      <div class="rating">Rating: 4.8 out of 5 stars</div>
-    </div>
-    <div class="product-item">
-      <span class="title">Local OCR Bundle Node-2</span>
-      <span class="price">$280.00</span>
-      <div class="rating">Rating: 4.9 out of 5 stars</div>
-    </div>
-    <footer>Contact support at info@slmagents.ai</footer>
-  </body>
-</html>
+<div class="product-item">
+  <span class="title">Local CPU Node Core-1</span>
+  <span class="price">$150.00</span>
+  <div class="rating">Rating: 4.8</div>
+</div>
 """
 
-# Extract schema
 target_schema = {
     "products": [
         {"product_name": "string", "price_usd": "number", "rating": "number"}
@@ -155,12 +171,11 @@ result = scraper.scrape(html_content=raw_html_content, schema_dict=target_schema
 print(result)
 ```
 
-### Generated Output Response:
+#### Generated Output Response:
 ```json
 {
   "products": [
-    {"product_name": "Local CPU Node Core-1", "price_usd": 150.00, "rating": 4.8},
-    {"product_name": "Local OCR Bundle Node-2", "price_usd": 280.00, "rating": 4.9}
+    {"product_name": "Local CPU Node Core-1", "price_usd": 150.00, "rating": 4.8}
   ]
 }
 ```

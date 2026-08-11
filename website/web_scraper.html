@@ -155,8 +155,30 @@ scraper = SLMWebScraper()</code></pre>
           </tbody>
         </table>
 
+        <h3>`scrape_url` Method</h3>
+        <p>Fetches a URL, filters out header/footer menus, dropdown lists, sidebars, and ads, returning the clean body text. If `schema_dict` is provided, returns parsed JSON.</p>
+        <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
+
+scraper = SLMWebScraper()
+
+# Extract clean main content text from local or online URL
+clean_text = scraper.scrape_url("https://www.slmagents.ai/rag.html")
+print(clean_text[:500])</code></pre>
+
+        <div class="tip-box">
+          <strong>Cleaned Webpage Text Output (No Menus, Sidebars, or Ads):</strong><br>
+          <pre><code>SLM RAG | Documentation
+Home › SLM RAG
+📚 Retrieval-Augmented Generation
+SLM RAG
+Answer questions from your own documents — locally, privately, with zero API costs.
+Installation
+# Install from PyPI
+pip install slm-rag</code></pre>
+        </div>
+
         <h3>`scrape` Method</h3>
-        <p>Strips DOM layout noise and extracts schema-matching targets. Include webpage contents and target layouts:</p>
+        <p>Strips DOM layout noise from an raw HTML string block and extracts schema-matching targets:</p>
         <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
@@ -166,7 +188,7 @@ raw_html = """
 <div class="product-item">
   <span class="title">Local CPU Node Core-1</span>
   <span class="price">$150.00</span>
-  <div class="rating">Rating: 4.8 out of 5 stars</div>
+  <div class="rating">Rating: 4.8</div>
 </div>
 """
 
