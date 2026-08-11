@@ -169,13 +169,13 @@ parser = SLMVisionParser()</code></pre>
 
 parser = SLMVisionParser()
 
-# Extract bounding boxes and text from flowchart
-result = parser.parse_image("flowchart.png", task="&lt;OCR_WITH_REGION&gt;")
+# Describe the flowchart diagram in text using the local vision LLM
+result = parser.parse_image("flowchart.png", task="&lt;DETAILED_CAPTION&gt;")
 print(result)</code></pre>
 
         <div class="tip-box">
-          <strong>OCR Coordinates Response Output:</strong><br>
-          <pre><code class="language-python">"{'quad_boxes': [[120, 85, 240, 85, 240, 310, 120, 310], [250, 190, 420, 190, 420, 195, 250, 195]], 'labels': ['Start Process', 'Next Step Link']}"</code></pre>
+          <strong>Image Description Response Output:</strong><br>
+          <pre><code class="language-python">"A flowchart diagram displaying a 'Start Process' box connected to a 'Next Step Link' box by a teal arrow on a dark grid background."</code></pre>
         </div>
       </section>
     </main>

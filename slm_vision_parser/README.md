@@ -114,20 +114,20 @@ Parses target image file and executes the requested visual query.
 
 ## 🚀 5. Usage Example
 
-Here is a realistic example using the `<OCR_WITH_REGION>` task tag to extract coordinate bounding boxes (four quadrilateral coordinates `[x1, y1, x2, y2, x3, y3, x4, y4]`) alongside the text contents of a flowchart diagram:
+Here is a realistic example using the `<DETAILED_CAPTION>` task tag to extract a detailed natural language text description from a flowchart diagram:
 
 ```python
 from slm_vision_parser.vision_parser import SLMVisionParser
 
 parser = SLMVisionParser()
 
-# Parse the flowchart image to map nodes and coordinates
-output = parser.parse_image("flowchart.png", task="<OCR_WITH_REGION>")
+# Describe the flowchart diagram in text using the local vision LLM
+output = parser.parse_image("flowchart.png", task="<DETAILED_CAPTION>")
 
 print(output)
 ```
 
 ### Generated Output Response:
 ```python
-"{'quad_boxes': [[120, 85, 240, 85, 240, 310, 120, 310], [250, 190, 420, 190, 420, 195, 250, 195]], 'labels': ['Start Process', 'Next Step Link']}"
+"A flowchart diagram displaying a 'Start Process' box connected to a 'Next Step Link' box by a teal arrow on a dark grid background."
 ```
