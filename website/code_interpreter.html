@@ -250,6 +250,26 @@ result = interpreter.<span class="function">run</span>(<span class="string">"Com
           </ul>
         </section>
 
+        <!-- VS CODE INTEGRATION -->
+        <section class="doc-section" id="vscode">
+          <h2>🔌 Visual Studio Code Integration</h2>
+          <p>You can run the Code Interpreter as a background service and trigger local executions directly from your VS Code editor workspace.</p>
+          
+          <h3>Step 1: Start the Background Daemon Server</h3>
+          <p>Execute the local HTTP server in your terminal:</p>
+          <pre><code>python -m slm_code_interpreter.server</code></pre>
+          <p>The daemon activates a local REST API listening on port <code>8085</code>.</p>
+
+          <h3>Step 2: Run the VS Code Extension Blueprint</h3>
+          <p>A pre-configured extension is provided under the <code>vscode-extension/</code> directory:</p>
+          <ul>
+            <li>Open the extension directory in VS Code.</li>
+            <li>Press <code>F5</code> to launch a debug instance of the editor.</li>
+            <li>Highlight any instructions or python code blocks inside your editor workspace, right-click, and select: <strong>"SLM Code Interpreter: Execute Selected Prompt / Code"</strong>.</li>
+            <li>Monitor execution progress and trace outputs inside the VS Code Output Channel under <strong>"SLM Code Interpreter"</strong>.</li>
+          </ul>
+        </section>
+
         <!-- SECURITY -->
         <section class="doc-section" id="security">
           <h2>Security Warnings</h2>

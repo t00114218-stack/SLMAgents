@@ -1,0 +1,41 @@
+{
+  "name": "slm-code-interpreter-vscode",
+  "displayName": "SLM Code Interpreter Integration",
+  "description": "Local CPU-optimized Python code interpreter agent integration for VS Code editor selection executions.",
+  "version": "0.1.0",
+  "publisher": "slm-agents",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:slm-code-interpreter.executeSelection",
+    "onCommand:slm-code-interpreter.executeInstruction"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "slm-code-interpreter.executeSelection",
+        "title": "SLM Code Interpreter: Execute Selected Prompt / Code"
+      },
+      {
+        "command": "slm-code-interpreter.executeInstruction",
+        "title": "SLM Code Interpreter: Ask Agent to Write & Run..."
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "slm-code-interpreter.executeSelection",
+          "group": "navigation",
+          "when": "editorHasSelection"
+        }
+      ]
+    }
+  }
+}

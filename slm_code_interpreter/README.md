@@ -120,3 +120,33 @@ models:
     path: "../../models/qwen2.5-1.5b-onnx"
     repo_id: "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX"
 ```
+
+---
+
+## 🔌 VS Code Integration Guide
+
+You can integrate the **SLM Code Interpreter** directly inside Visual Studio Code to execute highlighted text prompts or code sections locally on your CPU.
+
+### Step 1: Start the Background Daemon Server
+Start the local HTTP JSON API server on port `8085`:
+```bash
+# Option A: Run directly from python module
+python -m slm_code_interpreter.server
+
+# Option B: Run programmatically from code
+from slm_code_interpreter import run_server
+run_server(port=8085)
+```
+The server will output:
+`[SLMCodeInterpreter] Local VS Code integration server active on http://127.0.0.1:8085`
+
+### Step 2: Install the VS Code Extension Blueprint
+The package includes a lightweight, pre-configured VS Code extension folder located at [vscode-extension/](file:///Users/revathysuryaprakash/Documents/SLMAgents/slm_code_interpreter/vscode-extension).
+
+1. Open the [vscode-extension](file:///Users/revathysuryaprakash/Documents/SLMAgents/slm_code_interpreter/vscode-extension) folder in VS Code.
+2. Press `F5` to start a new VS Code debug window with the extension activated.
+3. In the new window, select any text or code prompt, right-click, and select:
+   **"SLM Code Interpreter: Execute Selected Prompt / Code"**
+4. Alternately, open the Command Palette (`Cmd+Shift+P` on Mac / `Ctrl+Shift+P` on Windows) and search for:
+   **"SLM Code Interpreter: Ask Agent to Write & Run..."**
+5. All reasoning traces, code, stdout outputs, and errors will be printed in real-time inside the VS Code **Output Channel** (under the "SLM Code Interpreter" filter).
