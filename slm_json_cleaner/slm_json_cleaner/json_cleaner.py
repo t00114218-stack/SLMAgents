@@ -97,7 +97,7 @@ class SLMJSONCleaner:
             
         return text.strip()
 
-    def clean_json(self, malformed_text: str, schema_dict: dict, stream: bool = False):
+    def clean_json(self, malformed_text: str, schema_dict: dict, stream: bool = False, system_prompt: str = None, user_input: str = None):
         """
         Sanitizes raw broken JSON input strings to match a schema schema_dict.
         If stream=True, returns a token generator.

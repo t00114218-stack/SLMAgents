@@ -43,7 +43,7 @@ class SLMDBMigrator:
         except Exception as e:
             return False, f"Sandbox validation error: {e}"
 
-    def generate_migration(self, from_schema: str, to_schema: str, dialect: str = "postgresql") -> dict:
+    def generate_migration(self, from_schema: str, to_schema: str, dialect: str = "postgresql", system_prompt: str = None, user_input: str = None) -> dict:
         """
         Generates SQL migration commands and SQLAlchemy models.
         """

@@ -686,7 +686,7 @@ class SLMDocumentParser:
             return brace_match.group(1).strip()
         return text.strip()
 
-    def parse(self, file_path: str, schema_dict: dict, max_retries: int = 3) -> dict:
+    def parse(self, file_path: str, schema_dict: dict, max_retries: int = 3, system_prompt: str = None, user_input: str = None) -> dict:
         """Parses a document file into a structured JSON dict matching the schema_dict."""
         raw_text = self.extract_text(file_path)
         

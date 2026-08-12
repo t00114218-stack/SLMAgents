@@ -201,7 +201,9 @@ SLM_ORCHESTRATOR_N_THREADS=8 python my_app.py</code></pre>
           <tr><td>cache_dir</td><td>str | None</td><td>Directory to download/cache the model. Defaults to <code>~/.cache/slm_summarizer/</code>. Also settable via <span class="env-tag">SLM_ORCHESTRATOR_CACHE_DIR</span>.</td></tr>
           <tr><td>n_ctx</td><td>int | 2048</td><td>Context window size in tokens. Increase if your agent list + query is very long. Also settable via <span class="env-tag">SLM_ORCHESTRATOR_N_CTX</span>.</td></tr>
           <tr><td>n_threads</td><td>int | 4</td><td>CPU threads for ONNX inference. Set to your physical core count for best performance. Also settable via <span class="env-tag">SLM_ORCHESTRATOR_N_THREADS</span>.</td></tr>
-        </tbody>
+                      <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
+</tbody>
       </table>
 
       <h3>route() Parameters</h3>
@@ -213,7 +215,9 @@ SLM_ORCHESTRATOR_N_THREADS=8 python my_app.py</code></pre>
           <tr><td>tools</td><td>list | None</td><td>Optional list of tool JSON schemas for agentic pre-routing lookups. See Tool Use section.</td></tr>
           <tr><td>tool_executor</td><td>callable | None</td><td>Optional Python function <code>fn(tool_name: str, args: dict) -> str</code> to execute tool calls.</td></tr>
           <tr><td>max_iterations</td><td>int | 5</td><td>Maximum ReAct loop iterations when using tools. Prevents infinite loops.</td></tr>
-        </tbody>
+                      <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
+</tbody>
       </table>
 
       <div class="code-panel" style="max-width:100%">
@@ -247,7 +251,9 @@ result = orchestrator.<span class="function">route</span>(agents=agents, questio
           <tr><td>SLM_ORCHESTRATOR_CACHE_DIR</td><td>~/.cache/slm_summarizer</td><td>Model download and cache directory.</td></tr>
           <tr><td>SLM_ORCHESTRATOR_CONFIG</td><td>(auto)</td><td>Explicit path to a config.yaml file.</td></tr>
           <tr><td>OMP_NUM_THREADS</td><td>(set from n_threads)</td><td>OpenMP threads — automatically set from n_threads.</td></tr>
-        </tbody>
+                      <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
+</tbody>
       </table>
       <div class="code-panel" style="max-width:100%">
         <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Setting env vars</div></div>

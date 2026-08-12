@@ -118,7 +118,7 @@ class SLMRag:
                 
         return config_path
 
-    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5, stream: bool = False):
+    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5, stream: bool = False, system_prompt: str = None, user_input: str = None):
         """
         Synthesizes an answer based on document chunks, user question, and user instruction.
         Supports tool execution (e.g., Vector DB lookups) to gather more context.

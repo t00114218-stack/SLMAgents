@@ -163,7 +163,7 @@ class SLMCLIAgent:
         except subprocess.TimeoutExpired:
             return -1, "", "Command Execution Timed Out after 20 seconds."
 
-    def run(self, query: str) -> dict:
+    def run(self, query: str, system_prompt: str = None, user_input: str = None) -> dict:
         """
         Translates a natural language query into a command, executes it safely,
         and returns a structured dict of the results.

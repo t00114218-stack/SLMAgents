@@ -26,7 +26,7 @@ class SLMMeetingSummarizer:
     def __init__(self, model_path=None):
         self.config, _ = load_config()
 
-    def summarize_transcript(self, transcript: str, format_spec: str = "markdown_table") -> dict:
+    def summarize_transcript(self, transcript: str, format_spec: str = "markdown_table", system_prompt: str = None, user_input: str = None) -> dict:
         """
         Processes transcript text and extracts structured action items & decisions.
         """

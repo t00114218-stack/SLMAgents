@@ -45,7 +45,7 @@ class SLMDataAnalyst:
             except Exception:
                 self.interpreter = None
 
-    def analyze_file(self, file_path: str, query: str) -> dict:
+    def analyze_file(self, file_path: str, query: str, system_prompt: str = None, user_input: str = None) -> dict:
         """
         Parses data schema and generates analysis script execution.
         """

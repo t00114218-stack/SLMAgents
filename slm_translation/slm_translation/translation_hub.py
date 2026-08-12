@@ -42,7 +42,7 @@ class SLMTranslationHub:
         self.active_pair = pair_key
         self.loaded_model = model_name
 
-    def translate(self, text: str, source_lang: str = "en", target_lang: str = "hi") -> str:
+    def translate(self, text: str, source_lang: str = "en", target_lang: str = "hi", system_prompt: str = None, user_input: str = None) -> str:
         """
         Translates text from source_lang to target_lang while preserving formatting syntax.
         """

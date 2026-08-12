@@ -35,7 +35,7 @@ class SLMEmailAssistant:
         self.config, _ = load_config()
         self.security = SLMSecurityAudit() if SLMSecurityAudit else None
 
-    def process_email(self, email_text: str, tone_profile: str = "professional") -> dict:
+    def process_email(self, email_text: str, tone_profile: str = "professional", system_prompt: str = None, user_input: str = None) -> dict:
         """
         Processes an email:
         1. Runs PII & spam security check.

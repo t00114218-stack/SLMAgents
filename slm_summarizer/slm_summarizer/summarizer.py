@@ -296,7 +296,7 @@ class SLMSummarizer:
 
     def summarize(self, text: str, format: str = "bullet_points", max_length: int = None, 
                   instruction: str = "", chunk_size: int = 4000, temperature: float = 0.0,
-                  max_correction_loops: int = None, stream: bool = False):
+                  max_correction_loops: int = None, stream: bool = False, system_prompt: str = None, user_input: str = None):
         """
         Summarizes the given text.
 

@@ -83,7 +83,7 @@ class SLMGitCopilot:
                 
         return config_path
 
-    def generate_commit_message(self, diff_text: str, stream: bool = False):
+    def generate_commit_message(self, diff_text: str, stream: bool = False, system_prompt: str = None, user_input: str = None):
         """
         Generates a Conventional Commit message based on a raw git diff text block.
         Truncates input if it exceeds reasonable context capacities.

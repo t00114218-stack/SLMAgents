@@ -101,7 +101,7 @@ class SLMCodeInterpreter:
         return ""
 
 
-    def run(self, instruction: str, max_retries: int = 3, stream: bool = False):
+    def run(self, instruction: str, max_retries: int = 3, stream: bool = False, system_prompt: str = None, user_input: str = None):
         """
         Executes code instructions. If stream=True, returns a generator of tokens.
         If stream=False, performs self-correcting run to completion and returns the dict response.

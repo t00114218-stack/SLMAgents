@@ -110,6 +110,20 @@
         <p>The SLM Search Orchestrator acts as a pre-retrieval query planner. It expands inputs into 3 targeted terms, crawls DuckDuckGo, and structures raw search snippets into clean markdown segments ready for RAG injection.</p>
       </section>
 
+        <!-- INSTALLATION -->
+        <section class="doc-section" id="install">
+          <h2>Installation</h2>
+          <p>Install the local CPU-optimized package using pip:</p>
+          <div class="code-panel" style="max-width:100%">
+            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
+            <div class="code-content" style="display:block;padding:1.5rem">
+              <pre><code><span class="comment"># Install from PyPI</span>
+pip install slm-search-orchestrator</code></pre>
+            </div>
+          </div>
+        </section>
+        
+
       <section class="doc-section">
         <h2>🤖 Truly Agentic Pre-Retrieval Planning</h2>
         <p>The Search Orchestrator implements an offline planning logic:</p>
@@ -152,7 +166,9 @@ orchestrator = SLMSearchOrchestrator()</code></pre>
           </thead>
           <tbody>
             <tr><td>model_path</td><td>str</td><td>Local path to Phi-3.5 weights. Defaults to "../../models/phi-3.5-mini-instruct-onnx".</td></tr>
-          </tbody>
+                        <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
+</tbody>
         </table>
 
         <h3>`retrieve` Method</h3>

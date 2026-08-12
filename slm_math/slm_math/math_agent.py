@@ -44,7 +44,7 @@ class SLMMathAgent:
             return expr_match.group(1).strip()
         return problem
 
-    def solve(self, problem_description: str) -> dict:
+    def solve(self, problem_description: str, system_prompt: str = None, user_input: str = None) -> dict:
         if not problem_description:
             return {"success": False, "error": "Empty problem description"}
 

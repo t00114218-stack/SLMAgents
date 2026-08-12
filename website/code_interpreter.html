@@ -197,7 +197,9 @@ export SLM_CODE_INTERPRETER_N_CTX=2048</code></pre>
               <tr><td>cache_dir</td><td>str | None</td><td>HF model directory path. Also settable via <span class="env-tag">SLM_CODE_INTERPRETER_CACHE_DIR</span>.</td></tr>
               <tr><td>n_ctx</td><td>int | 2048</td><td>Context window size in tokens. Also settable via <span class="env-tag">SLM_CODE_INTERPRETER_N_CTX</span>.</td></tr>
               <tr><td>n_threads</td><td>int | 4</td><td>CPU threads for ONNX Runtime. Also settable via <span class="env-tag">SLM_CODE_INTERPRETER_N_THREADS</span>.</td></tr>
-            </tbody>
+                          <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
+</tbody>
           </table>
 
           <h3>run() Parameters</h3>
@@ -207,7 +209,9 @@ export SLM_CODE_INTERPRETER_N_CTX=2048</code></pre>
               <tr><td>instruction</td><td>str</td><td><strong>Required.</strong> Natural language description of what you want the script to calculate or print.</td></tr>
               <tr><td>max_retries</td><td>int | 3</td><td>Number of turns the self-correction engine is allowed to attempt standard traceback fixes.</td></tr>
               <tr><td>stream</td><td>bool | False</td><td>If True, enables token streaming of the model's explanation and thinking process. Returns a Python generator.</td></tr>
-            </tbody>
+                          <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
+</tbody>
           </table>
 
           <div class="code-panel" style="max-width:100%">

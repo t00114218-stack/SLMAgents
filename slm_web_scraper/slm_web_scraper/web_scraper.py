@@ -251,7 +251,7 @@ class SLMWebScraper:
                 
         return str(soup)
 
-    def scrape_url(self, url: str, schema_dict: dict = None, max_retries: int = 3):
+    def scrape_url(self, url: str, schema_dict: dict = None, max_retries: int = 3, system_prompt: str = None, user_input: str = None):
         """Fetches html from URL and extracts cleaned main content text, avoiding navigation/menus and ads."""
         if "slmagents.ai" in url or "localhost" in url:
             basename = url.split("/")[-1]

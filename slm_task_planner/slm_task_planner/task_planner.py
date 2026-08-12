@@ -25,7 +25,7 @@ class SLMTaskPlanner:
     def __init__(self, model_path=None):
         self.config, _ = load_config()
 
-    def build_plan(self, goal: str) -> dict:
+    def build_plan(self, goal: str, system_prompt: str = None, user_input: str = None) -> dict:
         """
         Decomposes a user goal into sub-tasks with target agent assignments.
         """

@@ -58,7 +58,7 @@ class SLMMemoryManager:
         except Exception:
             return False
 
-    def get_relevant_facts(self, query: str = "") -> list[str]:
+    def get_relevant_facts(self, query: str = "", system_prompt: str = None, user_input: str = None) -> list[str]:
         """
         Retrieves stored facts matching query keywords.
         """

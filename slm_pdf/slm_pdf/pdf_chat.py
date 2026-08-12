@@ -80,7 +80,7 @@ class SLMPDFChat:
             "total_chunks": len(self.loaded_chunks)
         }
 
-    def ask(self, question: str) -> str:
+    def ask(self, question: str, system_prompt: str = None, user_input: str = None) -> str:
         """
         Queries the loaded PDF content using SLMRag.
         """

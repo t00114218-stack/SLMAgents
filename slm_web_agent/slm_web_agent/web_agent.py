@@ -124,7 +124,7 @@ class SLMWebAgent:
             })
         return elements[:20] # Limit to top 20 to prevent context overflow
 
-    def browse(self, goal: str, start_url: str, max_steps: int = 3) -> dict:
+    def browse(self, goal: str, start_url: str, max_steps: int = 3, system_prompt: str = None, user_input: str = None) -> dict:
         """Runs the ReAct automation loop to reach the user goal starting at start_url."""
         if not self.page:
             success = self.start_browser()

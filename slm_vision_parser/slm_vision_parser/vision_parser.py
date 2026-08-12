@@ -81,7 +81,7 @@ class SLMVisionParser:
         )
         return config_path
 
-    def parse_image(self, image_path: str, task: str = "<OCR>") -> str:
+    def parse_image(self, image_path: str, task: str = "<OCR>", system_prompt: str = None, user_input: str = None) -> str:
         """
         Executes a vision task on the specified image file.
         Tasks include:

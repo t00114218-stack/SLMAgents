@@ -166,7 +166,7 @@ class SLMSearchOrchestrator:
             print(f"Warning: DuckDuckGo query failed: {e}")
             return mock_results
 
-    def retrieve(self, user_query: str, max_results_per_query: int = 2) -> list[dict]:
+    def retrieve(self, user_query: str, max_results_per_query: int = 2, system_prompt: str = None, user_input: str = None) -> list[dict]:
         """Performs full search aggregation workflow."""
         queries = self.generate_queries(user_query)
         all_results = []

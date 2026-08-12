@@ -35,7 +35,7 @@ class SLMPKBAgent:
         self.config, _ = load_config()
         self.embedder = SLMEmbeddingsServer() if SLMEmbeddingsServer else None
 
-    def index_vault(self, vault_dir: str) -> dict:
+    def index_vault(self, vault_dir: str, system_prompt: str = None, user_input: str = None) -> dict:
         """
         Scans vault_dir for markdown files, builds similarity map, and returns link suggestions.
         """

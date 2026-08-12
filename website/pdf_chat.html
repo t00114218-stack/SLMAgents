@@ -126,6 +126,7 @@
         <!-- INSTALLATION -->
         <section class="doc-section" id="install">
           <h2>Installation</h2>
+          <p>Install the local CPU-optimized package using pip:</p>
           <div class="code-panel" style="max-width:100%">
             <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
             <div class="code-content" style="display:block;padding:1.5rem">
@@ -158,7 +159,19 @@ pip install slm-pdf</code></pre>
               <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>load(pdf_path)</code></td><td><code>None</code></td><td>Saves document configurations locally and performs text extraction mappings.</td></tr><tr><td><code>ask(question)</code></td><td><code>str</code></td><td>Executes vector search on the document text chunks to synthesize local responses.</td></tr>
+              <tr><td><code>load(pdf_path)</code></td><td><code>None</code></td><td>Saves document configurations locally and performs text extraction mappings.</td></tr><tr><td><code>ask(question, system_prompt=None, user_input=None)</code></td><td><code>str</code></td><td>Executes vector search on the document text chunks to synthesize local responses.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Method Parameters (Execution Customization)</h3>
+          <p>All main execution methods accept optional system routing parameters:</p>
+          <table class="param-table">
+            <thead>
+              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instruction to override the default system template response parameters.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target text variables or contextual keys.</td></tr>
             </tbody>
           </table>
 
@@ -167,7 +180,11 @@ pip install slm-pdf</code></pre>
 
 pdf = SLMPDFChat()
 pdf.load("invoice.pdf")
-ans = pdf.ask("What is the total due amount?")
+ans = pdf.ask(
+    "What is the total due amount?",
+    system_prompt="Answer format: $XX.XX",
+    user_input="Extract tax detail explicitly"
+)
 print(ans)</code></pre>
         </section>
 

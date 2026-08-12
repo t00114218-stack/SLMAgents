@@ -51,7 +51,7 @@ class SLMEmbeddingsServer:
             except Exception:
                 pass
 
-    def embed(self, texts: list[str] | str) -> list[list[float]]:
+    def embed(self, texts: list[str] | str, system_prompt: str = None, user_input: str = None) -> list[list[float]]:
         """
         Embeds a single string or list of text strings into dense vector representations.
         Returns a list of float arrays (dimension: 1024).

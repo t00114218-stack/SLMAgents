@@ -44,7 +44,7 @@ class SLMVoiceAgent:
             "If none match, reply with 'direct'."
         )
 
-    def process_speech_text(self, speech_transcript: str, language: str = "english") -> dict:
+    def process_speech_text(self, speech_transcript: str, language: str = "english", system_prompt: str = None, user_input: str = None) -> dict:
         """
         Processes transcribed speech text, executes registered tool calls if triggered, and returns a response.
         """

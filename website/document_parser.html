@@ -171,7 +171,9 @@ parser = SLMDocumentParser(n_ctx=4096, n_threads=4)</code></pre>
             <tr><td>model_path</td><td>str | None</td><td>Local path to Phi-3.5 weight checkpoints. Defaults to "../../models/phi-3.5-mini-instruct-onnx".</td></tr>
             <tr><td>n_ctx</td><td>int | 4096</td><td>Inference token window size. Phi-3.5 supports up to 128K context tokens.</td></tr>
             <tr><td>n_threads</td><td>int | 4</td><td>Allocated CPU cores for ORT execution.</td></tr>
-          </tbody>
+                        <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
+</tbody>
         </table>
 
         <h3>`extract_text` Method</h3>
@@ -218,7 +220,9 @@ parser.export_chunks_to_excel(chunks, "rag_dataset.xlsx", append=False)</code></
             </thead>
             <tbody>
               <tr><td>0</td><td>financial_report.pdf</td><td>1. Launch Milestones</td><td>Falcon 9 Performance</td><td>SpaceX</td><td>1,2</td><td>SpaceX successfully launched the Falcon 9...</td></tr>
-            </tbody>
+                          <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
+              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
+</tbody>
           </table>
         </div>
       </section>

@@ -41,7 +41,7 @@ class SLMSecurityAudit:
         self.redact_pii = redact_pii if redact_pii is not None else sec_cfg.get("redact_pii", True)
         self.block_injections = block_injections if block_injections is not None else sec_cfg.get("block_injections", True)
 
-    def sanitize(self, input_text: str) -> dict:
+    def sanitize(self, input_text: str, system_prompt: str = None, user_input: str = None) -> dict:
         """
         Sanitizes text by redacting PII and detecting safety or code injection violations.
         Returns a dict: {"safe": bool, "sanitized_text": str, "violations": list[str]}

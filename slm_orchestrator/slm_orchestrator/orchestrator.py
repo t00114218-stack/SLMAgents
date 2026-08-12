@@ -122,7 +122,7 @@ class SLMOrchestrator:
                 
         return config_path
 
-    def route(self, agents: list, question: str, tools: list = None, tool_executor: callable = None, max_iterations: int = 5) -> str:
+    def route(self, agents: list, question: str, tools: list = None, tool_executor: callable = None, max_iterations: int = 5, system_prompt: str = None, user_input: str = None) -> str:
         """
         Routes a user query to one of the custom agents based on their name and description.
         Supports tool execution (e.g., Vector DB lookups) to gather more context before routing.
