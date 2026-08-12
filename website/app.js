@@ -456,10 +456,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Dropdown click handler
+  const dropdownTriggers = document.querySelectorAll('.dropdown-trigger');
+  dropdownTriggers.forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const parent = trigger.closest('.dropdown');
+      if (parent) {
+        parent.classList.toggle('open');
+      }
+    });
+  });
+
+  // Close dropdown on outside click
+  window.addEventListener('click', (e) => {
+    if (!e.target.closest('.dropdown')) {
+      document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('open'));
+    }
+  });
+
   // Close modal when clicking outside of modal content
   const modal = document.getElementById('agent-modal');
   if (modal) {
     modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeAgentModal();
+      }
+    });
+  }
+});
  // 26-AGENT STUDIO & UNIT TEST GENERATOR SPECS
 const ALL_AGENT_SPECS = {
   voice: {
