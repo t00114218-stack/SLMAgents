@@ -17,3 +17,8 @@ models/
 # OS Specific
 .DS_Store
 Thumbs.db
+
+# Build artifacts
+dist/
+*.egg-info/
+build/
