@@ -1,0 +1,4 @@
+security:
+  redact_pii: true
+  block_injections: true
+  max_latency_ms: 10

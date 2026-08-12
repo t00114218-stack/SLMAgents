@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["slm_pdf"]
+
+[project]
+name = "slm-pdf"
+version = "0.1.0"
+description = "Secure local CPU-optimized PDF Chat agent reusing slm_document_parser and slm_rag"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "llm", "slm", "pdf", "rag", "document-parser", "local-ai", "cpu-inference"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3"
+]
+dependencies = [
+    "slm-document-parser",
+    "slm-rag",
+    "pdfplumber>=0.7.0",
+    "pyyaml"
+]
+
+[[project.authors]]
+name = "Suryaprakash CV"
+email = "suryaprakash.c.v@gmail.com"

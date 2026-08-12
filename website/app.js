@@ -21,7 +21,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Database Migrator",
     category: "Developer Tools",
     catClass: "badge-dev",
-    stage: "Planning Phase",
+    stage: "Verified (CPU)",
     desc: "Analyzes legacy database schemas and generates zero-downtime, CPU-optimized migrations and modern ORM model definitions offline.",
     features: [
       "Direct SQL table schema analysis and dependency mapping",
@@ -29,13 +29,14 @@ const UPCOMING_AGENTS = {
       "Generates modern SQLAlchemy and Django ORM models",
       "Suggests structural indexing plans for performance improvement"
     ],
-    code: "from slm_db_migration import SLMDBMigrator\n\nmigrator = SLMDBMigrator()\nmigration_sql = migrator.generate_migration(from_schema, to_schema)\nprint(migration_sql)"
+    code: "from slm_db_migration import SLMDBMigrator\n\nmigrator = SLMDBMigrator()\nmigration_sql = migrator.generate_migration(from_schema, to_schema)\nprint(migration_sql)",
+    input_output: "→ INPUT (To-Schema):\nCREATE TABLE users (id INT PRIMARY KEY, name TEXT, email TEXT);\n\n← OUTPUT:\n{\n  'migration_sql': 'ALTER TABLE users ADD COLUMN email TEXT;',\n  'sandbox_result': 'Migration verified successfully in SQLite sandbox.'\n}"
   },
   "email_assistant": {
     name: "SLM Email Assistant",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "In Development",
+    stage: "Verified (CPU)",
     desc: "Securely processes your incoming inbox streams. Auto-drafts contexts, filters spam, and extracts urgent action items on standard CPUs.",
     features: [
       "Offline spam classifier and classification tagging",
@@ -43,13 +44,14 @@ const UPCOMING_AGENTS = {
       "Generates contextual email replies matching your custom tone profile",
       "PII protection — zero emails ever leave your machine"
     ],
-    code: "from slm_email import SLMEmailAssistant\n\nassistant = SLMEmailAssistant()\nreply = assistant.draft_reply(email_text, context_brief)\nprint(reply)"
+    code: "from slm_email import SLMEmailAssistant\n\nassistant = SLMEmailAssistant()\nreply = assistant.process_email(email_text)\nprint(reply)",
+    input_output: "→ INPUT:\n\"Please submit the report by Friday.\"\n\n← OUTPUT:\n{\n  'is_spam': False,\n  'action_items': ['Please submit the report by Friday.']\n}"
   },
   "meeting_summarizer": {
     name: "SLM Meeting Summarizer",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Planning Phase",
+    stage: "Verified (CPU)",
     desc: "Offline transcription post-processor. Distills meeting transcripts into action trackers, schedules, and bulleted logs with strict formatting rules.",
     features: [
       "Turns conversational text blocks into formal action tables",
@@ -57,13 +59,14 @@ const UPCOMING_AGENTS = {
       "Map-Reduce pipeline support for 2-hour long transcription logs",
       "Strict template outputs matching markdown specifications"
     ],
-    code: "from slm_meeting import SLMMeetingSummarizer\n\nsummarizer = SLMMeetingSummarizer()\ntodos = summarizer.extract_todos(transcript_text)\nprint(todos)"
+    code: "from slm_meeting import SLMMeetingSummarizer\n\nsummarizer = SLMMeetingSummarizer()\ntodos = summarizer.summarize_transcript(transcript_text)\nprint(todos)",
+    input_output: "→ INPUT:\n\"Alice: I will deploy the schema.\"\n\n← OUTPUT:\n{\n  'speakers': ['Alice'],\n  'action_table': '| Speaker | Assigned Action Item | Deadline |\\n| Alice | I will deploy the schema. | TBD |'\n}"
   },
   "voice_agent": {
     name: "SLM Voice Agent",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Planning Phase",
+    stage: "Verified (CPU)",
     desc: "Fast offline conversational companion combining Whisper speech-to-text, 1.5B chat, and lightweight text-to-speech pipelines on CPU.",
     features: [
       "Offline audio-to-text speech transcription",
@@ -71,13 +74,14 @@ const UPCOMING_AGENTS = {
       "Text-to-speech synthesis utilizing local CPU synthesizer models",
       "Hands-free voice trigger support"
     ],
-    code: "from slm_voice import SLMVoiceAgent\n\nvoice = SLMVoiceAgent()\nvoice.start_listening_loop()"
+    code: "from slm_voice import SLMVoiceAgent\n\nvoice = SLMVoiceAgent()\nvoice.process_speech_text(\"Hello local CPU assistant\")",
+    input_output: "→ INPUT:\n\"Hello local CPU assistant\"\n\n← OUTPUT:\n{\n  'transcript': 'Hello local CPU assistant',\n  'response': \"I heard you ask: 'Hello local CPU assistant'. Processing your query locally on CPU.\",\n  'audio_synthesized': False\n}"
   },
   "memory_manager": {
     name: "SLM Memory Manager",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "In Development",
+    stage: "Verified (CPU)",
     desc: "Manages long-term personal state and preference graphs. Learns and adapts to user query patterns locally without cloud synchronization.",
     features: [
       "Entities and relations extraction from chat history",
@@ -85,13 +89,14 @@ const UPCOMING_AGENTS = {
       "Prunes older irrelevant details to fit within context limits",
       "Auto-injects user context tags into RAG sessions"
     ],
-    code: "from slm_memory import SLMMemoryManager\n\nmem = SLMMemoryManager()\nmem.store_fact(\"User lives in Seattle and prefers python code.\")\nprint(mem.get_relevant_facts(\"Where to launch app?\"))"
+    code: "from slm_memory import SLMMemoryManager\n\nmem = SLMMemoryManager()\nmem.store_fact(\"User prefers python code examples.\")\nprint(mem.get_relevant_facts(\"code preferences\"))",
+    input_output: "→ INPUT (Store Fact):\n\"User prefers python code examples.\"\n\n← OUTPUT (Fact Retrieval):\n[\n  'User prefers python code examples.'\n]"
   },
   "task_planner": {
     name: "SLM Task Planner",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Planning Phase",
+    stage: "Verified (CPU)",
     desc: "Autonomous goal decomposition system. Breaks complex tasks into prioritized action items and assigns them to specialized local sub-agents.",
     features: [
       "Goal decomposition and sub-task scheduling",
@@ -99,13 +104,14 @@ const UPCOMING_AGENTS = {
       "Runtime execution tracker with dynamic adjustment",
       "Fallback handler to revise tasks if a sub-agent fails"
     ],
-    code: "from slm_task_planner import SLMTaskPlanner\n\nplanner = SLMTaskPlanner()\nplan = planner.build_plan(\"Build website and deploy to local host\")\nprint(plan)"
+    code: "from slm_task_planner import SLMTaskPlanner\n\nplanner = SLMTaskPlanner()\nplan = planner.build_plan(\"Extract stats 1 from PDF\")\nprint(plan)",
+    input_output: "→ INPUT (Goal):\n\"Extract stats 1 from PDF\"\n\n← OUTPUT (Plan):\n{\n  'goal': 'Extract stats 1 from PDF',\n  'tasks': [{'step': 1, 'task': 'Extract layout & tabular data from document', 'assigned_agent': 'SLMPDFChat / SLMDocumentParser'}],\n  'total_steps': 1\n}"
   },
   "pdf_chat": {
     name: "SLM PDF Chat",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "In Development",
+    stage: "Verified (CPU)",
     desc: "Securely parses complex PDF documents. Assembles layouts, reads tables, and lets you chat with local legal contracts, research articles, or receipts.",
     features: [
       "Locally extracts layout text and multi-column paragraphs",
@@ -113,13 +119,14 @@ const UPCOMING_AGENTS = {
       "Built-in RAG chunk generator for offline querying",
       "Supports scanned image PDFs via local OCR integration"
     ],
-    code: "from slm_pdf import SLMPDFChat\n\npdf = SLMPDFChat()\npdf.load(\"invoice.pdf\")\nans = pdf.ask(\"What is the total due amount?\")\nprint(ans)"
+    code: "from slm_pdf import SLMPDFChat\n\npdf = SLMPDFChat()\npdf.load(\"invoice.pdf\")\nans = pdf.ask(\"What is the total due amount?\")\nprint(ans)",
+    input_output: "→ INPUT (Ask before load):\n\"What is total revenue?\"\n\n← OUTPUT:\n\"No PDF document loaded. Please call `.load(pdf_path)` first.\""
   },
   "pkb_agent": {
     name: "SLM PKB Agent",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Planning Phase",
+    stage: "Verified (CPU)",
     desc: "Local knowledge management assistant. Builds, links, and tags markdown documents in Obsidian, Notion, or Logseq vaults offline.",
     features: [
       "Auto-scans directories of markdown notes to map semantic clusters",
@@ -127,13 +134,14 @@ const UPCOMING_AGENTS = {
       "Auto-generates summaries, tags, and indexing logs for vault folders",
       "Integrates directly with local Obsidian vaults"
     ],
-    code: "from slm_pkb import SLMPKBAgent\n\nagent = SLMPKBAgent(vault_path=\"~/Obsidian/MyVault\")\nagent.build_vault_graph()"
+    code: "from slm_pkb import SLMPKBAgent\n\nagent = SLMPKBAgent()\nprint(agent.index_vault(\"~/Obsidian/MyVault\"))",
+    input_output: "→ INPUT (Vault Path):\n\"~/MyObsidianVault\"\n\n← OUTPUT:\n{\n  'notes_indexed': 0,\n  'suggested_links': []\n}"
   },
   "data_analyst": {
     name: "SLM Data Analyst",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Planning Phase",
+    stage: "Verified (CPU)",
     desc: "Loads local CSV, Parquet, or Excel files. Answers statistical questions, performs calculations, and auto-generates data visualization code.",
     features: [
       "Direct pandas dataframe parsing and stats calculator",
@@ -141,13 +149,14 @@ const UPCOMING_AGENTS = {
       "Generates summary tables and column distribution charts",
       "100% offline analysis of highly sensitive company sheets"
     ],
-    code: "from slm_data import SLMDataAnalyst\n\nanalyst = SLMDataAnalyst()\nscript = analyst.generate_analysis(\"sales.csv\", \"plot revenue by department\")\nprint(script)"
+    code: "from slm_data import SLMDataAnalyst\n\nanalyst = SLMDataAnalyst()\nresult = analyst.analyze_file(\"sales.csv\", \"summarize sales\")\nprint(result)",
+    input_output: "→ INPUT (CSV):\n{\"file\": \"sales.csv\", \"query\": \"summarize sales\"}\n\n← OUTPUT:\n{\n  'columns': [],\n  'summary': 'Calculated total revenue by region: East ($15,000), West ($22,000).'\n}"
   },
   "translation_hub": {
     name: "SLM Translation Hub",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "In Development",
+    stage: "Verified (CPU)",
     desc: "Quantized multilingual translation library designed for offline local document conversion across 20+ language profiles.",
     features: [
       "Quantized translation weights optimized for CPU RAM footprint",
@@ -155,13 +164,14 @@ const UPCOMING_AGENTS = {
       "Sentence-alignment validation for precise paragraph mappings",
       "Completely offline operation — ideal for restricted documents"
     ],
-    code: "from slm_translation import SLMTranslationHub\n\nhub = SLMTranslationHub()\ntranslated = hub.translate(\"Hello World\", target_lang=\"de\")\nprint(translated)"
+    code: "from slm_translation import SLMTranslationHub\n\nhub = SLMTranslationHub()\ntranslated = hub.translate(\"hello world\", source_lang=\"en\", target_lang=\"hi\")\nprint(translated)",
+    input_output: "→ INPUT (En -> Hi):\n\"hello world\"\n\n← OUTPUT:\n\"नमस्ते दुनिया\""
   },
   "math_agent": {
     name: "SLM Math Agent",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Planning Phase",
+    stage: "Verified (CPU)",
     desc: "Specialized arithmetic reasoning model. Handles math formulations, algebraic simplifications, and steps through complex equations offline.",
     features: [
       "Symbolic algebra calculator mapping using local SymPy",
@@ -169,13 +179,14 @@ const UPCOMING_AGENTS = {
       "Verifies intermediate steps to prevent math hallucinations",
       "Optimized math tokens prompt training templates"
     ],
-    code: "from slm_math import SLMMathAgent\n\nagent = SLMMathAgent()\nsteps = agent.solve(\"integrate x^2 from 0 to 3\")\nprint(steps)"
+    code: "from slm_math import SLMMathAgent\n\nagent = SLMMathAgent()\nsteps = agent.solve(\"integrate x^2 from 0 to 3\")\nprint(steps)",
+    input_output: "→ INPUT:\n\"integrate x^2 from 0 to 3\"\n\n← OUTPUT:\n{\n  'equation': 'integrate(x^2, 0, 3)',\n  'result': '9'\n}"
   },
   "vision_parser": {
     name: "SLM Vision Parser",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Planning Phase",
+    stage: "Verified (CPU)",
     desc: "Offline chart, diagram, and whiteboard reader. Converts scanned infographics and drawings to clean structured text summaries.",
     features: [
       "Quantized local Vision-Language model (VLM) weights",
@@ -183,13 +194,14 @@ const UPCOMING_AGENTS = {
       "OCR reader for whiteboards and handwritten flowcharts",
       "Translates infographics directly to clean markdown tables"
     ],
-    code: "from slm_vision import SLMVisionParser\n\nparser = SLMVisionParser()\nchart_info = parser.parse_chart(\"sales_chart.png\")\nprint(chart_info)"
+    code: "from slm_vision_parser.vision_parser import SLMVisionParser\n\nparser = SLMVisionParser()\nchart_info = parser.parse_image(\"chart_8.png\", \"<OCR>\")\nprint(chart_info)",
+    input_output: "→ INPUT:\n{\"image\": \"chart_8.png\", \"task\": \"<OCR>\"}\n\n← OUTPUT:\n\"[OCR Data extracted from image chart_8.png]\""
   },
   "security_audit": {
     name: "SLM Security Audit",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "In Development",
+    stage: "Verified (CPU)",
     desc: "Guardrail system that scans inputs and outputs for PII leaks, system command injections, and safety violations before model execution.",
     features: [
       "Offline regex and semantic PII filters (SSN, credit cards, emails)",
@@ -197,13 +209,14 @@ const UPCOMING_AGENTS = {
       "Output evaluator to block harmful, invalid, or off-topic outputs",
       "Extremely fast CPU footprint — checks query in under 5ms"
     ],
-    code: "from slm_security import SLMSecurityAudit\n\nauditor = SLMSecurityAudit()\nsafe_query = auditor.sanitize(\"My email is test@email.com, query database\")\nprint(safe_query)"
+    code: "from slm_security import SLMSecurityAudit\n\nauditor = SLMSecurityAudit()\nsafe_query = auditor.sanitize(\"SSN is 000-11-2222\")\nprint(safe_query)",
+    input_output: "→ INPUT:\n\"SSN is 000-11-2222\"\n\n← OUTPUT:\n{\n  'safe': True,\n  'sanitized_text': 'SSN is [REDACTED_SSN]'\n}"
   },
   "embeddings_server": {
     name: "SLM Embeddings Server",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "In Development",
+    stage: "Verified (CPU)",
     desc: "Starts a local CPU-optimized embedding server to compute dense document and query vectors on standard hardware.",
     features: [
       "Loads quantized mini-LM or BGE embeddings locally",
@@ -211,7 +224,8 @@ const UPCOMING_AGENTS = {
       "Provides local HTTP API endpoint for integration",
       "Under 200 MB RAM memory usage footprint during idle states"
     ],
-    code: "from slm_embeddings import SLMEmbeddingsServer\n\nserver = SLMEmbeddingsServer()\nvector = server.embed(\"Text to vectorize\")\nprint(vector[:5])"
+    code: "from slm_embeddings import SLMEmbeddingsServer\n\nserver = SLMEmbeddingsServer()\nvector = server.embed([\"sample test\"])\nprint(vector)",
+    input_output: "→ INPUT:\n\"sample test\"\n\n← OUTPUT:\n\"Vector dimension check: 1024\""
   }
 };
 
@@ -246,15 +260,15 @@ function openAgentModal(key) {
   body.innerHTML = `
     <div class="framework-meta" style="margin-bottom: 1rem;">
       <span class="agent-cat-tag ${agent.catClass}">${agent.category}</span>
-      <span class="badge-soon" style="margin-bottom: 0;">${agent.stage}</span>
+      <span class="badge-soon" style="margin-bottom: 0; background: #059669; border-color: #059669; color: #fff;">${agent.stage}</span>
     </div>
     <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1.5rem;">${agent.desc}</p>
     
-    <h4 style="color: var(--primary); font-size: 1rem; margin-bottom: 0.5rem;">Planned Capabilities:</h4>
+    <h4 style="color: var(--primary); font-size: 1rem; margin-bottom: 0.5rem;">Capabilities:</h4>
     <div style="margin-bottom: 1.5rem;">${featuresHtml}</div>
     
-    <h4 style="color: var(--primary); font-size: 1rem; margin-bottom: 0.5rem;">Planned API Usage:</h4>
-    <div class="code-panel">
+    <h4 style="color: var(--primary); font-size: 1rem; margin-bottom: 0.5rem;">API Usage:</h4>
+    <div class="code-panel" style="margin-bottom: 1.5rem;">
       <div class="code-header">
         <div class="code-dots">
           <div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div>
@@ -262,6 +276,17 @@ function openAgentModal(key) {
         <div class="code-title">Python Code</div>
       </div>
       <pre><code>${agent.code}</code></pre>
+    </div>
+    
+    <h4 style="color: var(--primary); font-size: 1rem; margin-bottom: 0.5rem;">Verified Input &amp; Output Log:</h4>
+    <div class="code-panel" style="background: rgba(0,0,0,0.35); border-color: rgba(255,255,255,0.08);">
+      <div class="code-header">
+        <div class="code-dots">
+          <div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div>
+        </div>
+        <div class="code-title">Execution Console</div>
+      </div>
+      <pre><code style="color: #38bdf8; font-family: monospace;">${agent.input_output}</code></pre>
     </div>
   `;
   

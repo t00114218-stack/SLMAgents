@@ -1,0 +1,2 @@
+storage:
+  db_path: "~/.cache/slm_memory/user_state.db"

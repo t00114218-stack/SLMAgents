@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["slm_voice"]
+
+[project]
+name = "slm-voice"
+version = "0.1.0"
+description = "Fast offline conversational Voice Agent combining Whisper STT, Qwen ONNX, and local TTS"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "llm", "slm", "voice", "speech-to-text", "tts", "whisper", "local-ai", "cpu-inference"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3"
+]
+dependencies = [
+    "onnxruntime-genai>=0.2.0",
+    "pyyaml"
+]
+
+[[project.authors]]
+name = "Suryaprakash CV"
+email = "suryaprakash.c.v@gmail.com"

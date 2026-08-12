@@ -1,0 +1,4 @@
+models:
+  translation:
+    indic_repo: "ai4bharat/indictrans2-en-indic-1B"
+    nllb_repo: "facebook/nllb-200-distilled-600M"

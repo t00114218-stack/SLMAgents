@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["slm_db_migration"]
+
+[project]
+name = "slm-db-migration"
+version = "0.1.0"
+description = "CPU-optimized Database Migrator and ORM generator agent with SQLite dry-run sandbox validation"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = [
+    "llm", "slm", "database", "migration", "sqlalchemy", "django", "local-ai", "cpu-inference"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3"
+]
+dependencies = [
+    "onnxruntime-genai>=0.2.0",
+    "pyyaml"
+]
+
+[[project.authors]]
+name = "Suryaprakash CV"
+email = "suryaprakash.c.v@gmail.com"

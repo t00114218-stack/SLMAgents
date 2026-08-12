@@ -1,0 +1,4 @@
+models:
+  embeddings:
+    path: "../../models/mxbai-embed-large-onnx"
+    repo_id: "mixbread-ai/mxbai-embed-large"
