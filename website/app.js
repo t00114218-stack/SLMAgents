@@ -21,7 +21,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Database Migrator",
     category: "Developer Tools",
     catClass: "badge-dev",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Analyzes legacy database schemas and generates zero-downtime, CPU-optimized migrations and modern ORM model definitions offline.",
     features: [
       "Direct SQL table schema analysis and dependency mapping",
@@ -36,7 +36,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Email Assistant",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Securely processes your incoming inbox streams. Auto-drafts contexts, filters spam, and extracts urgent action items on standard CPUs.",
     features: [
       "Offline spam classifier and classification tagging",
@@ -51,7 +51,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Meeting Summarizer",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Offline transcription post-processor. Distills meeting transcripts into action trackers, schedules, and bulleted logs with strict formatting rules.",
     features: [
       "Turns conversational text blocks into formal action tables",
@@ -66,7 +66,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Voice Agent",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Fast offline conversational companion combining Whisper speech-to-text, 1.5B chat, and lightweight text-to-speech pipelines on CPU.",
     features: [
       "Offline audio-to-text speech transcription",
@@ -81,7 +81,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Memory Manager",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Manages long-term personal state and preference graphs. Learns and adapts to user query patterns locally without cloud synchronization.",
     features: [
       "Entities and relations extraction from chat history",
@@ -96,7 +96,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Task Planner",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Autonomous goal decomposition system. Breaks complex tasks into prioritized action items and assigns them to specialized local sub-agents.",
     features: [
       "Goal decomposition and sub-task scheduling",
@@ -111,7 +111,7 @@ const UPCOMING_AGENTS = {
     name: "SLM PDF Chat",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Securely parses complex PDF documents. Assembles layouts, reads tables, and lets you chat with local legal contracts, research articles, or receipts.",
     features: [
       "Locally extracts layout text and multi-column paragraphs",
@@ -126,7 +126,7 @@ const UPCOMING_AGENTS = {
     name: "SLM PKB Agent",
     category: "Productivity",
     catClass: "badge-prod",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Local knowledge management assistant. Builds, links, and tags markdown documents in Obsidian, Notion, or Logseq vaults offline.",
     features: [
       "Auto-scans directories of markdown notes to map semantic clusters",
@@ -141,7 +141,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Data Analyst",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Loads local CSV, Parquet, or Excel files. Answers statistical questions, performs calculations, and auto-generates data visualization code.",
     features: [
       "Direct pandas dataframe parsing and stats calculator",
@@ -156,7 +156,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Translation Hub",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Quantized multilingual translation library designed for offline local document conversion across 20+ language profiles.",
     features: [
       "Quantized translation weights optimized for CPU RAM footprint",
@@ -171,7 +171,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Math Agent",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Specialized arithmetic reasoning model. Handles math formulations, algebraic simplifications, and steps through complex equations offline.",
     features: [
       "Symbolic algebra calculator mapping using local SymPy",
@@ -186,7 +186,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Vision Parser",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Offline chart, diagram, and whiteboard reader. Converts scanned infographics and drawings to clean structured text summaries.",
     features: [
       "Quantized local Vision-Language model (VLM) weights",
@@ -201,7 +201,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Security Audit",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Guardrail system that scans inputs and outputs for PII leaks, system command injections, and safety violations before model execution.",
     features: [
       "Offline regex and semantic PII filters (SSN, credit cards, emails)",
@@ -216,7 +216,7 @@ const UPCOMING_AGENTS = {
     name: "SLM Embeddings Server",
     category: "Data & Utilities",
     catClass: "badge-data",
-    stage: "Verified (CPU)",
+    stage: "",
     desc: "Starts a local CPU-optimized embedding server to compute dense document and query vectors on standard hardware.",
     features: [
       "Loads quantized mini-LM or BGE embeddings locally",
@@ -349,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <li class="sidebar-item" id="nav-home"><a href="index.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home</a></li>
       
       <!-- Productivity Category -->
-      <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.7rem; color:#f59e0b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Productivity</div>
+      <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.72rem; color:#4f46e5; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em;">Productivity</div>
       <li class="sidebar-item" id="nav-voice-agent"><a href="voice_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg> SLM Voice Agent</a></li>
       <li class="sidebar-item" id="nav-summarizer"><a href="summarizer.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> SLM Summarizer</a></li>
       <li class="sidebar-item" id="nav-rag"><a href="rag.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-2.239 10-5V5c0-2.761-4.477-5-10-5S2 2.239 2 5v12c0 2.761 4.477 5 10 5z"></path><path d="M2 5c0 2.761 4.477 5 10 5s10-2.239 10-5"></path><path d="M2 11c0 2.761 4.477 5 10 5s10-2.239 10-5"></path></svg> SLM RAG</a></li>
@@ -362,7 +362,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <li class="sidebar-item" id="nav-pkb-agent"><a href="pkb_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg> SLM PKB Agent</a></li>
       
       <!-- Developer Tools Category -->
-      <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.7rem; color:#8b5cf6; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Developer Tools</div>
+      <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.72rem; color:#4f46e5; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em;">Developer Tools</div>
       <li class="sidebar-item" id="nav-orchestrator"><a href="orchestrator.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg> SLM Orchestrator</a></li>
       <li class="sidebar-item" id="nav-sql"><a href="sql.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> SLM Text-to-SQL</a></li>
       <li class="sidebar-item" id="nav-code-interpreter"><a href="code_interpreter.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg> SLM Code Interpreter</a></li>
@@ -370,13 +370,13 @@ document.addEventListener("DOMContentLoaded", () => {
       <li class="sidebar-item" id="nav-database-migrator"><a href="database_migrator.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg> SLM Database Migrator</a></li>
       
       <!-- Web & Scraping Category -->
-      <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.7rem; color:#06b6d4; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Web & Scraping</div>
+      <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.72rem; color:#0284c7; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em;">Web &amp; Scraping</div>
       <li class="sidebar-item" id="nav-web-agent"><a href="web_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect><line x1="2" y1="8" x2="22" y2="8"></line><line x1="6" y1="6" x2="6" y2="6"></line><line x1="10" y1="6" x2="10" y2="6"></line></svg> SLM Web Agent</a></li>
       <li class="sidebar-item" id="nav-web-scraper"><a href="web_scraper.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> SLM Web Scraper</a></li>
       <li class="sidebar-item" id="nav-search-orchestrator"><a href="search_orchestrator.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> SLM Search Orchestrator</a></li>
       
       <!-- Data & Utilities Category -->
-      <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.7rem; color:#10b981; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Data & Utilities</div>
+      <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.72rem; color:#059669; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em;">Data &amp; Utilities</div>
       <li class="sidebar-item" id="nav-json-cleaner"><a href="json_cleaner.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg> SLM JSON Cleaner</a></li>
       <li class="sidebar-item" id="nav-document-parser"><a href="document_parser.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> SLM Document Parser</a></li>
       <li class="sidebar-item" id="nav-vision-parser"><a href="vision_parser.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> SLM Vision Parser</a></li>

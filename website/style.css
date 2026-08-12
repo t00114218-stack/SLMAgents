@@ -945,10 +945,9 @@ footer {
 
 .sidebar {
   width: 280px;
-  background: rgba(3, 7, 18, 0.4);
-  border-right: 1px solid rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  box-shadow: 2px 0 10px rgba(15, 23, 42, 0.03);
   padding: 2rem 1.25rem;
   overflow-y: auto;
   height: calc(100vh - 72px);
@@ -972,11 +971,11 @@ footer {
 }
 
 .sidebar-group-title {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-muted);
-  letter-spacing: 1px;
+  color: #4f46e5;
+  letter-spacing: 0.08em;
   margin-bottom: 0.75rem;
   padding-left: 0.5rem;
 }
@@ -985,7 +984,7 @@ footer {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .sidebar-item {
@@ -997,38 +996,39 @@ footer {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
-  color: var(--text-secondary);
+  padding: 9px 12px;
+  color: #0f172a !important;
   text-decoration: none;
   font-size: 0.88rem;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 8px;
   width: 100%;
   border: none;
   background: transparent;
   text-align: left;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: all 0.15s ease;
   font-family: var(--font-sans);
 }
 
 .sidebar-item a:hover, 
 .sidebar-item button:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-primary);
+  background: #f1f5f9;
+  color: #4f46e5 !important;
+  font-weight: 700;
 }
 
 .sidebar-item.active a, 
 .sidebar-item.active button {
-  background: rgba(139, 92, 246, 0.1);
-  color: var(--accent-purple);
-  font-weight: 600;
+  background: #eef2ff !important;
+  color: #4f46e5 !important;
+  font-weight: 700;
 }
 
 .sidebar-icon {
   width: 16px;
   height: 16px;
-  stroke: currentColor;
+  stroke: #475569;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1036,6 +1036,11 @@ footer {
   display: inline-block;
   flex-shrink: 0;
   transition: var(--transition-fast);
+}
+
+.sidebar-item:hover .sidebar-icon,
+.sidebar-item.active .sidebar-icon {
+  stroke: #4f46e5;
 }
 
 .sidebar-bullet {
