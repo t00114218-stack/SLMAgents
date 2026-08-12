@@ -1498,3 +1498,31 @@ body {
   border: 1px solid #bae6fd !important;
   white-space: nowrap;
 }
+
+/* Studio Playground styling */
+.studio-section {
+  padding: 80px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.studio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  margin-top: 40px;
+  text-align: left;
+}
+
+@media (max-width: 968px) {
+  .studio-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.studio-panel {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 30px;
+  backdrop-filter: blur(20px);
+}

@@ -350,7 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
       
       <!-- Productivity Category -->
       <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.72rem; color:#4f46e5; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em;">Productivity</div>
-      <li class="sidebar-item" id="nav-voice-agent"><a href="voice_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg> SLM Voice Agent</a></li>
       <li class="sidebar-item" id="nav-summarizer"><a href="summarizer.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> SLM Summarizer</a></li>
       <li class="sidebar-item" id="nav-rag"><a href="rag.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-2.239 10-5V5c0-2.761-4.477-5-10-5S2 2.239 2 5v12c0 2.761 4.477 5 10 5z"></path><path d="M2 5c0 2.761 4.477 5 10 5s10-2.239 10-5"></path><path d="M2 11c0 2.761 4.477 5 10 5s10-2.239 10-5"></path></svg> SLM RAG</a></li>
       <li class="sidebar-item" id="nav-cli"><a href="cli.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg> SLM CLI Agent</a></li>
@@ -360,6 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <li class="sidebar-item" id="nav-task-planner"><a href="task_planner.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> SLM Task Planner</a></li>
       <li class="sidebar-item" id="nav-pdf-chat"><a href="pdf_chat.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> SLM PDF Chat</a></li>
       <li class="sidebar-item" id="nav-pkb-agent"><a href="pkb_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg> SLM PKB Agent</a></li>
+      <li class="sidebar-item" id="nav-voice-agent"><a href="voice_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg> SLM Voice Agent</a></li>
       
       <!-- Developer Tools Category -->
       <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.72rem; color:#4f46e5; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em;">Developer Tools</div>
@@ -494,21 +494,19 @@ const ALL_AGENT_SPECS = {
     methodName: "process_speech_text",
     category: "Productivity",
     fields: [
-      { id: "speech_transcript", label: "Speech Transcript / Audio Query", default: "Schedule a team sync meeting for tomorrow at 3 PM", type: "text" },
-      { id: "language", label: "Target Language", default: "Hindi", type: "select", options: ["English", "Hindi", "Tamil", "Telugu", "Spanish", "French", "German"] },
+      { id: "audio", label: "Record Voice or Upload Audio (Max 2MB)", type: "audio", maxSize: 2 * 1024 * 1024 },
+      { id: "transcript", label: "Or Type Speech Transcript", default: "Schedule a team sync meeting for tomorrow at 3 PM", type: "text" },
+      { id: "language", label: "Target Language", default: "English", type: "select", options: ["English", "Hindi", "Tamil", "Telugu", "Spanish", "French", "German"] },
       { id: "system_prompt", label: "System Prompt", default: "Conversational voice assistant", type: "text" },
-      { id: "user_input", label: "User Context Input", default: "Remind about Q3 project deadline", type: "text" },
-      { id: "temperature", label: "Temperature", default: "0.7", type: "number" }
+      { id: "user_input", label: "User Context Input", default: "Remind about Q3 project deadline", type: "text" }
     ],
     getOutput: (vals) => ({
       agent: "SLMVoiceAgent",
       status: "200 OK",
-      execution_time: "0.042s",
-      transcript: vals.speech_transcript,
-      response: `[${(vals.language||"HI").toUpperCase()} Synthesis]: Received voice request '${vals.speech_transcript}'. Scheduled successfully.`,
+      transcript: vals.transcript,
+      response: `Received voice query: "${vals.transcript}". Action performed.`,
       audio_synthesized: true,
-      barge_in_enabled: true,
-      temperature: parseFloat(vals.temperature || 0.7)
+      barge_in_enabled: true
     })
   },
   rag: {
@@ -700,18 +698,17 @@ const ALL_AGENT_SPECS = {
     name: "SLM Document Parser",
     package: "slm-document-parser",
     className: "SLMDocumentParser",
-    methodName: "parse",
+    methodName: "chunk_document",
     category: "Data & Utilities",
     fields: [
-      { id: "document_text", label: "Raw Document Content", default: "Invoice #1024. Total amount due: $450.00 by 2026-09-01.", type: "text" },
+      { id: "document", label: "Upload Document (PDF/DOCX/TXT - Max 1MB)", type: "file", accept: ".pdf,.docx,.txt", maxSize: 1024 * 1024 },
       { id: "chunk_size", label: "Target Chunk Size", default: "256", type: "number" }
     ],
     getOutput: (vals) => ({
       agent: "SLMDocumentParser",
       status: "200 OK",
-      parsed_text_length: (vals.document_text || "").length,
-      chunks: [vals.document_text],
-      total_chunks: 1
+      total_chunks: 1,
+      chunks: ["Sample extracted chunk from document."]
     })
   },
   vision_parser: {
@@ -721,16 +718,15 @@ const ALL_AGENT_SPECS = {
     methodName: "describe_image",
     category: "Data & Utilities",
     fields: [
-      { id: "image_path", label: "Image Path / URL", default: "receipt_sample.png", type: "text" },
-      { id: "task", label: "Vision Task", default: "OCR / Table Extraction", type: "text" }
+      { id: "image", label: "Upload Image (PNG/JPG - Max 2MB)", type: "file", accept: "image/*", maxSize: 2 * 1024 * 1024 },
+      { id: "task", label: "Vision Task", default: "OCR / Describe Image", type: "text" }
     ],
     getOutput: (vals) => ({
       agent: "SLMVisionParser",
       status: "200 OK",
-      image: vals.image_path,
       task: vals.task,
-      caption: `Florence-2 Vision analysis of '${vals.image_path}': Extracted table data.`,
-      ocr_text: "STORE #102\nTOTAL: $45.20"
+      caption: "Florence-2 Vision analysis complete.",
+      ocr_text: "Parsed layout text representation."
     })
   },
   web_scraper: {
@@ -740,14 +736,14 @@ const ALL_AGENT_SPECS = {
     methodName: "scrape",
     category: "Web & Scraping",
     fields: [
-      { id: "html_content", label: "HTML Content / URL", default: "<div class='price'>$49.99</div>", type: "text" },
-      { id: "schema", label: "Target JSON Schema", default: "{'price': 'str'}", type: "text" }
+      { id: "url", label: "Target URL (Live Scrape)", default: "https://www.slmagents.ai/index.html", type: "text" },
+      { id: "schema", label: "Target JSON Schema", default: "{'title': 'str'}", type: "text" }
     ],
     getOutput: (vals) => ({
       agent: "SLMWebScraper",
       status: "200 OK",
-      scraped_html: vals.html_content,
-      extracted_json: { price: "$49.99" }
+      scraped_url: vals.url,
+      extracted_json: { title: "SLM Agents" }
     })
   },
   search_orchestrator: {
@@ -855,15 +851,14 @@ const ALL_AGENT_SPECS = {
     methodName: "ask",
     category: "Productivity",
     fields: [
-      { id: "pdf_path", label: "PDF Document Path", default: "q3_report.pdf", type: "text" },
-      { id: "question", label: "Question", default: "What is the net profit listed on page 4?", type: "text" }
+      { id: "pdf_file", label: "Upload PDF Document (Max 1MB)", type: "file", accept: ".pdf", maxSize: 1024 * 1024 },
+      { id: "question", label: "Question / Query", default: "What is the key takeaway?", type: "text" }
     ],
     getOutput: (vals) => ({
       agent: "SLMPDFChat",
       status: "200 OK",
-      pdf: vals.pdf_path,
       question: vals.question,
-      answer: `Answer from '${vals.pdf_path}': Net profit listed on page 4 is $420,000.`
+      answer: "Extracted grounded answer based on loaded PDF chunks."
     })
   },
   pkb_agent: {
@@ -972,7 +967,7 @@ const ALL_AGENT_SPECS = {
   }
 };
 
-let currentStudioAgentKey = "voice";
+let currentStudioAgentKey = "rag";
 let currentStudioMode = "exec";
 
 function renderStudioFields(agentKey) {
@@ -993,8 +988,20 @@ function renderStudioFields(agentKey) {
         html += `<option value="${opt}" ${sel}>${opt}</option>`;
       });
       html += `</select>`;
+    } else if (f.type === "file") {
+      html += `<input type="file" id="studio-field-input-${f.id}" accept="${f.accept || '*'}" onchange="handleStudioFileUpload(this, '${f.id}', ${f.maxSize || 1024 * 1024})" style="width: 100%; font-size: 0.85rem; border: 1px solid #cbd5e1; padding: 0.4rem; border-radius: 8px; background: #fff; outline: none;">`;
+      html += `<input type="hidden" id="studio-field-${f.id}" value="">`;
+    } else if (f.type === "audio") {
+      html += `<div style="display: flex; gap: 8px; align-items: center;">`;
+      html += `  <input type="file" id="studio-field-upload-${f.id}" accept="audio/*" onchange="handleStudioAudioUpload(this, '${f.id}', ${f.maxSize || 2 * 1024 * 1024})" style="flex: 1; font-size: 0.85rem; border: 1px solid #cbd5e1; padding: 0.4rem; border-radius: 8px; background: #fff; outline: none;">`;
+      html += `  <button type="button" id="studio-field-record-${f.id}" onclick="toggleStudioAudioRecord('${f.id}')" style="background: #ef4444; border: none; color: #fff; padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; gap: 6px; height: 38px;">`;
+      html += `    <span class="rec-dot" style="width: 8px; height: 8px; background: #fff; border-radius: 50%; display: none; animation: pulse 1s infinite alternate;"></span>`;
+      html += `    <span class="rec-text">🎤 Record</span>`;
+      html += `  </button>`;
+      html += `</div>`;
+      html += `<input type="hidden" id="studio-field-${f.id}" value="">`;
     } else {
-      html += `<input type="${f.type}" id="studio-field-${f.id}" onkeyup="updateStudioOutput()" value="${f.default}" style="width: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.6rem 0.8rem; color: #0f172a; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; outline: none;">`;
+      html += `<input type="${f.type}" id="studio-field-${f.id}" onkeyup="updateStudioOutput()" value="${f.default || ''}" style="width: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.6rem 0.8rem; color: #0f172a; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; outline: none;">`;
     }
     html += `</div>`;
   });
@@ -1005,6 +1012,10 @@ function renderStudioFields(agentKey) {
 
 function onStudioAgentChange(agentKey) {
   renderStudioFields(agentKey);
+  const selectEl = document.getElementById("studio-agent-select");
+  if (selectEl && selectEl.value !== agentKey) {
+    selectEl.value = agentKey;
+  }
 }
 
 function setStudioMode(mode) {
@@ -1018,10 +1029,115 @@ function getActiveFieldValues(spec) {
   let vals = {};
   spec.fields.forEach(f => {
     const el = document.getElementById(`studio-field-${f.id}`);
-    vals[f.id] = el ? el.value : f.default;
+    vals[f.id] = el ? el.value : (f.default || "");
   });
   return vals;
 }
+
+// Global File / Audio processing helpers
+window.handleStudioFileUpload = function(inputEl, fieldId, maxSize) {
+  const file = inputEl.files[0];
+  const valEl = document.getElementById(`studio-field-${fieldId}`);
+  if (!file) {
+    if (valEl) valEl.value = "";
+    updateStudioOutput();
+    return;
+  }
+  if (file.size > maxSize) {
+    alert(`File exceeds size limit. Maximum allowed size is ${maxSize / (1024 * 1024)} MB.`);
+    inputEl.value = "";
+    if (valEl) valEl.value = "";
+    updateStudioOutput();
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64Str = e.target.result.split(",")[1];
+    if (valEl) valEl.value = base64Str;
+    updateStudioOutput();
+  };
+  reader.readAsDataURL(file);
+};
+
+window.handleStudioAudioUpload = function(inputEl, fieldId, maxSize) {
+  const file = inputEl.files[0];
+  const valEl = document.getElementById(`studio-field-${fieldId}`);
+  if (!file) {
+    if (valEl) valEl.value = "";
+    updateStudioOutput();
+    return;
+  }
+  if (file.size > maxSize) {
+    alert(`Audio exceeds size limit. Maximum allowed size is ${maxSize / (1024 * 1024)} MB.`);
+    inputEl.value = "";
+    if (valEl) valEl.value = "";
+    updateStudioOutput();
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64Str = e.target.result.split(",")[1];
+    if (valEl) valEl.value = base64Str;
+    updateStudioOutput();
+  };
+  reader.readAsDataURL(file);
+};
+
+let studioMediaRecorder = null;
+let studioAudioChunks = [];
+
+window.toggleStudioAudioRecord = async function(fieldId) {
+  const btn = document.getElementById(`studio-field-record-${fieldId}`);
+  const dot = btn.querySelector(".rec-dot");
+  const txt = btn.querySelector(".rec-text");
+  const valEl = document.getElementById(`studio-field-${fieldId}`);
+  
+  if (studioMediaRecorder && studioMediaRecorder.state === "recording") {
+    studioMediaRecorder.stop();
+    dot.style.display = "none";
+    txt.textContent = "🎤 Record";
+    btn.style.background = "#ef4444";
+    return;
+  }
+  
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    studioAudioChunks = [];
+    studioMediaRecorder = new MediaRecorder(stream);
+    
+    studioMediaRecorder.ondataavailable = function(e) {
+      if (e.data.size > 0) {
+        studioAudioChunks.push(e.data);
+      }
+    };
+    
+    studioMediaRecorder.onstop = function() {
+      const audioBlob = new Blob(studioAudioChunks, { type: "audio/wav" });
+      if (audioBlob.size > 2 * 1024 * 1024) {
+        alert("Recorded audio exceeds the 2 MB limit.");
+        if (valEl) valEl.value = "";
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Str = e.target.result.split(",")[1];
+        if (valEl) valEl.value = base64Str;
+        updateStudioOutput();
+        alert("Audio recorded successfully!");
+      };
+      reader.readAsDataURL(audioBlob);
+      stream.getTracks().forEach(t => t.stop());
+    };
+    
+    studioMediaRecorder.start();
+    dot.style.display = "inline-block";
+    txt.textContent = "🛑 Stop";
+    btn.style.background = "#22c55e";
+  } catch (err) {
+    alert("Microphone access denied or unsupported: " + err.message);
+  }
+};
 
 function updateStudioOutput() {
   const consoleEl = document.getElementById("studio-output-console");
@@ -1061,7 +1177,7 @@ async function runStudioAgent() {
   const fieldVals = getActiveFieldValues(spec);
 
   try {
-    const response = await fetch("/api/run_agent", {
+    const response = await fetch("https://spcv-slm-agents.hf.space/api/run_agent", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1079,6 +1195,12 @@ async function runStudioAgent() {
       throw new Error(data.error);
     }
     consoleEl.textContent = JSON.stringify(data.result, null, 2);
+    
+    // Play synthesized voice output if returned
+    if (data.result && data.result.audio) {
+      const audioObj = new Audio("data:audio/wav;base64," + data.result.audio);
+      audioObj.play().catch(e => console.log("Audio playback failed: " + e));
+    }
   } catch (err) {
     consoleEl.textContent = `[Warning] Real-time CPU runner unavailable: ${err.message}\n` +
       `[Warning] Falling back to static mock preview output:\n\n` +
@@ -1099,5 +1221,5 @@ function copyStudioCode() {
 
 // Initializer
 document.addEventListener("DOMContentLoaded", () => {
-  renderStudioFields("voice");
+  renderStudioFields("rag");
 });
