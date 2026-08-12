@@ -25,7 +25,7 @@ class SLMVoiceAgent:
     def __init__(self, model_path=None):
         self.config, _ = load_config()
 
-    def process_speech_text(self, speech_transcript: str) -> dict:
+    def process_speech_text(self, speech_transcript: str, language: str = "english") -> dict:
         """
         Processes transcribed speech text and returns a synthesized conversational response.
         """
@@ -34,6 +34,28 @@ class SLMVoiceAgent:
 
         # Simulated conversational response generation
         response_text = f"I heard you ask: '{speech_transcript}'. Processing your query locally on CPU."
+
+        # Target language routing
+        target_lang_code = "en"
+        lang_lower = language.lower().strip()
+        if lang_lower in ["hi", "hindi"]:
+            target_lang_code = "hi"
+        elif lang_lower in ["ta", "tamil"]:
+            target_lang_code = "ta"
+        elif lang_lower in ["es", "spanish"]:
+            target_lang_code = "es"
+        elif lang_lower in ["fr", "french"]:
+            target_lang_code = "fr"
+        elif lang_lower in ["de", "german"]:
+            target_lang_code = "de"
+        
+        if target_lang_code != "en":
+            try:
+                from slm_translation.translation_hub import SLMTranslationHub
+                hub = SLMTranslationHub()
+                response_text = hub.translate(response_text, source_lang="en", target_lang=target_lang_code)
+            except Exception as e:
+                response_text = f"[{target_lang_code.upper()} Translation of '{response_text}']"
 
         # Trigger TTS Engine
         try:

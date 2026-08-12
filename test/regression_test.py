@@ -271,11 +271,15 @@ def run_slm_meeting_summarizer(inp_val):
     }
 
 def run_slm_voice_agent(inp_val):
-    return {
-        "transcript": inp_val,
-        "response": f"I heard you ask: '{inp_val}'. Processing your query locally on CPU.",
-        "audio_synthesized": False
-    }
+    from slm_voice.voice_agent import SLMVoiceAgent
+    agent = get_instance("SLMVoiceAgent", lambda: SLMVoiceAgent())
+    data = parse_val(inp_val)
+    if isinstance(data, dict):
+        transcript = data.get("transcript", "")
+        language = data.get("language", "english")
+        return agent.process_speech_text(transcript, language=language)
+    else:
+        return agent.process_speech_text(inp_val)
 
 def run_slm_memory_manager(inp_val):
     from slm_memory import SLMMemoryManager
