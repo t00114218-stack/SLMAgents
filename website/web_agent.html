@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SLM Web Agent: Local browser automation companion running playwright browser loops autonomously via Phi-3.5 on CPU.">
+  <meta name="description" content="SLM Web Agent: Automate multi-step browser tasks offline. Plans actions, selects locators, and navigates forms using Playwright and Phi-3.5.">
   <title>SLM Web Agent | Documentation</title>
   <link rel="stylesheet" href="style.css">
   <style>
@@ -57,7 +57,7 @@
         <ul>
           <li><a href="index.html">Home</a></li>
           <li class="dropdown">
-            <a class="dropdown-trigger" style="color:var(--primary)">
+            <a class="dropdown-trigger">
               Frameworks
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </a>
@@ -66,7 +66,7 @@
               <a href="rag.html">RAG Docs</a>
               <a href="summarizer.html">Summarizer Docs</a>
               <a href="sql.html">Text-to-SQL Docs</a>
-              <a href="cli.html">CLI Docs</a>
+              <a href="cli.html">CLI Agent Docs</a>
               <a href="code_interpreter.html">Code Interpreter Docs</a>
               <a href="git_copilot.html">Git Co-pilot Docs</a>
               <a href="json_cleaner.html">JSON Cleaner Docs</a>
@@ -75,6 +75,7 @@
               <a href="web_agent.html">Web Agent Docs</a>
               <a href="web_scraper.html">Web Scraper Docs</a>
               <a href="search_orchestrator.html">Search Orchestrator Docs</a>
+              <a href="voice_agent.html">Voice Agent Docs</a>
             </div>
           </li>
           <li><a href="index.html#upcoming">Roadmap</a></li>
@@ -89,10 +90,6 @@
         <div class="sidebar-group-title">Active Libraries</div>
         <ul class="sidebar-list" id="sidebar-active-list"></ul>
       </div>
-      <div class="sidebar-group">
-        <div class="sidebar-group-title">Upcoming Ecosystem</div>
-        <ul class="sidebar-list" id="sidebar-upcoming-list"></ul>
-      </div>
     </aside>
 
     <main class="main-content">
@@ -105,10 +102,27 @@
         </div>
       </section>
 
-      <section class="doc-section">
-        <h2>Overview</h2>
-        <p>The SLM Web Agent uses Microsoft's MIT-licensed <strong>Phi-3.5-mini-instruct</strong> as a ReAct loop controller. It scrapes DOM nodes dynamically and translates raw visual structures into precise locator calls to execute headless browser steps via <strong>Playwright</strong>.</p>
-      </section>
+      <div class="container">
+        <nav class="doc-nav">
+          <a href="#overview">Overview</a>
+          <a href="#install">Installation</a>
+          <a href="#config">Configuration</a>
+          <a href="#env-vars">Env Variables</a>
+          <a href="#performance">Performance</a>
+        </nav>
+
+        <section class="doc-section" id="overview">
+          <h2>Overview</h2>
+          <p>Automate multi-step browser tasks offline. Plans actions, selects locators, and navigates forms using Playwright and Phi-3.5.</p>
+          
+          <h3 style="margin-top: 2rem;">🚀 Core Capabilities</h3>
+          <ul>
+            <li><strong>Offline browser automation using Playwright</strong></li>
+<li><strong>ReAct planning loop executing DOM clicks, fills, and form submissions</strong></li>
+<li><strong>Action space reduction to prevent locator hallucination</strong></li>
+<li><strong>Fuzzy selector matching for dynamic website elements</strong></li>
+          </ul>
+        </section>
 
         <!-- INSTALLATION -->
         <section class="doc-section" id="install">
@@ -117,107 +131,112 @@
           <div class="code-panel" style="max-width:100%">
             <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
             <div class="code-content" style="display:block;padding:1.5rem">
-              <pre><code><span class="comment"># Install from PyPI</span>
+              <pre><code><span class="comment"># Install local CPU-optimized package</span>
 pip install slm-web-agent</code></pre>
             </div>
           </div>
         </section>
-        
 
-      <section class="doc-section">
-        <h2>🤖 Truly Agentic ReAct Loop</h2>
-        <p>The agent navigates step-by-step using a structured reasoning feedback cycle:</p>
-        <ul>
-          <li><strong>Step-by-Step Observation:</strong> Retrieves active page URLs and details elements from Playwright.</li>
-          <li><strong>Action Space Reduction:</strong> Extracts visible text tags, listing clickable targets explicitly inside the prompt to prevent model hallucinations.</li>
-          <li><strong>JSON Instruction Choice:</strong> Model chooses actions inside <code>&lt;thought&gt;</code> markers.</li>
-          <li><strong>Fuzzy Match Verification:</strong> Fuzzy matches target text variables before clicking to handle capitalization or naming discrepancies.</li>
-        </ul>
-      </section>
+        <!-- CONFIGURATION -->
+        <section class="doc-section" id="config">
+          <h2>Configuration API</h2>
+          
+          <h3>Constructor Parameters</h3>
+          <p>Instantiate <code>SLMWebAgent</code> with performance and tool options:</p>
+          <table class="param-table">
+            <thead>
+              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>model_path</td><td>str | None</td><td>Directory containing pre-downloaded Phi-3.5 weights.</td></tr>
+<tr><td>cache_dir</td><td>str | None</td><td>Directory to store model weights offline (`~/.cache/slm-web-agent/`).</td></tr>
+<tr><td>n_threads</td><td>int | 4</td><td>CPU thread count for Playwright planning loops.</td></tr>
 
-      <section class="doc-section">
-        <h2>⚡ CPU Performance Tuning Guidelines</h2>
-        <p>Follow these instructions to optimize browser execution speed on CPU:</p>
-        <ul>
-          <li><strong>Headless Mode:</strong> Always launch browser instances in headless mode (default: True) to prevent high CPU GUI overhead.</li>
-          <li><strong>Timeout Caps:</strong> Set short element timeouts (e.g., 5000ms) on clicks/fill tasks to fail fast and trigger correction loops.</li>
-          <li><strong>Thread Control:</strong> Limit thread parameters to core bounds:
-            <pre><code>agent = SLMWebAgent(n_threads=4)</code></pre>
-          </li>
-        </ul>
-      </section>
+            </tbody>
+          </table>
 
-      <section class="doc-section">
-        <h2>🎯 Accuracy Improvement Tips</h2>
-        <div class="tip-box">
-          <strong>Tip for Selector Mapping:</strong> Standardize available choices by formatting active links and buttons into plain list formats (e.g. <code>["Log In", "Sign Up"]</code>). Restricting instructions to explicit lists guarantees high selector accuracy.
-        </div>
-        <div class="warn-box">
-          <strong>Input Preprocessing:</strong> Clean script elements from the DOM source before parsing layout tags to save context window tokens.
-        </div>
-      </section>
+          <h3>Methods</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>browse(goal, start_url, system_prompt=None, user_input=None)</code></td><td><code>dict</code></td><td>Executes goal-driven web automation through Playwright headless browser pages.</td></tr>
 
-      <section class="doc-section">
-        <h2>API Reference</h2>
-        <h3>`SLMWebAgent` Initialization</h3>
-        <pre><code class="language-python">from slm_web_agent.web_agent import SLMWebAgent
+            </tbody>
+          </table>
 
-agent = SLMWebAgent()</code></pre>
-        
-        <table class="param-table">
-          <thead>
-            <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>model_path</td><td>str</td><td>Local directory containing pre-downloaded Phi-3.5 weights. Defaults to "../../models/phi-3.5-mini-instruct-onnx".</td></tr>
-                        <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
-              <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
-</tbody>
-        </table>
+          <h3>Execution Method Parameters</h3>
+          <p>Complete list of execution parameters accepted by the main method:</p>
+          <table class="param-table">
+            <thead>
+              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>goal</td><td>str</td><td>High-level goal description instructing the browser agent steps.</td></tr>
+<tr><td>start_url</td><td>str</td><td>Target initial URL where the Playwright session begins.</td></tr>
+<tr><td>system_prompt</td><td>str | None</td><td>Custom system instructions guiding element selector selection priorities.</td></tr>
+<tr><td>user_input</td><td>str | None</td><td>Additional form field data, login credentials, or target parameter values.</td></tr>
 
-        <h3>`browse` Method</h3>
-        <p>Routes natural language instructions through Playwright pages. Include target URL parameters:</p>
-        <pre><code class="language-python">from slm_web_agent.web_agent import SLMWebAgent
+            </tbody>
+          </table>
 
-agent = SLMWebAgent()
+          <h3>Quick Start</h3>
+          <pre><code class="language-python">from slm_web_agent import SLMWebAgent
 
-# Run goal-oriented web navigation task
+agent = SLMWebAgent(n_threads=4)
 result = agent.browse(
-    goal="Locate the developer signup button, enter username details, and submit",
-    start_url="https://portal.slmagents.ai/test-login"
+    goal="Locate developer signup, enter details, submit",
+    start_url="https://portal.slmagents.ai/test-login",
+    system_prompt="Always wait 2 seconds after form submissions",
+    user_input="Username: dev_user_1"
 )
 print(result)</code></pre>
+        </section>
 
-        <div class="tip-box">
-          <strong>Browsing Steps History Response Output:</strong><br>
-          <pre><code class="language-json">{
-  "success": true,
-  "final_url": "https://portal.slmagents.ai/dashboard",
-  "steps_taken": 3,
-  "history": [
-    {
-      "step": 1,
-      "action": "click",
-      "target": "Developer Sign Up",
-      "thought": "I observe a 'Developer Sign Up' link on the main page. I will click it to go to the register form."
-    },
-    {
-      "step": 2,
-      "action": "fill",
-      "target": "Username Input",
-      "value": "dev_test_user",
-      "thought": "I am on the signup form page. I need to enter a username to proceed."
-    },
-    {
-      "step": 3,
-      "action": "click",
-      "target": "Submit Registration",
-      "thought": "Form fields are completed. I will now click the submit button to complete the registration goal."
-    }
-  ]
+        <!-- ENVIRONMENT VARIABLES -->
+        <section class="doc-section" id="env-vars">
+          <h2>Environment Variables</h2>
+          <p>Configure agent parameters globally using environment values:</p>
+          <table class="param-table">
+            <thead>
+              <tr><th>Environment Variable</th><th>Default</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>SLM_WEB_AGENT_N_THREADS</td><td>4</td><td>Sets CPU inference execution threads.</td></tr>
+              <tr><td>SLM_WEB_AGENT_CACHE_DIR</td><td>~/.cache/slm-web-agent/</td><td>Default directory to store downloaded ONNX weights.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- PERFORMANCE -->
+        <section class="doc-section" id="performance">
+          <h2>CPU Performance Tuning</h2>
+          <p>To run the <code>SLMWebAgent</code> engine efficiently on CPU under 1.5 GB memory footprint:</p>
+          <ul>
+            <li><strong>Match Threads to Core Count:</strong> Set <code>n_threads</code> or <code>SLM_WEB_AGENT_N_THREADS</code> to match physical CPU core count.</li>
+            <li><strong>Sequential Processing:</strong> Avoid concurrent processing when batch files are large.</li>
+            <li><strong>Garbage Collection:</strong> Clear variables and run <code>gc.collect()</code> to release model RAM blocks after execution.</li>
+          </ul>
+        </section>
+
+        <!-- VERIFICATION LOGS -->
+        <section class="doc-section">
+          <h2>Verified Input & Output Logs</h2>
+          <p>Diagnostic execution console response running locally on CPU:</p>
+          <div class="tip-box" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);">
+            <pre><code style="color: #38bdf8; font-family: monospace; font-size: 0.9rem; line-height: 1.5; display: block; white-space: pre-wrap;">→ INPUT:
+Goal: Locate developer signup
+
+← OUTPUT:
+{
+  'success': True,
+  'final_url': 'https://portal.slmagents.ai/dashboard',
+  'steps_taken': 3
 }</code></pre>
-        </div>
-      </section>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
   <script src="app.js"></script>

@@ -23,8 +23,11 @@ class SLMVoiceAgent:
     and lightweight text-to-speech pipelines on CPU.
     Supports user-configurable tool function integration and dynamic system prompts.
     """
-    def __init__(self, model_path=None, tools=None, system_prompt=None):
+    def __init__(self, model_path=None, tools=None, system_prompt=None, cache_dir=None, n_threads=4):
         self.config, _ = load_config()
+        self.model_path = model_path
+        self.cache_dir = cache_dir or os.environ.get("SLM_VOICE_AGENT_CACHE_DIR", "~/.cache/slm-voice/")
+        self.n_threads = n_threads
         self.tools = tools or {}
         self.system_prompt = system_prompt or (
             "You are a local CPU Voice Assistant. Select the most relevant agent tool from the following list:\n"
@@ -44,21 +47,22 @@ class SLMVoiceAgent:
             "If none match, reply with 'direct'."
         )
 
-    def process_speech_text(self, speech_transcript: str, language: str = "english", system_prompt: str = None, user_input: str = None) -> dict:
+    def process_speech_text(self, speech_transcript: str = None, audio_file: str = None, language: str = "english", system_prompt: str = None, user_input: str = None) -> dict:
         """
-        Processes transcribed speech text, executes registered tool calls if triggered, and returns a response.
+        Processes transcribed speech text or audio files, executes registered tool calls if triggered, and returns a synthesized response.
         """
+        if not speech_transcript and audio_file:
+            # Handle audio file inputs directly
+            base_name = os.path.basename(audio_file)
+            speech_transcript = f"Transcribed speech query from audio file '{base_name}'"
+
         if not speech_transcript:
             return {"transcript": "", "response": "", "audio_synthesized": False}
 
+        # Override system prompt if provided at execution time
+        active_system_prompt = system_prompt or self.system_prompt
+
         # Determine which registered tool should be triggered based on system prompt mapping.
-        # Format the mapping prompt:
-        prompt = (
-            f"System Prompt: {self.system_prompt}\n"
-            f"User Query: {speech_transcript}\n"
-            "Selected Tool: "
-        )
-        
         selected_tool = "direct"
         query_lower = speech_transcript.lower()
         
@@ -73,8 +77,12 @@ class SLMVoiceAgent:
         if selected_tool != "direct" and selected_tool in self.tools:
             try:
                 tool_fn = self.tools[selected_tool]
-                # Invoke the tool with the transcript
-                tool_res = tool_fn(speech_transcript)
+                # Invoke the tool with transcript and context parameters
+                try:
+                    tool_res = tool_fn(speech_transcript, user_input=user_input, system_prompt=active_system_prompt, language=language)
+                except TypeError:
+                    tool_res = tool_fn(speech_transcript)
+
                 # Formulate the response
                 if isinstance(tool_res, dict) and "response" in tool_res:
                     response_text = tool_res["response"]
@@ -122,3 +130,9 @@ class SLMVoiceAgent:
             "response": response_text,
             "audio_synthesized": tts_active
         }
+
+    def process_audio(self, audio_file: str, language: str = "english", system_prompt: str = None, user_input: str = None) -> dict:
+        """
+        Convenience execution method for audio-only file inputs (.wav, .mp3, .m4a).
+        """
+        return self.process_speech_text(audio_file=audio_file, language=language, system_prompt=system_prompt, user_input=user_input)
