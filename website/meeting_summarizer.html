@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SLM Meeting Summarizer: Offline transcription post-processor. Distills meeting transcripts into action trackers, schedules, and bulleted logs with strict formatting rules.">
+  <title>SLM Meeting Summarizer | Documentation</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .doc-hero { padding: 5rem 0 3rem; text-align: center; }
+    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+    .doc-hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.1rem; }
+    .doc-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
+    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
+    .doc-nav a:hover { border-color: var(--primary); color: var(--primary); }
+    .doc-section { padding: 3rem 0; border-top: 1px solid var(--border); }
+    .doc-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--primary); }
+    .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
+    .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
+    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; }
+    .param-table th { text-align: left; padding: 0.6rem 1rem; background: rgba(255,255,255,0.04); color: var(--text-primary); border-bottom: 1px solid var(--border); }
+    .param-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+    .param-table tr:last-child td { border-bottom: none; }
+    .param-table td:first-child { font-family: 'Courier New', monospace; color: var(--primary); font-size: 0.85rem; white-space: nowrap; }
+    .param-table td:nth-child(2) { color: #a78bfa; font-size: 0.82rem; white-space: nowrap; }
+    .param-table td:last-child { color: var(--text-secondary); }
+    .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
+    .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .tip-box strong { color: #4ade80; }
+    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #fbbf24; }
+    .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--primary); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav-container">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <a href="index.html" class="logo">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span>SLM Agents</span>
+        </a>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li class="dropdown">
+            <a class="dropdown-trigger" style="color:var(--primary)">
+              Frameworks
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </a>
+            <div class="dropdown-content">
+              <a href="orchestrator.html">Orchestrator Docs</a>
+              <a href="rag.html">RAG Docs</a>
+              <a href="summarizer.html">Summarizer Docs</a>
+              <a href="sql.html">Text-to-SQL Docs</a>
+              <a href="cli.html">CLI Docs</a>
+              <a href="code_interpreter.html">Code Interpreter Docs</a>
+              <a href="git_copilot.html">Git Co-pilot Docs</a>
+              <a href="json_cleaner.html">JSON Cleaner Docs</a>
+              <a href="document_parser.html">Document Parser Docs</a>
+              <a href="vision_parser.html">Vision Parser Docs</a>
+              <a href="web_agent.html">Web Agent Docs</a>
+              <a href="web_scraper.html">Web Scraper Docs</a>
+              <a href="search_orchestrator.html">Search Orchestrator Docs</a>
+            </div>
+          </li>
+          <li><a href="index.html#upcoming">Roadmap</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="layout-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Active Libraries</div>
+        <ul class="sidebar-list" id="sidebar-active-list"></ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <section class="doc-hero">
+        <div class="container">
+          <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <span>SLM Meeting Summarizer</span></div>
+          <div class="hero-badge"><span>🎙️ Transcription Distiller</span></div>
+          <h1>SLM Meeting Summarizer</h1>
+          <p>Offline transcription post-processor. Distills meeting transcripts into action trackers, schedules, and bulleted logs with strict formatting rules.</p>
+        </div>
+      </section>
+
+      <section class="doc-section">
+        <h2>Overview</h2>
+        <p>Offline transcription post-processor. Distills meeting transcripts into action trackers, schedules, and bulleted logs with strict formatting rules.</p>
+      </section>
+
+      <section class="doc-section">
+        <h2>🚀 Core Capabilities</h2>
+        <ul>
+          <li><strong>Turns conversational text blocks into formal action tables</strong></li>\n<li><strong>Identifies speaker intent, decisions, and deadlines</strong></li>\n<li><strong>Map-Reduce pipeline support for 2-hour long transcription logs</strong></li>\n<li><strong>Strict template outputs matching markdown specifications</strong></li>
+        </ul>
+      </section>
+
+      <section class="doc-section">
+        <h2>📂 API Reference</h2>
+        
+        <h3>Python Code Execution Usage</h3>
+        <p>Integrate and execute the agent programmatically inside standard CPU sandboxes:</p>
+        <pre><code class="language-python">from slm_meeting.meeting_summarizer import SLMMeetingSummarizer
+
+summarizer = SLMMeetingSummarizer()
+todos = summarizer.summarize_transcript(transcript_text)
+print(todos)</code></pre>
+
+        <h3>Verified Input & Output Logs</h3>
+        <p>The execution results have been verified locally on standard CPU hardware with the following diagnostic responses:</p>
+        <div class="tip-box" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);">
+          <pre><code style="color: #38bdf8; font-family: monospace; font-size: 0.9rem; line-height: 1.5; display: block; white-space: pre-wrap;">→ INPUT:
+"Alice: I will deploy the schema."
+
+← OUTPUT:
+{
+  'speakers': ['Alice'],
+  'action_table': '| Speaker | Assigned Action Item | Deadline |\n| Alice | I will deploy the schema. | TBD |'
+}</code></pre>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

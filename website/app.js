@@ -354,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <li class="sidebar-item" id="nav-sql"><a href="sql.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> SLM Text-to-SQL</a></li>
       <li class="sidebar-item" id="nav-code-interpreter"><a href="code_interpreter.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg> SLM Code Interpreter</a></li>
       <li class="sidebar-item" id="nav-git-copilot"><a href="git_copilot.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 15V9a4 4 0 0 0-4-4H9"></path><line x1="6" y1="9" x2="6" y2="15"></line></svg> SLM Git Co-pilot</a></li>
-      <li class="sidebar-item" id="nav-database-migrator"><button onclick="openAgentModal('database_migrator')"><svg class="sidebar-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg> SLM Database Migrator</button></li>
+      <li class="sidebar-item" id="nav-database-migrator"><a href="database_migrator.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg> SLM Database Migrator</a></li>
       
       <!-- Web & Scraping Category -->
       <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.7rem; color:#06b6d4; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Web & Scraping</div>
@@ -367,24 +367,24 @@ document.addEventListener("DOMContentLoaded", () => {
       <li class="sidebar-item" id="nav-summarizer"><a href="summarizer.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> SLM Summarizer</a></li>
       <li class="sidebar-item" id="nav-rag"><a href="rag.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-2.239 10-5V5c0-2.761-4.477-5-10-5S2 2.239 2 5v12c0 2.761 4.477 5 10 5z"></path><path d="M2 5c0 2.761 4.477 5 10 5s10-2.239 10-5"></path><path d="M2 11c0 2.761 4.477 5 10 5s10-2.239 10-5"></path></svg> SLM RAG</a></li>
       <li class="sidebar-item" id="nav-cli"><a href="cli.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg> SLM CLI Agent</a></li>
-      <li class="sidebar-item" id="nav-email-assistant"><button onclick="openAgentModal('email_assistant')"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> SLM Email Assistant</button></li>
-      <li class="sidebar-item" id="nav-meeting-summarizer"><button onclick="openAgentModal('meeting_summarizer')"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> SLM Meeting Summarizer</button></li>
-      <li class="sidebar-item" id="nav-voice-agent"><button onclick="openAgentModal('voice_agent')"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg> SLM Voice Agent</button></li>
-      <li class="sidebar-item" id="nav-memory-manager"><button onclick="openAgentModal('memory_manager')"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="18" cy="18" r="3"></circle><line x1="6" y1="9" x2="9" y2="12"></line><line x1="6" y1="15" x2="9" y2="12"></line><line x1="18" y1="9" x2="15" y2="12"></line><line x1="18" y1="15" x2="15" y2="12"></line></svg> SLM Memory Manager</button></li>
-      <li class="sidebar-item" id="nav-task-planner"><button onclick="openAgentModal('task_planner')"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> SLM Task Planner</button></li>
-      <li class="sidebar-item" id="nav-pdf-chat"><button onclick="openAgentModal('pdf_chat')"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> SLM PDF Chat</button></li>
-      <li class="sidebar-item" id="nav-pkb-agent"><button onclick="openAgentModal('pkb_agent')"><svg class="sidebar-icon" viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg> SLM PKB Agent</button></li>
+      <li class="sidebar-item" id="nav-email-assistant"><a href="email_assistant.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> SLM Email Assistant</a></li>
+      <li class="sidebar-item" id="nav-meeting-summarizer"><a href="meeting_summarizer.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> SLM Meeting Summarizer</a></li>
+      <li class="sidebar-item" id="nav-voice-agent"><a href="voice_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg> SLM Voice Agent</a></li>
+      <li class="sidebar-item" id="nav-memory-manager"><a href="memory_manager.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="18" cy="18" r="3"></circle><line x1="6" y1="9" x2="9" y2="12"></line><line x1="6" y1="15" x2="9" y2="12"></line><line x1="18" y1="9" x2="15" y2="12"></line><line x1="18" y1="15" x2="15" y2="12"></line></svg> SLM Memory Manager</a></li>
+      <li class="sidebar-item" id="nav-task-planner"><a href="task_planner.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> SLM Task Planner</a></li>
+      <li class="sidebar-item" id="nav-pdf-chat"><a href="pdf_chat.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> SLM PDF Chat</a></li>
+      <li class="sidebar-item" id="nav-pkb-agent"><a href="pkb_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg> SLM PKB Agent</a></li>
       
       <!-- Data & Utilities Category -->
       <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.7rem; color:#10b981; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Data & Utilities</div>
       <li class="sidebar-item" id="nav-json-cleaner"><a href="json_cleaner.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg> SLM JSON Cleaner</a></li>
       <li class="sidebar-item" id="nav-document-parser"><a href="document_parser.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> SLM Document Parser</a></li>
       <li class="sidebar-item" id="nav-vision-parser"><a href="vision_parser.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> SLM Vision Parser</a></li>
-      <li class="sidebar-item" id="nav-data-analyst"><button onclick="openAgentModal('data_analyst')"><svg class="sidebar-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> SLM Data Analyst</button></li>
-      <li class="sidebar-item" id="nav-translation-hub"><button onclick="openAgentModal('translation_hub')"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> SLM Translation Hub</button></li>
-      <li class="sidebar-item" id="nav-math-agent"><button onclick="openAgentModal('math_agent')"><svg class="sidebar-icon" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg> SLM Math Agent</button></li>
-      <li class="sidebar-item" id="nav-security-audit"><button onclick="openAgentModal('security_audit')"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> SLM Security Audit</button></li>
-      <li class="sidebar-item" id="nav-embeddings-server"><button onclick="openAgentModal('embeddings_server')"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg> SLM Embeddings Server</button></li>
+      <li class="sidebar-item" id="nav-data-analyst"><a href="data_analyst.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> SLM Data Analyst</a></li>
+      <li class="sidebar-item" id="nav-translation-hub"><a href="translation_hub.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg> SLM Translation Hub</a></li>
+      <li class="sidebar-item" id="nav-math-agent"><a href="math_agent.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg> SLM Math Agent</a></li>
+      <li class="sidebar-item" id="nav-security-audit"><a href="security_audit.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> SLM Security Audit</a></li>
+      <li class="sidebar-item" id="nav-embeddings-server"><a href="embeddings_server.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg> SLM Embeddings Server</a></li>
     `;
     
     // Highlight currently active page
@@ -418,6 +418,32 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("nav-web-scraper")?.classList.add("active");
     } else if (page === "search_orchestrator.html") {
       document.getElementById("nav-search-orchestrator")?.classList.add("active");
+    } else if (page === "database_migrator.html") {
+      document.getElementById("nav-database-migrator")?.classList.add("active");
+    } else if (page === "email_assistant.html") {
+      document.getElementById("nav-email-assistant")?.classList.add("active");
+    } else if (page === "meeting_summarizer.html") {
+      document.getElementById("nav-meeting-summarizer")?.classList.add("active");
+    } else if (page === "voice_agent.html") {
+      document.getElementById("nav-voice-agent")?.classList.add("active");
+    } else if (page === "memory_manager.html") {
+      document.getElementById("nav-memory-manager")?.classList.add("active");
+    } else if (page === "task_planner.html") {
+      document.getElementById("nav-task-planner")?.classList.add("active");
+    } else if (page === "pdf_chat.html") {
+      document.getElementById("nav-pdf-chat")?.classList.add("active");
+    } else if (page === "pkb_agent.html") {
+      document.getElementById("nav-pkb-agent")?.classList.add("active");
+    } else if (page === "data_analyst.html") {
+      document.getElementById("nav-data-analyst")?.classList.add("active");
+    } else if (page === "translation_hub.html") {
+      document.getElementById("nav-translation-hub")?.classList.add("active");
+    } else if (page === "math_agent.html") {
+      document.getElementById("nav-math-agent")?.classList.add("active");
+    } else if (page === "security_audit.html") {
+      document.getElementById("nav-security-audit")?.classList.add("active");
+    } else if (page === "embeddings_server.html") {
+      document.getElementById("nav-embeddings-server")?.classList.add("active");
     }
   }
 
