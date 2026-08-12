@@ -968,16 +968,15 @@ footer {
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 2rem;
-  gap: 2rem;
 }
 
 .sidebar {
   width: 280px;
   background: #ffffff;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid #cbd5e1 !important;
   border-radius: 0;
   box-shadow: none;
-  padding: 2rem 1.25rem 2rem 0;
+  padding: 2rem 1.5rem 2rem 0;
   position: sticky;
   top: 72px;
   height: calc(100vh - 72px);
@@ -1006,7 +1005,7 @@ footer {
 .main-content {
   flex: 1;
   min-width: 0;
-  padding: 2rem 0 3rem 1.5rem;
+  padding: 2rem 0 3rem 2.5rem;
   overflow-x: hidden;
   width: 100%;
 }
