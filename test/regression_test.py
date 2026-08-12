@@ -272,7 +272,13 @@ def run_slm_meeting_summarizer(inp_val):
 
 def run_slm_voice_agent(inp_val):
     from slm_voice.voice_agent import SLMVoiceAgent
-    agent = get_instance("SLMVoiceAgent", lambda: SLMVoiceAgent())
+    def init_agent():
+        agent = SLMVoiceAgent()
+        agent.register_tool("RAG", lambda q: f"RAG response for {q}")
+        agent.register_tool("Math", lambda q: f"Math response for {q}")
+        return agent
+
+    agent = get_instance("SLMVoiceAgent", init_agent)
     data = parse_val(inp_val)
     if isinstance(data, dict):
         transcript = data.get("transcript", "")

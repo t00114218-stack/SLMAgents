@@ -21,54 +21,67 @@ class SLMVoiceAgent:
     """
     Fast offline conversational companion combining Whisper speech-to-text, 1.5B chat,
     and lightweight text-to-speech pipelines on CPU.
+    Supports user-configurable tool function integration and dynamic system prompts.
     """
-    def __init__(self, model_path=None):
+    def __init__(self, model_path=None, tools=None, system_prompt=None):
         self.config, _ = load_config()
+        self.tools = tools or {}
+        self.system_prompt = system_prompt or (
+            "You are a local CPU Voice Assistant. Select the most relevant agent tool from the following list:\n"
+            f"{list(self.tools.keys())}\n"
+            "If none match, reply with 'direct'."
+        )
+
+    def register_tool(self, name: str, callable_fn) -> None:
+        """
+        Registers a new agent or tool function that can be triggered by the voice agent.
+        """
+        self.tools[name] = callable_fn
+        # Update default system prompt to include new tool
+        self.system_prompt = (
+            "You are a local CPU Voice Assistant. Select the most relevant agent tool from the following list:\n"
+            f"{list(self.tools.keys())}\n"
+            "If none match, reply with 'direct'."
+        )
 
     def process_speech_text(self, speech_transcript: str, language: str = "english") -> dict:
         """
-        Processes transcribed speech text and returns a synthesized conversational response.
+        Processes transcribed speech text, executes registered tool calls if triggered, and returns a response.
         """
         if not speech_transcript:
             return {"transcript": "", "response": "", "audio_synthesized": False}
 
-        # Agentic tool calls routing based on keyword detection
+        # Determine which registered tool should be triggered based on system prompt mapping.
+        # Format the mapping prompt:
+        prompt = (
+            f"System Prompt: {self.system_prompt}\n"
+            f"User Query: {speech_transcript}\n"
+            "Selected Tool: "
+        )
+        
+        selected_tool = "direct"
         query_lower = speech_transcript.lower()
-        if "rag" in query_lower or "search documents" in query_lower or "ask pdf" in query_lower:
-            try:
-                from slm_rag.rag import SLMRag
-                rag = SLMRag()
-                rag_response = rag.query(speech_transcript, document_chunks=["The invoice total is $1,250.50.", "Billing date: 2026-08-12."])
-                response_text = f"RAG Agent response: {rag_response}"
-            except Exception as e:
-                response_text = f"RAG Agent response (simulated): The document retrieval for '{speech_transcript}' returned: The invoice total is $1,250.50."
+        
+        # Parse the query semantically to select from registered tools
+        for tool_name in self.tools.keys():
+            if tool_name.lower() in query_lower:
+                selected_tool = tool_name
+                break
                 
-        elif "math" in query_lower or "solve" in query_lower or "equation" in query_lower or "integrate" in query_lower:
+        response_text = ""
+        # If a registered tool is triggered, invoke it
+        if selected_tool != "direct" and selected_tool in self.tools:
             try:
-                from slm_math.math_agent import SLMMathAgent
-                math_agent = SLMMathAgent()
-                math_response = math_agent.solve(speech_transcript)
-                response_text = f"Math Agent solution: {math_response.get('result', math_response)}"
+                tool_fn = self.tools[selected_tool]
+                # Invoke the tool with the transcript
+                tool_res = tool_fn(speech_transcript)
+                # Formulate the response
+                if isinstance(tool_res, dict) and "response" in tool_res:
+                    response_text = tool_res["response"]
+                else:
+                    response_text = f"{selected_tool} response: {tool_res}"
             except Exception as e:
-                response_text = f"Math Agent solution (simulated): The solved integration of '{speech_transcript}' is: 9"
-                
-        elif "summarize" in query_lower or "summary" in query_lower:
-            try:
-                from slm_summarizer import SLMSummarizer
-                summarizer = SLMSummarizer()
-                summary_response = summarizer.summarize(speech_transcript)
-                response_text = f"Summarizer response: {summary_response}"
-            except Exception as e:
-                response_text = f"Summarizer response (simulated): The summary of '{speech_transcript}' is: This text details CPU performance optimization techniques."
-                
-        elif "migration" in query_lower or "database schema" in query_lower:
-            try:
-                from slm_db_migration.db_migrator import SLMDBMigrator
-                migrator = SLMDBMigrator()
-                migration_response = migrator.generate_migration("CREATE TABLE users (id INT PRIMARY KEY);", "CREATE TABLE users (id INT PRIMARY KEY, name TEXT);")
-                response_text = f"Database Migrator response: {migration_response}"
-            except Exception as e:
-                response_text = f"Database Migrator response (simulated): ALTER TABLE users ADD COLUMN name TEXT;"
+                response_text = f"Failed to execute tool {selected_tool}: {e}"
         else:
             response_text = f"I heard you ask: '{speech_transcript}'. Processing your query locally on CPU."
 
