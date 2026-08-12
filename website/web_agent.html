@@ -18,13 +18,13 @@
     .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--primary); }
     .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
     .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
-    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; }
+    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; table-layout: fixed; }
     .param-table th { text-align: left; padding: 0.6rem 1rem; background: rgba(255,255,255,0.04); color: var(--text-primary); border-bottom: 1px solid var(--border); }
-    .param-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+    .param-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; word-break: break-word; white-space: normal; }
     .param-table tr:last-child td { border-bottom: none; }
-    .param-table td:first-child { font-family: 'Courier New', monospace; color: var(--primary); font-size: 0.85rem; white-space: nowrap; }
-    .param-table td:nth-child(2) { color: #a78bfa; font-size: 0.82rem; white-space: nowrap; }
-    .param-table td:last-child { color: var(--text-secondary); }
+    .param-table th:first-child, .param-table td:first-child { width: 45%; font-family: 'Courier New', monospace; color: var(--primary); font-size: 0.85rem; word-break: break-word; white-space: normal; }
+    .param-table th:nth-child(2), .param-table td:nth-child(2) { width: 15%; color: #a78bfa; font-size: 0.82rem; word-break: break-word; white-space: normal; }
+    .param-table th:last-child, .param-table td:last-child { width: 40%; color: var(--text-secondary); word-break: break-word; white-space: normal; }
     .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
     .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
     .tip-box strong { color: #4ade80; }
@@ -164,7 +164,7 @@ pip install slm-web-agent</code></pre>
               <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>browse(goal, start_url, system_prompt=None, user_input=None, temperature=0.0, top_p=0.9, max_tokens=256)</code></td><td><code>dict</code></td><td>Executes goal-driven web automation through Playwright headless browser pages.</td></tr>
+              <tr><td><code>browse(goal, start_url, ...)</code></td><td><code>dict</code></td><td>Executes goal-driven web automation through Playwright headless browser pages.</td></tr>
 
             </tbody>
           </table>
