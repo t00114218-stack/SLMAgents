@@ -571,18 +571,37 @@ def run_email(inputs):
 def run_meeting(inputs):
     from slm_meeting import SLMMeetingSummarizer
     agent = SLMMeetingSummarizer()
-    return agent.summarize_transcript(inputs.get("transcript_text", ""))
+    return agent.summarize_transcript(
+        transcript=inputs.get("transcript", ""),
+        system_prompt=inputs.get("system_prompt"),
+        user_input=inputs.get("user_input")
+    )
 
 def run_memory(inputs):
     from slm_memory import SLMMemoryManager
     agent = SLMMemoryManager()
-    agent.store_fact(inputs.get("fact", ""))
-    return agent.get_relevant_facts(inputs.get("query", ""))
+    fact = inputs.get("user_fact", "")
+    if fact:
+        agent.store_fact(fact)
+    results = agent.get_relevant_facts(
+        query=fact or "USD",
+        system_prompt=inputs.get("system_prompt"),
+        user_input=inputs.get("user_input")
+    )
+    return {
+        "status": "200 OK",
+        "stored_fact": fact,
+        "retrieved_memories": results
+    }
 
 def run_task_planner(inputs):
     from slm_task_planner import SLMTaskPlanner
     agent = SLMTaskPlanner()
-    return agent.build_plan(inputs.get("goal_text", ""))
+    return agent.build_plan(
+        goal=inputs.get("goal", ""),
+        system_prompt=inputs.get("system_prompt"),
+        user_input=inputs.get("user_input")
+    )
 
 def run_pdf_chat(inputs):
     import base64
@@ -618,9 +637,30 @@ def run_pdf_chat(inputs):
             os.remove(temp_path)
 
 def run_pkb(inputs):
+    import tempfile
     from slm_pkb import SLMPKBAgent
     agent = SLMPKBAgent()
-    return agent.index_vault(inputs.get("vault_path", ""))
+    
+    note_content = inputs.get("note_text", "")
+    temp_dir = tempfile.mkdtemp()
+    note_path = os.path.join(temp_dir, "meeting_note.md")
+    
+    try:
+        with open(note_path, "w", encoding="utf-8") as f:
+            f.write(note_content)
+        return agent.index_vault(
+            vault_dir=temp_dir,
+            system_prompt=inputs.get("system_prompt"),
+            user_input=inputs.get("user_input")
+        )
+    finally:
+        try:
+            if os.path.exists(note_path):
+                os.remove(note_path)
+            if os.path.exists(temp_dir):
+                os.rmdir(temp_dir)
+        except:
+            pass
 
 def run_data_analyst(inputs):
     return {
