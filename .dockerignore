@@ -1,0 +1,16 @@
+.git
+.venv
+.vscode
+.DS_Store
+__pycache__
+*.pyc
+*.egg-info
+dist
+build
+models
+website/.git
+training.log
+publish_all.sh
+publish_packages.sh
+test/regression_test_cases.csv
+test/regression_test_results.csv

@@ -1,0 +1,16 @@
+fastapi>=0.95.0
+uvicorn>=0.20.0
+onnxruntime-genai>=0.2.0
+onnxruntime>=1.15.0
+huggingface_hub>=0.10.0
+pyyaml
+pandas
+sympy
+jinja2
+markdown
+python-multipart
+pypdf
+python-docx
+Pillow
+transformers
+torch

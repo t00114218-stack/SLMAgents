@@ -1051,16 +1051,39 @@ function updateStudioOutput() {
   }
 }
 
-function runStudioAgent() {
+async function runStudioAgent() {
   const consoleEl = document.getElementById("studio-output-console");
   if (!consoleEl) return;
 
   const spec = ALL_AGENT_SPECS[currentStudioAgentKey] || ALL_AGENT_SPECS["voice"];
-  consoleEl.textContent = `Executing ${spec.name}.${spec.methodName}()... (threads=4, engine=quantized-onnx)`;
+  consoleEl.textContent = `Executing ${spec.name}.${spec.methodName}()... (threads=4, engine=quantized-onnx)\n[System] Connecting to local CPU runner on Hugging Face...`;
 
-  setTimeout(() => {
-    updateStudioOutput();
-  }, 350);
+  const fieldVals = getActiveFieldValues(spec);
+
+  try {
+    const response = await fetch("/api/run_agent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        agent_key: currentStudioAgentKey,
+        inputs: fieldVals
+      })
+    });
+    if (!response.ok) {
+      throw new Error(`Server returned status ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    consoleEl.textContent = JSON.stringify(data.result, null, 2);
+  } catch (err) {
+    consoleEl.textContent = `[Warning] Real-time CPU runner unavailable: ${err.message}\n` +
+      `[Warning] Falling back to static mock preview output:\n\n` +
+      JSON.stringify(spec.getOutput(fieldVals), null, 2);
+  }
 }
 
 function copyStudioCode() {
