@@ -57,7 +57,7 @@
         <ul>
           <li><a href="index.html">Home</a></li>
           <li class="dropdown">
-            <a class="dropdown-trigger" style="color:var(--primary)">
+            <a class="dropdown-trigger">
               Frameworks
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </a>
@@ -66,7 +66,7 @@
               <a href="rag.html">RAG Docs</a>
               <a href="summarizer.html">Summarizer Docs</a>
               <a href="sql.html">Text-to-SQL Docs</a>
-              <a href="cli.html">CLI Docs</a>
+              <a href="cli.html">CLI Agent Docs</a>
               <a href="code_interpreter.html">Code Interpreter Docs</a>
               <a href="git_copilot.html">Git Co-pilot Docs</a>
               <a href="json_cleaner.html">JSON Cleaner Docs</a>
@@ -101,33 +101,107 @@
         </div>
       </section>
 
-      <section class="doc-section">
-        <h2>Overview</h2>
-        <p>Analyzes legacy database schemas and generates zero-downtime, CPU-optimized migrations and modern ORM model definitions offline.</p>
-      </section>
+      <div class="container">
+        <nav class="doc-nav">
+          <a href="#overview">Overview</a>
+          <a href="#install">Installation</a>
+          <a href="#config">Configuration</a>
+          <a href="#env-vars">Env Variables</a>
+          <a href="#performance">Performance</a>
+        </nav>
 
-      <section class="doc-section">
-        <h2>🚀 Core Capabilities</h2>
-        <ul>
-          <li><strong>Direct SQL table schema analysis and dependency mapping</strong></li>\n<li><strong>Automatic compatibility matching for migrations</strong></li>\n<li><strong>Generates modern SQLAlchemy and Django ORM models</strong></li>\n<li><strong>Suggests structural indexing plans for performance improvement</strong></li>
-        </ul>
-      </section>
+        <section class="doc-section" id="overview">
+          <h2>Overview</h2>
+          <p>Analyzes legacy database schemas and generates zero-downtime, CPU-optimized migrations and modern ORM model definitions offline.</p>
+          
+          <h3 style="margin-top: 2rem;">🚀 Core Capabilities</h3>
+          <ul>
+            <li><strong>Direct SQL table schema analysis and dependency mapping</strong></li>
+<li><strong>Automatic compatibility matching for migrations</strong></li>
+<li><strong>Generates modern SQLAlchemy and Django ORM models</strong></li>
+<li><strong>Suggests structural indexing plans for performance improvement</strong></li>
+          </ul>
+        </section>
 
-      <section class="doc-section">
-        <h2>📂 API Reference</h2>
-        
-        <h3>Python Code Execution Usage</h3>
-        <p>Integrate and execute the agent programmatically inside standard CPU sandboxes:</p>
-        <pre><code class="language-python">from slm_db_migration.db_migrator import SLMDBMigrator
+        <!-- INSTALLATION -->
+        <section class="doc-section" id="install">
+          <h2>Installation</h2>
+          <div class="code-panel" style="max-width:100%">
+            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
+            <div class="code-content" style="display:block;padding:1.5rem">
+              <pre><code><span class="comment"># Install local CPU-optimized package</span>
+pip install slm-db-migration</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONFIGURATION -->
+        <section class="doc-section" id="config">
+          <h2>Configuration API</h2>
+          
+          <h3>Constructor Parameters</h3>
+          <p>Instantiate <code>SLMDBMigrator</code> with performance options:</p>
+          <table class="param-table">
+            <thead>
+              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>model_path</td><td>str | None</td><td>Explicit path to ONNX model weights. If omitted, downloads standard checkpoints.</td></tr>
+              <tr><td>cache_dir</td><td>str | None</td><td>Directory to store model weights offline. Defaults to <code>~/.cache/slm-db-migration/</code>. Also settable via <span class="env-tag">SLM_DATABASE_MIGRATOR_CACHE_DIR</span>.</td></tr>
+              <tr><td>n_threads</td><td>int | 4</td><td>CPU thread count for ONNX inference. Optimize for CPU core count. Also settable via <span class="env-tag">SLM_DATABASE_MIGRATOR_N_THREADS</span>.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Methods</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>generate_migration(from_schema, to_schema)</code></td><td><code>str</code></td><td>Compares two SQL schemas and outputs ALTER TABLE SQL migration commands.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Quick Start</h3>
+          <pre><code class="language-python">from slm_db_migration import SLMDBMigrator
 
 migrator = SLMDBMigrator()
 migration_sql = migrator.generate_migration(from_schema, to_schema)
 print(migration_sql)</code></pre>
+        </section>
 
-        <h3>Verified Input & Output Logs</h3>
-        <p>The execution results have been verified locally on standard CPU hardware with the following diagnostic responses:</p>
-        <div class="tip-box" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);">
-          <pre><code style="color: #38bdf8; font-family: monospace; font-size: 0.9rem; line-height: 1.5; display: block; white-space: pre-wrap;">→ INPUT (To-Schema):
+        <!-- ENVIRONMENT VARIABLES -->
+        <section class="doc-section" id="env-vars">
+          <h2>Environment Variables</h2>
+          <p>Configure agent parameters globally using environment values:</p>
+          <table class="param-table">
+            <thead>
+              <tr><th>Environment Variable</th><th>Default</th><th>Purpose</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>SLM_DATABASE_MIGRATOR_N_THREADS</td><td>4</td><td>Sets CPU inference execution threads.</td></tr>
+              <tr><td>SLM_DATABASE_MIGRATOR_CACHE_DIR</td><td>~/.cache/slm-db-migration/</td><td>Default directory to store downloaded ONNX weights.</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- PERFORMANCE -->
+        <section class="doc-section" id="performance">
+          <h2>CPU Performance Tuning</h2>
+          <p>To run the <code>SLMDBMigrator</code> engine efficiently on CPU under 1.5 GB memory footprint:</p>
+          <ul>
+            <li><strong>Match Threads to Core Count:</strong> Set <code>n_threads</code> or <code>SLM_DATABASE_MIGRATOR_N_THREADS</code> to match the physical CPU core count.</li>
+            <li><strong>Sequential Processing:</strong> Avoid concurrent processing when batch files are large.</li>
+            <li><strong>Garbage Collection:</strong> Clear variables and run <code>gc.collect()</code> to release model RAM blocks after execution.</li>
+          </ul>
+        </section>
+
+        <!-- VERIFICATION LOGS -->
+        <section class="doc-section">
+          <h2>Verified Input & Output Logs</h2>
+          <p>Diagnostic execution console response running locally on CPU:</p>
+          <div class="tip-box" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);">
+            <pre><code style="color: #38bdf8; font-family: monospace; font-size: 0.9rem; line-height: 1.5; display: block; white-space: pre-wrap;">→ INPUT (To-Schema):
 CREATE TABLE users (id INT PRIMARY KEY, name TEXT, email TEXT);
 
 ← OUTPUT:
@@ -135,8 +209,9 @@ CREATE TABLE users (id INT PRIMARY KEY, name TEXT, email TEXT);
   'migration_sql': 'ALTER TABLE users ADD COLUMN email TEXT;',
   'sandbox_result': 'Migration verified successfully in SQLite sandbox.'
 }</code></pre>
-        </div>
-      </section>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
   <script src="app.js"></script>
