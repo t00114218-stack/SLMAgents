@@ -8,31 +8,31 @@
   <link rel="stylesheet" href="style.css">
   <style>
     .doc-hero { padding: 5rem 0 3rem; text-align: center; }
-    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; color: var(--text-primary); }
     .doc-hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.1rem; }
     .doc-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
-    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
+    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
     .doc-nav a:hover { border-color: var(--primary); color: var(--primary); }
-    .doc-section { padding: 3rem 0; border-top: 1px solid var(--border); }
+    .doc-section { padding: 3rem 0; border-top: 1px solid var(--card-border); }
     .doc-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-primary); }
-    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--primary); }
+    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--accent-purple); }
     .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
     .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
-    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; table-layout: fixed; }
-    .param-table th { text-align: left; padding: 0.6rem 1rem; background: rgba(255,255,255,0.04); color: var(--text-primary); border-bottom: 1px solid var(--border); }
-    .param-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; word-break: break-word; white-space: normal; }
+    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; table-layout: fixed; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+    .param-table th { text-align: left; padding: 0.65rem 1rem; background: #f8fafc; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
+    .param-table td { padding: 0.65rem 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; word-break: break-word; white-space: normal; color: #475569; }
     .param-table tr:last-child td { border-bottom: none; }
-    .param-table th:first-child, .param-table td:first-child { width: 45%; font-family: 'Courier New', monospace; color: var(--primary); font-size: 0.85rem; word-break: break-word; white-space: normal; }
-    .param-table th:nth-child(2), .param-table td:nth-child(2) { width: 15%; color: #a78bfa; font-size: 0.82rem; word-break: break-word; white-space: normal; }
-    .param-table th:last-child, .param-table td:last-child { width: 40%; color: var(--text-secondary); word-break: break-word; white-space: normal; }
-    .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
-    .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .tip-box strong { color: #4ade80; }
-    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .warn-box strong { color: #fbbf24; }
+    .param-table th:first-child, .param-table td:first-child { width: 45%; font-family: 'JetBrains Mono', monospace; color: #4f46e5; font-size: 0.85rem; word-break: break-word; white-space: normal; font-weight: 600; }
+    .param-table th:nth-child(2), .param-table td:nth-child(2) { width: 15%; color: #0284c7; font-size: 0.82rem; word-break: break-word; white-space: normal; font-weight: 500; }
+    .param-table th:last-child, .param-table td:last-child { width: 40%; color: #475569; word-break: break-word; white-space: normal; }
+    .env-tag { display: inline-block; background: rgba(79,70,229,0.1); border: 1px solid rgba(79,70,229,0.2); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #4f46e5; }
+    .tip-box { background: rgba(5,150,105,0.06); border: 1px solid rgba(5,150,105,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .tip-box strong { color: #059669; }
+    .warn-box { background: rgba(217,119,6,0.06); border: 1px solid rgba(217,119,6,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
+    .warn-box strong { color: #d97706; }
     .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
     .breadcrumb a { color: var(--text-muted); text-decoration: none; }
-    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb a:hover { color: var(--accent-purple); }
   </style>
 </head>
 <body>
@@ -58,24 +58,40 @@
           <li><a href="index.html">Home</a></li>
           <li class="dropdown">
             <a class="dropdown-trigger">
-              Frameworks
+              Docs
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </a>
-            <div class="dropdown-content">
-              <a href="voice_agent.html">Voice Agent Docs</a>
-              <a href="summarizer.html">Summarizer Docs</a>
-              <a href="rag.html">RAG Docs</a>
-              <a href="cli.html">CLI Agent Docs</a>
-              <a href="orchestrator.html">Orchestrator Docs</a>
-              <a href="sql.html">Text-to-SQL Docs</a>
-              <a href="code_interpreter.html">Code Interpreter Docs</a>
-              <a href="git_copilot.html">Git Co-pilot Docs</a>
-              <a href="json_cleaner.html">JSON Cleaner Docs</a>
-              <a href="document_parser.html">Document Parser Docs</a>
-              <a href="vision_parser.html">Vision Parser Docs</a>
-              <a href="web_agent.html">Web Agent Docs</a>
-              <a href="web_scraper.html">Web Scraper Docs</a>
-              <a href="search_orchestrator.html">Search Orchestrator Docs</a>
+            <div class="dropdown-content" style="max-height: 480px; overflow-y: auto;">
+              <div style="padding: 6px 12px; font-size: 0.7rem; font-weight: 700; color: #4f46e5; text-transform: uppercase;">Productivity</div>
+              <a href="voice_agent.html">🗣️ Voice Agent Docs</a>
+              <a href="rag.html">📚 SLM RAG Docs</a>
+              <a href="summarizer.html">📝 Summarizer Docs</a>
+              <a href="cli.html">💻 CLI Agent Docs</a>
+              <a href="email_assistant.html">📧 Email Assistant Docs</a>
+              <a href="meeting_summarizer.html">🎙️ Meeting Summarizer Docs</a>
+              <a href="memory_manager.html">🧠 Memory Manager Docs</a>
+              <a href="task_planner.html">📋 Task Planner Docs</a>
+              <a href="pdf_chat.html">📑 PDF Chat Docs</a>
+              <a href="pkb_agent.html">🔗 PKB Agent Docs</a>
+              <div style="padding: 6px 12px; font-size: 0.7rem; font-weight: 700; color: #6366f1; text-transform: uppercase; margin-top: 4px;">Developer Tools</div>
+              <a href="orchestrator.html">🎯 Orchestrator Docs</a>
+              <a href="sql.html">📊 Text-to-SQL Docs</a>
+              <a href="code_interpreter.html">⚡ Code Interpreter Docs</a>
+              <a href="git_copilot.html">🐙 Git Co-pilot Docs</a>
+              <a href="database_migrator.html">🗄️ Database Migrator Docs</a>
+              <div style="padding: 6px 12px; font-size: 0.7rem; font-weight: 700; color: #0284c7; text-transform: uppercase; margin-top: 4px;">Web &amp; Scraping</div>
+              <a href="web_agent.html">🌐 Web Agent Docs</a>
+              <a href="web_scraper.html">🕷️ Web Scraper Docs</a>
+              <a href="search_orchestrator.html">🔎 Search Orchestrator Docs</a>
+              <div style="padding: 6px 12px; font-size: 0.7rem; font-weight: 700; color: #059669; text-transform: uppercase; margin-top: 4px;">Data &amp; Utilities</div>
+              <a href="json_cleaner.html">🧹 JSON Cleaner Docs</a>
+              <a href="document_parser.html">📄 Document Parser Docs</a>
+              <a href="vision_parser.html">👁️ Vision Parser Docs</a>
+              <a href="data_analyst.html">📈 Data Analyst Docs</a>
+              <a href="translation_hub.html">🌐 Translation Hub Docs</a>
+              <a href="math_agent.html">🧮 Math Agent Docs</a>
+              <a href="security_audit.html">🛡️ Security Audit Docs</a>
+              <a href="embeddings_server.html">🔢 Embeddings Server Docs</a>
             </div>
           </li>
           <li><a href="index.html#upcoming">Roadmap</a></li>
@@ -229,11 +245,11 @@ print(result)</code></pre>
           </ul>
         </section>
 
-        <!-- VERIFICATION LOGS -->
+        <!-- VERIFIED LOGS -->
         <section class="doc-section">
-          <h2>Verified Input & Output Logs</h2>
+          <h2>Verified Input &amp; Output Logs</h2>
           <p>Diagnostic execution console response running locally on CPU:</p>
-          <div class="tip-box" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);">
+          <div class="tip-box" style="background: #0f172a; border: 1px solid #1e293b;">
             <pre><code style="color: #38bdf8; font-family: monospace; font-size: 0.9rem; line-height: 1.5; display: block; white-space: pre-wrap;">→ INPUT:
 Goal: Locate developer signup
 
