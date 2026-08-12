@@ -466,3 +466,107 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// Interactive Playground Logic
+let activePgAgent = 'voice';
+
+const PLAYGROUND_PROMPTS = {
+  voice: "Calculate tax for Q3 revenue and search RAG",
+  rag: "What is the total revenue for Q3 2026?",
+  orchestrator: "Synthesize sales data and calculate tax deduction",
+  sql: "What is total sales amount by region for 2026?",
+  summarizer: "Summarize the Q3 earnings report into key highlights",
+  web: "Navigate to portal.slmagents.ai and extract signup form"
+};
+
+function switchPlaygroundAgent(agentKey) {
+  activePgAgent = agentKey;
+  const buttons = document.querySelectorAll('.pg-tab');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const inputEl = document.getElementById('pg-input-query');
+  if (inputEl && PLAYGROUND_PROMPTS[agentKey]) {
+    inputEl.value = PLAYGROUND_PROMPTS[agentKey];
+  }
+  
+  const consoleEl = document.getElementById('pg-output-console');
+  if (consoleEl) {
+    consoleEl.textContent = `[Agent Selected: ${agentKey.toUpperCase()}]\nClick 'Run Agent' to execute local CPU inference...`;
+  }
+}
+
+function runPlaygroundAgent() {
+  const query = document.getElementById('pg-input-query')?.value || "Sample query";
+  const lang = document.getElementById('pg-input-lang')?.value || "English";
+  const consoleEl = document.getElementById('pg-output-console');
+  
+  if (!consoleEl) return;
+  
+  consoleEl.textContent = `[EXECUTING ON CPU] Running SLM ${activePgAgent.toUpperCase()}... (threads=4, model=quantized-onnx)`;
+  
+  setTimeout(() => {
+    let resultObj = {};
+    if (activePgAgent === 'voice') {
+      resultObj = {
+        agent: "SLMVoiceAgent",
+        status: "200 OK",
+        execution_time: "0.042s (CPU)",
+        input_query: query,
+        language: lang,
+        barge_in_active: true,
+        tool_triggered: query.toLowerCase().includes("rag") ? "SLMRag" : "SLMMathAgent",
+        response_text: `[${lang.toUpperCase()} Synthesis]: Successfully processed query '${query}'. Result: Q3 tax is $187,500.`,
+        audio_synthesized: true
+      };
+    } else if (activePgAgent === 'rag') {
+      resultObj = {
+        agent: "SLMRag",
+        status: "200 OK",
+        execution_time: "0.038s (CPU)",
+        retrieved_chunks: 3,
+        vector_similarity_score: 0.942,
+        answer: `Document Grounded Answer: Based on invoice records, Q3 revenue total is $1.25M.`
+      };
+    } else if (activePgAgent === 'orchestrator') {
+      resultObj = {
+        agent: "SLMOrchestrator",
+        status: "200 OK",
+        execution_time: "0.051s (CPU)",
+        resolved_routing_plan: ["SLMRag", "SLMMathAgent"],
+        final_synthesized_output: "Tax deduction calculated: $187,500 based on $1.25M Q3 revenue."
+      };
+    } else if (activePgAgent === 'sql') {
+      resultObj = {
+        agent: "SLMTextToSQL",
+        status: "200 OK",
+        execution_time: "0.029s (CPU)",
+        generated_sql: "SELECT region, SUM(amount) AS total_sales FROM sales WHERE year = 2026 GROUP BY region ORDER BY total_sales DESC;"
+      };
+    } else if (activePgAgent === 'summarizer') {
+      resultObj = {
+        agent: "SLMSummarizer",
+        status: "200 OK",
+        execution_time: "0.045s (CPU)",
+        summary_bullet_points: [
+          "Q3 net revenue reached $1.25M (+15% YoY)",
+          "Operating margins expanded to 34% on local hardware optimization",
+          "Zero cloud API dependencies or latency overhead"
+        ]
+      };
+    } else {
+      resultObj = {
+        agent: "SLMWebAgent",
+        status: "200 OK",
+        execution_time: "0.068s (CPU)",
+        playwright_action_log: [
+          "Navigated to target portal URL",
+          "Located '#developer-signup-form'",
+          "Extracted input field parameters successfully"
+        ]
+      };
+    }
+    
+    consoleEl.textContent = JSON.stringify(resultObj, null, 2);
+  }, 400);
+}

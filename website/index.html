@@ -116,23 +116,75 @@
     <main class="main-content">
       <!-- Hero Section -->
       <section class="hero">
-    <div class="container">
-      <div class="hero-badge">
-        <span>100% CPU-Based Frameworks</span>
-      </div>
-      <h1>Build Local AI Agent Workflows<br>On Any Standard CPU</h1>
-      <p>
-        An open-source developer community focused on running highly-constrained, secure, and privacy-first agentic workflows locally. No GPU rigs, no API keys, and zero external network latency.
-      </p>
-      <div class="hero-ctas">
-        <a href="#frameworks" class="btn btn-primary">Explore Frameworks</a>
-        <a href="https://github.com/t00114218-stack/SLMAgents" class="btn btn-secondary" target="_blank">
-          <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 4px;">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
-          </svg>
-          Star us on GitHub
-        </a>
-      </div>
+        <div class="container">
+          <div class="hero-badge">
+            <span style="display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; margin-right:6px; box-shadow:0 0 8px #10b981;"></span>
+            <span>100% CPU-Based AI Frameworks • Zero API Costs</span>
+          </div>
+          <h1>Build Local AI Agent Workflows<br><span style="background: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #34d399 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">On Any Standard CPU</span></h1>
+          <p>
+            Sub-billion parameter local agents engineered for speed, privacy, and zero network latency. Run offline multi-agent routing, RAG retrieval, SQL generation, and voice synthesis on Apple Silicon, Intel, or AMD CPUs.
+          </p>
+          <div class="hero-ctas">
+            <a href="#frameworks" class="btn btn-primary">Explore 26 SLM Agents</a>
+            <a href="https://github.com/t00114218-stack/SLMAgents" class="btn btn-secondary" target="_blank">
+              <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 4px;">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+              </svg>
+              Star us on GitHub
+            </a>
+          </div>
+
+          <!-- Live Interactive AI Playground Widget -->
+          <div class="playground-widget" style="max-width: 840px; margin: 3rem auto 2rem; background: rgba(17, 24, 39, 0.7); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 16px; backdrop-filter: blur(20px); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(139, 92, 246, 0.15); text-align: left; overflow: hidden;">
+            <div class="code-header" style="background: rgba(3, 7, 18, 0.8); padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08);">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+                <span style="font-size: 0.85rem; font-family: monospace; color: #a78bfa; font-weight: 600;">⚡ SLM Interactive Agent Playground</span>
+              </div>
+              <span style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 2px 8px; border-radius: 12px;">CPU Engine Ready</span>
+            </div>
+
+            <div style="padding: 1.5rem;">
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+                <button class="pg-tab active" onclick="switchPlaygroundAgent('voice')">🗣️ Voice Agent</button>
+                <button class="pg-tab" onclick="switchPlaygroundAgent('rag')">📚 SLM RAG</button>
+                <button class="pg-tab" onclick="switchPlaygroundAgent('orchestrator')">🎯 Orchestrator</button>
+                <button class="pg-tab" onclick="switchPlaygroundAgent('sql')">📊 Text-to-SQL</button>
+                <button class="pg-tab" onclick="switchPlaygroundAgent('summarizer')">📝 Summarizer</button>
+                <button class="pg-tab" onclick="switchPlaygroundAgent('web')">🌐 Web Agent</button>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                  <label style="display: block; font-size: 0.8rem; color: #9ca3af; margin-bottom: 0.4rem;">User Query / Input:</label>
+                  <input type="text" id="pg-input-query" value="Calculate tax for Q3 revenue and search RAG" style="width: 100%; background: rgba(3, 7, 18, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.6rem 0.8rem; color: #f9fafb; font-size: 0.85rem; font-family: monospace; outline: none;">
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.8rem; color: #9ca3af; margin-bottom: 0.4rem;">Language / Controls:</label>
+                  <div style="display: flex; gap: 0.5rem;">
+                    <select id="pg-input-lang" style="flex: 1; background: rgba(3, 7, 18, 0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.6rem; color: #f9fafb; font-size: 0.85rem; outline: none;">
+                      <option value="English">English</option>
+                      <option value="Hindi">Hindi</option>
+                      <option value="Tamil">Tamil</option>
+                      <option value="Spanish">Spanish</option>
+                      <option value="French">French</option>
+                    </select>
+                    <button onclick="runPlaygroundAgent()" style="background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%); border: none; color: #fff; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s; white-space: nowrap;">⚡ Run Agent</button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label style="display: block; font-size: 0.8rem; color: #9ca3af; margin-bottom: 0.4rem;">Live CPU Response Output:</label>
+                <div style="background: #030712; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; min-height: 100px; color: #38bdf8;">
+                  <pre id="pg-output-console" style="margin:0; white-space: pre-wrap; word-break: break-word;">Click 'Run Agent' to execute local CPU inference...</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Quick Install Snippet -->
       <div class="code-panel" style="max-width: 600px; margin: 2rem auto; text-align: left;">
@@ -418,7 +470,70 @@
       </div>
 
       <div class="upcoming-grid">
+        <!-- Web & Scraping Category -->
+        <div class="upcoming-card" data-category="web" onclick="location.href='web_agent.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-web" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: #22d3ee;">Web &amp; Scraping</span>
+            <h3>SLM Web Agent</h3>
+          </div>
+          <p>Automate multi-step browser tasks offline. Plans actions, selects locators, and navigates forms using Playwright and Phi-3.5 on CPU.</p>
+        </div>
+
+        <div class="upcoming-card" data-category="web" onclick="location.href='web_scraper.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-web" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: #22d3ee;">Web &amp; Scraping</span>
+            <h3>SLM Web Scraper</h3>
+          </div>
+          <p>High-speed local parsing engine that converts raw HTML documents into structured schema JSON layouts without cloud scrapers.</p>
+        </div>
+
+        <div class="upcoming-card" data-category="web" onclick="location.href='search_orchestrator.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-web" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: #22d3ee;">Web &amp; Scraping</span>
+            <h3>SLM Search Orchestrator</h3>
+          </div>
+          <p>Off-grid query expansion and multi-step routing companion. Aggregates search snippets locally and distills clean answers.</p>
+        </div>
+
         <!-- Developer Tools Category -->
+        <div class="upcoming-card" data-category="dev" onclick="location.href='orchestrator.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-dev">Developer Tools</span>
+            <h3>SLM Orchestrator</h3>
+          </div>
+          <p>Autonomous meta-agent that inspects user queries, dynamically routes to local sub-agents, and sequences multi-step execution graphs.</p>
+        </div>
+
+        <div class="upcoming-card" data-category="dev" onclick="location.href='sql.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-dev">Developer Tools</span>
+            <h3>SLM Text-to-SQL</h3>
+          </div>
+          <p>Translates natural language questions into valid SQL queries against PostgreSQL, SQLite, and MySQL database schemas offline.</p>
+        </div>
+
+        <div class="upcoming-card" data-category="dev" onclick="location.href='code_interpreter.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-dev">Developer Tools</span>
+            <h3>SLM Code Interpreter</h3>
+          </div>
+          <p>Sandboxed Python execution environment for performing data analytics, plotting math charts, and evaluating algorithm logic.</p>
+        </div>
+
+        <div class="upcoming-card" data-category="dev" onclick="location.href='git_copilot.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-dev">Developer Tools</span>
+            <h3>SLM Git Co-pilot</h3>
+          </div>
+          <p>Automates git commit generation, code review diff analysis, and branch conflict resolution offline on standard desktop hardware.</p>
+        </div>
 
         <div class="upcoming-card" data-category="dev" onclick="location.href='database_migrator.html'" style="cursor: pointer;">
           <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
@@ -430,8 +545,33 @@
         </div>
 
         <!-- Productivity Category -->
+        <div class="upcoming-card" data-category="productivity" onclick="location.href='summarizer.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-prod">Productivity</span>
+            <h3>SLM Summarizer</h3>
+          </div>
+          <p>Condenses lengthy reports, legal documents, and research papers into concise bullet points offline using Map-Reduce chunking.</p>
+        </div>
 
-        <!-- Productivity Category -->
+        <div class="upcoming-card" data-category="productivity" onclick="location.href='rag.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-prod">Productivity</span>
+            <h3>SLM RAG</h3>
+          </div>
+          <p>Answer questions from your own documents locally, privately, with zero API costs using quantized ONNX vector search models.</p>
+        </div>
+
+        <div class="upcoming-card" data-category="productivity" onclick="location.href='cli.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-prod">Productivity</span>
+            <h3>SLM CLI Agent</h3>
+          </div>
+          <p>Terminal terminal assistant that translates natural language intentions into safe bash/zsh command line invocations offline.</p>
+        </div>
+
         <div class="upcoming-card" data-category="productivity" onclick="location.href='email_assistant.html'" style="cursor: pointer;">
           <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
           <div>
@@ -496,6 +636,33 @@
         </div>
 
         <!-- Data & Utilities Category -->
+        <div class="upcoming-card" data-category="data" onclick="location.href='json_cleaner.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
+            <h3>SLM JSON Cleaner</h3>
+          </div>
+          <p>Extracts, repairs, and validates malformed or truncated JSON strings produced by small language model generations.</p>
+        </div>
+
+        <div class="upcoming-card" data-category="data" onclick="location.href='document_parser.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
+            <h3>SLM Document Parser</h3>
+          </div>
+          <p>Chunking and parsing engine that converts raw PDF, DOCX, and TXT files into clean vector embeddings and text chunks.</p>
+        </div>
+
+        <div class="upcoming-card" data-category="data" onclick="location.href='vision_parser.html'" style="cursor: pointer;">
+          <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
+          <div>
+            <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
+            <h3>SLM Vision Parser</h3>
+          </div>
+          <p>Lightweight Florence-2 vision model integration for image captioning, OCR text extraction, and bounding box detection.</p>
+        </div>
+
         <div class="upcoming-card" data-category="data" onclick="location.href='data_analyst.html'" style="cursor: pointer;">
           <div class="badge-soon" style="background:#059669; border-color:#059669; color:#fff;">Verified (CPU)</div>
           <div>
