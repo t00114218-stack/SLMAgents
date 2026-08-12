@@ -999,6 +999,201 @@ SLMEmbeddingsServer,Embeddings dimension check - 16,sample text description 16,V
 SLMEmbeddingsServer,Embeddings dimension check - 17,sample text description 17,Vector dimension check: 1024
 SLMEmbeddingsServer,Embeddings dimension check - 18,sample text description 18,Vector dimension check: 1024
 SLMEmbeddingsServer,Embeddings dimension check - 19,sample text description 19,Vector dimension check: 1024
+SLMPDFChat,PDF chat layout QA - 5,What is invoice detail 5?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 6,What is invoice detail 6?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 7,What is invoice detail 7?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 8,What is invoice detail 8?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 9,What is invoice detail 9?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 10,What is invoice detail 10?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 11,What is invoice detail 11?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 12,What is invoice detail 12?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 13,What is invoice detail 13?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 14,What is invoice detail 14?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 15,What is invoice detail 15?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 16,What is invoice detail 16?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 17,What is invoice detail 17?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 18,What is invoice detail 18?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 19,What is invoice detail 19?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 20,What is invoice detail 20?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 21,What is invoice detail 21?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 22,What is invoice detail 22?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 23,What is invoice detail 23?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 24,What is invoice detail 24?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 25,What is invoice detail 25?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 26,What is invoice detail 26?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 27,What is invoice detail 27?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 28,What is invoice detail 28?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPDFChat,PDF chat layout QA - 29,What is invoice detail 29?,No PDF document loaded. Please call `.load(pdf_path)` first.
+SLMPKBAgent,PKB link indexing - 0,~/ObsidianVault_0,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 1,~/ObsidianVault_1,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 2,~/ObsidianVault_2,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 3,~/ObsidianVault_3,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 4,~/ObsidianVault_4,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 5,~/ObsidianVault_5,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 6,~/ObsidianVault_6,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 7,~/ObsidianVault_7,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 8,~/ObsidianVault_8,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 9,~/ObsidianVault_9,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 10,~/ObsidianVault_10,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 11,~/ObsidianVault_11,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 12,~/ObsidianVault_12,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 13,~/ObsidianVault_13,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 14,~/ObsidianVault_14,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 15,~/ObsidianVault_15,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 16,~/ObsidianVault_16,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 17,~/ObsidianVault_17,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 18,~/ObsidianVault_18,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 19,~/ObsidianVault_19,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 20,~/ObsidianVault_20,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 21,~/ObsidianVault_21,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 22,~/ObsidianVault_22,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 23,~/ObsidianVault_23,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 24,~/ObsidianVault_24,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 25,~/ObsidianVault_25,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 26,~/ObsidianVault_26,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 27,~/ObsidianVault_27,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 28,~/ObsidianVault_28,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMPKBAgent,PKB link indexing - 29,~/ObsidianVault_29,"{""notes_indexed"": 0, ""suggested_links"": []}"
+SLMDataAnalyst,Data profiling - 0,"{""file"": ""sales_0.csv"", ""query"": ""summarize sales 0""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 1,"{""file"": ""sales_1.csv"", ""query"": ""summarize sales 1""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 2,"{""file"": ""sales_2.csv"", ""query"": ""summarize sales 2""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 3,"{""file"": ""sales_3.csv"", ""query"": ""summarize sales 3""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 4,"{""file"": ""sales_4.csv"", ""query"": ""summarize sales 4""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 5,"{""file"": ""sales_5.csv"", ""query"": ""summarize sales 5""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 6,"{""file"": ""sales_6.csv"", ""query"": ""summarize sales 6""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 7,"{""file"": ""sales_7.csv"", ""query"": ""summarize sales 7""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 8,"{""file"": ""sales_8.csv"", ""query"": ""summarize sales 8""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 9,"{""file"": ""sales_9.csv"", ""query"": ""summarize sales 9""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 10,"{""file"": ""sales_10.csv"", ""query"": ""summarize sales 10""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 11,"{""file"": ""sales_11.csv"", ""query"": ""summarize sales 11""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 12,"{""file"": ""sales_12.csv"", ""query"": ""summarize sales 12""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 13,"{""file"": ""sales_13.csv"", ""query"": ""summarize sales 13""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 14,"{""file"": ""sales_14.csv"", ""query"": ""summarize sales 14""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 15,"{""file"": ""sales_15.csv"", ""query"": ""summarize sales 15""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 16,"{""file"": ""sales_16.csv"", ""query"": ""summarize sales 16""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 17,"{""file"": ""sales_17.csv"", ""query"": ""summarize sales 17""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 18,"{""file"": ""sales_18.csv"", ""query"": ""summarize sales 18""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 19,"{""file"": ""sales_19.csv"", ""query"": ""summarize sales 19""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 20,"{""file"": ""sales_20.csv"", ""query"": ""summarize sales 20""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 21,"{""file"": ""sales_21.csv"", ""query"": ""summarize sales 21""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 22,"{""file"": ""sales_22.csv"", ""query"": ""summarize sales 22""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 23,"{""file"": ""sales_23.csv"", ""query"": ""summarize sales 23""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 24,"{""file"": ""sales_24.csv"", ""query"": ""summarize sales 24""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 25,"{""file"": ""sales_25.csv"", ""query"": ""summarize sales 25""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 26,"{""file"": ""sales_26.csv"", ""query"": ""summarize sales 26""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 27,"{""file"": ""sales_27.csv"", ""query"": ""summarize sales 27""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 28,"{""file"": ""sales_28.csv"", ""query"": ""summarize sales 28""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMDataAnalyst,Data profiling - 29,"{""file"": ""sales_29.csv"", ""query"": ""summarize sales 29""}","{""columns"": [], ""summary"": ""Calculated total revenue by region: East ($15,000), West ($22,000).""}"
+SLMTranslationHub,Translation Hub dynamic check - 0,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 1,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 2,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 3,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 4,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 5,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 6,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 7,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 8,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 9,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""hi""}",नमस्ते दुनिया
+SLMTranslationHub,Translation Hub dynamic check - 10,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 11,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 12,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 13,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 14,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 15,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 16,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 17,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 18,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 19,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""ta""}",வணக்கம் உலகம்
+SLMTranslationHub,Translation Hub dynamic check - 20,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 21,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 22,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 23,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 24,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 25,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 26,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 27,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 28,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMTranslationHub,Translation Hub dynamic check - 29,"{""text"": ""hello world"", ""src"": ""en"", ""tgt"": ""te""}",[TE Translation of 'hello world']
+SLMMathAgent,Math calculus check - 0,integrate x^2 from 0 to 3,"{""equation"": ""integrate(x^2, 0, 3)"", ""result"": ""9""}"
+SLMMathAgent,Math calculus check - 1,integrate x^2 from 1 to 4,"{""equation"": ""integrate(x^2, 1, 4)"", ""result"": ""21""}"
+SLMMathAgent,Math calculus check - 2,integrate x^2 from 2 to 5,"{""equation"": ""integrate(x^2, 2, 5)"", ""result"": ""39""}"
+SLMMathAgent,Math calculus check - 3,integrate x^2 from 3 to 6,"{""equation"": ""integrate(x^2, 3, 6)"", ""result"": ""63""}"
+SLMMathAgent,Math calculus check - 4,integrate x^2 from 4 to 7,"{""equation"": ""integrate(x^2, 4, 7)"", ""result"": ""93""}"
+SLMMathAgent,Math calculus check - 5,integrate x^2 from 5 to 8,"{""equation"": ""integrate(x^2, 5, 8)"", ""result"": ""129""}"
+SLMMathAgent,Math calculus check - 6,integrate x^2 from 6 to 9,"{""equation"": ""integrate(x^2, 6, 9)"", ""result"": ""171""}"
+SLMMathAgent,Math calculus check - 7,integrate x^2 from 7 to 10,"{""equation"": ""integrate(x^2, 7, 10)"", ""result"": ""219""}"
+SLMMathAgent,Math calculus check - 8,integrate x^2 from 8 to 11,"{""equation"": ""integrate(x^2, 8, 11)"", ""result"": ""273""}"
+SLMMathAgent,Math calculus check - 9,integrate x^2 from 9 to 12,"{""equation"": ""integrate(x^2, 9, 12)"", ""result"": ""333""}"
+SLMMathAgent,Math calculus check - 10,integrate x^2 from 10 to 13,"{""equation"": ""integrate(x^2, 10, 13)"", ""result"": ""399""}"
+SLMMathAgent,Math calculus check - 11,integrate x^2 from 11 to 14,"{""equation"": ""integrate(x^2, 11, 14)"", ""result"": ""471""}"
+SLMMathAgent,Math calculus check - 12,integrate x^2 from 12 to 15,"{""equation"": ""integrate(x^2, 12, 15)"", ""result"": ""549""}"
+SLMMathAgent,Math calculus check - 13,integrate x^2 from 13 to 16,"{""equation"": ""integrate(x^2, 13, 16)"", ""result"": ""633""}"
+SLMMathAgent,Math calculus check - 14,integrate x^2 from 14 to 17,"{""equation"": ""integrate(x^2, 14, 17)"", ""result"": ""723""}"
+SLMMathAgent,Math calculus check - 15,integrate x^2 from 15 to 18,"{""equation"": ""integrate(x^2, 15, 18)"", ""result"": ""819""}"
+SLMMathAgent,Math calculus check - 16,integrate x^2 from 16 to 19,"{""equation"": ""integrate(x^2, 16, 19)"", ""result"": ""921""}"
+SLMMathAgent,Math calculus check - 17,integrate x^2 from 17 to 20,"{""equation"": ""integrate(x^2, 17, 20)"", ""result"": ""1029""}"
+SLMMathAgent,Math calculus check - 18,integrate x^2 from 18 to 21,"{""equation"": ""integrate(x^2, 18, 21)"", ""result"": ""1143""}"
+SLMMathAgent,Math calculus check - 19,integrate x^2 from 19 to 22,"{""equation"": ""integrate(x^2, 19, 22)"", ""result"": ""1263""}"
+SLMMathAgent,Math calculus check - 20,integrate x^2 from 20 to 23,"{""equation"": ""integrate(x^2, 20, 23)"", ""result"": ""1389""}"
+SLMMathAgent,Math calculus check - 21,integrate x^2 from 21 to 24,"{""equation"": ""integrate(x^2, 21, 24)"", ""result"": ""1521""}"
+SLMMathAgent,Math calculus check - 22,integrate x^2 from 22 to 25,"{""equation"": ""integrate(x^2, 22, 25)"", ""result"": ""1659""}"
+SLMMathAgent,Math calculus check - 23,integrate x^2 from 23 to 26,"{""equation"": ""integrate(x^2, 23, 26)"", ""result"": ""1803""}"
+SLMMathAgent,Math calculus check - 24,integrate x^2 from 24 to 27,"{""equation"": ""integrate(x^2, 24, 27)"", ""result"": ""1953""}"
+SLMMathAgent,Math calculus check - 25,integrate x^2 from 25 to 28,"{""equation"": ""integrate(x^2, 25, 28)"", ""result"": ""2109""}"
+SLMMathAgent,Math calculus check - 26,integrate x^2 from 26 to 29,"{""equation"": ""integrate(x^2, 26, 29)"", ""result"": ""2271""}"
+SLMMathAgent,Math calculus check - 27,integrate x^2 from 27 to 30,"{""equation"": ""integrate(x^2, 27, 30)"", ""result"": ""2439""}"
+SLMMathAgent,Math calculus check - 28,integrate x^2 from 28 to 31,"{""equation"": ""integrate(x^2, 28, 31)"", ""result"": ""2613""}"
+SLMMathAgent,Math calculus check - 29,integrate x^2 from 29 to 32,"{""equation"": ""integrate(x^2, 29, 32)"", ""result"": ""2793""}"
+SLMSecurityAudit,PII redaction checks - 0,SSN is 000-00-0000,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 1,SSN is 000-00-0001,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 2,SSN is 000-00-0002,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 3,SSN is 000-00-0003,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 4,SSN is 000-00-0004,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 5,SSN is 000-00-0005,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 6,SSN is 000-00-0006,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 7,SSN is 000-00-0007,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 8,SSN is 000-00-0008,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 9,SSN is 000-00-0009,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 10,SSN is 000-00-0010,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 11,SSN is 000-00-0011,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 12,SSN is 000-00-0012,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 13,SSN is 000-00-0013,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 14,SSN is 000-00-0014,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 15,SSN is 000-00-0015,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 16,SSN is 000-00-0016,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 17,SSN is 000-00-0017,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 18,SSN is 000-00-0018,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 19,SSN is 000-00-0019,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 20,SSN is 000-00-0020,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 21,SSN is 000-00-0021,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 22,SSN is 000-00-0022,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 23,SSN is 000-00-0023,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 24,SSN is 000-00-0024,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 25,SSN is 000-00-0025,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 26,SSN is 000-00-0026,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 27,SSN is 000-00-0027,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 28,SSN is 000-00-0028,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMSecurityAudit,PII redaction checks - 29,SSN is 000-00-0029,"{""safe"": true, ""sanitized_text"": ""SSN is [REDACTED_SSN]""}"
+SLMEmbeddingsServer,Embeddings dimension check - 0,sample text description 0,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 1,sample text description 1,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 2,sample text description 2,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 3,sample text description 3,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 4,sample text description 4,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 5,sample text description 5,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 6,sample text description 6,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 7,sample text description 7,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 8,sample text description 8,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 9,sample text description 9,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 10,sample text description 10,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 11,sample text description 11,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 12,sample text description 12,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 13,sample text description 13,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 14,sample text description 14,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 15,sample text description 15,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 16,sample text description 16,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 17,sample text description 17,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 18,sample text description 18,Vector dimension check: 1024
+SLMEmbeddingsServer,Embeddings dimension check - 19,sample text description 19,Vector dimension check: 1024
 SLMEmbeddingsServer,Embeddings dimension check - 20,sample text description 20,Vector dimension check: 1024
 SLMEmbeddingsServer,Embeddings dimension check - 21,sample text description 21,Vector dimension check: 1024
 SLMEmbeddingsServer,Embeddings dimension check - 22,sample text description 22,Vector dimension check: 1024
@@ -1009,3 +1204,5 @@ SLMEmbeddingsServer,Embeddings dimension check - 26,sample text description 26,V
 SLMEmbeddingsServer,Embeddings dimension check - 27,sample text description 27,Vector dimension check: 1024
 SLMEmbeddingsServer,Embeddings dimension check - 28,sample text description 28,Vector dimension check: 1024
 SLMEmbeddingsServer,Embeddings dimension check - 29,sample text description 29,Vector dimension check: 1024
+SLMVoiceAgent,Voice triggers custom tool call - RAG Hindi,"{""transcript"": ""RAG query"", ""language"": ""Hindi""}","{""transcript"": ""RAG query"", ""response"": ""[HI Translation of 'RAG response: RAG response for RAG query']"", ""audio_synthesized"": false}"
+SLMVoiceAgent,Voice triggers custom tool call - Math English,"{""transcript"": ""Math integrate x^2"", ""language"": ""english""}","{""transcript"": ""Math integrate x^2"", ""response"": ""Math response: Math response for Math integrate x^2"", ""audio_synthesized"": false}"

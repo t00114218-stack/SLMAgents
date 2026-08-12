@@ -271,7 +271,7 @@ def run_slm_meeting_summarizer(inp_val):
     }
 
 def run_slm_voice_agent(inp_val):
-    from slm_voice.voice_agent import SLMVoiceAgent
+    from slm_voice import SLMVoiceAgent
     def init_agent():
         agent = SLMVoiceAgent()
         agent.register_tool("RAG", lambda q: f"RAG response for {q}")
