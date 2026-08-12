@@ -854,15 +854,17 @@ footer {
   display: none;
   position: absolute;
   top: 100%;
-  left: 50%;
-  transform: translateX(-40%);
+  right: -20px;
+  left: auto;
+  transform: none;
   background-color: #ffffff;
-  width: 820px;
+  width: 740px;
+  max-width: calc(100vw - 32px);
   box-shadow: 0px 25px 60px rgba(15, 23, 42, 0.18), 0px 4px 14px rgba(0, 0, 0, 0.05);
   z-index: 3000;
   border: 1px solid #cbd5e1;
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 1.25rem 1.5rem;
   overflow: hidden;
 }
 
