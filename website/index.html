@@ -153,16 +153,16 @@
           </div>
 
           <!-- Interactive Studio & Unit Test Generator Widget -->
-          <div class="playground-widget" style="max-width: 900px; margin: 3rem auto 2rem; background: #111827; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.15); text-align: left; overflow: hidden;">
+          <div class="playground-widget" style="max-width: 900px; margin: 3rem auto 2rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08); text-align: left; overflow: hidden;">
             
             <!-- Studio Top Bar -->
-            <div style="background: #0b0f19; padding: 0.9rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <div style="background: #f8fafc; padding: 0.9rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0;">
               <div style="display:flex; align-items:center; gap:10px;">
                 <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-                <span style="font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; color: #a78bfa; font-weight: 600;">⚡ SLM Interactive Agent Studio &amp; Unit Test Generator</span>
+                <span style="font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; color: #4f46e5; font-weight: 700;">⚡ SLM Interactive Agent Studio &amp; Unit Test Generator</span>
               </div>
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 3px 10px; border-radius: 12px; font-weight:500;">CPU Engine Active</span>
+                <span style="font-size: 0.75rem; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; padding: 3px 10px; border-radius: 12px; font-weight: 700;">CPU Engine Active</span>
               </div>
             </div>
 
@@ -170,8 +170,8 @@
               
               <!-- Agent Selection Row -->
               <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-size: 0.8rem; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Select Agent (All 26 Agents Supported):</label>
-                <select id="studio-agent-selector" onchange="onStudioAgentChange(this.value)" style="width: 100%; background: #0b0f19; border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 0.75rem 1rem; color: #f9fafb; font-size: 0.95rem; font-weight: 600; outline: none; cursor: pointer;">
+                <label style="display: block; font-size: 0.8rem; color: #334155; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Select Agent (All 26 Agents Supported):</label>
+                <select id="studio-agent-selector" onchange="onStudioAgentChange(this.value)" style="width: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.75rem 1rem; color: #0f172a; font-size: 0.95rem; font-weight: 700; outline: none; cursor: pointer;">
                   <optgroup label="Productivity Agents">
                     <option value="voice">🗣️ SLM Voice Agent (Speech STT/TTS &amp; Barge-In)</option>
                     <option value="rag">📚 SLM RAG (Vector DB Document Retrieval)</option>
@@ -210,7 +210,7 @@
               </div>
 
               <!-- Dynamic User Parameters Input Panel -->
-              <div id="studio-dynamic-fields" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; background: #0b0f19; padding: 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+              <div id="studio-dynamic-fields" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; background: #f8fafc; padding: 1.25rem; border-radius: 12px; border: 1px solid #e2e8f0;">
                 <!-- Dynamic form fields inserted by JS -->
               </div>
 
@@ -221,17 +221,17 @@
                   <button id="tab-mode-unittest" class="pg-tab" onclick="setStudioMode('unittest')">🧪 Python Unit Test Code</button>
                 </div>
                 <div style="display: flex; gap: 0.5rem;">
-                  <button onclick="copyStudioCode()" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #f9fafb; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 500; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                  <button onclick="copyStudioCode()" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     Copy Output / Test
                   </button>
-                  <button onclick="runStudioAgent()" style="background: linear-gradient(135deg, #6366f1 0%, #38bdf8 100%); border: none; color: #fff; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s; white-space: nowrap; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);">⚡ Run Agent on CPU</button>
+                  <button onclick="runStudioAgent()" style="background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); border: none; color: #fff; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s; white-space: nowrap; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);">⚡ Run Agent on CPU</button>
                 </div>
               </div>
 
               <!-- Output Screen -->
               <div>
-                <div style="background: #090d16; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.83rem; min-height: 140px; color: #38bdf8; overflow-x: auto;">
+                <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-height: 140px; color: #38bdf8; overflow-x: auto;">
                   <pre id="studio-output-console" style="margin:0; white-space: pre-wrap; word-break: break-word;">Select an agent above and click 'Run Agent on CPU' to observe execution parameters or copy unit test code...</pre>
                 </div>
               </div>
