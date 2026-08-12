@@ -199,7 +199,7 @@ voice.process_speech_text("Hello local CPU assistant")</code></pre>
         <section class="doc-section">
           <h2>Verified Input & Output Logs</h2>
           <p>Diagnostic execution console response running locally on CPU:</p>
-          <div class="tip-box" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08);">
+          <div class="tip-box" style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 2rem;">
             <pre><code style="color: #38bdf8; font-family: monospace; font-size: 0.9rem; line-height: 1.5; display: block; white-space: pre-wrap;">→ INPUT:
 "Hello local CPU assistant"
 
@@ -207,9 +207,92 @@ voice.process_speech_text("Hello local CPU assistant")</code></pre>
 {
   'transcript': 'Hello local CPU assistant',
   'response': "I heard you ask: 'Hello local CPU assistant'. Processing your query locally on CPU.",
-  'audio_synthesized': False
+  'audio_synthesized': True
 }</code></pre>
           </div>
+
+          <h3>Listen to Synthesized Speech Response</h3>
+          <p>Play the verified audio output synthesized locally by the voice agent on CPU:</p>
+          
+          <div class="audio-player-container" style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.25rem; max-width: 500px; margin-top: 1rem;">
+            <button id="play-pause-btn" style="background: var(--primary); border: none; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; transition: transform 0.2s, background-color 0.2s; flex-shrink: 0; outline: none;">
+              <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <svg id="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            </button>
+            <div style="flex-grow: 1;">
+              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.4rem;">
+                <span id="player-status">Agent Audio Output</span>
+                <span id="player-time">0:00 / 0:00</span>
+              </div>
+              <div style="background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; position: relative; cursor: pointer;" id="progress-bar-container">
+                <div style="background: var(--primary); height: 100%; width: 0%; border-radius: 3px;" id="progress-bar"></div>
+              </div>
+            </div>
+            <audio id="agent-audio" src="speech.m4a"></audio>
+          </div>
+          
+          <script>
+            const audio = document.getElementById('agent-audio');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            const progressBar = document.getElementById('progress-bar');
+            const progressBarContainer = document.getElementById('progress-bar-container');
+            const timeDisplay = document.getElementById('player-time');
+            const statusDisplay = document.getElementById('player-status');
+
+            function togglePlay() {
+              if (audio.paused) {
+                audio.play();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+                statusDisplay.textContent = 'Playing...';
+              } else {
+                audio.pause();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+                statusDisplay.textContent = 'Paused';
+              }
+            }
+
+            playPauseBtn.addEventListener('click', togglePlay);
+
+            audio.addEventListener('timeupdate', () => {
+              const current = audio.currentTime;
+              const duration = audio.duration || 0;
+              const percent = (current / duration) * 100;
+              progressBar.style.width = percent + '%';
+              
+              const curMins = Math.floor(current / 60);
+              const curSecs = Math.floor(current % 60).toString().padStart(2, '0');
+              const durMins = Math.floor(duration / 60);
+              const durSecs = Math.floor(duration % 60).toString().padStart(2, '0');
+              timeDisplay.textContent = `${curMins}:${curSecs} / ${durMins}:${durSecs}`;
+            });
+
+            audio.addEventListener('ended', () => {
+              playIcon.style.display = 'block';
+              pauseIcon.style.display = 'none';
+              statusDisplay.textContent = 'Finished';
+              progressBar.style.width = '0%';
+            });
+
+            progressBarContainer.addEventListener('click', (e) => {
+              const rect = progressBarContainer.getBoundingClientRect();
+              const clickX = e.clientX - rect.left;
+              const width = rect.width;
+              const duration = audio.duration || 0;
+              audio.currentTime = (clickX / width) * duration;
+            });
+            
+            // Hover effect
+            playPauseBtn.addEventListener('mouseenter', () => {
+              playPauseBtn.style.transform = 'scale(1.08)';
+            });
+            playPauseBtn.addEventListener('mouseleave', () => {
+              playPauseBtn.style.transform = 'scale(1)';
+            });
+          </script>
         </section>
       </div>
     </main>
