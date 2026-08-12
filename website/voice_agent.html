@@ -62,11 +62,12 @@
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </a>
             <div class="dropdown-content">
-              <a href="orchestrator.html">Orchestrator Docs</a>
-              <a href="rag.html">RAG Docs</a>
+              <a href="voice_agent.html">Voice Agent Docs</a>
               <a href="summarizer.html">Summarizer Docs</a>
-              <a href="sql.html">Text-to-SQL Docs</a>
+              <a href="rag.html">RAG Docs</a>
               <a href="cli.html">CLI Agent Docs</a>
+              <a href="orchestrator.html">Orchestrator Docs</a>
+              <a href="sql.html">Text-to-SQL Docs</a>
               <a href="code_interpreter.html">Code Interpreter Docs</a>
               <a href="git_copilot.html">Git Co-pilot Docs</a>
               <a href="json_cleaner.html">JSON Cleaner Docs</a>
@@ -75,7 +76,6 @@
               <a href="web_agent.html">Web Agent Docs</a>
               <a href="web_scraper.html">Web Scraper Docs</a>
               <a href="search_orchestrator.html">Search Orchestrator Docs</a>
-              <a href="voice_agent.html">Voice Agent Docs</a>
             </div>
           </li>
           <li><a href="index.html#upcoming">Roadmap</a></li>
@@ -118,8 +118,8 @@
           <h3 style="margin-top: 2rem;">🚀 Core Capabilities</h3>
           <ul>
             <li><strong>Audio-only (.wav, .mp3, .m4a) and text transcript query processing</strong></li>
-<li><strong>Low-latency response generation using quantized ONNX</strong></li>
-<li><strong>Text-to-speech synthesis utilizing local CPU synthesizer models</strong></li>
+<li><strong>Real-time barge-in interruption support allowing users to interrupt speech playback</strong></li>
+<li><strong>Configurable LLM inference parameters: temperature, top_p, and max_tokens</strong></li>
 <li><strong>Configurable sub-agent tool calls and multilingual translation routing</strong></li>
           </ul>
         </section>
@@ -148,11 +148,16 @@ pip install slm-voice</code></pre>
               <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td>model_path</td><td>str | None</td><td>Explicit path to ONNX model weights directory. If omitted, uses default.</td></tr>
-<tr><td>tools</td><td>dict | None</td><td>Dictionary of registered tool callbacks: `{"RAG": rag_fn, "Math": math_fn}`.</td></tr>
-<tr><td>system_prompt</td><td>str | None</td><td>Custom system instructions defining tool selection rules.</td></tr>
-<tr><td>cache_dir</td><td>str | None</td><td>Directory to store model weights. Defaults to `~/.cache/slm-voice/`.</td></tr>
-<tr><td>n_threads</td><td>int | 4</td><td>CPU thread count for ONNX inference execution.</td></tr>
+              <tr><td>model_path</td><td>str | None</td><td>Explicit path to ONNX model weights directory. Default: `None`.</td></tr>
+<tr><td>tools</td><td>dict | None</td><td>Dictionary of registered tool callbacks: `{"RAG": rag_fn, "Math": math_fn}`. Default: `None`.</td></tr>
+<tr><td>system_prompt</td><td>str | None</td><td>Custom system instructions defining tool selection rules. Default: `None`.</td></tr>
+<tr><td>barge_in</td><td>bool | True</td><td>Enables real-time speech interruption of TTS audio playback. Default: `True`.</td></tr>
+<tr><td>barge_in_sensitivity</td><td>float | 0.5</td><td>Sensitivity threshold for audio interruption detection (0.0 to 1.0). Default: `0.5`.</td></tr>
+<tr><td>temperature</td><td>float | 0.7</td><td>Sampling temperature controlling LLM output randomness. Default: `0.7`.</td></tr>
+<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff threshold. Default: `0.9`.</td></tr>
+<tr><td>max_tokens</td><td>int | 256</td><td>Maximum token generation output length limit per request. Default: `256`.</td></tr>
+<tr><td>cache_dir</td><td>str | None</td><td>Directory to store model weights. Defaults to `~/.cache/slm-voice/`. Default: `None`.</td></tr>
+<tr><td>n_threads</td><td>int | 4</td><td>CPU thread count for ONNX inference execution. Default: `4`.</td></tr>
 
             </tbody>
           </table>
@@ -163,8 +168,8 @@ pip install slm-voice</code></pre>
               <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>process_speech_text(speech_transcript=None, audio_file=None, language='english', system_prompt=None, user_input=None)</code></td><td><code>dict</code></td><td>Processes audio file or transcript inputs, executes tool calls if triggered, and synthesizes spoken outputs.</td></tr>
-<tr><td><code>process_audio(audio_file, language='english', system_prompt=None, user_input=None)</code></td><td><code>dict</code></td><td>Convenience execution method for audio-only file inputs (.wav, .mp3, .m4a).</td></tr>
+              <tr><td><code>process_speech_text(speech_transcript=None, audio_file=None, language='english', system_prompt=None, user_input=None, barge_in=True, temperature=0.7, top_p=0.9, max_tokens=256)</code></td><td><code>dict</code></td><td>Processes audio file or transcript inputs, executes tool calls if triggered, and synthesizes spoken outputs with barge-in support.</td></tr>
+<tr><td><code>process_audio(audio_file, language='english', system_prompt=None, user_input=None, barge_in=True, temperature=0.7, top_p=0.9, max_tokens=256)</code></td><td><code>dict</code></td><td>Convenience execution method for audio-only file inputs (.wav, .mp3, .m4a).</td></tr>
 <tr><td><code>register_tool(name, callable_fn)</code></td><td><code>None</code></td><td>Registers a custom agent callback or Python function mapping dynamically.</td></tr>
 
             </tbody>
@@ -177,11 +182,16 @@ pip install slm-voice</code></pre>
               <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td>speech_transcript</td><td>str | None</td><td>Text transcript of the user's spoken input query.</td></tr>
-<tr><td>audio_file</td><td>str | None</td><td>File path to raw recorded audio input (.wav, .mp3, .m4a) for audio-only queries.</td></tr>
-<tr><td>language</td><td>str | 'english'</td><td>Target response and speech synthesis language ('english', 'hindi', 'tamil', 'spanish', 'french', 'german').</td></tr>
-<tr><td>system_prompt</td><td>str | None</td><td>Custom instruction guidelines passed to the voice assistant and tool functions.</td></tr>
-<tr><td>user_input</td><td>str | None</td><td>Additional user parameters or contextual state data forwarded to tool calls.</td></tr>
+              <tr><td>speech_transcript</td><td>str | None</td><td>Text transcript of the user's spoken input query. Default: `None`.</td></tr>
+<tr><td>audio_file</td><td>str | None</td><td>File path to raw recorded audio input (.wav, .mp3, .m4a) for audio-only queries. Default: `None`.</td></tr>
+<tr><td>language</td><td>str | 'english'</td><td>Target response and speech synthesis language ('english', 'hindi', 'tamil', 'spanish', 'french', 'german'). Default: `'english'`.</td></tr>
+<tr><td>system_prompt</td><td>str | None</td><td>Custom instruction guidelines passed to the voice assistant and tool functions. Default: `None`.</td></tr>
+<tr><td>user_input</td><td>str | None</td><td>Additional user parameters or contextual state data forwarded to tool calls. Default: `None`.</td></tr>
+<tr><td>barge_in</td><td>bool | True</td><td>Overriding real-time speech interruption toggle for the active request. Default: `True`.</td></tr>
+<tr><td>barge_in_sensitivity</td><td>float | 0.5</td><td>Overriding interruption detection sensitivity threshold. Default: `0.5`.</td></tr>
+<tr><td>temperature</td><td>float | 0.7</td><td>Sampling temperature parameter controlling LLM randomness. Default: `0.7`.</td></tr>
+<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff threshold. Default: `0.9`.</td></tr>
+<tr><td>max_tokens</td><td>int | 256</td><td>Maximum generation token count limit per request. Default: `256`.</td></tr>
 
             </tbody>
           </table>
@@ -193,15 +203,24 @@ from slm_rag import SLMRag
 # Initialize sub-agent tool
 rag = SLMRag()
 
-# Initialize Voice Agent with tool callbacks
-voice = SLMVoiceAgent(tools={"RAG": lambda q, **kw: rag.answer(chunks=None, question=q)})
+# Initialize Voice Agent with barge-in & LLM parameters
+voice = SLMVoiceAgent(
+    tools={"RAG": lambda q, **kw: rag.answer(chunks=None, question=q)},
+    barge_in=True,
+    barge_in_sensitivity=0.5,
+    temperature=0.7,
+    top_p=0.9,
+    max_tokens=256
+)
 
-# Audio file input execution
+# Audio file input execution with barge-in support
 res1 = voice.process_audio(
     audio_file="user_query.wav",
     language="Hindi",
     system_prompt="Strict formal voice responses",
-    user_input="Focus on financial data"
+    user_input="Focus on financial data",
+    barge_in=True,
+    temperature=0.7
 )
 
 # Text transcript input execution
@@ -209,7 +228,10 @@ res2 = voice.process_speech_text(
     speech_transcript="RAG search Q3 revenue",
     language="Tamil",
     system_prompt="Summarize answers concisely",
-    user_input="Exclude archived files"
+    user_input="Exclude archived files",
+    temperature=0.7,
+    top_p=0.9,
+    max_tokens=256
 )
 print(res2)</code></pre>
         </section>
@@ -252,7 +274,9 @@ print(res2)</code></pre>
 {
   'transcript': 'RAG search Q3 revenue',
   'response': "[TA Translation of 'RAG response: The Q3 revenue total is $1.25M.']",
-  'audio_synthesized': True
+  'audio_synthesized': True,
+  'barge_in_enabled': True,
+  'temperature': 0.7
 }</code></pre>
           </div>
         

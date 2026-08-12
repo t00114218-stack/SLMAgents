@@ -62,11 +62,12 @@
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </a>
             <div class="dropdown-content">
-              <a href="orchestrator.html">Orchestrator Docs</a>
-              <a href="rag.html">RAG Docs</a>
+              <a href="voice_agent.html">Voice Agent Docs</a>
               <a href="summarizer.html">Summarizer Docs</a>
-              <a href="sql.html">Text-to-SQL Docs</a>
+              <a href="rag.html">RAG Docs</a>
               <a href="cli.html">CLI Agent Docs</a>
+              <a href="orchestrator.html">Orchestrator Docs</a>
+              <a href="sql.html">Text-to-SQL Docs</a>
               <a href="code_interpreter.html">Code Interpreter Docs</a>
               <a href="git_copilot.html">Git Co-pilot Docs</a>
               <a href="json_cleaner.html">JSON Cleaner Docs</a>
@@ -75,7 +76,6 @@
               <a href="web_agent.html">Web Agent Docs</a>
               <a href="web_scraper.html">Web Scraper Docs</a>
               <a href="search_orchestrator.html">Search Orchestrator Docs</a>
-              <a href="voice_agent.html">Voice Agent Docs</a>
             </div>
           </li>
           <li><a href="index.html#upcoming">Roadmap</a></li>
@@ -148,9 +148,12 @@ pip install slm-orchestrator</code></pre>
               <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td>model_path</td><td>str | None</td><td>Local ONNX model path for semantic routing.</td></tr>
-<tr><td>cache_dir</td><td>str | None</td><td>Offline model cache location.</td></tr>
-<tr><td>n_threads</td><td>int | 4</td><td>Number of CPU thread workers.</td></tr>
+              <tr><td>model_path</td><td>str | None</td><td>Local ONNX model path for semantic routing. Default: `None`.</td></tr>
+<tr><td>temperature</td><td>float | 0.0</td><td>Sampling temperature for routing decisions. Default: `0.0`.</td></tr>
+<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff threshold. Default: `0.9`.</td></tr>
+<tr><td>max_tokens</td><td>int | 256</td><td>Maximum output token generation limit per step. Default: `256`.</td></tr>
+<tr><td>cache_dir</td><td>str | None</td><td>Offline model cache location. Default: `None`.</td></tr>
+<tr><td>n_threads</td><td>int | 4</td><td>Number of CPU thread workers. Default: `4`.</td></tr>
 
             </tbody>
           </table>
@@ -161,7 +164,7 @@ pip install slm-orchestrator</code></pre>
               <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>route(agents, question, tools=None, tool_executor=None, max_iterations=5, system_prompt=None, user_input=None)</code></td><td><code>dict</code></td><td>Routes user query to the best-matching agent or tool callback chain.</td></tr>
+              <tr><td><code>route(agents, question, tools=None, tool_executor=None, max_iterations=5, system_prompt=None, user_input=None, temperature=0.0, top_p=0.9, max_tokens=256)</code></td><td><code>dict</code></td><td>Routes user query to the best-matching agent or tool callback chain.</td></tr>
 
             </tbody>
           </table>
@@ -175,11 +178,14 @@ pip install slm-orchestrator</code></pre>
             <tbody>
               <tr><td>agents</td><td>list[str] | dict</td><td>List of available agent names or tool specification dictionary.</td></tr>
 <tr><td>question</td><td>str</td><td>User query string requiring routing or multi-agent execution.</td></tr>
-<tr><td>tools</td><td>list | None</td><td>Optional additional executable tool definitions.</td></tr>
-<tr><td>tool_executor</td><td>callable | None</td><td>Callback function executing resolved tool actions.</td></tr>
-<tr><td>max_iterations</td><td>int | 5</td><td>Maximum allowed reasoning iterations before termination.</td></tr>
-<tr><td>system_prompt</td><td>str | None</td><td>Custom instruction prompt overriding default agent routing guidelines.</td></tr>
-<tr><td>user_input</td><td>str | None</td><td>Additional target parameters or contextual state data.</td></tr>
+<tr><td>tools</td><td>list | None</td><td>Optional additional executable tool definitions. Default: `None`.</td></tr>
+<tr><td>tool_executor</td><td>callable | None</td><td>Callback function executing resolved tool actions. Default: `None`.</td></tr>
+<tr><td>max_iterations</td><td>int | 5</td><td>Maximum allowed reasoning iterations before termination. Default: `5`.</td></tr>
+<tr><td>system_prompt</td><td>str | None</td><td>Custom instruction prompt overriding default agent routing guidelines. Default: `None`.</td></tr>
+<tr><td>user_input</td><td>str | None</td><td>Additional target parameters or contextual state data. Default: `None`.</td></tr>
+<tr><td>temperature</td><td>float | 0.0</td><td>Sampling temperature parameter. Default: `0.0`.</td></tr>
+<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff threshold. Default: `0.9`.</td></tr>
+<tr><td>max_tokens</td><td>int | 256</td><td>Maximum generation token limit. Default: `256`.</td></tr>
 
             </tbody>
           </table>
@@ -187,12 +193,15 @@ pip install slm-orchestrator</code></pre>
           <h3>Quick Start</h3>
           <pre><code class="language-python">from slm_orchestrator import SLMOrchestrator
 
-orchestrator = SLMOrchestrator()
+orchestrator = SLMOrchestrator(temperature=0.0, top_p=0.9, max_tokens=256)
 res = orchestrator.route(
     agents=["RAG", "TextToSQL", "Math"],
     question="Calculate tax for Q3 revenue",
     system_prompt="Prioritize Math agent for calculation steps",
-    user_input="Tax rate: 15%"
+    user_input="Tax rate: 15%",
+    temperature=0.0,
+    top_p=0.9,
+    max_tokens=256
 )
 print(res)</code></pre>
         </section>

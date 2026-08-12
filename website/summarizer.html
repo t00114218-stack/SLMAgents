@@ -62,11 +62,12 @@
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
             </a>
             <div class="dropdown-content">
-              <a href="orchestrator.html">Orchestrator Docs</a>
-              <a href="rag.html">RAG Docs</a>
+              <a href="voice_agent.html">Voice Agent Docs</a>
               <a href="summarizer.html">Summarizer Docs</a>
-              <a href="sql.html">Text-to-SQL Docs</a>
+              <a href="rag.html">RAG Docs</a>
               <a href="cli.html">CLI Agent Docs</a>
+              <a href="orchestrator.html">Orchestrator Docs</a>
+              <a href="sql.html">Text-to-SQL Docs</a>
               <a href="code_interpreter.html">Code Interpreter Docs</a>
               <a href="git_copilot.html">Git Co-pilot Docs</a>
               <a href="json_cleaner.html">JSON Cleaner Docs</a>
@@ -75,7 +76,6 @@
               <a href="web_agent.html">Web Agent Docs</a>
               <a href="web_scraper.html">Web Scraper Docs</a>
               <a href="search_orchestrator.html">Search Orchestrator Docs</a>
-              <a href="voice_agent.html">Voice Agent Docs</a>
             </div>
           </li>
           <li><a href="index.html#upcoming">Roadmap</a></li>
@@ -147,9 +147,12 @@ pip install slm-summarizer</code></pre>
               <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td>model_path</td><td>str | None</td><td>Path to local summarization model.</td></tr>
-<tr><td>cache_dir</td><td>str | None</td><td>Model cache directory.</td></tr>
-<tr><td>n_threads</td><td>int | 4</td><td>CPU thread count for inference.</td></tr>
+              <tr><td>model_path</td><td>str | None</td><td>Path to local summarization model. Default: `None`.</td></tr>
+<tr><td>temperature</td><td>float | 0.3</td><td>Sampling temperature controlling output creativity. Default: `0.3`.</td></tr>
+<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling cutoff threshold. Default: `0.9`.</td></tr>
+<tr><td>max_tokens</td><td>int | 512</td><td>Maximum token generation output length limit. Default: `512`.</td></tr>
+<tr><td>cache_dir</td><td>str | None</td><td>Model cache directory. Default: `None`.</td></tr>
+<tr><td>n_threads</td><td>int | 4</td><td>CPU thread count for inference. Default: `4`.</td></tr>
 
             </tbody>
           </table>
@@ -160,7 +163,7 @@ pip install slm-summarizer</code></pre>
               <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>summarize(text, system_prompt=None, user_input=None)</code></td><td><code>str</code></td><td>Generates concise summary highlights from raw text documents.</td></tr>
+              <tr><td><code>summarize(text, system_prompt=None, user_input=None, temperature=0.3, top_p=0.9, max_tokens=512)</code></td><td><code>str</code></td><td>Generates concise summary highlights from raw text documents.</td></tr>
 
             </tbody>
           </table>
@@ -173,8 +176,11 @@ pip install slm-summarizer</code></pre>
             </thead>
             <tbody>
               <tr><td>text</td><td>str</td><td>Raw text content string to summarize.</td></tr>
-<tr><td>system_prompt</td><td>str | None</td><td>Instruction defining target summary format and rules.</td></tr>
-<tr><td>user_input</td><td>str | None</td><td>Additional topic focus constraints or keywords.</td></tr>
+<tr><td>system_prompt</td><td>str | None</td><td>Instruction defining target summary format and rules. Default: `None`.</td></tr>
+<tr><td>user_input</td><td>str | None</td><td>Additional topic focus constraints or keywords. Default: `None`.</td></tr>
+<tr><td>temperature</td><td>float | 0.3</td><td>Sampling temperature parameter. Default: `0.3`.</td></tr>
+<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff. Default: `0.9`.</td></tr>
+<tr><td>max_tokens</td><td>int | 512</td><td>Maximum output token generation limit. Default: `512`.</td></tr>
 
             </tbody>
           </table>
@@ -182,11 +188,14 @@ pip install slm-summarizer</code></pre>
           <h3>Quick Start</h3>
           <pre><code class="language-python">from slm_summarizer import SLMSummarizer
 
-summarizer = SLMSummarizer()
+summarizer = SLMSummarizer(temperature=0.3, top_p=0.9, max_tokens=512)
 summary = summarizer.summarize(
     text="Long document content...",
     system_prompt="Limit to 3 bullet points",
-    user_input="Highlight financial takeaways"
+    user_input="Highlight financial takeaways",
+    temperature=0.3,
+    top_p=0.9,
+    max_tokens=512
 )
 print(summary)</code></pre>
         </section>
