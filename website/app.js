@@ -467,106 +467,541 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Interactive Playground Logic
-let activePgAgent = 'voice';
-
-const PLAYGROUND_PROMPTS = {
-  voice: "Calculate tax for Q3 revenue and search RAG",
-  rag: "What is the total revenue for Q3 2026?",
-  orchestrator: "Synthesize sales data and calculate tax deduction",
-  sql: "What is total sales amount by region for 2026?",
-  summarizer: "Summarize the Q3 earnings report into key highlights",
-  web: "Navigate to portal.slmagents.ai and extract signup form"
+// 26-AGENT STUDIO & UNIT TEST GENERATOR SPECS
+const ALL_AGENT_SPECS = {
+  voice: {
+    name: "SLM Voice Agent",
+    package: "slm-voice",
+    className: "SLMVoiceAgent",
+    category: "Productivity",
+    fields: [
+      { id: "speech_transcript", label: "Speech Transcript / Audio Query", default: "RAG search Q3 revenue total", type: "text" },
+      { id: "language", label: "Target Language", default: "Hindi", type: "select", options: ["English", "Hindi", "Tamil", "Telugu", "Spanish", "French", "German"] },
+      { id: "system_prompt", label: "System Prompt", default: "Route queries to RAG tool when financial context is required.", type: "text" },
+      { id: "user_input", label: "User Context Input", default: "Focus on net revenue after tax", type: "text" },
+      { id: "temperature", label: "Temperature", default: "0.7", type: "number" }
+    ],
+    sampleOutput: {
+      agent: "SLMVoiceAgent",
+      status: "200 OK",
+      execution_time: "0.042s (CPU)",
+      transcript: "RAG search Q3 revenue total",
+      response: "[HI Translation of 'RAG response: Q3 net revenue total is $1.25M.']",
+      audio_synthesized: true,
+      barge_in_enabled: true,
+      temperature: 0.7
+    }
+  },
+  rag: {
+    name: "SLM RAG",
+    package: "slm-rag",
+    className: "SLMRag",
+    category: "Productivity",
+    fields: [
+      { id: "question", label: "Question", default: "What is the total revenue for Q3 2026?", type: "text" },
+      { id: "chunks", label: "Retrieved Chunks (comma separated)", default: "Q3 revenue reached $1.25M., Due date: Sept 2026", type: "text" },
+      { id: "instruction", label: "Synthesis Instruction", default: "Extract exact numerical totals only", type: "text" },
+      { id: "system_prompt", label: "System Prompt", default: "Strict zero-hallucination factual extraction.", type: "text" },
+      { id: "user_input", label: "User Context Input", default: "Currency: USD", type: "text" },
+      { id: "temperature", label: "Temperature", default: "0.0", type: "number" }
+    ],
+    sampleOutput: {
+      agent: "SLMRag",
+      status: "200 OK",
+      execution_time: "0.038s (CPU)",
+      retrieved_chunks: 2,
+      vector_similarity_score: 0.942,
+      answer: "$1.25M USD"
+    }
+  },
+  orchestrator: {
+    name: "SLM Orchestrator",
+    package: "slm-orchestrator",
+    className: "SLMOrchestrator",
+    category: "Developer Tools",
+    fields: [
+      { id: "question", label: "User Goal / Question", default: "Calculate tax deduction for Q3 $1.25M revenue", type: "text" },
+      { id: "agents", label: "Available Tools/Agents", default: "RAG, TextToSQL, Math", type: "text" },
+      { id: "system_prompt", label: "System Prompt", default: "Prioritize Math agent for calculation steps.", type: "text" },
+      { id: "user_input", label: "User Context Input", default: "Tax rate: 15%", type: "text" },
+      { id: "temperature", label: "Temperature", default: "0.0", type: "number" }
+    ],
+    sampleOutput: {
+      agent: "SLMOrchestrator",
+      status: "200 OK",
+      execution_time: "0.051s (CPU)",
+      selected_agent: "Math",
+      resolved_chain: ["SLMRag", "SLMMathAgent"],
+      result: "Calculated Q3 tax deduction: $187,500 at 15% rate."
+    }
+  },
+  sql: {
+    name: "SLM Text-to-SQL",
+    package: "slm-text-to-sql",
+    className: "SLMTextToSQL",
+    category: "Developer Tools",
+    fields: [
+      { id: "query", label: "Natural Language Query", default: "Find top 5 customers by sales amount in 2026", type: "text" },
+      { id: "schema", label: "DDL Schema String", default: "CREATE TABLE customers (id INT, name TEXT, sales DECIMAL, year INT);", type: "text" },
+      { id: "system_prompt", label: "Dialect / Constraint", default: "PostgreSQL dialect with strict limit clause.", type: "text" },
+      { id: "user_input", label: "User Filter Context", default: "Exclude refunded transactions", type: "text" },
+      { id: "temperature", label: "Temperature", default: "0.0", type: "number" }
+    ],
+    sampleOutput: {
+      agent: "SLMTextToSQL",
+      status: "200 OK",
+      execution_time: "0.029s (CPU)",
+      generated_sql: "SELECT name, SUM(sales) AS total_sales FROM customers WHERE year = 2026 GROUP BY name ORDER BY total_sales DESC LIMIT 5;"
+    }
+  },
+  summarizer: {
+    name: "SLM Summarizer",
+    package: "slm-summarizer",
+    className: "SLMSummarizer",
+    category: "Productivity",
+    fields: [
+      { id: "text", label: "Raw Document Text", default: "Q3 net revenue reached $1.25M (+15% YoY). Operating margins expanded to 34% due to CPU optimization.", type: "text" },
+      { id: "system_prompt", label: "System Instruction", default: "Limit summary to 3 concise bullet points.", type: "text" },
+      { id: "user_input", label: "User Topic Focus", default: "Focus on revenue and operational margins", type: "text" },
+      { id: "temperature", label: "Temperature", default: "0.3", type: "number" }
+    ],
+    sampleOutput: {
+      agent: "SLMSummarizer",
+      status: "200 OK",
+      execution_time: "0.045s (CPU)",
+      summary_bullets: [
+        "Q3 net revenue grew +15% YoY to $1.25M",
+        "Operating margins reached 34% via CPU acceleration",
+        "Zero API cloud latency overhead"
+      ]
+    }
+  },
+  web_agent: {
+    name: "SLM Web Agent",
+    package: "slm-web-agent",
+    className: "SLMWebAgent",
+    category: "Web & Scraping",
+    fields: [
+      { id: "goal", label: "Automation Goal", default: "Navigate to developer portal signup and fill email", type: "text" },
+      { id: "start_url", label: "Initial Target URL", default: "https://portal.slmagents.ai/signup", type: "text" },
+      { id: "system_prompt", label: "Browser Rules", default: "Wait 2 seconds after submit actions.", type: "text" },
+      { id: "user_input", label: "Form Input Data", default: "Email: dev@slmagents.ai", type: "text" },
+      { id: "temperature", label: "Temperature", default: "0.0", type: "number" }
+    ],
+    sampleOutput: {
+      agent: "SLMWebAgent",
+      status: "200 OK",
+      execution_time: "0.068s (CPU)",
+      success: true,
+      final_url: "https://portal.slmagents.ai/dashboard",
+      steps_taken: 3
+    }
+  },
+  cli: {
+    name: "SLM CLI Agent",
+    package: "slm-cli",
+    className: "SLMCLIAgent",
+    category: "Productivity",
+    fields: [
+      { id: "query", label: "Command Intent", default: "Find all .log files modified in the last 24 hours", type: "text" },
+      { id: "system_prompt", label: "OS / Shell Rule", default: "Target Zsh on macOS.", type: "text" },
+      { id: "user_input", label: "User Exclusions", default: "Exclude .venv directory", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMCLIAgent",
+      status: "200 OK",
+      suggested_command: "find . -name '*.log' -mtime -1 -not -path './.venv/*'",
+      safety_rating: "SAFE"
+    }
+  },
+  code_interpreter: {
+    name: "SLM Code Interpreter",
+    package: "slm-code-interpreter",
+    className: "SLMCodeInterpreter",
+    category: "Developer Tools",
+    fields: [
+      { id: "code", label: "Python Code", default: "import math\nprint([math.factorial(n) for n in range(1, 6)])", type: "text" },
+      { id: "system_prompt", label: "Execution Sandbox", default: "Sandboxed execution mode with 5s timeout.", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMCodeInterpreter",
+      status: "200 OK",
+      stdout: "[1, 2, 6, 24, 120]\n",
+      exit_code: 0
+    }
+  },
+  git_copilot: {
+    name: "SLM Git Co-pilot",
+    package: "slm-git-copilot",
+    className: "SLMGitCopilot",
+    category: "Developer Tools",
+    fields: [
+      { id: "diff", label: "Git Diff String", default: "+ def add(a, b): return a + b", type: "text" },
+      { id: "system_prompt", label: "Commit Rule", default: "Follow Conventional Commits format.", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMGitCopilot",
+      status: "200 OK",
+      commit_message: "feat: add addition helper function in math utils",
+      suggested_review: "Code looks clean and straightforward."
+    }
+  },
+  json_cleaner: {
+    name: "SLM JSON Cleaner",
+    package: "slm-json-cleaner",
+    className: "SLMJsonCleaner",
+    category: "Data & Utilities",
+    fields: [
+      { id: "raw_json", label: "Malformed Raw JSON String", default: "{'status': 'ok', 'data': [1, 2, 3,", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMJsonCleaner",
+      status: "200 OK",
+      cleaned_json: '{"status": "ok", "data": [1, 2, 3]}',
+      repaired: true
+    }
+  },
+  document_parser: {
+    name: "SLM Document Parser",
+    package: "slm-document-parser",
+    className: "SLMDocumentParser",
+    category: "Data & Utilities",
+    fields: [
+      { id: "document_text", label: "Raw Document Content", default: "Invoice #1024. Total amount due: $450.00 by 2026-09-01.", type: "text" },
+      { id: "chunk_size", label: "Target Chunk Size", default: "256", type: "number" }
+    ],
+    sampleOutput: {
+      agent: "SLMDocumentParser",
+      status: "200 OK",
+      chunks: ["Invoice #1024. Total amount due: $450.00 by 2026-09-01."],
+      total_chunks: 1
+    }
+  },
+  vision_parser: {
+    name: "SLM Vision Parser",
+    package: "slm-vision-parser",
+    className: "SLMVisionParser",
+    category: "Data & Utilities",
+    fields: [
+      { id: "image_path", label: "Image Path / URL", default: "receipt_sample.png", type: "text" },
+      { id: "task", label: "Vision Task", default: "OCR / Table Extraction", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMVisionParser",
+      status: "200 OK",
+      caption: "A retail store paper receipt with total $45.20.",
+      extracted_text: "STORE #102\nTOTAL: $45.20"
+    }
+  },
+  web_scraper: {
+    name: "SLM Web Scraper",
+    package: "slm-web-scraper",
+    className: "SLMWebScraper",
+    category: "Web & Scraping",
+    fields: [
+      { id: "html_content", label: "HTML Content / URL", default: "<div class='price'>$49.99</div>", type: "text" },
+      { id: "schema", label: "Target JSON Schema", default: "{'price': 'str'}", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMWebScraper",
+      status: "200 OK",
+      extracted_json: { price: "$49.99" }
+    }
+  },
+  search_orchestrator: {
+    name: "SLM Search Orchestrator",
+    package: "slm-search-orchestrator",
+    className: "SLMSearchOrchestrator",
+    category: "Web & Scraping",
+    fields: [
+      { id: "query", label: "Search Query", default: "Latest ONNX Runtime CPU performance benchmarks", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMSearchOrchestrator",
+      status: "200 OK",
+      results_count: 5,
+      top_snippet: "ONNX Runtime GenAI CPU inference latency benchmarks for Qwen 2.5."
+    }
+  },
+  database_migrator: {
+    name: "SLM Database Migrator",
+    package: "slm-db-migration",
+    className: "SLMDBMigrator",
+    category: "Developer Tools",
+    fields: [
+      { id: "from_schema", label: "From Schema DDL", default: "CREATE TABLE users (id INT, name TEXT);", type: "text" },
+      { id: "to_schema", label: "To Schema DDL", default: "CREATE TABLE users (id INT, name TEXT, email TEXT);", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMDBMigrator",
+      status: "200 OK",
+      migration_sql: "ALTER TABLE users ADD COLUMN email TEXT;"
+    }
+  },
+  email_assistant: {
+    name: "SLM Email Assistant",
+    package: "slm-email",
+    className: "SLMEmailAssistant",
+    category: "Productivity",
+    fields: [
+      { id: "email_text", label: "Email Content", default: "Please send the Q3 financial report by Friday.", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMEmailAssistant",
+      status: "200 OK",
+      is_spam: false,
+      action_items: ["Send Q3 financial report by Friday"]
+    }
+  },
+  meeting_summarizer: {
+    name: "SLM Meeting Summarizer",
+    package: "slm-meeting-summarizer",
+    className: "SLMMeetingSummarizer",
+    category: "Productivity",
+    fields: [
+      { id: "transcript", label: "Meeting Transcript Log", default: "Alice: We need to finalize Q3 tax. Bob: I will calculate it by 3 PM.", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMMeetingSummarizer",
+      status: "200 OK",
+      action_items: [{ owner: "Bob", task: "Calculate Q3 tax by 3 PM" }]
+    }
+  },
+  memory_manager: {
+    name: "SLM Memory Manager",
+    package: "slm-memory",
+    className: "SLMMemoryManager",
+    category: "Productivity",
+    fields: [
+      { id: "user_fact", label: "User Fact / Preference", default: "User prefers output currency in USD and dark theme.", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMMemoryManager",
+      status: "200 OK",
+      memory_key: "pref_currency_theme"
+    }
+  },
+  task_planner: {
+    name: "SLM Task Planner",
+    package: "slm-task-planner",
+    className: "SLMTaskPlanner",
+    category: "Productivity",
+    fields: [
+      { id: "goal", label: "High-level Goal", default: "Deploy quarterly analytics report to staging", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMTaskPlanner",
+      status: "200 OK",
+      subtasks: ["Extract data with RAG", "Calculate totals with Math Agent", "Draft email summary"]
+    }
+  },
+  pdf_chat: {
+    name: "SLM PDF Chat",
+    package: "slm-pdf-chat",
+    className: "SLMPDFChat",
+    category: "Productivity",
+    fields: [
+      { id: "pdf_path", label: "PDF Document Path", default: "q3_report.pdf", type: "text" },
+      { id: "question", label: "Question", default: "What is the net profit listed on page 4?", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMPDFChat",
+      status: "200 OK",
+      answer: "Net profit listed on page 4 is $420,000."
+    }
+  },
+  pkb_agent: {
+    name: "SLM PKB Agent",
+    package: "slm-pkb",
+    className: "SLMPKBAgent",
+    category: "Productivity",
+    fields: [
+      { id: "note_text", label: "Note Content", default: "[[Tax Optimization]]: Apply 15% rate for Q3 revenue.", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMPKBAgent",
+      status: "200 OK",
+      linked_notes: ["Tax Optimization", "Q3 Financials"]
+    }
+  },
+  data_analyst: {
+    name: "SLM Data Analyst",
+    package: "slm-data-analyst",
+    className: "SLMDataAnalyst",
+    category: "Data & Utilities",
+    fields: [
+      { id: "data_path", label: "Data File Path (CSV/Parquet)", default: "sales_q3.csv", type: "text" },
+      { id: "question", label: "Analytics Question", default: "Calculate average monthly sales", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMDataAnalyst",
+      status: "200 OK",
+      avg_monthly_sales: 416666.67,
+      chart_code: "import matplotlib.pyplot as plt\nplt.plot(monthly_sales)"
+    }
+  },
+  translation_hub: {
+    name: "SLM Translation Hub",
+    package: "slm-translation",
+    className: "SLMTranslationHub",
+    category: "Data & Utilities",
+    fields: [
+      { id: "text", label: "Text to Translate", default: "Q3 net revenue reached $1.25M.", type: "text" },
+      { id: "source_lang", label: "Source Language", default: "English", type: "text" },
+      { id: "target_lang", label: "Target Language", default: "Hindi", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMTranslationHub",
+      status: "200 OK",
+      translated_text: "Q3 शुद्ध राजस्व $1.25M तक पहुंच गया।"
+    }
+  },
+  math_agent: {
+    name: "SLM Math Agent",
+    package: "slm-math",
+    className: "SLMMathAgent",
+    category: "Data & Utilities",
+    fields: [
+      { id: "expression", label: "Math Expression / Query", default: "Integrate x^2 from 0 to 3", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMMathAgent",
+      status: "200 OK",
+      result: "9.0",
+      step_by_step: "integral(x^2 dx) = x^3/3; evaluate from 0 to 3 = 27/3 = 9.0"
+    }
+  },
+  security_audit: {
+    name: "SLM Security Audit",
+    package: "slm-security",
+    className: "SLMSecurityAudit",
+    category: "Data & Utilities",
+    fields: [
+      { id: "input_text", label: "Text to Audit for Guardrails", default: "User email dev@slmagents.ai requested password reset", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMSecurityAudit",
+      status: "200 OK",
+      pii_detected: true,
+      sanitized_text: "User email [REDACTED_EMAIL] requested password reset",
+      safety_score: 0.99
+    }
+  },
+  embeddings_server: {
+    name: "SLM Embeddings Server",
+    package: "slm-embeddings",
+    className: "SLMEmbeddingsServer",
+    category: "Data & Utilities",
+    fields: [
+      { id: "text", label: "Text to Embed", default: "Local CPU vector embeddings calculation", type: "text" }
+    ],
+    sampleOutput: {
+      agent: "SLMEmbeddingsServer",
+      status: "200 OK",
+      dimensions: 384,
+      embedding_vector: [0.042, -0.125, 0.089, "..."]
+    }
+  }
 };
 
-function switchPlaygroundAgent(agentKey) {
-  activePgAgent = agentKey;
-  const buttons = document.querySelectorAll('.pg-tab');
-  buttons.forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
+let currentStudioAgentKey = "voice";
+let currentStudioMode = "exec";
 
-  const inputEl = document.getElementById('pg-input-query');
-  if (inputEl && PLAYGROUND_PROMPTS[agentKey]) {
-    inputEl.value = PLAYGROUND_PROMPTS[agentKey];
-  }
+function renderStudioFields(agentKey) {
+  const container = document.getElementById("studio-dynamic-fields");
+  if (!container) return;
   
-  const consoleEl = document.getElementById('pg-output-console');
-  if (consoleEl) {
-    consoleEl.textContent = `[Agent Selected: ${agentKey.toUpperCase()}]\nClick 'Run Agent' to execute local CPU inference...`;
+  const spec = ALL_AGENT_SPECS[agentKey] || ALL_AGENT_SPECS["voice"];
+  currentStudioAgentKey = agentKey;
+  
+  let html = "";
+  spec.fields.forEach(f => {
+    html += `<div>`;
+    html += `<label style="display: block; font-size: 0.8rem; color: #9ca3af; font-weight: 500; margin-bottom: 0.4rem;">${f.label}:</label>`;
+    if (f.type === "select") {
+      html += `<select id="studio-field-${f.id}" style="width: 100%; background: #090d16; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.6rem 0.8rem; color: #f9fafb; font-size: 0.85rem; outline: none;">`;
+      f.options.forEach(opt => {
+        const sel = opt === f.default ? "selected" : "";
+        html += `<option value="${opt}" ${sel}>${opt}</option>`;
+      });
+      html += `</select>`;
+    } else {
+      html += `<input type="${f.type}" id="studio-field-${f.id}" value="${f.default}" style="width: 100%; background: #090d16; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.6rem 0.8rem; color: #f9fafb; font-size: 0.85rem; font-family: monospace; outline: none;">`;
+    }
+    html += `</div>`;
+  });
+  
+  container.innerHTML = html;
+  updateStudioOutput();
+}
+
+function onStudioAgentChange(agentKey) {
+  renderStudioFields(agentKey);
+}
+
+function setStudioMode(mode) {
+  currentStudioMode = mode;
+  document.getElementById("tab-mode-exec")?.classList.toggle("active", mode === "exec");
+  document.getElementById("tab-mode-unittest")?.classList.toggle("active", mode === "unittest");
+  updateStudioOutput();
+}
+
+function updateStudioOutput() {
+  const consoleEl = document.getElementById("studio-output-console");
+  if (!consoleEl) return;
+
+  const spec = ALL_AGENT_SPECS[currentStudioAgentKey] || ALL_AGENT_SPECS["voice"];
+
+  if (currentStudioMode === "exec") {
+    consoleEl.textContent = JSON.stringify(spec.sampleOutput, null, 2);
+  } else {
+    // Generate Python Unit Test Code
+    let fieldValues = {};
+    spec.fields.forEach(f => {
+      const val = document.getElementById(`studio-field-${f.id}`)?.value || f.default;
+      fieldValues[f.id] = val;
+    });
+
+    let pyArgs = [];
+    for (let k in fieldValues) {
+      let v = fieldValues[k];
+      if (typeof v === "string" && !v.includes("[")) {
+        pyArgs.push(`${k}="${v}"`);
+      } else {
+        pyArgs.push(`${k}=${v}`);
+      }
+    }
+
+    const testCode = `import unittest\nfrom ${spec.package.replace(/-/g, '_')} import ${spec.className}\n\nclass Test${spec.className}(unittest.TestCase):\n    """\n    Automated Unit Test for ${spec.name}\n    Verifies execution on local CPU hardware without cloud dependencies.\n    """\n    def setUp(self):\n        self.agent = ${spec.className}()\n\n    def test_execution(self):\n        # Execute agent with configured parameters\n        result = self.agent.process(\n            ${pyArgs.join(",\n            ")}\n        )\n        self.assertIsNotNone(result)\n\nif __name__ == "__main__":\n    unittest.main()`;
+
+    consoleEl.textContent = testCode;
   }
 }
 
-function runPlaygroundAgent() {
-  const query = document.getElementById('pg-input-query')?.value || "Sample query";
-  const lang = document.getElementById('pg-input-lang')?.value || "English";
-  const consoleEl = document.getElementById('pg-output-console');
-  
+function runStudioAgent() {
+  const consoleEl = document.getElementById("studio-output-console");
   if (!consoleEl) return;
-  
-  consoleEl.textContent = `[EXECUTING ON CPU] Running SLM ${activePgAgent.toUpperCase()}... (threads=4, model=quantized-onnx)`;
-  
+
+  const spec = ALL_AGENT_SPECS[currentStudioAgentKey] || ALL_AGENT_SPECS["voice"];
+  consoleEl.textContent = `[EXECUTING ON CPU] Running ${spec.name}... (threads=4, engine=quantized-onnx)`;
+
   setTimeout(() => {
-    let resultObj = {};
-    if (activePgAgent === 'voice') {
-      resultObj = {
-        agent: "SLMVoiceAgent",
-        status: "200 OK",
-        execution_time: "0.042s (CPU)",
-        input_query: query,
-        language: lang,
-        barge_in_active: true,
-        tool_triggered: query.toLowerCase().includes("rag") ? "SLMRag" : "SLMMathAgent",
-        response_text: `[${lang.toUpperCase()} Synthesis]: Successfully processed query '${query}'. Result: Q3 tax is $187,500.`,
-        audio_synthesized: true
-      };
-    } else if (activePgAgent === 'rag') {
-      resultObj = {
-        agent: "SLMRag",
-        status: "200 OK",
-        execution_time: "0.038s (CPU)",
-        retrieved_chunks: 3,
-        vector_similarity_score: 0.942,
-        answer: `Document Grounded Answer: Based on invoice records, Q3 revenue total is $1.25M.`
-      };
-    } else if (activePgAgent === 'orchestrator') {
-      resultObj = {
-        agent: "SLMOrchestrator",
-        status: "200 OK",
-        execution_time: "0.051s (CPU)",
-        resolved_routing_plan: ["SLMRag", "SLMMathAgent"],
-        final_synthesized_output: "Tax deduction calculated: $187,500 based on $1.25M Q3 revenue."
-      };
-    } else if (activePgAgent === 'sql') {
-      resultObj = {
-        agent: "SLMTextToSQL",
-        status: "200 OK",
-        execution_time: "0.029s (CPU)",
-        generated_sql: "SELECT region, SUM(amount) AS total_sales FROM sales WHERE year = 2026 GROUP BY region ORDER BY total_sales DESC;"
-      };
-    } else if (activePgAgent === 'summarizer') {
-      resultObj = {
-        agent: "SLMSummarizer",
-        status: "200 OK",
-        execution_time: "0.045s (CPU)",
-        summary_bullet_points: [
-          "Q3 net revenue reached $1.25M (+15% YoY)",
-          "Operating margins expanded to 34% on local hardware optimization",
-          "Zero cloud API dependencies or latency overhead"
-        ]
-      };
-    } else {
-      resultObj = {
-        agent: "SLMWebAgent",
-        status: "200 OK",
-        execution_time: "0.068s (CPU)",
-        playwright_action_log: [
-          "Navigated to target portal URL",
-          "Located '#developer-signup-form'",
-          "Extracted input field parameters successfully"
-        ]
-      };
-    }
-    
-    consoleEl.textContent = JSON.stringify(resultObj, null, 2);
+    updateStudioOutput();
   }, 400);
 }
+
+function copyStudioCode() {
+  const consoleEl = document.getElementById("studio-output-console");
+  if (!consoleEl) return;
+
+  navigator.clipboard.writeText(consoleEl.textContent).then(() => {
+    alert("Copied to clipboard!");
+  }).catch(() => {
+    alert("Copied!");
+  });
+}
+
+// Initializer
+document.addEventListener("DOMContentLoaded", () => {
+  renderStudioFields("voice");
+});
