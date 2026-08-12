@@ -92,9 +92,15 @@ class SLMWebScraper:
                 
         return target_path
 
+    def _make_soup(self, html_content: str):
+        try:
+            return BeautifulSoup(html_content, "lxml")
+        except Exception:
+            return BeautifulSoup(html_content, "html.parser")
+
     def clean_html(self, html_content: str) -> str:
         """Removes script, style, and navigation tags from HTML to optimize input context window."""
-        soup = BeautifulSoup(html_content, "lxml")
+        soup = self._make_soup(html_content)
         
         # Remove non-content tags
         non_content_tags = ["script", "style", "nav", "footer", "header", "noscript", "aside", "iframe"]
@@ -136,7 +142,7 @@ class SLMWebScraper:
 
     def process_images_in_html(self, html_content: str, base_url: str = None) -> str:
         """Locates all <img> tags, downloads them, describes them via SLMVisionParser, and replaces tags with descriptions."""
-        soup = BeautifulSoup(html_content, "lxml")
+        soup = self._make_soup(html_content)
         img_tags = soup.find_all("img")
         
         if not img_tags:
@@ -202,7 +208,7 @@ class SLMWebScraper:
 
     def describe_tables_in_html(self, html_content: str) -> str:
         """Finds all <table> elements and describes them using the local Phi-3.5 model, replacing them in-place."""
-        soup = BeautifulSoup(html_content, "lxml")
+        soup = self._make_soup(html_content)
         tables = soup.find_all("table")
         
         if not tables:

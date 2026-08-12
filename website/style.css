@@ -982,6 +982,7 @@ body {
   flex-shrink: 0;
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #ffffff !important;
   border-right: 1px solid #cbd5e1 !important;
   border-radius: 0 !important;
@@ -991,20 +992,22 @@ body {
 }
 
 .sidebar::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .sidebar::-webkit-scrollbar-track {
-  background: transparent;
+  background: #f1f5f9;
+  border-radius: 4px;
 }
 
 .sidebar::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 4px;
+  border: 1px solid #94a3b8;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #4f46e5;
 }
 
 .main-content {
@@ -1015,50 +1018,79 @@ body {
   overflow-x: hidden;
   background: #f8fafc;
   padding: 2.5rem 3.5rem 5rem 3.5rem;
+  display: block;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 5px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 5px;
+  border: 1px solid #94a3b8;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: #4f46e5;
 }
 
 .doc-content-wrapper {
-  max-width: 980px;
+  max-width: 1050px;
   margin: 0;
+  width: 100%;
   text-align: left !important;
 }
 
 /* Sub-Navigation Pill Bar */
 .doc-nav {
-  display: flex;
-  gap: 8px;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 8px 12px;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  display: flex !important;
+  gap: 8px !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  padding: 8px 12px !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03) !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  max-width: 100% !important;
+  text-align: left !important;
 }
 
 .doc-nav a {
-  padding: 8px 16px;
-  border-radius: 8px;
-  color: #475569;
-  font-weight: 600;
-  font-size: 0.85rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
+  padding: 8px 16px !important;
+  border-radius: 8px !important;
+  color: #475569 !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  margin: 0 !important;
+  display: inline-block !important;
 }
 
 .doc-nav a:hover {
-  background: #eef2ff;
-  color: #4f46e5;
+  background: #eef2ff !important;
+  color: #4f46e5 !important;
 }
 
 /* Documentation Right Pane Typography & Alignment System */
 .doc-section {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 16px;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 16px !important;
+  padding: 2.5rem !important;
+  margin-bottom: 2rem !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04) !important;
   text-align: left !important;
+  width: 100% !important;
 }
 
 .doc-section h1 {

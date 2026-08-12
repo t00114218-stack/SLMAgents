@@ -40,8 +40,14 @@ class SLMPDFChat:
     """
     def __init__(self, model_path=None):
         self.config, _ = load_config()
-        self.doc_parser = SLMDocumentParser(model_path=model_path) if SLMDocumentParser else None
-        self.rag = SLMRag(model_path=model_path) if SLMRag else None
+        try:
+            self.doc_parser = SLMDocumentParser(model_path=model_path) if SLMDocumentParser else None
+        except Exception:
+            self.doc_parser = None
+        try:
+            self.rag = SLMRag(model_path=model_path) if SLMRag else None
+        except Exception:
+            self.rag = None
         self.loaded_chunks = []
         self.pdf_path = None
 

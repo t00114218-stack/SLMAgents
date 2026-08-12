@@ -6,34 +6,7 @@
   <meta name="description" content="SLM Data Analyst: Loads local CSV, Parquet, or Excel files. Answers statistical questions, performs calculations, and auto-generates data visualization code.">
   <title>SLM Data Analyst | Documentation</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .doc-hero { padding: 5rem 0 3rem; text-align: center; }
-    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
-    .doc-hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.1rem; }
-    .doc-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
-    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
-    .doc-nav a:hover { border-color: var(--primary); color: var(--primary); }
-    .doc-section { padding: 3rem 0; border-top: 1px solid var(--border); }
-    .doc-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-primary); }
-    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--primary); }
-    .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
-    .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
-    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; }
-    .param-table th { text-align: left; padding: 0.6rem 1rem; background: rgba(255,255,255,0.04); color: var(--text-primary); border-bottom: 1px solid var(--border); }
-    .param-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
-    .param-table tr:last-child td { border-bottom: none; }
-    .param-table td:first-child { font-family: 'Courier New', monospace; color: var(--primary); font-size: 0.85rem; white-space: nowrap; }
-    .param-table td:nth-child(2) { color: #a78bfa; font-size: 0.82rem; white-space: nowrap; }
-    .param-table td:last-child { color: var(--text-secondary); }
-    .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
-    .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .tip-box strong { color: #4ade80; }
-    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .warn-box strong { color: #fbbf24; }
-    .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
-    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
-    .breadcrumb a:hover { color: var(--primary); }
-  </style>
+  
 </head>
 <body>
   <header>
@@ -92,29 +65,26 @@
     </aside>
 
     <main class="main-content">
-      <section class="doc-hero">
-        <div class="container">
-          <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <span>SLM Data Analyst</span></div>
-          <div class="hero-badge"><span>📊 CSV Stats Calculator</span></div>
-          <h1>SLM Data Analyst</h1>
-          <p>Loads local CSV, Parquet, or Excel files. Answers statistical questions, performs calculations, and auto-generates data visualization code.</p>
-        </div>
-      </section>
+      <div class="doc-content-wrapper">
+        <section class="doc-section" style="margin-top: 0;">
+          <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM Data Analyst</span></div>
+          <div class="badge-pill">📊 CSV Stats Calculator</div>
+          <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM Data Analyst</h1>
+          <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Loads local CSV, Parquet, or Excel files. Answers statistical questions, performs calculations, and auto-generates data visualization code.</p>
+        </section>
 
-      <div class="container">
         <nav class="doc-nav">
           <a href="#overview">Overview</a>
           <a href="#install">Installation</a>
-          <a href="#config">Configuration</a>
-          <a href="#env-vars">Env Variables</a>
+          <a href="#config">Configuration API</a>
           <a href="#performance">Performance</a>
         </nav>
 
         <section class="doc-section" id="overview">
-          <h2>Overview</h2>
+          <h2>🚀 Overview &amp; Capabilities</h2>
           <p>Loads local CSV, Parquet, or Excel files. Answers statistical questions, performs calculations, and auto-generates data visualization code.</p>
           
-          <h3 style="margin-top: 2rem;">🚀 Core Capabilities</h3>
+          <h3 style="margin-top: 1.5rem; font-size: 1.15rem; color: #0f172a; font-weight: 700;">Key Features</h3>
           <ul>
             <li><strong>Direct pandas dataframe parsing and stats calculator</strong></li>
 <li><strong>Translates user query into python matplotlib/pandas code blocks</strong></li>
@@ -123,9 +93,8 @@
           </ul>
         </section>
 
-        <!-- INSTALLATION -->
         <section class="doc-section" id="install">
-          <h2>Installation</h2>
+          <h2>💻 Installation</h2>
           <p>Install the local CPU-optimized package using pip:</p>
           <div class="code-panel" style="max-width:100%">
             <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
@@ -136,9 +105,8 @@ pip install slm-data</code></pre>
           </div>
         </section>
 
-        <!-- CONFIGURATION -->
         <section class="doc-section" id="config">
-          <h2>Configuration API</h2>
+          <h2>⚙️ Configuration API</h2>
           
           <h3>Constructor Parameters</h3>
           <p>Instantiate <code>SLMDataAnalyst</code> with performance options:</p>
@@ -188,7 +156,6 @@ result = analyst.analyze_file(
 print(result)</code></pre>
         </section>
 
-        <!-- ENVIRONMENT VARIABLES -->
         <section class="doc-section" id="env-vars">
           <h2>Environment Variables</h2>
           <p>Configure agent parameters globally using environment values:</p>
@@ -203,7 +170,6 @@ print(result)</code></pre>
           </table>
         </section>
 
-        <!-- PERFORMANCE -->
         <section class="doc-section" id="performance">
           <h2>CPU Performance Tuning</h2>
           <p>To run the <code>SLMDataAnalyst</code> engine efficiently on CPU under 1.5 GB memory footprint:</p>
@@ -214,7 +180,6 @@ print(result)</code></pre>
           </ul>
         </section>
 
-        <!-- VERIFICATION LOGS -->
         <section class="doc-section">
           <h2>Verified Input & Output Logs</h2>
           <p>Diagnostic execution console response running locally on CPU:</p>
@@ -229,9 +194,14 @@ print(result)</code></pre>
 }</code></pre>
           </div>
         </section>
+
+        <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
+          <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
+        </footer>
       </div>
     </main>
   </div>
+
   <script src="app.js"></script>
 </body>
 </html>

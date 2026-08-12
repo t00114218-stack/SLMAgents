@@ -44,40 +44,7 @@
   }
   </script>
 
-  <style>
-    .doc-hero { padding: 5rem 0 3rem; text-align: center; }
-    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
-    .doc-hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.1rem; }
-    .doc-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
-    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
-    .doc-nav a:hover { border-color: var(--primary); color: var(--primary); }
-    .doc-section { padding: 3rem 0; border-top: 1px solid var(--border); }
-    .doc-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-primary); }
-    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--primary); }
-    .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
-    .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
-    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; }
-    .param-table th { text-align: left; padding: 0.6rem 1rem; background: rgba(255,255,255,0.04); color: var(--text-primary); border-bottom: 1px solid var(--border); }
-    .param-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
-    .param-table tr:last-child td { border-bottom: none; }
-    .param-table td:first-child { font-family: 'Courier New', monospace; color: var(--primary); font-size: 0.85rem; white-space: nowrap; }
-    .param-table td:nth-child(2) { color: #a78bfa; font-size: 0.82rem; white-space: nowrap; }
-    .param-table td:last-child { color: var(--text-secondary); }
-    .env-tag { display: inline-block; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #a78bfa; }
-    .tip-box { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .tip-box strong { color: #4ade80; }
-    .warn-box { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .warn-box strong { color: #fbbf24; }
-    .security-box { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .security-box strong { color: #f87171; }
-    .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
-    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
-    .breadcrumb a:hover { color: var(--primary); }
-    .perf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
-    .perf-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
-    .perf-card .metric { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
-    .perf-card .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
-  </style>
+  
 </head>
 <body>
   <div class="bg-glow-1"></div>
@@ -141,38 +108,26 @@
         <div class="sidebar-group-title">Active Libraries</div>
         <ul class="sidebar-list" id="sidebar-active-list"></ul>
       </div>
-      <div class="sidebar-group">
-        <div class="sidebar-group-title">Upcoming Ecosystem</div>
-        <ul class="sidebar-list" id="sidebar-upcoming-list"></ul>
-      </div>
     </aside>
 
     <main class="main-content">
-      <section class="doc-hero">
-        <div class="container">
-          <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <span>SLM Code Interpreter</span></div>
-          <div class="hero-badge"><span>🐍 Python execution Agent</span></div>
-          <h1>SLM Code Interpreter</h1>
-          <p>Lightweight local Python Code Interpreter agent with automated self-correcting feedback loops and timeout constraints inside sandboxed environments.</p>
-          <div class="hero-ctas">
-            <a href="#install" class="btn btn-primary">Get Started</a>
-            <a href="https://github.com/t00114218-stack/SLMAgents/tree/main/slm_code_interpreter" class="btn btn-secondary" target="_blank">GitHub Repo</a>
-          </div>
-        </div>
-      </section>
+      <div class="doc-content-wrapper">
+        <section class="doc-section" style="margin-top: 0;">
+          <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM Code Interpreter</span></div>
+          <div class="badge-pill">🐍 Python execution Agent</div>
+          <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM Code Interpreter</h1>
+          <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Lightweight local Python Code Interpreter agent with automated self-correcting feedback loops and timeout constraints inside sandboxed environments.</p>
+        </section>
 
-      <div class="container">
         <nav class="doc-nav">
+          <a href="#overview">Overview</a>
           <a href="#install">Installation</a>
-          <a href="#config">Configuration</a>
-          <a href="#self-correcting">Self-Correction</a>
-          <a href="#sandbox">Sandbox Limits</a>
-          <a href="#security">Security</a>
+          <a href="#config">Configuration API</a>
+          <a href="#performance">Performance</a>
         </nav>
 
-        <!-- INSTALLATION -->
         <section class="doc-section" id="install">
-          <h2>Installation</h2>
+          <h2>💻 Installation</h2>
           <div class="code-panel" style="max-width:100%">
             <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
             <div class="code-content" style="display:block;padding:1.5rem">
@@ -186,9 +141,8 @@ export SLM_CODE_INTERPRETER_N_CTX=2048</code></pre>
           </div>
         </section>
 
-        <!-- CONFIGURATION -->
         <section class="doc-section" id="config">
-          <h2>Configuration API</h2>
+          <h2>⚙️ Configuration API</h2>
           <h3>Constructor Parameters</h3>
           <table class="param-table">
             <thead><tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr></thead>
@@ -232,7 +186,6 @@ result = interpreter.<span class="function">run</span>(query)
           </div>
         </section>
 
-        <!-- SELF-CORRECTION -->
         <section class="doc-section" id="self-correcting">
           <h2>Agentic Self-Correction Loop</h2>
           <p>
@@ -247,7 +200,6 @@ result = interpreter.<span class="function">run</span>(query)
           </div>
         </section>
 
-        <!-- SANDBOX LIMITS -->
         <section class="doc-section" id="sandbox">
           <h2>Sandbox Subprocess Limits</h2>
           <p>The code interpreter sandboxes execution inside restricted, resource-constrained subprocesses. It enforces standard execution limits:</p>
@@ -257,7 +209,6 @@ result = interpreter.<span class="function">run</span>(query)
           </ul>
         </section>
 
-        <!-- VS CODE INTEGRATION -->
         <section class="doc-section" id="vscode">
           <h2>🔌 Visual Studio Code Integration</h2>
           <p>You can run the Code Interpreter as a background service and trigger local executions directly from your VS Code editor workspace.</p>
@@ -277,41 +228,18 @@ result = interpreter.<span class="function">run</span>(query)
           </ul>
         </section>
 
-        <!-- SECURITY -->
         <section class="doc-section" id="security">
           <h2>Security Warnings</h2>
           <div class="security-box">
             <strong>🔒 Subprocess Isolation:</strong> Because this runs code locally in your shell environment, never run the Code Interpreter with administrator rights or execute inputs from unauthenticated users. Consider wrapping the execution in Docker containers or firewalled machines for production systems.
           </div>
         </section>
-      </div>
 
-      <footer>
-        <div class="container">
-          <div class="footer-bottom">
-            <p>&copy; 2026 SLM Agents Community. Released under the MIT License.</p>
-            <div class="footer-socials">
-              <a href="https://github.com/t00114218-stack/SLMAgents" target="_blank">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/></svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
+          <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
+        </footer>
+      </div>
     </main>
-  </div>
-
-  <!-- Agent Details Modal -->
-  <div class="agent-modal" id="agent-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modal-title" style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">Agent Name</h3>
-        <button class="modal-close" onclick="closeAgentModal()">&times;</button>
-      </div>
-      <div class="modal-body" id="modal-body">
-        <!-- Populated via JS -->
-      </div>
-    </div>
   </div>
 
   <script src="app.js"></script>

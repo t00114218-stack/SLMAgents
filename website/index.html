@@ -167,93 +167,6 @@
             </a>
           </div>
 
-          <!-- Interactive Studio & Unit Test Generator Widget -->
-          <div class="playground-widget" style="max-width: 900px; margin: 3rem auto 2rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 16px; box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08); text-align: left; overflow: hidden;">
-            
-            <!-- Studio Top Bar -->
-            <div style="background: #f8fafc; padding: 0.9rem 1.25rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0;">
-              <div style="display:flex; align-items:center; gap:10px;">
-                <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-                <span style="font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; color: #4f46e5; font-weight: 700;">⚡ SLM Interactive Agent Studio &amp; Unit Test Generator</span>
-              </div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size: 0.75rem; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; padding: 3px 10px; border-radius: 12px; font-weight: 700;">Active Engine</span>
-              </div>
-            </div>
-
-            <div style="padding: 1.5rem;">
-              
-              <!-- Agent Selection Row -->
-              <div style="margin-bottom: 1.25rem;">
-                <label style="display: block; font-size: 0.8rem; color: #334155; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Select Agent (All 26 Agents Supported):</label>
-                <select id="studio-agent-selector" onchange="onStudioAgentChange(this.value)" style="width: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.75rem 1rem; color: #0f172a; font-size: 0.95rem; font-weight: 700; outline: none; cursor: pointer;">
-                  <optgroup label="Productivity Agents">
-                    <option value="voice">🗣️ SLM Voice Agent (Speech STT/TTS &amp; Barge-In)</option>
-                    <option value="rag">📚 SLM RAG (Vector DB Document Retrieval)</option>
-                    <option value="summarizer">📝 SLM Summarizer (Document Distiller)</option>
-                    <option value="cli">💻 SLM CLI Agent (Terminal Intent Assistant)</option>
-                    <option value="email_assistant">📧 SLM Email Assistant (Inbox Automation)</option>
-                    <option value="meeting_summarizer">🎙️ SLM Meeting Summarizer (Action Tracker)</option>
-                    <option value="memory_manager">🧠 SLM Memory Manager (Long-term Preference Graph)</option>
-                    <option value="task_planner">📋 SLM Task Planner (Goal Decomposition)</option>
-                    <option value="pdf_chat">📑 SLM PDF Chat (Document Q&amp;A)</option>
-                    <option value="pkb_agent">🔗 SLM PKB Agent (Obsidian/Markdown Vaults)</option>
-                  </optgroup>
-                  <optgroup label="Developer Tools">
-                    <option value="orchestrator">🎯 SLM Orchestrator (Autonomous Agent Router)</option>
-                    <option value="sql">📊 SLM Text-to-SQL (Natural Language to SQL)</option>
-                    <option value="code_interpreter">⚡ SLM Code Interpreter (Sandboxed Python)</option>
-                    <option value="git_copilot">🐙 SLM Git Co-pilot (Commit &amp; Code Review)</option>
-                    <option value="database_migrator">🗄️ SLM Database Migrator (Schema Migrations)</option>
-                  </optgroup>
-                  <optgroup label="Web &amp; Scraping">
-                    <option value="web_agent">🌐 SLM Web Agent (Playwright Browser Automation)</option>
-                    <option value="web_scraper">🕷️ SLM Web Scraper (HTML to JSON Parser)</option>
-                    <option value="search_orchestrator">🔎 SLM Search Orchestrator (DuckDuckGo RAG)</option>
-                  </optgroup>
-                  <optgroup label="Data &amp; Utilities">
-                    <option value="json_cleaner">🧹 SLM JSON Cleaner (Malformed JSON Repair)</option>
-                    <option value="document_parser">📄 SLM Document Parser (PDF/DOCX Chunker)</option>
-                    <option value="vision_parser">👁️ SLM Vision Parser (Florence-2 OCR/Vision)</option>
-                    <option value="data_analyst">📈 SLM Data Analyst (CSV/Parquet Analytics)</option>
-                    <option value="translation_hub">🌐 SLM Translation Hub (NLLB Multilingual Translation)</option>
-                    <option value="math_agent">🧮 SLM Math Agent (Symbolic Arithmetic Engine)</option>
-                    <option value="security_audit">🛡️ SLM Security Audit (PII Guardrail Scanner)</option>
-                    <option value="embeddings_server">🔢 SLM Embeddings Server (Dense Vector Server)</option>
-                  </optgroup>
-                </select>
-              </div>
-
-              <!-- Dynamic User Parameters Input Panel -->
-              <div id="studio-dynamic-fields" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; background: #f8fafc; padding: 1.25rem; border-radius: 12px; border: 1px solid #e2e8f0;">
-                <!-- Dynamic form fields inserted by JS -->
-              </div>
-
-              <!-- Action Bar & Mode Switcher -->
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
-                <div style="display: flex; gap: 0.5rem;">
-                  <button id="tab-mode-exec" class="pg-tab active" onclick="setStudioMode('exec')">⚡ Live Output</button>
-                  <button id="tab-mode-unittest" class="pg-tab" onclick="setStudioMode('unittest')">🧪 Python Unit Test Code</button>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                  <button onclick="copyStudioCode()" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; padding: 0.6rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    Copy Output / Test
-                  </button>
-                  <button onclick="runStudioAgent()" style="background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); border: none; color: #fff; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s; white-space: nowrap; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);">⚡ Run</button>
-                </div>
-              </div>
-
-              <!-- Output Screen -->
-              <div>
-                <div style="background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-height: 140px; color: #38bdf8; overflow-x: auto;">
-                  <pre id="studio-output-console" style="margin:0; white-space: pre-wrap; word-break: break-word;">Select an agent above and click 'Run Agent on CPU' to observe execution parameters or copy unit test code...</pre>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
       </section>
 
       <!-- Quick Install Snippet -->
@@ -301,8 +214,6 @@
           <p>Both our codebases and Qwen 2.5 1.5B models are under the Apache 2.0 license. Safe and free for commercial enterprise deployment.</p>
         </div>
       </div>
-    </div>
-  </section>
 
   <section class="frameworks-section" id="frameworks">
     <div class="section-header">
@@ -514,7 +425,6 @@
           </div>
         </div>
       </div>
-    </div>
   </section>
 
   <!-- Coming Soon Agents Section -->
@@ -750,7 +660,6 @@
           <p>Starts a local CPU-optimized embedding server to compute dense document and query vectors on standard hardware.</p>
         </div>
       </div>
-    </div>
   </section>
 
 
@@ -815,6 +724,7 @@
         </div>
       </div>
     </div>
+    </footer>
     </main>
   </div>
 

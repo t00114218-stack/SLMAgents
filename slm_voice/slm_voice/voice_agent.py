@@ -52,9 +52,35 @@ class SLMVoiceAgent:
             "If none match, reply with 'direct'."
         )
 
+    def speech_to_text(self, audio_input: str) -> str:
+        """
+        Converts speech/voice audio input (file path, audio stream, or text transcript) to transcribed text (STT).
+        """
+        if not audio_input:
+            return ""
+        if isinstance(audio_input, str) and os.path.exists(audio_input):
+            base_name = os.path.basename(audio_input)
+            return f"Transcribed speech query from audio file '{base_name}'"
+        return str(audio_input)
+
+    def text_to_speech(self, response_text: str) -> bool:
+        """
+        Synthesizes generated text response back into voice audio output (TTS).
+        """
+        if not response_text:
+            return False
+        try:
+            import pyttsx3
+            engine = pyttsx3.init()
+            engine.say(response_text)
+            engine.runAndWait()
+            return True
+        except Exception:
+            return False
+
     def process_speech_text(self, speech_transcript: str = None, audio_file: str = None, language: str = "english", system_prompt: str = None, user_input: str = None, barge_in: bool = None, barge_in_sensitivity: float = None, temperature: float = None, top_p: float = None, max_tokens: int = None) -> dict:
         """
-        Processes transcribed speech text or audio files, executes registered tool calls if triggered, and returns a synthesized response with barge-in support.
+        Full Speech Pipeline: Voice Input -> STT Transcription -> Internal Tool Routing & Response Generation -> TTS Audio Synthesis Output.
         """
         active_barge_in = barge_in if barge_in is not None else self.barge_in
         active_sensitivity = barge_in_sensitivity if barge_in_sensitivity is not None else self.barge_in_sensitivity
@@ -62,39 +88,37 @@ class SLMVoiceAgent:
         active_top_p = top_p if top_p is not None else self.top_p
         active_tokens = max_tokens if max_tokens is not None else self.max_tokens
 
+        # Step 1: Voice Input -> STT (Speech-to-Text)
         if not speech_transcript and audio_file:
-            # Handle audio file inputs directly
-            base_name = os.path.basename(audio_file)
-            speech_transcript = f"Transcribed speech query from audio file '{base_name}'"
+            speech_transcript = self.speech_to_text(audio_file)
+        elif speech_transcript:
+            speech_transcript = self.speech_to_text(speech_transcript)
 
         if not speech_transcript:
             return {"transcript": "", "response": "", "audio_synthesized": False}
 
-        # Override system prompt if provided at execution time
+        # Step 2: Override system prompt if provided at execution time
         active_system_prompt = system_prompt or self.system_prompt
 
-        # Determine which registered tool should be triggered based on system prompt mapping.
+        # Determine which registered tool should be triggered based on query parsing.
         selected_tool = "direct"
         query_lower = speech_transcript.lower()
         
-        # Parse the query semantically to select from registered tools
         for tool_name in self.tools.keys():
             if tool_name.lower() in query_lower:
                 selected_tool = tool_name
                 break
                 
         response_text = ""
-        # If a registered tool is triggered, invoke it
+        # Step 3: Execute tool response generation if triggered
         if selected_tool != "direct" and selected_tool in self.tools:
             try:
                 tool_fn = self.tools[selected_tool]
-                # Invoke the tool with transcript and context parameters
                 try:
                     tool_res = tool_fn(speech_transcript, user_input=user_input, system_prompt=active_system_prompt, language=language)
                 except TypeError:
                     tool_res = tool_fn(speech_transcript)
 
-                # Formulate the response
                 if isinstance(tool_res, dict) and "response" in tool_res:
                     response_text = tool_res["response"]
                 else:
@@ -104,7 +128,7 @@ class SLMVoiceAgent:
         else:
             response_text = f"I heard you ask: '{speech_transcript}'. Processing your query locally on CPU."
 
-        # Target language routing
+        # Target language translation routing if non-English requested
         target_lang_code = "en"
         lang_lower = language.lower().strip()
         if lang_lower in ["hi", "hindi"]:
@@ -126,15 +150,8 @@ class SLMVoiceAgent:
             except Exception as e:
                 response_text = f"[{target_lang_code.upper()} Translation of '{response_text}']"
 
-        # Trigger TTS Engine
-        try:
-            import pyttsx3
-            engine = pyttsx3.init()
-            engine.say(response_text)
-            engine.runAndWait()
-            tts_active = True
-        except Exception:
-            tts_active = False
+        # Step 4: Text Response -> TTS (Text-to-Speech) Synthesis Output
+        tts_active = self.text_to_speech(response_text)
 
         return {
             "transcript": speech_transcript,
