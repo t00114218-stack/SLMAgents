@@ -178,7 +178,7 @@
                 <span style="font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; color: #4f46e5; font-weight: 700;">⚡ SLM Interactive Agent Studio &amp; Unit Test Generator</span>
               </div>
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size: 0.75rem; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; padding: 3px 10px; border-radius: 12px; font-weight: 700;">CPU Engine Active</span>
+                <span style="font-size: 0.75rem; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; padding: 3px 10px; border-radius: 12px; font-weight: 700;">Active Engine</span>
               </div>
             </div>
 
@@ -233,7 +233,7 @@
               <!-- Action Bar & Mode Switcher -->
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
                 <div style="display: flex; gap: 0.5rem;">
-                  <button id="tab-mode-exec" class="pg-tab active" onclick="setStudioMode('exec')">⚡ Live CPU Execution</button>
+                  <button id="tab-mode-exec" class="pg-tab active" onclick="setStudioMode('exec')">⚡ Live Output</button>
                   <button id="tab-mode-unittest" class="pg-tab" onclick="setStudioMode('unittest')">🧪 Python Unit Test Code</button>
                 </div>
                 <div style="display: flex; gap: 0.5rem;">
@@ -241,7 +241,7 @@
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     Copy Output / Test
                   </button>
-                  <button onclick="runStudioAgent()" style="background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); border: none; color: #fff; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s; white-space: nowrap; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);">⚡ Run Agent on CPU</button>
+                  <button onclick="runStudioAgent()" style="background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); border: none; color: #fff; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: transform 0.2s; white-space: nowrap; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);">⚡ Run</button>
                 </div>
               </div>
 

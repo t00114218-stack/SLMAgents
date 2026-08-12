@@ -494,18 +494,18 @@ const ALL_AGENT_SPECS = {
     methodName: "process_speech_text",
     category: "Productivity",
     fields: [
-      { id: "speech_transcript", label: "Speech Transcript / Audio Query", default: "RAG search Q3 revenue total", type: "text" },
+      { id: "speech_transcript", label: "Speech Transcript / Audio Query", default: "Schedule a team sync meeting for tomorrow at 3 PM", type: "text" },
       { id: "language", label: "Target Language", default: "Hindi", type: "select", options: ["English", "Hindi", "Tamil", "Telugu", "Spanish", "French", "German"] },
-      { id: "system_prompt", label: "System Prompt", default: "Route queries to RAG tool when financial context is required.", type: "text" },
-      { id: "user_input", label: "User Context Input", default: "Focus on net revenue after tax", type: "text" },
+      { id: "system_prompt", label: "System Prompt", default: "Conversational voice assistant", type: "text" },
+      { id: "user_input", label: "User Context Input", default: "Remind about Q3 project deadline", type: "text" },
       { id: "temperature", label: "Temperature", default: "0.7", type: "number" }
     ],
     getOutput: (vals) => ({
       agent: "SLMVoiceAgent",
       status: "200 OK",
-      execution_time: "0.042s (CPU)",
+      execution_time: "0.042s",
       transcript: vals.speech_transcript,
-      response: `[${(vals.language||"EN").toUpperCase()} Synthesis]: Output generated for query '${vals.speech_transcript}'.`,
+      response: `[${(vals.language||"HI").toUpperCase()} Synthesis]: Received voice request '${vals.speech_transcript}'. Scheduled successfully.`,
       audio_synthesized: true,
       barge_in_enabled: true,
       temperature: parseFloat(vals.temperature || 0.7)
@@ -1056,7 +1056,7 @@ function runStudioAgent() {
   if (!consoleEl) return;
 
   const spec = ALL_AGENT_SPECS[currentStudioAgentKey] || ALL_AGENT_SPECS["voice"];
-  consoleEl.textContent = `[EXECUTING ON CPU] Running ${spec.name}.${spec.methodName}()... (threads=4, engine=quantized-onnx)`;
+  consoleEl.textContent = `Executing ${spec.name}.${spec.methodName}()... (threads=4, engine=quantized-onnx)`;
 
   setTimeout(() => {
     updateStudioOutput();
