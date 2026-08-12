@@ -114,11 +114,10 @@
           
           <h3 style="margin-top: 1.5rem; font-size: 1.15rem; color: #0f172a; font-weight: 700;">Key Features</h3>
           <ul style="padding-left: 1.5rem; color: #334155; font-weight: 500; line-height: 1.7;">
-            <li><strong>Offline Speech-to-Text (STT) &amp; Text-to-Speech (TTS) pipelines</strong></li>
-            <li><strong>Multilingual input routing (English, Hindi, Tamil, Telugu, Spanish, French, German)</strong></li>
-            <li><strong>100% PyTorch-free, ONNX-compliant offline operations</strong></li>
-            <li><strong>Native macOS 'say' integration for high-quality playback</strong></li>
-            <li><strong>Sub-50ms CPU synthesis latency</strong></li>
+            <li><strong>Offline Speech-to-Text (STT) transcription</strong></li>
+<li><strong>Multilingual Text-to-Speech (TTS) synthesis (English, Hindi, Tamil, Telugu)</strong></li>
+<li><strong>Real-time audio stream barge-in interrupt detection</strong></li>
+<li><strong>Sub-50ms CPU synthesis latency</strong></li>
           </ul>
         </section>
 
@@ -193,14 +192,14 @@
               <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
             </thead>
             <tbody>
-              <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>model_path</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Path to local Qwen ONNX model weights. Default: None.</td></tr>
-<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>tools</code></td><td><span class='param-type'>dict | None</span></td><td style='color: #334155; font-weight: 500;'>Optional pre-registered tool function mappings. Default: None.</td></tr>
-<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>temperature</code></td><td><span class='param-type'>float | 0.7</span></td><td style='color: #334155; font-weight: 500;'>Sampling temperature for LLM generation. Default: 0.7.</td></tr>
+              <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>stt_model_path</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Path to local STT ONNX weights. Default: None.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>tts_model_path</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Path to local TTS ONNX weights. Default: None.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>temperature</code></td><td><span class='param-type'>float | 0.7</span></td><td style='color: #334155; font-weight: 500;'>Sampling temperature for speech synthesis. Default: 0.7.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>top_p</code></td><td><span class='param-type'>float | 0.9</span></td><td style='color: #334155; font-weight: 500;'>Nucleus sampling cutoff threshold. Default: 0.9.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>max_tokens</code></td><td><span class='param-type'>int | 256</span></td><td style='color: #334155; font-weight: 500;'>Maximum output token generation limit per response. Default: 256.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>cache_dir</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Local directory for caching model weights. Default: None.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>n_threads</code></td><td><span class='param-type'>int | 4</span></td><td style='color: #334155; font-weight: 500;'>Number of CPU threads for inference. Default: 4.</td></tr>
-<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>system_prompt</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Dynamic system instructions for the LLM. Default: None.</td></tr>
+
             </tbody>
           </table>
 
@@ -245,7 +244,7 @@
 voice = SLMVoiceAgent(temperature=0.7, top_p=0.9, max_tokens=256)
 res = voice.process_speech_text(
     speech_transcript="Schedule a team sync meeting for tomorrow at 3 PM",
-    language="Hindi",
+    language="English",
     system_prompt="Conversational voice assistant",
     user_input="Remind about Q3 project deadline",
     temperature=0.7,
@@ -269,13 +268,13 @@ print(res)</code></pre>
             <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
               <pre style="margin:0; background:#0f172a; color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.85rem; border:none; box-shadow:none; padding:0; white-space: pre-wrap; word-break: break-word;">→ INPUT:
 Speech Transcript: Schedule a team sync meeting for tomorrow at 3 PM
-Language: Hindi
+Language: English
 
 ← OUTPUT:
 {
   'status': '200 OK',
   'transcript': 'Schedule a team sync meeting for tomorrow at 3 PM',
-  'response': '[HI Synthesis]: Scheduled team sync meeting for tomorrow at 3 PM.',
+  'response': 'Scheduled team sync meeting for tomorrow at 3 PM.',
   'audio_synthesized': True,
   'barge_in_enabled': True
 }</pre>
