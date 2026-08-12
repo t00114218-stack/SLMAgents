@@ -91,81 +91,82 @@
     </aside>
 
     <main class="main-content">
-      <section class="doc-section" style="margin-top: 0;">
-        <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM RAG</span></div>
-        <div class="badge-pill">📚 Vector DB Document Retrieval</div>
-        <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM RAG</h1>
-        <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Local Retrieval-Augmented Generation engine for offline document indexing, dense vector search, and grounded Q&A.</p>
-      </section>
+      <div class="doc-content-wrapper">
+        <section class="doc-section" style="margin-top: 0;">
+          <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM RAG</span></div>
+          <div class="badge-pill">📚 Vector DB Document Retrieval</div>
+          <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM RAG</h1>
+          <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Local Retrieval-Augmented Generation engine for offline document indexing, dense vector search, and grounded Q&A.</p>
+        </section>
 
-      <!-- OVERVIEW -->
-      <section class="doc-section" id="overview">
-        <h2>🚀 Overview &amp; Capabilities</h2>
-        <p>Local Retrieval-Augmented Generation engine for offline document indexing, dense vector search, and grounded Q&A.</p>
-        
-        <h3 style="margin-top: 1.5rem; font-size: 1.15rem; color: #0f172a; font-weight: 700;">Key Features</h3>
-        <ul style="padding-left: 1.5rem; color: #334155; font-weight: 500; line-height: 1.7;">
-          <li><strong>Offline ONNX embedding generation</strong></li>
+        <!-- OVERVIEW -->
+        <section class="doc-section" id="overview">
+          <h2>🚀 Overview &amp; Capabilities</h2>
+          <p>Local Retrieval-Augmented Generation engine for offline document indexing, dense vector search, and grounded Q&A.</p>
+          
+          <h3 style="margin-top: 1.5rem; font-size: 1.15rem; color: #0f172a; font-weight: 700;">Key Features</h3>
+          <ul style="padding-left: 1.5rem; color: #334155; font-weight: 500; line-height: 1.7;">
+            <li><strong>Offline ONNX embedding generation</strong></li>
 <li><strong>Local vector similarity indexing</strong></li>
 <li><strong>Grounded factual document question answering</strong></li>
 <li><strong>Strict context window enforcement</strong></li>
-        </ul>
-      </section>
+          </ul>
+        </section>
 
-      <!-- INSTALLATION -->
-      <section class="doc-section" id="install">
-        <h2>💻 Installation</h2>
-        <p>Install the local package using pip:</p>
-        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);">
-          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
-            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-            <div class="code-title" style="color: #94a3b8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Terminal</div>
+        <!-- INSTALLATION -->
+        <section class="doc-section" id="install">
+          <h2>💻 Installation</h2>
+          <p>Install the local package using pip:</p>
+          <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);">
+            <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+              <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+              <div class="code-title" style="color: #94a3b8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Terminal</div>
+            </div>
+            <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+              <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.95rem; border:none; box-shadow:none; padding:0;"><span style="color: #34d399; margin-right: 8px;">$</span><span style="color: #c084fc; font-weight: 700;">pip install</span> <span style="color: #38bdf8;">slm-rag</span></pre>
+            </div>
           </div>
-          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
-            <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.95rem; border:none; box-shadow:none; padding:0;"><span style="color: #34d399; margin-right: 8px;">$</span><span style="color: #c084fc; font-weight: 700;">pip install</span> <span style="color: #38bdf8;">slm-rag</span></pre>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- CONFIGURATION -->
-      <section class="doc-section" id="config">
-        <h2>⚙️ Configuration API</h2>
-        
-        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 1.5rem;">Constructor Parameters</h3>
-        <p>Instantiate <code style="background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;">SLMRag</code> with performance and runtime options:</p>
-        <table class="param-table">
-          <thead>
-            <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>model_path</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Local ONNX model path. Default: None.</td></tr>
+        <!-- CONFIGURATION -->
+        <section class="doc-section" id="config">
+          <h2>⚙️ Configuration API</h2>
+          
+          <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 1.5rem;">Constructor Parameters</h3>
+          <p>Instantiate <code style="background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;">SLMRag</code> with performance and runtime options:</p>
+          <table class="param-table">
+            <thead>
+              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>model_path</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Local ONNX model path. Default: None.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>temperature</code></td><td><span class='param-type'>float | 0.0</span></td><td style='color: #334155; font-weight: 500;'>Sampling temperature. Default: 0.0.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>top_p</code></td><td><span class='param-type'>float | 0.9</span></td><td style='color: #334155; font-weight: 500;'>Nucleus sampling threshold. Default: 0.9.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>max_tokens</code></td><td><span class='param-type'>int | 256</span></td><td style='color: #334155; font-weight: 500;'>Maximum output token limit. Default: 256.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>n_threads</code></td><td><span class='param-type'>int | 4</span></td><td style='color: #334155; font-weight: 500;'>CPU threads. Default: 4.</td></tr>
 
-          </tbody>
-        </table>
+            </tbody>
+          </table>
 
-        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Methods</h3>
-        <table class="param-table">
-          <thead>
-            <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>answer(question, chunks, ...)</code></td><td><span class='param-type'>str | dict</span></td><td style='color: #334155; font-weight: 500;'>Retrieves matching context chunks and generates factual response.</td></tr>
+          <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Methods</h3>
+          <table class="param-table">
+            <thead>
+              <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>answer(question, chunks, ...)</code></td><td><span class='param-type'>str | dict</span></td><td style='color: #334155; font-weight: 500;'>Retrieves matching context chunks and generates factual response.</td></tr>
 
-          </tbody>
-        </table>
+            </tbody>
+          </table>
 
-        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Execution Parameters</h3>
-        <p>Complete list of execution parameters accepted by the primary agent method:</p>
-        <table class="param-table">
-          <thead>
-            <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>question</code></td><td><span class='param-type'>str</span></td><td style='color: #334155; font-weight: 500;'>User question string.</td></tr>
+          <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Execution Parameters</h3>
+          <p>Complete list of execution parameters accepted by the primary agent method:</p>
+          <table class="param-table">
+            <thead>
+              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>question</code></td><td><span class='param-type'>str</span></td><td style='color: #334155; font-weight: 500;'>User question string.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>chunks</code></td><td><span class='param-type'>list[str] | str</span></td><td style='color: #334155; font-weight: 500;'>Document context text or chunk list.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>instruction</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Extraction instruction guideline. Default: None.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>system_prompt</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>System prompt instruction. Default: None.</td></tr>
@@ -174,17 +175,17 @@
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>top_p</code></td><td><span class='param-type'>float | 0.9</span></td><td style='color: #334155; font-weight: 500;'>Nucleus sampling probability. Default: 0.9.</td></tr>
 <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>max_tokens</code></td><td><span class='param-type'>int | 256</span></td><td style='color: #334155; font-weight: 500;'>Maximum token limit. Default: 256.</td></tr>
 
-          </tbody>
-        </table>
+            </tbody>
+          </table>
 
-        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Quick Start</h3>
-        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);">
-          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
-            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-            <div class="code-title" style="color: #94a3b8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Python Example</div>
-          </div>
-          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
-            <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.9rem; border:none; box-shadow:none; padding:0;"><code class="language-python">from slm_rag import SLMRag
+          <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Quick Start</h3>
+          <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);">
+            <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+              <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+              <div class="code-title" style="color: #94a3b8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Python Example</div>
+            </div>
+            <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+              <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.9rem; border:none; box-shadow:none; padding:0;"><code class="language-python">from slm_rag import SLMRag
 
 rag = SLMRag(temperature=0.0, top_p=0.9, max_tokens=256)
 res = rag.answer(
@@ -198,21 +199,21 @@ res = rag.answer(
     max_tokens=256
 )
 print(res)</code></pre>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- VERIFIED LOGS -->
-      <section class="doc-section">
-        <h2>🔍 Verified Output Logs</h2>
-        <p>Diagnostic execution console output running locally on CPU:</p>
-        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0;">
-          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
-            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
-            <div class="code-title" style="color: #38bdf8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Output Console</div>
-          </div>
-          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
-            <pre style="margin:0; background:#0f172a; color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.85rem; border:none; box-shadow:none; padding:0; white-space: pre-wrap; word-break: break-word;">→ INPUT:
+        <!-- VERIFIED LOGS -->
+        <section class="doc-section">
+          <h2>🔍 Verified Output Logs</h2>
+          <p>Diagnostic execution console output running locally on CPU:</p>
+          <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0;">
+            <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+              <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+              <div class="code-title" style="color: #38bdf8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Output Console</div>
+            </div>
+            <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+              <pre style="margin:0; background:#0f172a; color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.85rem; border:none; box-shadow:none; padding:0; white-space: pre-wrap; word-break: break-word;">→ INPUT:
 Question: What is total Q3 net revenue?
 
 ← OUTPUT:
@@ -221,14 +222,15 @@ Question: What is total Q3 net revenue?
   'answer': 'Based on documents: Q3 net revenue is $1.25M USD.',
   'retrieved_chunks': 2
 }</pre>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- FOOTER -->
-      <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
-        <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
-      </footer>
+        <!-- FOOTER -->
+        <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
+          <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
+        </footer>
+      </div>
     </main>
   </div>
 

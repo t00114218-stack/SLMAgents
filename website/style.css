@@ -959,24 +959,25 @@ footer {
   transform: rotate(180deg);
 }
 
-/* Sidebar Layout */
+/* Principal Sidebar Layout Architecture */
 .layout-container {
   display: flex;
   align-items: stretch;
   min-height: calc(100vh - 72px);
-  position: relative;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #f8fafc;
 }
 
 .sidebar {
   width: 280px;
-  background: #ffffff;
+  background: #ffffff !important;
   border-right: 1px solid #cbd5e1 !important;
-  border-radius: 0;
-  box-shadow: none;
-  padding: 2rem 1.5rem 2rem 0;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 2rem 1.25rem 2rem 1.5rem !important;
   position: sticky;
   top: 72px;
   height: calc(100vh - 72px);
@@ -1005,9 +1006,15 @@ footer {
 .main-content {
   flex: 1;
   min-width: 0;
-  padding: 2rem 0 3rem 2.5rem;
+  background: #f8fafc;
+  padding: 2.5rem 3rem 4rem 3rem;
   overflow-x: hidden;
   width: 100%;
+}
+
+.doc-content-wrapper {
+  max-width: 980px;
+  margin: 0;
 }
 
 /* Sidebar Nav Groups */
