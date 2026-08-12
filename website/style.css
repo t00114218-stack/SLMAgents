@@ -959,30 +959,49 @@ footer {
   transform: rotate(180deg);
 }
 
-/* Principal Sidebar Layout Architecture */
+/* Fixed 2-Pane Desktop Layout Architecture */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  z-index: 1000;
+  background: #ffffff;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+body {
+  padding-top: 64px;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
 .layout-container {
   display: flex;
-  align-items: stretch;
-  min-height: calc(100vh - 72px);
-  width: 100%;
-  max-width: 100%;
+  position: fixed;
+  top: 64px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+  background: #f8fafc;
   margin: 0;
   padding: 0;
-  background: #f8fafc;
 }
 
 .sidebar {
   width: 280px;
+  flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
   background: #ffffff !important;
   border-right: 1px solid #cbd5e1 !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  padding: 2rem 1.25rem 2rem 1.5rem !important;
-  position: sticky;
-  top: 72px;
-  height: calc(100vh - 72px);
-  overflow-y: auto;
-  flex-shrink: 0;
+  padding: 1.5rem 1rem 3rem 1.25rem !important;
   z-index: 99;
 }
 
@@ -1005,16 +1024,108 @@ footer {
 
 .main-content {
   flex: 1;
-  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
   background: #f8fafc;
-  padding: 2.5rem 3rem 4rem 3rem;
-  overflow-x: hidden;
-  width: 100%;
+  padding: 2.5rem 3.5rem 5rem 3.5rem;
+  width: calc(100vw - 280px);
 }
 
 .doc-content-wrapper {
   max-width: 980px;
   margin: 0;
+  text-align: left !important;
+}
+
+/* Sub-Navigation Pill Bar */
+.doc-nav {
+  display: flex;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.doc-nav a {
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.doc-nav a:hover {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+/* Documentation Right Pane Typography & Alignment System */
+.doc-section {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  text-align: left !important;
+}
+
+.doc-section h1 {
+  font-size: 2.25rem;
+  color: #0f172a;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+  text-align: left !important;
+}
+
+.doc-section h2 {
+  font-size: 1.4rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left !important;
+}
+
+.doc-section h3 {
+  font-size: 1.15rem;
+  color: #0f172a;
+  font-weight: 700;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  text-align: left !important;
+}
+
+.doc-section p {
+  font-size: 0.98rem;
+  color: #334155;
+  line-height: 1.7;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  text-align: left !important;
+}
+
+.doc-section ul {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0 1.25rem;
+  text-align: left !important;
+}
+
+.doc-section li {
+  font-size: 0.95rem;
+  color: #334155;
+  line-height: 1.7;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-align: left !important;
 }
 
 /* Sidebar Nav Groups */
