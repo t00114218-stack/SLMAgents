@@ -962,28 +962,27 @@ footer {
 /* Sidebar Layout */
 .layout-container {
   display: flex;
-  align-items: flex-start;
-  gap: 2.5rem;
-  padding-top: 2rem;
-  padding-bottom: 3rem;
+  align-items: stretch;
   min-height: calc(100vh - 72px);
   position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0;
 }
 
 .sidebar {
   width: 280px;
   background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
-  padding: 1.5rem 1.25rem;
+  border-right: 1px solid #e2e8f0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 2rem 1.25rem;
   position: sticky;
-  top: 90px;
-  max-height: calc(100vh - 110px);
+  top: 72px;
+  height: calc(100vh - 72px);
   overflow-y: auto;
   flex-shrink: 0;
   z-index: 99;
-  transition: transform var(--transition-normal);
 }
 
 .sidebar::-webkit-scrollbar {
@@ -1006,7 +1005,7 @@ footer {
 .main-content {
   flex: 1;
   min-width: 0;
-  padding: 0;
+  padding: 2.5rem 3rem;
   overflow-x: hidden;
   width: 100%;
 }
@@ -1303,7 +1302,7 @@ footer {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 1.5rem 0;
+  margin: 1.5rem 0 2.5rem;
   background: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: 12px;
@@ -1315,34 +1314,49 @@ footer {
   background: #f8fafc;
   color: #0f172a;
   font-weight: 800;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 12px 16px;
+  padding: 12px 18px;
   text-align: left;
   border-bottom: 1px solid #e2e8f0;
 }
 
 .param-table td {
-  padding: 14px 16px;
+  padding: 14px 18px;
   font-size: 0.9rem;
   color: #334155;
   border-bottom: 1px solid #f1f5f9;
-  line-height: 1.5;
+  line-height: 1.6;
   font-weight: 500;
+  vertical-align: middle;
 }
 
 .param-table tr:last-child td {
   border-bottom: none;
 }
 
+.param-table code {
+  background: #eef2ff !important;
+  color: #4f46e5 !important;
+  font-weight: 700 !important;
+  border: 1px solid #c7d2fe !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  font-size: 0.85rem !important;
+  font-family: 'JetBrains Mono', monospace;
+  display: inline-block;
+  word-break: break-word;
+}
+
 .param-type {
   color: #0284c7 !important;
   font-weight: 700 !important;
   background: #e0f2fe !important;
-  padding: 3px 8px !important;
+  padding: 4px 10px !important;
   border-radius: 6px !important;
   font-size: 0.82rem !important;
   display: inline-block;
-  border: 1px solid #bae6fd;
+  border: 1px solid #bae6fd !important;
+  white-space: nowrap;
 }
