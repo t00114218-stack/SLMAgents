@@ -6,55 +6,21 @@
   <meta name="description" content="SLM Orchestrator: Autonomous meta-agent that inspects incoming user queries, dynamically selects appropriate sub-agents, and sequences multi-step execution graphs.">
   <title>SLM Orchestrator | Documentation</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .doc-hero { padding: 5rem 0 3rem; text-align: center; }
-    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; color: var(--text-primary); }
-    .doc-hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.1rem; }
-    .doc-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
-    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
-    .doc-nav a:hover { border-color: var(--primary); color: var(--primary); }
-    .doc-section { padding: 3rem 0; border-top: 1px solid var(--card-border); }
-    .doc-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-primary); }
-    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--accent-purple); }
-    .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
-    .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
-    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; table-layout: fixed; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
-    .param-table th { text-align: left; padding: 0.65rem 1rem; background: #f8fafc; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
-    .param-table td { padding: 0.65rem 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; word-break: break-word; white-space: normal; color: #475569; }
-    .param-table tr:last-child td { border-bottom: none; }
-    .param-table th:first-child, .param-table td:first-child { width: 45%; font-family: 'JetBrains Mono', monospace; color: #4f46e5; font-size: 0.85rem; word-break: break-word; white-space: normal; font-weight: 600; }
-    .param-table th:nth-child(2), .param-table td:nth-child(2) { width: 15%; color: #0284c7; font-size: 0.82rem; word-break: break-word; white-space: normal; font-weight: 500; }
-    .param-table th:last-child, .param-table td:last-child { width: 40%; color: #475569; word-break: break-word; white-space: normal; }
-    .env-tag { display: inline-block; background: rgba(79,70,229,0.1); border: 1px solid rgba(79,70,229,0.2); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #4f46e5; }
-    .tip-box { background: rgba(5,150,105,0.06); border: 1px solid rgba(5,150,105,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .tip-box strong { color: #059669; }
-    .warn-box { background: rgba(217,119,6,0.06); border: 1px solid rgba(217,119,6,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .warn-box strong { color: #d97706; }
-    .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
-    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
-    .breadcrumb a:hover { color: var(--accent-purple); }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Navigation Header -->
   <header>
-    <div class="container nav-container">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <button class="sidebar-toggle" onclick="toggleSidebar()">
-          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-        <a href="index.html" class="logo">
-          <div class="logo-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-          </div>
-          <span>SLM Agents</span>
-        </a>
-      </div>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        SLMAgents
+      </a>
+      
       <nav>
-        <ul>
+        <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
           <li class="dropdown">
             <a class="dropdown-trigger">
@@ -125,105 +91,99 @@
     </aside>
 
     <main class="main-content">
-      <section class="doc-hero">
-        <div class="container">
-          <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <span>SLM Orchestrator</span></div>
-          <div class="hero-badge"><span>🎯 Agent Router</span></div>
-          <h1>SLM Orchestrator</h1>
-          <p>Autonomous meta-agent that inspects incoming user queries, dynamically selects appropriate sub-agents, and sequences multi-step execution graphs.</p>
-        </div>
+      <section class="doc-section" style="margin-top: 0;">
+        <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM Orchestrator</span></div>
+        <div class="hero-badge" style="margin-bottom: 1rem;"><span style="background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.8rem;">🎯 Autonomous Agent Router</span></div>
+        <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM Orchestrator</h1>
+        <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Autonomous meta-agent that inspects incoming user queries, dynamically selects appropriate sub-agents, and sequences multi-step execution graphs.</p>
       </section>
 
-      <div class="container">
-        <nav class="doc-nav">
-          <a href="#overview">Overview</a>
-          <a href="#install">Installation</a>
-          <a href="#config">Configuration</a>
-          <a href="#env-vars">Env Variables</a>
-          <a href="#performance">Performance</a>
-        </nav>
-
-        <section class="doc-section" id="overview">
-          <h2>Overview</h2>
-          <p>Autonomous meta-agent that inspects incoming user queries, dynamically selects appropriate sub-agents, and sequences multi-step execution graphs.</p>
-          
-          <h3 style="margin-top: 2rem;">🚀 Core Capabilities</h3>
-          <ul>
-            <li><strong>Dynamic routing across local specialized SLM agents</strong></li>
+      <!-- OVERVIEW -->
+      <section class="doc-section" id="overview">
+        <h2>🚀 Overview &amp; Capabilities</h2>
+        <p>Autonomous meta-agent that inspects incoming user queries, dynamically selects appropriate sub-agents, and sequences multi-step execution graphs.</p>
+        
+        <h3 style="margin-top: 1.5rem; font-size: 1.15rem; color: #0f172a; font-weight: 700;">Key Features</h3>
+        <ul style="padding-left: 1.5rem; color: #334155; font-weight: 500; line-height: 1.7;">
+          <li><strong>Dynamic routing across local specialized SLM agents</strong></li>
 <li><strong>ReAct reasoning loop with tool-execution feedback cycles</strong></li>
 <li><strong>Parallel tool execution branches</strong></li>
 <li><strong>Automatic fallback handling on sub-agent errors</strong></li>
-          </ul>
-        </section>
+        </ul>
+      </section>
 
-        <!-- INSTALLATION -->
-        <section class="doc-section" id="install">
-          <h2>Installation</h2>
-          <p>Install the local CPU-optimized package using pip:</p>
-          <div class="code-panel" style="max-width:100%">
-            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
-            <div class="code-content" style="display:block;padding:1.5rem">
-              <pre><code><span class="comment"># Install local CPU-optimized package</span>
-pip install slm-orchestrator</code></pre>
-            </div>
+      <!-- INSTALLATION -->
+      <section class="doc-section" id="install">
+        <h2>💻 Installation</h2>
+        <p>Install the local package using pip:</p>
+        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);">
+          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <div class="code-title" style="color: #94a3b8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Terminal</div>
           </div>
-        </section>
+          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+            <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.95rem; border:none; box-shadow:none; padding:0;"><span style="color: #34d399; margin-right: 8px;">$</span><span style="color: #c084fc; font-weight: 700;">pip install</span> <span style="color: #38bdf8;">slm-orchestrator</span></pre>
+          </div>
+        </div>
+      </section>
 
-        <!-- CONFIGURATION -->
-        <section class="doc-section" id="config">
-          <h2>Configuration API</h2>
-          
-          <h3>Constructor Parameters</h3>
-          <p>Instantiate <code>SLMOrchestrator</code> with performance and tool options:</p>
-          <table class="param-table">
-            <thead>
-              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>model_path</td><td>str | None</td><td>Local ONNX model path for semantic routing. Default: `None`.</td></tr>
-<tr><td>temperature</td><td>float | 0.0</td><td>Sampling temperature for routing decisions. Default: `0.0`.</td></tr>
-<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff threshold. Default: `0.9`.</td></tr>
-<tr><td>max_tokens</td><td>int | 256</td><td>Maximum output token generation limit per step. Default: `256`.</td></tr>
-<tr><td>cache_dir</td><td>str | None</td><td>Offline model cache location. Default: `None`.</td></tr>
-<tr><td>n_threads</td><td>int | 4</td><td>Number of CPU thread workers. Default: `4`.</td></tr>
+      <!-- CONFIGURATION -->
+      <section class="doc-section" id="config">
+        <h2>⚙️ Configuration API</h2>
+        
+        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 1.5rem;">Constructor Parameters</h3>
+        <p>Instantiate <code style="background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;">SLMOrchestrator</code> with performance and runtime options:</p>
+        <table class="param-table">
+          <thead>
+            <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>model_path</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Local ONNX model path. Default: `None`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>temperature</code></td><td><span class='param-type'>float | 0.0</span></td><td style='color: #334155; font-weight: 500;'>Routing decision temperature. Default: `0.0`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>top_p</code></td><td><span class='param-type'>float | 0.9</span></td><td style='color: #334155; font-weight: 500;'>Nucleus sampling cutoff. Default: `0.9`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>max_tokens</code></td><td><span class='param-type'>int | 256</span></td><td style='color: #334155; font-weight: 500;'>Maximum generation token limit. Default: `256`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>n_threads</code></td><td><span class='param-type'>int | 4</span></td><td style='color: #334155; font-weight: 500;'>CPU threads for inference. Default: `4`.</td></tr>
 
-            </tbody>
-          </table>
+          </tbody>
+        </table>
 
-          <h3>Methods</h3>
-          <table class="param-table">
-            <thead>
-              <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>route(agents, question, ...)</code></td><td><code>dict</code></td><td>Routes user query to the best-matching agent or tool callback chain.</td></tr>
+        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Methods</h3>
+        <table class="param-table">
+          <thead>
+            <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>route(agents, question, ...)</code></td><td><span class='param-type'>dict</span></td><td style='color: #334155; font-weight: 500;'>Routes user query to the best-matching agent or tool callback chain.</td></tr>
 
-            </tbody>
-          </table>
+          </tbody>
+        </table>
 
-          <h3>Execution Method Parameters</h3>
-          <p>Complete list of execution parameters accepted by the main method:</p>
-          <table class="param-table">
-            <thead>
-              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>agents</td><td>list[str] | dict</td><td>List of available agent names or tool specification dictionary.</td></tr>
-<tr><td>question</td><td>str</td><td>User query string requiring routing or multi-agent execution.</td></tr>
-<tr><td>tools</td><td>list | None</td><td>Optional additional executable tool definitions. Default: `None`.</td></tr>
-<tr><td>tool_executor</td><td>callable | None</td><td>Callback function executing resolved tool actions. Default: `None`.</td></tr>
-<tr><td>max_iterations</td><td>int | 5</td><td>Maximum allowed reasoning iterations before termination. Default: `5`.</td></tr>
-<tr><td>system_prompt</td><td>str | None</td><td>Custom instruction prompt overriding default agent routing guidelines. Default: `None`.</td></tr>
-<tr><td>user_input</td><td>str | None</td><td>Additional target parameters or contextual state data. Default: `None`.</td></tr>
-<tr><td>temperature</td><td>float | 0.0</td><td>Sampling temperature parameter. Default: `0.0`.</td></tr>
-<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff threshold. Default: `0.9`.</td></tr>
-<tr><td>max_tokens</td><td>int | 256</td><td>Maximum generation token limit. Default: `256`.</td></tr>
+        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Execution Parameters</h3>
+        <p>Complete list of execution parameters accepted by the primary agent method:</p>
+        <table class="param-table">
+          <thead>
+            <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>agents</code></td><td><span class='param-type'>list[str] | dict</span></td><td style='color: #334155; font-weight: 500;'>List of available sub-agent names.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>question</code></td><td><span class='param-type'>str</span></td><td style='color: #334155; font-weight: 500;'>User query string requiring routing.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>system_prompt</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>System routing instruction override. Default: `None`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>user_input</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Contextual parameter key values. Default: `None`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>temperature</code></td><td><span class='param-type'>float | 0.0</span></td><td style='color: #334155; font-weight: 500;'>Sampling temperature. Default: `0.0`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>top_p</code></td><td><span class='param-type'>float | 0.9</span></td><td style='color: #334155; font-weight: 500;'>Nucleus sampling probability. Default: `0.9`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>max_tokens</code></td><td><span class='param-type'>int | 256</span></td><td style='color: #334155; font-weight: 500;'>Maximum token limit. Default: `256`.</td></tr>
 
-            </tbody>
-          </table>
+          </tbody>
+        </table>
 
-          <h3>Quick Start</h3>
-          <pre><code class="language-python">from slm_orchestrator import SLMOrchestrator
+        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Quick Start</h3>
+        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);">
+          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <div class="code-title" style="color: #94a3b8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Python Example</div>
+          </div>
+          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+            <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.9rem; border:none; box-shadow:none; padding:0;"><code class="language-python">from slm_orchestrator import SLMOrchestrator
 
 orchestrator = SLMOrchestrator(temperature=0.0, top_p=0.9, max_tokens=256)
 res = orchestrator.route(
@@ -236,52 +196,39 @@ res = orchestrator.route(
     max_tokens=256
 )
 print(res)</code></pre>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <!-- ENVIRONMENT VARIABLES -->
-        <section class="doc-section" id="env-vars">
-          <h2>Environment Variables</h2>
-          <p>Configure agent parameters globally using environment values:</p>
-          <table class="param-table">
-            <thead>
-              <tr><th>Environment Variable</th><th>Default</th><th>Purpose</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>SLM_ORCHESTRATOR_N_THREADS</td><td>4</td><td>Sets CPU inference execution threads.</td></tr>
-              <tr><td>SLM_ORCHESTRATOR_CACHE_DIR</td><td>~/.cache/slm-orchestrator/</td><td>Default directory to store downloaded ONNX weights.</td></tr>
-            </tbody>
-          </table>
-        </section>
-
-        <!-- PERFORMANCE -->
-        <section class="doc-section" id="performance">
-          <h2>CPU Performance Tuning</h2>
-          <p>To run the <code>SLMOrchestrator</code> engine efficiently on CPU under 1.5 GB memory footprint:</p>
-          <ul>
-            <li><strong>Match Threads to Core Count:</strong> Set <code>n_threads</code> or <code>SLM_ORCHESTRATOR_N_THREADS</code> to match physical CPU core count.</li>
-            <li><strong>Sequential Processing:</strong> Avoid concurrent processing when batch files are large.</li>
-            <li><strong>Garbage Collection:</strong> Clear variables and run <code>gc.collect()</code> to release model RAM blocks after execution.</li>
-          </ul>
-        </section>
-
-        <!-- VERIFIED LOGS -->
-        <section class="doc-section">
-          <h2>Verified Input &amp; Output Logs</h2>
-          <p>Diagnostic execution console response running locally on CPU:</p>
-          <div class="tip-box" style="background: #0f172a; border: 1px solid #1e293b;">
-            <pre><code style="color: #38bdf8; font-family: monospace; font-size: 0.9rem; line-height: 1.5; display: block; white-space: pre-wrap;">→ INPUT:
+      <!-- VERIFIED LOGS -->
+      <section class="doc-section">
+        <h2>🔍 Verified Output Logs</h2>
+        <p>Diagnostic execution console output running locally on CPU:</p>
+        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0;">
+          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <div class="code-title" style="color: #38bdf8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Output Console</div>
+          </div>
+          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+            <pre style="margin:0; background:#0f172a; color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.85rem; border:none; box-shadow:none; padding:0; white-space: pre-wrap; word-break: break-word;">→ INPUT:
 Question: Calculate tax for Q3 revenue
 
 ← OUTPUT:
 {
   'selected_agent': 'Math',
   'result': 'Calculated Q3 tax: $187,500'
-}</code></pre>
+}</pre>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
+        <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
+      </footer>
     </main>
   </div>
+
   <script src="app.js"></script>
 </body>
 </html>

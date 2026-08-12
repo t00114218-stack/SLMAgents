@@ -3,58 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SLM Voice Agent: Fast offline conversational companion combining Whisper speech-to-text, 1.5B chat, and lightweight text-to-speech pipelines on CPU.">
+  <meta name="description" content="SLM Voice Agent: Conversational voice assistant powered by local ONNX Speech-to-Text (STT) and Text-to-Speech (TTS) models with real-time barge-in capability.">
   <title>SLM Voice Agent | Documentation</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .doc-hero { padding: 5rem 0 3rem; text-align: center; }
-    .doc-hero h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; color: var(--text-primary); }
-    .doc-hero p { max-width: 680px; margin: 0 auto 2rem; color: var(--text-secondary); font-size: 1.1rem; }
-    .doc-nav { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 3rem; }
-    .doc-nav a { padding: 0.4rem 1rem; border-radius: 20px; border: 1px solid var(--card-border); color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: all 0.2s; }
-    .doc-nav a:hover { border-color: var(--primary); color: var(--primary); }
-    .doc-section { padding: 3rem 0; border-top: 1px solid var(--card-border); }
-    .doc-section h2 { font-size: 1.6rem; margin-bottom: 0.5rem; color: var(--text-primary); }
-    .doc-section h3 { font-size: 1.15rem; margin: 2rem 0 0.75rem; color: var(--accent-purple); }
-    .doc-section p, .doc-section li { color: var(--text-secondary); line-height: 1.7; }
-    .doc-section ul { padding-left: 1.5rem; margin: 0.5rem 0 1rem; }
-    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; table-layout: fixed; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
-    .param-table th { text-align: left; padding: 0.65rem 1rem; background: #f8fafc; color: #0f172a; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
-    .param-table td { padding: 0.65rem 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; word-break: break-word; white-space: normal; color: #475569; }
-    .param-table tr:last-child td { border-bottom: none; }
-    .param-table th:first-child, .param-table td:first-child { width: 45%; font-family: 'JetBrains Mono', monospace; color: #4f46e5; font-size: 0.85rem; word-break: break-word; white-space: normal; font-weight: 600; }
-    .param-table th:nth-child(2), .param-table td:nth-child(2) { width: 15%; color: #0284c7; font-size: 0.82rem; word-break: break-word; white-space: normal; font-weight: 500; }
-    .param-table th:last-child, .param-table td:last-child { width: 40%; color: #475569; word-break: break-word; white-space: normal; }
-    .env-tag { display: inline-block; background: rgba(79,70,229,0.1); border: 1px solid rgba(79,70,229,0.2); padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-family: monospace; color: #4f46e5; }
-    .tip-box { background: rgba(5,150,105,0.06); border: 1px solid rgba(5,150,105,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .tip-box strong { color: #059669; }
-    .warn-box { background: rgba(217,119,6,0.06); border: 1px solid rgba(217,119,6,0.2); border-radius: 10px; padding: 1rem 1.25rem; margin: 1rem 0; }
-    .warn-box strong { color: #d97706; }
-    .breadcrumb { display: flex; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; }
-    .breadcrumb a { color: var(--text-muted); text-decoration: none; }
-    .breadcrumb a:hover { color: var(--accent-purple); }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Navigation Header -->
   <header>
-    <div class="container nav-container">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <button class="sidebar-toggle" onclick="toggleSidebar()">
-          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-        <a href="index.html" class="logo">
-          <div class="logo-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-            </svg>
-          </div>
-          <span>SLM Agents</span>
-        </a>
-      </div>
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        SLMAgents
+      </a>
+      
       <nav>
-        <ul>
+        <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
           <li class="dropdown">
             <a class="dropdown-trigger">
@@ -125,278 +91,150 @@
     </aside>
 
     <main class="main-content">
-      <section class="doc-hero">
-        <div class="container">
-          <div class="breadcrumb"><a href="index.html">Home</a> <span>›</span> <span>SLM Voice Agent</span></div>
-          <div class="hero-badge"><span>🗣️ Speech Companion</span></div>
-          <h1>SLM Voice Agent</h1>
-          <p>Fast offline conversational companion combining Whisper speech-to-text, 1.5B chat, and lightweight text-to-speech pipelines on CPU.</p>
+      <section class="doc-section" style="margin-top: 0;">
+        <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM Voice Agent</span></div>
+        <div class="hero-badge" style="margin-bottom: 1rem;"><span style="background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.8rem;">🗣️ Speech STT/TTS & Barge-In</span></div>
+        <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM Voice Agent</h1>
+        <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Conversational voice assistant powered by local ONNX Speech-to-Text (STT) and Text-to-Speech (TTS) models with real-time barge-in capability.</p>
+      </section>
+
+      <!-- OVERVIEW -->
+      <section class="doc-section" id="overview">
+        <h2>🚀 Overview &amp; Capabilities</h2>
+        <p>Conversational voice assistant powered by local ONNX Speech-to-Text (STT) and Text-to-Speech (TTS) models with real-time barge-in capability.</p>
+        
+        <h3 style="margin-top: 1.5rem; font-size: 1.15rem; color: #0f172a; font-weight: 700;">Key Features</h3>
+        <ul style="padding-left: 1.5rem; color: #334155; font-weight: 500; line-height: 1.7;">
+          <li><strong>Offline Speech-to-Text (STT) transcription</strong></li>
+<li><strong>Multilingual Text-to-Speech (TTS) synthesis (English, Hindi, Tamil, Telugu)</strong></li>
+<li><strong>Real-time audio stream barge-in interrupt detection</strong></li>
+<li><strong>Sub-50ms CPU synthesis latency</strong></li>
+        </ul>
+      </section>
+
+      <!-- INSTALLATION -->
+      <section class="doc-section" id="install">
+        <h2>💻 Installation</h2>
+        <p>Install the local package using pip:</p>
+        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);">
+          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <div class="code-title" style="color: #94a3b8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Terminal</div>
+          </div>
+          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+            <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.95rem; border:none; box-shadow:none; padding:0;"><span style="color: #34d399; margin-right: 8px;">$</span><span style="color: #c084fc; font-weight: 700;">pip install</span> <span style="color: #38bdf8;">slm-voice</span></pre>
+          </div>
         </div>
       </section>
 
-      <div class="container">
-        <nav class="doc-nav">
-          <a href="#overview">Overview</a>
-          <a href="#install">Installation</a>
-          <a href="#config">Configuration</a>
-          <a href="#env-vars">Env Variables</a>
-          <a href="#performance">Performance</a>
-        </nav>
+      <!-- CONFIGURATION -->
+      <section class="doc-section" id="config">
+        <h2>⚙️ Configuration API</h2>
+        
+        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 1.5rem;">Constructor Parameters</h3>
+        <p>Instantiate <code style="background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;">SLMVoiceAgent</code> with performance and runtime options:</p>
+        <table class="param-table">
+          <thead>
+            <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>stt_model_path</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Path to local STT ONNX weights. Default: `None`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>tts_model_path</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Path to local TTS ONNX weights. Default: `None`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>temperature</code></td><td><span class='param-type'>float | 0.7</span></td><td style='color: #334155; font-weight: 500;'>Sampling temperature for speech synthesis. Default: `0.7`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>top_p</code></td><td><span class='param-type'>float | 0.9</span></td><td style='color: #334155; font-weight: 500;'>Nucleus sampling cutoff threshold. Default: `0.9`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>max_tokens</code></td><td><span class='param-type'>int | 256</span></td><td style='color: #334155; font-weight: 500;'>Maximum output token generation limit per response. Default: `256`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>cache_dir</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Local directory for caching model weights. Default: `None`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>n_threads</code></td><td><span class='param-type'>int | 4</span></td><td style='color: #334155; font-weight: 500;'>Number of CPU threads for inference. Default: `4`.</td></tr>
 
-        <section class="doc-section" id="overview">
-          <h2>Overview</h2>
-          <p>Fast offline conversational companion combining Whisper speech-to-text, 1.5B chat, and lightweight text-to-speech pipelines on CPU.</p>
-          
-          <h3 style="margin-top: 2rem;">🚀 Core Capabilities</h3>
-          <ul>
-            <li><strong>Audio-only (.wav, .mp3, .m4a) and text transcript query processing</strong></li>
-<li><strong>Real-time barge-in interruption support allowing users to interrupt speech playback</strong></li>
-<li><strong>Configurable LLM inference parameters: temperature, top_p, and max_tokens</strong></li>
-<li><strong>Configurable sub-agent tool calls and multilingual translation routing</strong></li>
-          </ul>
-        </section>
+          </tbody>
+        </table>
 
-        <!-- INSTALLATION -->
-        <section class="doc-section" id="install">
-          <h2>Installation</h2>
-          <p>Install the local CPU-optimized package using pip:</p>
-          <div class="code-panel" style="max-width:100%">
-            <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
-            <div class="code-content" style="display:block;padding:1.5rem">
-              <pre><code><span class="comment"># Install local CPU-optimized package</span>
-pip install slm-voice</code></pre>
-            </div>
+        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Methods</h3>
+        <table class="param-table">
+          <thead>
+            <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>process_speech_text(speech_transcript, ...)</code></td><td><span class='param-type'>dict</span></td><td style='color: #334155; font-weight: 500;'>Transcribes audio input or processes text transcript and returns synthesized speech payload.</td></tr>
+
+          </tbody>
+        </table>
+
+        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Execution Parameters</h3>
+        <p>Complete list of execution parameters accepted by the primary agent method:</p>
+        <table class="param-table">
+          <thead>
+            <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>speech_transcript</code></td><td><span class='param-type'>str</span></td><td style='color: #334155; font-weight: 500;'>Input raw audio transcription string or speech input text.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>language</code></td><td><span class='param-type'>str | English</span></td><td style='color: #334155; font-weight: 500;'>Target output synthesis language (English, Hindi, Tamil, Telugu). Default: `English`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>system_prompt</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Custom system prompt instruction. Default: `None`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>user_input</code></td><td><span class='param-type'>str | None</span></td><td style='color: #334155; font-weight: 500;'>Optional additional contextual text keys. Default: `None`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>temperature</code></td><td><span class='param-type'>float | 0.7</span></td><td style='color: #334155; font-weight: 500;'>Sampling temperature. Default: `0.7`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>top_p</code></td><td><span class='param-type'>float | 0.9</span></td><td style='color: #334155; font-weight: 500;'>Nucleus sampling probability. Default: `0.9`.</td></tr>
+<tr><td><code style='background: #eef2ff; color: #4f46e5; font-weight: 700; border: 1px solid #c7d2fe; padding: 3px 8px; border-radius: 6px;'>max_tokens</code></td><td><span class='param-type'>int | 256</span></td><td style='color: #334155; font-weight: 500;'>Maximum generation token limit. Default: `256`.</td></tr>
+
+          </tbody>
+        </table>
+
+        <h3 style="font-size: 1.15rem; color: #0f172a; font-weight: 700; margin-top: 2rem;">Quick Start</h3>
+        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);">
+          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <div class="code-title" style="color: #94a3b8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Python Example</div>
           </div>
-        </section>
+          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+            <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.9rem; border:none; box-shadow:none; padding:0;"><code class="language-python">from slm_voice import SLMVoiceAgent
 
-        <!-- CONFIGURATION -->
-        <section class="doc-section" id="config">
-          <h2>Configuration API</h2>
-          
-          <h3>Constructor Parameters</h3>
-          <p>Instantiate <code>SLMVoiceAgent</code> with performance and tool options:</p>
-          <table class="param-table">
-            <thead>
-              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>model_path</td><td>str | None</td><td>Explicit path to ONNX model weights directory. Default: `None`.</td></tr>
-<tr><td>tools</td><td>dict | None</td><td>Dictionary of registered tool callbacks: `{"RAG": rag_fn, "Math": math_fn}`. Default: `None`.</td></tr>
-<tr><td>system_prompt</td><td>str | None</td><td>Custom system instructions defining tool selection rules. Default: `None`.</td></tr>
-<tr><td>barge_in</td><td>bool | True</td><td>Enables real-time speech interruption of TTS audio playback. Default: `True`.</td></tr>
-<tr><td>barge_in_sensitivity</td><td>float | 0.5</td><td>Sensitivity threshold for audio interruption detection (0.0 to 1.0). Default: `0.5`.</td></tr>
-<tr><td>temperature</td><td>float | 0.7</td><td>Sampling temperature controlling LLM output randomness. Default: `0.7`.</td></tr>
-<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff threshold. Default: `0.9`.</td></tr>
-<tr><td>max_tokens</td><td>int | 256</td><td>Maximum token generation output length limit per request. Default: `256`.</td></tr>
-<tr><td>cache_dir</td><td>str | None</td><td>Directory to store model weights. Defaults to `~/.cache/slm-voice/`. Default: `None`.</td></tr>
-<tr><td>n_threads</td><td>int | 4</td><td>CPU thread count for ONNX inference execution. Default: `4`.</td></tr>
-
-            </tbody>
-          </table>
-
-          <h3>Methods</h3>
-          <table class="param-table">
-            <thead>
-              <tr><th>Method Signature</th><th>Return Type</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><code>process_speech_text(speech_transcript=None, ...)</code></td><td><code>dict</code></td><td>Processes audio file or transcript inputs, executes tool calls if triggered, and synthesizes spoken outputs with barge-in support.</td></tr>
-<tr><td><code>process_audio(audio_file, ...)</code></td><td><code>dict</code></td><td>Convenience execution method for audio-only file inputs (.wav, .mp3, .m4a).</td></tr>
-<tr><td><code>register_tool(name, callable_fn)</code></td><td><code>None</code></td><td>Registers a custom agent callback or Python function mapping dynamically.</td></tr>
-
-            </tbody>
-          </table>
-
-          <h3>Execution Method Parameters</h3>
-          <p>Complete list of execution parameters accepted by the main method:</p>
-          <table class="param-table">
-            <thead>
-              <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>speech_transcript</td><td>str | None</td><td>Text transcript of the user's spoken input query. Default: `None`.</td></tr>
-<tr><td>audio_file</td><td>str | None</td><td>File path to raw recorded audio input (.wav, .mp3, .m4a) for audio-only queries. Default: `None`.</td></tr>
-<tr><td>language</td><td>str | 'english'</td><td>Target response and speech synthesis language ('english', 'hindi', 'tamil', 'spanish', 'french', 'german'). Default: `'english'`.</td></tr>
-<tr><td>system_prompt</td><td>str | None</td><td>Custom instruction guidelines passed to the voice assistant and tool functions. Default: `None`.</td></tr>
-<tr><td>user_input</td><td>str | None</td><td>Additional user parameters or contextual state data forwarded to tool calls. Default: `None`.</td></tr>
-<tr><td>barge_in</td><td>bool | True</td><td>Overriding real-time speech interruption toggle for the active request. Default: `True`.</td></tr>
-<tr><td>barge_in_sensitivity</td><td>float | 0.5</td><td>Overriding interruption detection sensitivity threshold. Default: `0.5`.</td></tr>
-<tr><td>temperature</td><td>float | 0.7</td><td>Sampling temperature parameter controlling LLM randomness. Default: `0.7`.</td></tr>
-<tr><td>top_p</td><td>float | 0.9</td><td>Nucleus sampling probability cutoff threshold. Default: `0.9`.</td></tr>
-<tr><td>max_tokens</td><td>int | 256</td><td>Maximum generation token count limit per request. Default: `256`.</td></tr>
-
-            </tbody>
-          </table>
-
-          <h3>Quick Start</h3>
-          <pre><code class="language-python">from slm_voice import SLMVoiceAgent
-from slm_rag import SLMRag
-
-# Initialize sub-agent tool
-rag = SLMRag()
-
-# Initialize Voice Agent with barge-in & LLM parameters
-voice = SLMVoiceAgent(
-    tools={"RAG": lambda q, **kw: rag.answer(chunks=None, question=q)},
-    barge_in=True,
-    barge_in_sensitivity=0.5,
-    temperature=0.7,
-    top_p=0.9,
-    max_tokens=256
-)
-
-# Audio file input execution with barge-in support
-res1 = voice.process_audio(
-    audio_file="user_query.wav",
+voice = SLMVoiceAgent(temperature=0.7, top_p=0.9, max_tokens=256)
+res = voice.process_speech_text(
+    speech_transcript="Schedule a team sync meeting for tomorrow at 3 PM",
     language="Hindi",
-    system_prompt="Strict formal voice responses",
-    user_input="Focus on financial data",
-    barge_in=True,
-    temperature=0.7
-)
-
-# Text transcript input execution
-res2 = voice.process_speech_text(
-    speech_transcript="RAG search Q3 revenue",
-    language="Tamil",
-    system_prompt="Summarize answers concisely",
-    user_input="Exclude archived files",
+    system_prompt="Conversational voice assistant",
+    user_input="Remind about Q3 project deadline",
     temperature=0.7,
     top_p=0.9,
     max_tokens=256
 )
-print(res2)</code></pre>
-        </section>
+print(res)</code></pre>
+          </div>
+        </div>
+      </section>
 
-        <!-- ENVIRONMENT VARIABLES -->
-        <section class="doc-section" id="env-vars">
-          <h2>Environment Variables</h2>
-          <p>Configure agent parameters globally using environment values:</p>
-          <table class="param-table">
-            <thead>
-              <tr><th>Environment Variable</th><th>Default</th><th>Purpose</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>SLM_VOICE_AGENT_N_THREADS</td><td>4</td><td>Sets CPU inference execution threads.</td></tr>
-              <tr><td>SLM_VOICE_AGENT_CACHE_DIR</td><td>~/.cache/slm-voice/</td><td>Default directory to store downloaded ONNX weights.</td></tr>
-            </tbody>
-          </table>
-        </section>
-
-        <!-- PERFORMANCE -->
-        <section class="doc-section" id="performance">
-          <h2>CPU Performance Tuning</h2>
-          <p>To run the <code>SLMVoiceAgent</code> engine efficiently on CPU under 1.5 GB memory footprint:</p>
-          <ul>
-            <li><strong>Match Threads to Core Count:</strong> Set <code>n_threads</code> or <code>SLM_VOICE_AGENT_N_THREADS</code> to match physical CPU core count.</li>
-            <li><strong>Sequential Processing:</strong> Avoid concurrent processing when batch files are large.</li>
-            <li><strong>Garbage Collection:</strong> Clear variables and run <code>gc.collect()</code> to release model RAM blocks after execution.</li>
-          </ul>
-        </section>
-
-        <!-- VERIFIED LOGS -->
-        <section class="doc-section">
-          <h2>Verified Input &amp; Output Logs</h2>
-          <p>Diagnostic execution console response running locally on CPU:</p>
-          <div class="tip-box" style="background: #0f172a; border: 1px solid #1e293b;">
-            <pre><code style="color: #38bdf8; font-family: monospace; font-size: 0.9rem; line-height: 1.5; display: block; white-space: pre-wrap;">→ INPUT (Audio / Transcript):
-"RAG search Q3 revenue"
+      <!-- VERIFIED LOGS -->
+      <section class="doc-section">
+        <h2>🔍 Verified Output Logs</h2>
+        <p>Diagnostic execution console output running locally on CPU:</p>
+        <div class="code-panel" style="max-width:100%; background: #0f172a; border: 1px solid #1e293b; border-radius: 14px; overflow: hidden; margin: 1rem 0;">
+          <div class="code-header" style="background: #1e293b; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155;">
+            <div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+            <div class="code-title" style="color: #38bdf8; font-weight: 700; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace;">Output Console</div>
+          </div>
+          <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
+            <pre style="margin:0; background:#0f172a; color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.85rem; border:none; box-shadow:none; padding:0; white-space: pre-wrap; word-break: break-word;">→ INPUT:
+Speech Transcript: Schedule a team sync meeting for tomorrow at 3 PM
+Language: Hindi
 
 ← OUTPUT:
 {
-  'transcript': 'RAG search Q3 revenue',
-  'response': "[TA Translation of 'RAG response: The Q3 revenue total is $1.25M.']",
+  'status': '200 OK',
+  'transcript': 'Schedule a team sync meeting for tomorrow at 3 PM',
+  'response': '[HI Synthesis]: Scheduled team sync meeting for tomorrow at 3 PM.',
   'audio_synthesized': True,
-  'barge_in_enabled': True,
-  'temperature': 0.7
-}</code></pre>
+  'barge_in_enabled': True
+}</pre>
           </div>
-        
-          <h3>Listen to Synthesized Speech Response</h3>
-          <p>Play the verified audio output synthesized locally by the voice agent on CPU:</p>
-          
-          <div class="audio-player-container" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.25rem; max-width: 500px; margin-top: 1rem; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-            <button id="play-pause-btn" style="background: #4f46e5; border: none; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; transition: transform 0.2s, background-color 0.2s; flex-shrink: 0; outline: none;">
-              <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 2px;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-              <svg id="pause-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-            </button>
-            <div style="flex-grow: 1;">
-              <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #475569; margin-bottom: 0.4rem;">
-                <span id="player-status">Agent Audio Output</span>
-                <span id="player-time">0:00 / 0:00</span>
-              </div>
-              <div style="background: #e2e8f0; height: 6px; border-radius: 3px; position: relative; cursor: pointer;" id="progress-bar-container">
-                <div style="background: #4f46e5; height: 100%; width: 0%; border-radius: 3px;" id="progress-bar"></div>
-              </div>
-            </div>
-            <audio id="agent-audio" src="speech.m4a"></audio>
-          </div>
-          
-          <script>
-            const audio = document.getElementById('agent-audio');
-            const playPauseBtn = document.getElementById('play-pause-btn');
-            const playIcon = document.getElementById('play-icon');
-            const pauseIcon = document.getElementById('pause-icon');
-            const progressBar = document.getElementById('progress-bar');
-            const progressBarContainer = document.getElementById('progress-bar-container');
-            const timeDisplay = document.getElementById('player-time');
-            const statusDisplay = document.getElementById('player-status');
+        </div>
+      </section>
 
-            function togglePlay() {
-              if (audio.paused) {
-                audio.play();
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-                statusDisplay.textContent = 'Playing...';
-              } else {
-                audio.pause();
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
-                statusDisplay.textContent = 'Paused';
-              }
-            }
-
-            playPauseBtn.addEventListener('click', togglePlay);
-
-            audio.addEventListener('timeupdate', () => {
-              const current = audio.currentTime;
-              const duration = audio.duration || 0;
-              const percent = (current / duration) * 100;
-              progressBar.style.width = percent + '%';
-              
-              const curMins = Math.floor(current / 60);
-              const curSecs = Math.floor(current % 60).toString().padStart(2, '0');
-              const durMins = Math.floor(duration / 60);
-              const durSecs = Math.floor(duration % 60).toString().padStart(2, '0');
-              timeDisplay.textContent = `${curMins}:${curSecs} / ${durMins}:${durSecs}`;
-            });
-
-            audio.addEventListener('ended', () => {
-              playIcon.style.display = 'block';
-              pauseIcon.style.display = 'none';
-              statusDisplay.textContent = 'Finished';
-              progressBar.style.width = '0%';
-            });
-
-            progressBarContainer.addEventListener('click', (e) => {
-              const rect = progressBarContainer.getBoundingClientRect();
-              const clickX = e.clientX - rect.left;
-              const width = rect.width;
-              const duration = audio.duration || 0;
-              audio.currentTime = (clickX / width) * duration;
-            });
-            
-            playPauseBtn.addEventListener('mouseenter', () => {
-              playPauseBtn.style.transform = 'scale(1.08)';
-            });
-            playPauseBtn.addEventListener('mouseleave', () => {
-              playPauseBtn.style.transform = 'scale(1)';
-            });
-          </script>
-        </section>
-      </div>
+      <!-- FOOTER -->
+      <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
+        <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
+      </footer>
     </main>
   </div>
+
   <script src="app.js"></script>
 </body>
 </html>
