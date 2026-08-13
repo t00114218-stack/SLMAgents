@@ -3,16 +3,16 @@ requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["slm_git_copilot"]
+packages = ["slm_git_repo_manager"]
 
 [project]
-name = "slm-git-copilot"
+name = "slm-git-repo-manager"
 version = "0.1.0"
-description = "A lightweight local CPU-optimized Conventional Commit generator via ONNX Runtime"
+description = "A lightweight local CPU-optimized Conventional Commit and Git repository manager via ONNX Runtime"
 readme = "README.md"
 requires-python = ">=3.9"
 keywords = [
-    "llm", "slm", "git", "commit", "copilot", "local-ai", "cpu-inference"
+    "llm", "slm", "git", "commit", "repo-manager", "local-ai", "cpu-inference"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",

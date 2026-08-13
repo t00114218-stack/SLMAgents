@@ -83,8 +83,8 @@ class SLMChunker:
                     formatted_chunks = []
                     for idx, c in enumerate(chunks_list):
                         text_val = c.get("text", "").strip()
-                        # Clean and filter out tiny, one-word, or meaningless snippets (minimum 15 words)
-                        if len(text_val.split()) >= 15:
+                        # Clean and filter out tiny, one-word, or meaningless snippets (minimum 3 words)
+                        if len(text_val.split()) >= 3:
                             formatted_chunks.append({
                                 "text": text_val,
                                 "metadata": {
@@ -137,7 +137,7 @@ class SLMChunker:
                     product = w_clean
                     break
                     
-            if len(para.split()) >= 15:
+            if len(para.split()) >= 3:
                 chunks.append({
                     "text": para,
                     "metadata": {

@@ -416,10 +416,10 @@ def run_code_interpreter(inputs):
         user_input=inputs.get("user_input")
     )
 
-def run_git_copilot(inputs):
+def run_git_repo_manager(inputs):
     get_shared_onnx_genai()
-    from slm_git_copilot import SLMGitCopilot
-    agent = SLMGitCopilot()
+    from slm_git_repo_manager import SLMGitRepoManager
+    agent = SLMGitRepoManager()
     return agent.generate_commit_message(
         diff_text=inputs.get("diff", ""),
         system_prompt=inputs.get("system_prompt"),
@@ -713,7 +713,7 @@ AGENT_DISPATCH = {
     "web_agent": run_web_agent,
     "cli": run_cli,
     "code_interpreter": run_code_interpreter,
-    "git_copilot": run_git_copilot,
+    "git_repo_manager": run_git_repo_manager,
     "json_cleaner": run_json_cleaner,
     "document_parser": run_document_parser,
     "vision_parser": run_vision,

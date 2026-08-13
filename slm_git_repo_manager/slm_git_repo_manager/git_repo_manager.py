@@ -9,7 +9,7 @@ except ImportError:
 
 def load_config() -> tuple[dict, str]:
     config_paths = [
-        os.environ.get("SLM_GIT_COPILOT_CONFIG"),
+        os.environ.get("SLM_GIT_REPO_MANAGER_CONFIG"),
         "./config.yaml",
         "../config.yaml",
         os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml"),
@@ -24,9 +24,9 @@ def load_config() -> tuple[dict, str]:
                 pass
     return {}, ""
 
-class SLMGitCopilot:
+class SLMGitRepoManager:
     """
-    A local CPU-optimized Conventional Commit assistant powered by a local Small Language Model (SLM)
+    A local CPU-optimized Conventional Commit and Git repository manager powered by a local Small Language Model (SLM)
     running via ONNX Runtime GenAI. Parses git diff structures and creates beautifully formatted commit messages.
     """
     def __init__(self, model_path=None, cache_dir=None, n_ctx=None, n_threads=None):
@@ -36,15 +36,15 @@ class SLMGitCopilot:
                 "pip install onnxruntime-genai"
             )
 
-        n_threads = n_threads or int(os.environ.get("SLM_GIT_COPILOT_N_THREADS", 4))
-        self.n_ctx     = n_ctx     or int(os.environ.get("SLM_GIT_COPILOT_N_CTX", 2048))
-        cache_dir = cache_dir or os.environ.get("SLM_GIT_COPILOT_CACHE_DIR")
+        n_threads = n_threads or int(os.environ.get("SLM_GIT_REPO_MANAGER_N_THREADS", 4))
+        self.n_ctx     = n_ctx     or int(os.environ.get("SLM_GIT_REPO_MANAGER_N_CTX", 2048))
+        cache_dir = cache_dir or os.environ.get("SLM_GIT_REPO_MANAGER_CACHE_DIR")
 
         os.environ["OMP_NUM_THREADS"] = str(n_threads)
         os.environ["MKL_NUM_THREADS"] = str(n_threads)
             
         self.model_path = self._resolve_model_path(model_path, cache_dir)
-        print(f"[SLMGitCopilot] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
+        print(f"[SLMGitRepoManager] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
         self.model = og.Model(self.model_path)
         self.tokenizer = og.Tokenizer(self.model)
         
@@ -55,7 +55,7 @@ class SLMGitCopilot:
             return os.path.abspath(model_path)
 
         config, config_file_path = load_config()
-        model_config = config.get("models", {}).get("git_copilot", {})
+        model_config = config.get("models", {}).get("git_repo_manager", {})
         config_path = model_config.get("path", "../../models/qwen2.5-1.5b-onnx")
         config_path = os.path.expanduser(config_path)
         
@@ -67,7 +67,7 @@ class SLMGitCopilot:
                 return root
             
         repo_id = model_config.get("repo_id", "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX")
-        print(f"[SLMGitCopilot] ONNX Model not found at configured path. Auto-downloading...")
+        print(f"[SLMGitRepoManager] ONNX Model not found at configured path. Auto-downloading...")
         os.makedirs(config_path, exist_ok=True)
         
         from huggingface_hub import snapshot_download

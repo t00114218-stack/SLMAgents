@@ -431,7 +431,7 @@ class SLMDocumentParser:
         chunks = []
         for para in paragraphs:
             para = para.strip()
-            if para and len(para.split()) >= 15:
+            if para and len(para.split()) >= 3:
                 chunks.append({
                     "text": para,
                     "metadata": {

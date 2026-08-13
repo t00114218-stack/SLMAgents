@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.join(base_dir, "slm_summarizer"))
 sys.path.insert(0, os.path.join(base_dir, "slm_text_to_sql"))
 sys.path.insert(0, os.path.join(base_dir, "slm_cli_agent"))
 sys.path.insert(0, os.path.join(base_dir, "slm_code_interpreter"))
-sys.path.insert(0, os.path.join(base_dir, "slm_git_copilot"))
+sys.path.insert(0, os.path.join(base_dir, "slm_git_repo_manager"))
 sys.path.insert(0, os.path.join(base_dir, "slm_json_cleaner"))
 sys.path.insert(0, os.path.join(base_dir, "slm_document_parser"))
 sys.path.insert(0, os.path.join(base_dir, "slm_vision_parser"))
@@ -369,6 +369,7 @@ AGENT_EXECUTORS = {
     "SLMCLIAgent": run_slm_cli_agent,
     "SLMCodeInterpreter": run_slm_code_interpreter,
     "SLMGitCopilot": run_slm_git_copilot,
+    "SLMGitRepoManager": run_slm_git_copilot,
     "SLMJSONCleaner": run_slm_json_cleaner,
     "SLMDocumentParser": run_slm_document_parser,
     "SLMVisionParser": run_slm_vision_parser,

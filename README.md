@@ -31,7 +31,7 @@ This monorepo is organized into the following main projects:
 | [**`slm_text_to_sql`**](./slm_text_to_sql) | CPU-optimized Text-to-SQL agent via ONNX Runtime, with built-in QLoRA TPU/GPU fine-tuning. | `pip install slm-text-to-sql` |
 | [**`slm_cli_agent`**](./slm_cli_agent) | CPU-optimized command line helper translating language to safe executable commands. | `pip install -e ./slm_cli_agent` |
 | [**`slm_code_interpreter`**](./slm_code_interpreter) | Sandboxed Python execution context with auto self-correction traceback recovery loops. | `pip install -e ./slm_code_interpreter` |
-| [**`slm_git_copilot`**](./slm_git_copilot) | Git diff helper translating raw diff streams to conventional commits. | `pip install -e ./slm_git_copilot` |
+| [**`slm_git_repo_manager`**](./slm_git_repo_manager) | Git diff helper translating raw diff streams to conventional commits. | `pip install -e ./slm_git_repo_manager` |
 | [**`slm_json_cleaner`**](./slm_json_cleaner) | Pattern mapping utility repairing malformed/broken JSON strings to fit target schemas. | `pip install -e ./slm_json_cleaner` |
 | [**`slm_document_parser`**](./slm_document_parser) | Structure-aware layout parser converting PDF/DOCX to markdown and extracting JSON data. | `pip install -e ./slm_document_parser` |
 | [**`slm_vision_parser`**](./slm_vision_parser) | Visual layout parser and OCR processor for whiteboard flowcharts and image diagrams. | `pip install -e ./slm_vision_parser` |

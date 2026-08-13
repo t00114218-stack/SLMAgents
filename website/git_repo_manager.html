@@ -3,30 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SLM Git Co-pilot docs: Review git branch diffs and structure standards conventional commit messages locally on CPU. Config options and API specifications.">
+  <meta name="description" content="SLM Git Repo Manager docs: Review git branch diffs and structure standards conventional commit messages locally on CPU. Config options and API specifications.">
   <meta name="keywords" content="SLM Git Copilot, conventional commits, git automation, local AI, CPU inference, ONNX Runtime, Python, pip, offline development">
   <meta name="author" content="SLM Agents Community">
   <meta name="robots" content="index, follow">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://spcv-slm-agents.hf.space/git_copilot.html">
-  <meta property="og:title" content="SLM Git Co-pilot | Local CPU Git Assistant — SLM Agents">
+  <meta property="og:url" content="https://spcv-slm-agents.hf.space/git_repo_manager.html">
+  <meta property="og:title" content="SLM Git Repo Manager | Local CPU Git Assistant — SLM Agents">
   <meta property="og:description" content="Review git branch diffs and generate conventional commit messages locally on CPU. Truncation limits, parameters, and quick start guides.">
   <meta property="og:image" content="https://spcv-slm-agents.hf.space/assets/preview.png">
   <meta property="og:site_name" content="SLM Agents">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://spcv-slm-agents.hf.space/git_copilot.html">
-  <meta name="twitter:title" content="SLM Git Co-pilot | Local CPU Git Assistant — SLM Agents">
+  <meta name="twitter:url" content="https://spcv-slm-agents.hf.space/git_repo_manager.html">
+  <meta name="twitter:title" content="SLM Git Repo Manager | Local CPU Git Assistant — SLM Agents">
   <meta name="twitter:description" content="Review git branch diffs and generate conventional commit messages locally on CPU. Truncation limits, parameters, and quick start guides.">
   <meta name="twitter:image" content="https://spcv-slm-agents.hf.space/assets/preview.png">
 
   <!-- Canonical -->
-  <link rel="canonical" href="https://spcv-slm-agents.hf.space/git_copilot.html">
+  <link rel="canonical" href="https://spcv-slm-agents.hf.space/git_repo_manager.html">
 
-  <title>SLM Git Co-pilot | Documentation</title>
+  <title>SLM Git Repo Manager | Documentation</title>
   <link rel="stylesheet" href="style.css">
 
   <!-- Structured Data -->
@@ -34,9 +34,9 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "SLM Git Co-pilot — Local CPU Git Assistant Documentation",
-    "description": "Complete documentation for SLM Git Co-pilot: an offline conventional commits generator. Covers diff truncation, API parameters, and configuration options.",
-    "url": "https://spcv-slm-agents.hf.space/git_copilot.html",
+    "headline": "SLM Git Repo Manager — Local CPU Git Assistant Documentation",
+    "description": "Complete documentation for SLM Git Repo Manager: an offline conventional commits generator. Covers diff truncation, API parameters, and configuration options.",
+    "url": "https://spcv-slm-agents.hf.space/git_repo_manager.html",
     "author": { "@type": "Organization", "name": "SLM Agents Community" },
     "publisher": { "@type": "Organization", "name": "SLM Agents", "url": "https://spcv-slm-agents.hf.space" },
     "dateModified": "2026-08-11",
@@ -83,7 +83,7 @@
               <a href="sql.html">Text-to-SQL Docs</a>
               <a href="cli.html">CLI Agent Docs</a>
               <a href="code_interpreter.html">Code Interpreter Docs</a>
-              <a href="git_copilot.html">Git Co-pilot Docs</a>
+              <a href="git_repo_manager.html">Git Repo Manager Docs</a>
               <a href="json_cleaner.html">JSON Cleaner Docs</a>
               <a href="document_parser.html">Document Parser Docs</a>
               <a href="vision_parser.html">Vision Parser Docs</a>
@@ -115,9 +115,9 @@
     <main class="main-content">
       <div class="doc-content-wrapper">
         <section class="doc-section" style="margin-top: 0;">
-          <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM Git Co-pilot</span></div>
+          <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM Git Repo Manager</span></div>
           <div class="badge-pill">🐙 Git Assist Agent</div>
-          <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM Git Co-pilot</h1>
+          <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM Git Repo Manager</h1>
           <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Lightweight local Git utility that processes raw diff streams and formats standards-compliant Conventional Commit messages offline.</p>
         </section>
 
@@ -135,10 +135,10 @@
             <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Terminal</div></div>
             <div class="code-content" style="display:block;padding:1.5rem">
               <pre><code><span class="comment"># Install in editable mode locally</span>
-pip install -e ./slm_git_copilot
+pip install -e ./slm_git_repo_manager
 
 <span class="comment"># Set runtime thread performance</span>
-export SLM_GIT_COPILOT_N_THREADS=4</code></pre>
+export SLM_GIT_REPO_MANAGER_N_THREADS=4</code></pre>
             </div>
           </div>
         </section>
@@ -157,7 +157,7 @@ export SLM_GIT_COPILOT_N_THREADS=4</code></pre>
             </div>
             <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
               <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.88rem; border:none; box-shadow:none; padding:0; line-height: 1.75;"><span style="color:#64748b;"># 1. Create and enter a new directory</span>
-<span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">mkdir</span> <span style="color:#38bdf8;">slm_git_copilot</span> <span style="color:#94a3b8;">&amp;&amp;</span> <span style="color:#c084fc; font-weight:700;">cd</span> <span style="color:#38bdf8;">slm_git_copilot</span>
+<span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">mkdir</span> <span style="color:#38bdf8;">slm_git_repo_manager</span> <span style="color:#94a3b8;">&amp;&amp;</span> <span style="color:#c084fc; font-weight:700;">cd</span> <span style="color:#38bdf8;">slm_git_repo_manager</span>
 
 <span style="color:#64748b;"># 2. Initialise empty git repo and add remote</span>
 <span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">git init</span>
@@ -165,7 +165,7 @@ export SLM_GIT_COPILOT_N_THREADS=4</code></pre>
 
 <span style="color:#64748b;"># 3. Enable sparse-checkout and set target folder</span>
 <span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">git sparse-checkout init</span> <span style="color:#94a3b8;">--cone</span>
-<span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">git sparse-checkout set</span> <span style="color:#38bdf8;">slm_git_copilot</span>
+<span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">git sparse-checkout set</span> <span style="color:#38bdf8;">slm_git_repo_manager</span>
 
 <span style="color:#64748b;"># 4. Pull only that agent's source</span>
 <span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">git pull origin</span> <span style="color:#38bdf8;">main</span></pre>
@@ -180,12 +180,12 @@ export SLM_GIT_COPILOT_N_THREADS=4</code></pre>
             </div>
             <div class="code-content" style="display:block; padding: 1.25rem 1.5rem; background: #0f172a;">
               <pre style="margin:0; background:#0f172a; color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:0.88rem; border:none; box-shadow:none; padding:0; line-height: 1.75;"><span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">git clone</span> <span style="color:#38bdf8;">https://github.com/t00114218-stack/SLMAgents.git</span>
-<span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">cd</span> <span style="color:#38bdf8;">SLMAgents/slm_git_copilot</span></pre>
+<span style="color:#34d399;">$</span> <span style="color:#c084fc; font-weight:700;">cd</span> <span style="color:#38bdf8;">SLMAgents/slm_git_repo_manager</span></pre>
             </div>
           </div>
 
           <p style="margin-top: 1.25rem; font-size: 0.9rem; color: #475569; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 1rem 1.25rem;">
-            💡 <strong>Tip:</strong> After checkout, install the package locally with <code style="background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; padding: 2px 8px; border-radius: 5px; font-weight: 700;">pip install -e ./slm_git_copilot</code> to run in editable mode without publishing to PyPI.
+            💡 <strong>Tip:</strong> After checkout, install the package locally with <code style="background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; padding: 2px 8px; border-radius: 5px; font-weight: 700;">pip install -e ./slm_git_repo_manager</code> to run in editable mode without publishing to PyPI.
           </p>
         </section>
 
@@ -196,9 +196,9 @@ export SLM_GIT_COPILOT_N_THREADS=4</code></pre>
             <thead><tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr></thead>
             <tbody>
               <tr><td>model_path</td><td>str | None</td><td>Explicit path to the ONNX model directory. Defaults to caching/sharing the main model in the monorepo.</td></tr>
-              <tr><td>cache_dir</td><td>str | None</td><td>HF model directory path. Also settable via <span class="env-tag">SLM_GIT_COPILOT_CACHE_DIR</span>.</td></tr>
-              <tr><td>n_ctx</td><td>int | 2048</td><td>Context window size in tokens. Also settable via <span class="env-tag">SLM_GIT_COPILOT_N_CTX</span>.</td></tr>
-              <tr><td>n_threads</td><td>int | 4</td><td>CPU threads for ONNX Runtime. Also settable via <span class="env-tag">SLM_GIT_COPILOT_N_THREADS</span>.</td></tr>
+              <tr><td>cache_dir</td><td>str | None</td><td>HF model directory path. Also settable via <span class="env-tag">SLM_GIT_REPO_MANAGER_CACHE_DIR</span>.</td></tr>
+              <tr><td>n_ctx</td><td>int | 2048</td><td>Context window size in tokens. Also settable via <span class="env-tag">SLM_GIT_REPO_MANAGER_N_CTX</span>.</td></tr>
+              <tr><td>n_threads</td><td>int | 4</td><td>CPU threads for ONNX Runtime. Also settable via <span class="env-tag">SLM_GIT_REPO_MANAGER_N_THREADS</span>.</td></tr>
                           <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
               <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
 </tbody>
@@ -218,9 +218,9 @@ export SLM_GIT_COPILOT_N_THREADS=4</code></pre>
           <div class="code-panel" style="max-width:100%">
             <div class="code-header"><div class="code-dots"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div><div class="code-title">Python Quick Start</div></div>
             <div class="code-content" style="display:block;padding:1.5rem">
-              <pre><code><span class="keyword">from</span> slm_git_copilot.git_copilot <span class="keyword">import</span> SLMGitCopilot
+              <pre><code><span class="keyword">from</span> slm_git_repo_manager.git_repo_manager <span class="keyword">import</span> SLMGitRepoManager
 
-copilot = <span class="function">SLMGitCopilot</span>()
+copilot = <span class="function">SLMGitRepoManager</span>()
 
 diff_data = <span class="string">"""diff --git a/slm_core/orchestrator.py b/slm_core/orchestrator.py
 --- a/slm_core/orchestrator.py
@@ -253,7 +253,7 @@ msg = copilot.<span class="function">generate_commit_message</span>(diff_data)
 
         <section class="doc-section" id="templates">
           <h2>Conventional Commit Standards</h2>
-          <p>The Git Co-pilot forces structural formatting that aligns strictly with standard guidelines:</p>
+          <p>The Git Repo Manager forces structural formatting that aligns strictly with standard guidelines:</p>
           <ul>
             <li><strong>Formats:</strong> <code>&lt;type&gt;(&lt;scope&gt;): &lt;description&gt;</code> followed by optional description paragraphs.</li>
             <li><strong>Permitted Types:</strong> <code>feat</code>, <code>fix</code>, <code>docs</code>, <code>style</code>, <code>refactor</code>, <code>perf</code>, <code>test</code>, <code>build</code>, <code>ci</code>, <code>chore</code>, <code>revert</code>.</li>
@@ -263,7 +263,7 @@ msg = copilot.<span class="function">generate_commit_message</span>(diff_data)
 
         <section class="doc-section" id="workflows">
           <h2>🔀 Advanced Git Workflows</h2>
-          <p>Git Co-pilot exposes advanced instance methods to automate local staging, commits, merges, and auto-conflict resolutions:</p>
+          <p>Git Repo Manager exposes advanced instance methods to automate local staging, commits, merges, and auto-conflict resolutions:</p>
           
           <h3>1. Automated Conventional Commit</h3>
           <p>Stages tracked changes, generates a message, and commits in a single line:</p>
@@ -286,13 +286,13 @@ if not success:
     {
       "label": "SLM Git: Auto-Commit Changes",
       "type": "shell",
-      "command": "python -c \"from slm_git_copilot.git_copilot import SLMGitCopilot; print(SLMGitCopilot().commit()[1])\"",
+      "command": "python -c \"from slm_git_repo_manager.git_repo_manager import SLMGitRepoManager; print(SLMGitRepoManager().commit()[1])\"",
       "problemMatcher": []
     },
     {
       "label": "SLM Git: Resolve Merge Conflicts",
       "type": "shell",
-      "command": "python -c \"from slm_git_copilot.git_copilot import SLMGitCopilot; print(SLMGitCopilot().resolve_conflicts())\"",
+      "command": "python -c \"from slm_git_repo_manager.git_repo_manager import SLMGitRepoManager; print(SLMGitRepoManager().resolve_conflicts())\"",
       "problemMatcher": []
     }
   ]

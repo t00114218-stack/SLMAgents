@@ -9,7 +9,7 @@ echo ""
 
 AGENTS=(
   slm_cli_agent slm_code_interpreter slm_data slm_db_migration
-  slm_document_parser slm_email slm_embeddings slm_git_copilot
+  slm_document_parser slm_email slm_embeddings slm_git_repo_manager
   slm_json_cleaner slm_math slm_meeting slm_memory slm_orchestrator
   slm_pdf slm_pkb slm_rag slm_search_orchestrator slm_security
   slm_summarizer slm_task_planner slm_text_to_sql slm_translation

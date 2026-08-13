@@ -1,5 +1,5 @@
 models:
-  git_copilot:
+  git_repo_manager:
     path: "../../models/qwen2.5-1.5b-onnx"
     repo_id: "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX"
 

@@ -1,4 +1,4 @@
-# SLM Git Co-pilot
+# SLM Git Repo Manager
 
 A lightweight, local CPU-optimized Conventional Commit assistant powered by a local Small Language Model (SLM) running via ONNX Runtime GenAI. It analyzes Git diff outputs and structures highly readable, descriptive, and standards-compliant conventional commit messages in real-time.
 
@@ -19,7 +19,7 @@ A lightweight, local CPU-optimized Conventional Commit assistant powered by a lo
 
 In your local project environment:
 ```bash
-pip install -e ./slm_git_copilot
+pip install -e ./slm_git_repo_manager
 ```
 
 Ensure `onnxruntime-genai` is installed. It shares the central monorepo model path cached locally at `models/qwen2.5-1.5b-onnx`.
@@ -28,12 +28,12 @@ Ensure `onnxruntime-genai` is installed. It shares the central monorepo model pa
 
 ## API Reference
 
-### `SLMGitCopilot`
+### `SLMGitRepoManager`
 
 ```python
-from slm_git_copilot.git_copilot import SLMGitCopilot
+from slm_git_repo_manager.git_repo_manager import SLMGitRepoManager
 
-copilot = SLMGitCopilot(
+copilot = SLMGitRepoManager(
     model_path=None,   # Path to the ONNX model directory (defaults to models/qwen2.5-1.5b-onnx)
     cache_dir=None,    # Alternative HF cache dir
     n_ctx=2048,        # Context length (defaults to 2048)
@@ -60,9 +60,9 @@ Generates a commit message from a raw git diff content string.
 Here is an example showing conventional commit generation from a multi-file diff modifying routing logic and adding test assertions:
 
 ```python
-from slm_git_copilot.git_copilot import SLMGitCopilot
+from slm_git_repo_manager.git_repo_manager import SLMGitRepoManager
 
-copilot = SLMGitCopilot()
+copilot = SLMGitRepoManager()
 
 complex_diff = """
 diff --git a/slm_core/orchestrator.py b/slm_core/orchestrator.py
@@ -122,7 +122,7 @@ print(commit_msg) # Generates successfully using context truncation
 Specify settings inside the project directory:
 ```yaml
 models:
-  git_copilot:
+  git_repo_manager:
     path: "../../models/qwen2.5-1.5b-onnx"
     repo_id: "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX"
 ```
@@ -134,9 +134,9 @@ models:
 ### 1. Auto Commit Staged Changes (`commit`)
 Stages all tracked files, queries the local SLM to summarize modifications, writes a conventional commit message, and executes the commit automatically:
 ```python
-from slm_git_copilot.git_copilot import SLMGitCopilot
+from slm_git_repo_manager.git_repo_manager import SLMGitRepoManager
 
-copilot = SLMGitCopilot()
+copilot = SLMGitRepoManager()
 success, logs = copilot.commit()
 print(logs)
 ```
@@ -165,7 +165,7 @@ To run Git Co-pilot workflow triggers directly inside VS Code, add the following
     {
       "label": "SLM Git: Auto-Commit Changes",
       "type": "shell",
-      "command": "python -c \"from slm_git_copilot.git_copilot import SLMGitCopilot; print(SLMGitCopilot().commit()[1])\"",
+      "command": "python -c \"from slm_git_repo_manager.git_repo_manager import SLMGitRepoManager; print(SLMGitRepoManager().commit()[1])\"",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",
@@ -175,7 +175,7 @@ To run Git Co-pilot workflow triggers directly inside VS Code, add the following
     {
       "label": "SLM Git: Resolve Merge Conflicts",
       "type": "shell",
-      "command": "python -c \"from slm_git_copilot.git_copilot import SLMGitCopilot; print(SLMGitCopilot().resolve_conflicts())\"",
+      "command": "python -c \"from slm_git_repo_manager.git_repo_manager import SLMGitRepoManager; print(SLMGitRepoManager().resolve_conflicts())\"",
       "problemMatcher": [],
       "presentation": {
         "reveal": "always",

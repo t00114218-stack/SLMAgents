@@ -366,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <li class="sidebar-item" id="nav-orchestrator"><a href="orchestrator.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg> SLM Orchestrator</a></li>
       <li class="sidebar-item" id="nav-sql"><a href="sql.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> SLM Text-to-SQL</a></li>
       <li class="sidebar-item" id="nav-code-interpreter"><a href="code_interpreter.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg> SLM Code Interpreter</a></li>
-      <li class="sidebar-item" id="nav-git-copilot"><a href="git_copilot.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 15V9a4 4 0 0 0-4-4H9"></path><line x1="6" y1="9" x2="6" y2="15"></line></svg> SLM Git Co-pilot</a></li>
+      <li class="sidebar-item" id="nav-git-repo-manager"><a href="git_repo_manager.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 15V9a4 4 0 0 0-4-4H9"></path><line x1="6" y1="9" x2="6" y2="15"></line></svg> SLM Git Repo Manager</a></li>
       <li class="sidebar-item" id="nav-database-migrator"><a href="database_migrator.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg> SLM Database Migrator</a></li>
       
       <!-- Web & Scraping Category -->
@@ -404,8 +404,8 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("nav-cli")?.classList.add("active");
     } else if (page === "code_interpreter.html") {
       document.getElementById("nav-code-interpreter")?.classList.add("active");
-    } else if (page === "git_copilot.html") {
-      document.getElementById("nav-git-copilot")?.classList.add("active");
+    } else if (page === "git_repo_manager.html") {
+      document.getElementById("nav-git-repo-manager")?.classList.add("active");
     } else if (page === "json_cleaner.html") {
       document.getElementById("nav-json-cleaner")?.classList.add("active");
     } else if (page === "document_parser.html") {
@@ -660,10 +660,10 @@ const ALL_AGENT_SPECS = {
       exit_code: 0
     })
   },
-  git_copilot: {
-    name: "SLM Git Co-pilot",
-    package: "slm-git-copilot",
-    className: "SLMGitCopilot",
+  git_repo_manager: {
+    name: "SLM Git Repo Manager",
+    package: "slm-git-repo-manager",
+    className: "SLMGitRepoManager",
     methodName: "generate_commit_message",
     category: "Developer Tools",
     fields: [
@@ -671,7 +671,7 @@ const ALL_AGENT_SPECS = {
       { id: "system_prompt", label: "Commit Rule", default: "Follow Conventional Commits format.", type: "text" }
     ],
     getOutput: (vals) => ({
-      agent: "SLMGitCopilot",
+      agent: "SLMGitRepoManager",
       status: "200 OK",
       commit_message: "feat: add addition helper function in math utils",
       diff_snippet: vals.diff
@@ -1184,12 +1184,24 @@ function updateStudioOutput() {
   }
 }
 
+function formatLogVals(vals) {
+  let cleaned = {};
+  for (let key in vals) {
+    if (typeof vals[key] === 'string' && vals[key].length > 40) {
+      cleaned[key] = vals[key].substring(0, 30) + "... [truncated]";
+    } else {
+      cleaned[key] = vals[key];
+    }
+  }
+  return JSON.stringify(cleaned);
+}
+
 function getAgentThinkingLogs(agentKey, vals) {
   const spec = ALL_AGENT_SPECS[agentKey] || ALL_AGENT_SPECS["rag"];
   const logs = [
     `[*] Initializing ${spec.className} locally on CPU (threads=4, engine=quantized-onnx)...`,
     `[*] Loaded model configuration: ${spec.package}/config.yaml`,
-    `[Agent Thought] Analyzing parameters and constraints for inputs: ${JSON.stringify(vals)}`
+    `[Agent Thought] Analyzing parameters and constraints for inputs: ${formatLogVals(vals)}`
   ];
   
   if (agentKey === "rag") {
