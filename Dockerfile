@@ -17,12 +17,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 
-# Pre-download the Qwen ONNX model to the container during the build stage.
-# This ensures that HF Spaces spins up instantly without waiting for a 3GB model download at runtime.
-RUN python -c "from huggingface_hub import snapshot_download; \
-    snapshot_download(repo_id='tonythethompson/Qwen2.5-1.5B-Instruct-ONNX', \
-                      local_dir='/app/models/qwen2.5-1.5b-onnx', \
-                      ignore_patterns=['*cuda*', '*directml*'])"
 
 # Copy the rest of the monorepo codebase
 COPY . .
