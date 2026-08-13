@@ -245,24 +245,28 @@ class SLMVoiceAgent:
                     self._lazy_load_model()
                     if hasattr(self, "model") and self.model is not None:
                         prompt = f"<|im_start|>system\n{active_system_prompt}<|im_end|>\n<|im_start|>user\n{speech_transcript}<|im_end|>\n<|im_start|>assistant\n"
-                        tokens = self.tokenizer.encode(prompt)
+                        input_tokens = self.tokenizer.encode(prompt)
                         params = og.GeneratorParams(self.model)
-                        params.set_search_options(temperature=active_temp, top_p=active_top_p)
-                        params.input_ids = tokens
+                        params.set_search_options(
+                            max_length=len(input_tokens) + active_tokens,
+                            temperature=active_temp,
+                            top_p=active_top_p
+                        )
                         
                         generator = og.Generator(self.model, params)
-                        generated_tokens = []
+                        generator.append_tokens(input_tokens)
+                        
+                        response_text = ""
                         while not generator.is_done():
-                            generator.compute_logits()
                             generator.generate_next_token()
-                            next_token = generator.get_next_tokens()[0]
-                            generated_tokens.append(next_token)
-                            if len(generated_tokens) >= active_tokens:
-                                break
-                        response_text = self.tokenizer.decode(generated_tokens).strip()
+                            new_tokens = generator.get_next_tokens()
+                            if len(new_tokens) > 0:
+                                response_text += self.tokenizer.decode(new_tokens)
+                        response_text = response_text.strip()
                     else:
                         response_text = f"I heard you ask: '{speech_transcript}'. Processing your query locally on CPU."
-                except Exception:
+                except Exception as e:
+                    print(f"[SLMVoiceAgent] Generation error: {e}")
                     response_text = f"I heard you ask: '{speech_transcript}'. Processing your query locally on CPU."
 
         # Target language translation routing if non-English requested
