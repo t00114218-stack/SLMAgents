@@ -6,8 +6,18 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="SLM Agents Developer Portal")
+
+# Enable CORS for all origins to allow playground runs from slmagents.ai
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Setup sys.path to resolve all 26 SLM Agent packages locally
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
