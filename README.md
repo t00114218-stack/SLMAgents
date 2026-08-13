@@ -1,5 +1,5 @@
 ---
-title: SLM Agents - 26 Local CPU-Powered AI Agent Frameworks
+title: Open Source SLM Agents Community: Privacy-First AI for CPUs
 emoji: 🎯
 colorFrom: indigo
 colorTo: blue
