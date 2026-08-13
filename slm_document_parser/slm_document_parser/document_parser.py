@@ -135,6 +135,9 @@ class SLMDocumentParser:
                 except Exception as e:
                     print(f"[SLMDocumentParser] Failed to load PDF readers: {e}")
                 
+                if total_pages == 0:
+                    raise ValueError("No pages found or PDF readers failed to load")
+                
                 page_markdowns = []
                 for i in range(total_pages):
                     img_path = None
@@ -146,7 +149,7 @@ class SLMDocumentParser:
                             except Exception:
                                 pass
                                 
-                        if len(digital_text.strip()) > 150:
+                        if len(digital_text.strip()) >= 10:
                             print(f"[SLMDocumentParser] Page {i+1}/{total_pages} contains digital text ({len(digital_text)} chars). Using hybrid text bypass.")
                             page_md = digital_text.strip()
                         else:
@@ -483,6 +486,9 @@ class SLMDocumentParser:
                 except Exception as e:
                     print(f"[SLMDocumentParser] Failed to load PDF readers: {e}")
                 
+                if total_pages == 0:
+                    raise ValueError("No pages found or PDF readers failed to load")
+                
                 for i in range(total_pages):
                     img_path = None
                     try:
@@ -493,7 +499,7 @@ class SLMDocumentParser:
                             except Exception:
                                 pass
                                 
-                        if len(digital_text.strip()) > 150:
+                        if len(digital_text.strip()) >= 10:
                             print(f"[SLMDocumentParser] Page {i+1}/{total_pages} contains digital text ({len(digital_text)} chars). Using hybrid text bypass (low latency).")
                             page_md = digital_text.strip()
                         else:

@@ -10,6 +10,7 @@ jinja2
 markdown
 python-multipart
 pypdf
+pypdfium2
 python-docx
 Pillow
 transformers
