@@ -1,5 +1,5 @@
 ---
-title: SLM Agents
+title: SLM Agents - 26 Local CPU-Powered AI Agent Frameworks
 emoji: 🎯
 colorFrom: indigo
 colorTo: blue

@@ -125,7 +125,7 @@ Fetches webpage HTML, removes menus/navs/ads, and extracts data. If `schema_dict
 
 ## 🚀 5. Usage Example: Hybrid Web Scraper (Tables & Images)
 
-Here is a unified usage example scraping `https://www.slmagents.ai/vision_parser.html` (which contains both a parameters table and a flowchart image). The scraper automatically converts the table into a clean natural language paragraph and describes the image tag:
+Here is a unified usage example scraping `https://spcv-slm-agents.hf.space/vision_parser.html` (which contains both a parameters table and a flowchart image). The scraper automatically converts the table into a clean natural language paragraph and describes the image tag:
 
 ```python
 from slm_web_scraper.web_scraper import SLMWebScraper
@@ -133,7 +133,7 @@ from slm_web_scraper.web_scraper import SLMWebScraper
 scraper = SLMWebScraper()
 
 # Scrapes the vision parser page, describing tables and images automatically
-clean_text = scraper.scrape_url("https://www.slmagents.ai/vision_parser.html")
+clean_text = scraper.scrape_url("https://spcv-slm-agents.hf.space/vision_parser.html")
 print(clean_text)
 ```
 

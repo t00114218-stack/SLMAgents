@@ -50,7 +50,7 @@
               <a href="search_orchestrator.html">Search Orchestrator Docs</a>
             </div>
           </li>
-          <li><a href="index.html#studio">Playground</a></li>
+          <li><a href="https://huggingface.co/spaces/spcv/slm-agents" target="_blank">Playground</a></li>
           <li><a href="index.html#upcoming">Roadmap</a></li>
           <li><a href="https://huggingface.co/spaces/spcv/slm-agents" class="btn-hf-nav" target="_blank" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: #fef3c7; border: 1px solid #f59e0b; color: #b45309; font-weight: 700; text-decoration: none; font-size: 0.85rem; transition: all 0.2s;">🤗 Hugging Face Space</a></li>
         </ul>
@@ -144,13 +144,13 @@ scraper = SLMWebScraper()</code></pre>
         <p>Fetches a URL, filters out header/footer menus, dropdown lists, sidebars, and ads, and automatically parses tables and image content:</p>
 
         <h4>Hybrid Visual Scraping (Tables & Images)</h4>
-        <p>This example scrapes the vision parser documentation page <code>https://www.slmagents.ai/vision_parser.html</code>, describing its parameters table and flowchart image automatically:</p>
+        <p>This example scrapes the vision parser documentation page <code>https://spcv-slm-agents.hf.space/vision_parser.html</code>, describing its parameters table and flowchart image automatically:</p>
         <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
 # Scrapes page and converts tables/images to descriptions automatically
-clean_text = scraper.scrape_url("https://www.slmagents.ai/vision_parser.html")
+clean_text = scraper.scrape_url("https://spcv-slm-agents.hf.space/vision_parser.html")
 print(clean_text)</code></pre>
 
         <div class="tip-box">

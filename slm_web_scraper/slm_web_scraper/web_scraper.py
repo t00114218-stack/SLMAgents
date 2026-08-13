@@ -174,7 +174,7 @@ class SLMWebScraper:
                 print(f"[SLMWebScraper] Extracting and parsing image: {src_url} ...")
                 
                 # Fetch image data
-                if "slmagents.ai" in src_url or src_url.startswith("file://") or not src_url.startswith("http"):
+                if "slmagents.ai" in src_url or "spcv-slm-agents.hf.space" in src_url or src_url.startswith("file://") or not src_url.startswith("http"):
                     # Check locally
                     basename = src_url.split("/")[-1]
                     local_path = f"/Users/revathysuryaprakash/Documents/SLMAgents/website/{basename}"
@@ -259,7 +259,7 @@ class SLMWebScraper:
 
     def scrape_url(self, url: str, schema_dict: dict = None, max_retries: int = 3, system_prompt: str = None, user_input: str = None):
         """Fetches html from URL and extracts cleaned main content text, avoiding navigation/menus and ads."""
-        if "slmagents.ai" in url or "localhost" in url:
+        if "slmagents.ai" in url or "spcv-slm-agents.hf.space" in url or "localhost" in url:
             basename = url.split("/")[-1]
             if not basename:
                 basename = "index.html"

@@ -736,7 +736,7 @@ const ALL_AGENT_SPECS = {
     methodName: "scrape",
     category: "Web & Scraping",
     fields: [
-      { id: "url", label: "Target URL (Live Scrape)", default: "https://www.slmagents.ai/index.html", type: "text" },
+      { id: "url", label: "Target URL (Live Scrape)", default: "https://spcv-slm-agents.hf.space/index.html", type: "text" },
       { id: "schema", label: "Target JSON Schema", default: "{'title': 'str'}", type: "text" }
     ],
     getOutput: (vals) => ({
