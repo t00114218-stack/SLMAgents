@@ -3,25 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Interactive Multi-Agent Studio - Run 26 CPU-optimized SLM agents locally and offline in real-time.">
-  <meta property="og:title" content="Interactive Multi-Agent Studio | SLM Agents">
-  <meta property="og:description" content="Interactive Multi-Agent Studio - Run 26 CPU-optimized SLM agents locally and offline in real-time.">
+  <meta name="description" content="Interactive Multi-Agent Studio - Experience real-time CPU-optimized local model execution.">
   <title>Interactive Multi-Agent Studio | SLM Agents</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body style="background: #0f172a; color: #f8fafc; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; margin: 0; padding: 0;">
+<body style="overflow-y: auto !important; padding-top: 64px; background: #f8fafc; color: #0f172a; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
   <!-- Header -->
-  <header style="background: #1e293b; border-bottom: 1px solid #334155; padding: 16px 0; position: sticky; top: 0; z-index: 1000;">
-    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
-      <a href="index.html" style="color: #f8fafc; font-size: 1.25rem; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-        🎯 SLM Agents
-      </a>
+  <header style="position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 1000; background: #ffffff; border-bottom: 1px solid #cbd5e1; display: flex; align-items: center;">
+    <div class="container nav-container" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: #0f172a; font-weight: 800; font-size: 1.2rem;">
+          <div class="logo-icon" style="background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span>SLM Agents</span>
+        </a>
+      </div>
       <nav>
         <ul style="list-style: none; display: flex; gap: 24px; margin: 0; padding: 0; align-items: center;">
-          <li><a href="index.html" style="color: #94a3b8; text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s;">Home</a></li>
-          <li><a href="playground.html" style="color: #f8fafc; text-decoration: none; font-size: 0.95rem; font-weight: 700; transition: color 0.2s; border-bottom: 2px solid #38bdf8; padding-bottom: 4px;">Playground</a></li>
-          <li><a href="https://github.com/t00114218-stack/SLMAgents" target="_blank" style="color: #94a3b8; text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s;">GitHub</a></li>
+          <li><a href="index.html" style="color: #475569; text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s;">Home</a></li>
+          <li><a href="playground.html" style="color: #4f46e5; text-decoration: none; font-size: 0.95rem; font-weight: 700; transition: color 0.2s;">Playground</a></li>
+          <li><a href="https://github.com/t00114218-stack/SLMAgents" target="_blank" style="color: #475569; text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s;">GitHub</a></li>
           <li><a href="https://huggingface.co/spaces/spcv/slm-agents" class="btn-hf-nav" target="_blank" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: #fef3c7; border: 1px solid #f59e0b; color: #b45309; font-weight: 700; text-decoration: none; font-size: 0.85rem; transition: all 0.2s;">🤗 Hugging Face Space</a></li>
         </ul>
       </nav>
@@ -29,25 +34,25 @@
   </header>
 
   <!-- Interactive Multi-Agent Playground / Studio -->
-  <section class="studio-section" id="studio" style="padding: 60px 0; background: #0f172a;">
+  <section class="studio-section" id="studio" style="border-top: 1px solid rgba(0, 0, 0, 0.05); padding: 80px 0; background: #f8fafc;">
     <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
       <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
-        <div class="badge-pill" style="display: inline-block; margin-bottom: 0.75rem; background: rgba(56, 189, 248, 0.1); color: #38bdf8; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">🎮 Live Interactive Sandbox</div>
-        <h2 class="section-title" style="font-size: 2.5rem; color: #f8fafc; font-weight: 800; margin-bottom: 0.5rem;">Interactive Multi-Agent Studio</h2>
-        <p class="section-subtitle" style="font-size: 1.1rem; color: #94a3b8; max-width: 700px; margin: 0 auto;">Experience real-time CPU-optimized model execution. Select any of the 26 agents, customize inputs, and execute or generate unit tests live.</p>
+        <div class="badge-pill" style="display: inline-block; margin-bottom: 0.75rem; background: #e0f2fe; color: #0284c7; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #bae6fd;">🎮 Live Interactive Sandbox</div>
+        <h2 class="section-title" style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.5rem;">Interactive Multi-Agent Studio</h2>
+        <p class="section-subtitle" style="font-size: 1.05rem; color: #475569; max-width: 700px; margin: 0 auto;">Experience real-time CPU-optimized model execution. Select any of the 26 agents, customize inputs, and execute or generate unit tests live.</p>
       </div>
 
-      <div class="studio-grid" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; margin-top: 40px;">
+      <div class="studio-grid" style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; margin-top: 40px; text-align: left;">
         <!-- Parameters Panel -->
-        <div class="studio-panel" style="background: #1e293b; border: 1px solid #334155; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
-          <h3 style="color: #f8fafc; font-size: 1.35rem; font-weight: 700; margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px;">
+        <div class="studio-panel" style="background: rgba(15, 23, 42, 0.04); border: 1px solid rgba(15, 23, 42, 0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.03); padding: 30px; border-radius: 16px;">
+          <h3 style="color: #0f172a; font-size: 1.25rem; font-weight: 700; margin-top: 0; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px;">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
             Agent Parameters
           </h3>
           
           <div style="margin-bottom: 20px;">
-            <label style="display: block; font-size: 0.9rem; color: #94a3b8; font-weight: 700; margin-bottom: 0.5rem;">Select SLM Agent:</label>
-            <select id="studio-agent-select" onchange="onStudioAgentChange(this.value)" style="width: 100%; background: #0f172a; border: 1px solid #475569; border-radius: 8px; padding: 0.75rem 1rem; color: #f8fafc; font-size: 0.95rem; font-weight: 600; outline: none; cursor: pointer; transition: border-color 0.2s;">
+            <label style="display: block; font-size: 0.85rem; color: #475569; font-weight: 700; margin-bottom: 0.5rem;">Select SLM Agent:</label>
+            <select id="studio-agent-select" onchange="onStudioAgentChange(this.value)" style="width: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.75rem 1rem; color: #0f172a; font-size: 0.9rem; font-weight: 600; outline: none; cursor: pointer; transition: border-color 0.2s;">
               <option value="rag" selected>📚 SLM RAG</option>
               <option value="orchestrator">🎯 SLM Orchestrator</option>
               <option value="sql">📊 SLM Text-to-SQL</option>
@@ -78,22 +83,22 @@
           </div>
 
           <!-- Dynamic parameter inputs -->
-          <div id="studio-dynamic-fields" style="display: flex; flex-direction: column; gap: 1rem; color: #f8fafc;"></div>
+          <div id="studio-dynamic-fields" style="display: flex; flex-direction: column; gap: 1rem;"></div>
 
-          <button class="btn btn-primary" onclick="runStudioAgent()" style="width: 100%; margin-top: 1.5rem; padding: 14px 0; font-size: 1rem; font-weight: 700; border-radius: 8px; background: #38bdf8; color: #0f172a; border: none; cursor: pointer; transition: background 0.2s;">
+          <button class="btn btn-primary" onclick="runStudioAgent()" style="width: 100%; margin-top: 1.5rem; padding: 14px 0; font-size: 0.95rem; font-weight: 700; border-radius: 8px; background: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%); color: #ffffff; border: none; cursor: pointer; transition: opacity 0.2s; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);">
             ⚡ Run Agent Execution
           </button>
         </div>
 
         <!-- Console Panel -->
-        <div class="studio-panel" style="background: #1e293b; border: 1px solid #334155; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); display: flex; flex-direction: column;">
-          <div class="code-tabs" style="display: flex; gap: 10px; margin-bottom: 1.25rem; border-bottom: 1px solid #334155; padding-bottom: 10px;">
-            <button id="tab-mode-exec" class="code-tab-btn active" onclick="setStudioMode('exec')" style="background: transparent; border: none; color: #38bdf8; font-weight: 700; font-size: 0.9rem; padding: 4px 8px; cursor: pointer; border-bottom: 2px solid #38bdf8;">Execute Sandbox</button>
-            <button id="tab-mode-unittest" class="code-tab-btn" onclick="setStudioMode('unittest')" style="background: transparent; border: none; color: #94a3b8; font-weight: 700; font-size: 0.9rem; padding: 4px 8px; cursor: pointer;">Generate Unit Test</button>
+        <div class="studio-panel" style="background: rgba(15, 23, 42, 0.04); border: 1px solid rgba(15, 23, 42, 0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.03); padding: 30px; border-radius: 16px; display: flex; flex-direction: column;">
+          <div class="code-tabs" style="display: flex; gap: 10px; margin-bottom: 1.25rem; border-bottom: 1px solid rgba(15,23,42,0.08); padding-bottom: 10px;">
+            <button id="tab-mode-exec" class="code-tab-btn active" onclick="setStudioMode('exec')" style="background: transparent; border: none; color: #475569; font-weight: 700; font-size: 0.85rem; padding: 4px 8px; cursor: pointer; border-bottom: 2px solid #4f46e5;">Execute Sandbox</button>
+            <button id="tab-mode-unittest" class="code-tab-btn" onclick="setStudioMode('unittest')" style="background: transparent; border: none; color: #475569; font-weight: 700; font-size: 0.85rem; padding: 4px 8px; cursor: pointer;">Generate Unit Test</button>
           </div>
 
-          <div class="code-panel" style="flex: 1; min-height: 380px; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; border: 1px solid #334155;">
-            <div class="code-header" style="justify-content: space-between; background: #0f172a; padding: 10px 16px; display: flex; align-items: center; border-bottom: 1px solid #334155;">
+          <div class="code-panel" style="flex: 1; min-height: 380px; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; border: 1px solid #1e293b;">
+            <div class="code-header" style="justify-content: space-between; background: #1e293b; padding: 10px 16px; display: flex; align-items: center; border-bottom: 1px solid #334155;">
               <div class="code-dots">
                 <div class="code-dot" style="background: #ef4444; width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px;"></div>
                 <div class="code-dot" style="background: #f59e0b; width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px;"></div>
@@ -101,8 +106,8 @@
               </div>
               <button class="copy-btn" onclick="copyStudioCode()" style="background: transparent; border: none; color: #94a3b8; font-size: 0.8rem; font-weight: 700; cursor: pointer;">Copy</button>
             </div>
-            <div style="flex: 1; padding: 1.25rem; background: #0b0f19; overflow-y: auto; display: flex; flex-direction: column;">
-              <pre style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #38bdf8; white-space: pre-wrap; word-break: break-all; background: transparent; border: none; padding: 0;"><code id="studio-output-console">Initializing playground... Select an agent and click Run.</code></pre>
+            <div style="flex: 1; padding: 1.25rem; background: #0f172a; overflow-y: auto;">
+              <pre style="margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; color: #38bdf8; white-space: pre-wrap; word-break: break-all; background: #0f172a; border: none; box-shadow: none; padding: 0;"><code id="studio-output-console">Initializing playground...</code></pre>
             </div>
           </div>
         </div>
