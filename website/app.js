@@ -1490,19 +1490,59 @@ async function runStudioAgent() {
     if (!response.ok) {
       throw new Error(`Server returned status ${response.status}`);
     }
-    const data = await response.json();
-    if (data.error) {
-      throw new Error(data.error);
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let startedStreaming = false;
+    let finalData = null;
+    
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n\n");
+      buffer = lines.pop();
+      
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          const jsonStr = line.slice(6).trim();
+          if (!jsonStr) continue;
+          
+          try {
+            const data = JSON.parse(jsonStr);
+            if (data.token) {
+              if (!startedStreaming) {
+                consoleEl.textContent += `\n[Streaming Response Output]:\n`;
+                startedStreaming = true;
+              }
+              consoleEl.textContent += data.token;
+              consoleEl.scrollTop = consoleEl.scrollHeight;
+            } else if (data.status === "error") {
+              throw new Error(data.error);
+            } else if (data.done) {
+              finalData = data;
+            }
+          } catch (e) {
+            console.log("Error parsing stream line:", e);
+          }
+        }
+      }
+    }
+    
+    if (!finalData || !finalData.result) {
+      throw new Error("Empty or malformed stream response payload.");
     }
     
     if (currentStudioAgentKey === "voice") {
-      const trans = data.result.transcript || fieldVals.transcript || "";
-      const resp = data.result.response || "";
-      const aud = data.result.audio || "";
+      const trans = finalData.result.transcript || fieldVals.transcript || "";
+      const resp = finalData.result.response || "";
+      const aud = finalData.result.audio || "";
       renderAudioPlayerCard(consoleEl, trans, resp, aud);
     } else {
-      consoleEl.textContent += `[*] Inference complete. Formatting JSON output response payload...\n\n[JSON Result]:\n`;
-      consoleEl.textContent += JSON.stringify(data.result, null, 2);
+      consoleEl.textContent += `\n\n[*] Inference complete. Formatting JSON output response payload...\n\n[JSON Result]:\n`;
+      consoleEl.textContent += JSON.stringify(finalData.result, null, 2);
       consoleEl.scrollTop = consoleEl.scrollHeight;
     }
   } catch (err) {

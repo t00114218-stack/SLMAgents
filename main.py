@@ -2,11 +2,15 @@ import os
 import sys
 import json
 import traceback
+import threading
+import queue
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+
+thread_local_data = threading.local()
 
 app = FastAPI(title="SLM Agents Developer Portal")
 
@@ -58,8 +62,34 @@ def get_shared_onnx_genai():
             def __new__(cls, *args, **kwargs):
                 return shared_tokenizer
         
+        original_generator = og.Generator
+        class InterceptedGenerator:
+            def __init__(self, model, params):
+                self._gen = original_generator(shared_model, params)
+            def append_tokens(self, tokens):
+                self._gen.append_tokens(tokens)
+            def is_done(self):
+                return self._gen.is_done()
+            def generate_next_token(self):
+                self._gen.generate_next_token()
+                new_tokens = self._gen.get_next_tokens()
+                if len(new_tokens) > 0:
+                    token_id = int(new_tokens[0])
+                    q = getattr(thread_local_data, "token_queue", None)
+                    if q is not None:
+                        try:
+                            token_text = shared_tokenizer.decode([token_id])
+                            q.put(token_text)
+                        except Exception:
+                            pass
+            def get_next_tokens(self):
+                return self._gen.get_next_tokens()
+            def compute_logits(self):
+                self._gen.compute_logits()
+        
         og.Model = MockModel
         og.Tokenizer = MockTokenizer
+        og.Generator = InterceptedGenerator
         print("[System] Monkeypatched onnxruntime_genai classes successfully.")
     return shared_model, shared_tokenizer
 
@@ -738,12 +768,43 @@ async def run_agent(req: RunAgentRequest):
     dispatch_fn = AGENT_DISPATCH.get(req.agent_key)
     if not dispatch_fn:
          raise HTTPException(status_code=400, detail=f"Unknown agent: {req.agent_key}")
-    try:
-         result = dispatch_fn(req.inputs)
-         return JSONResponse(content={"status": "success", "result": result})
-    except Exception as e:
-         traceback.print_exc()
-         return JSONResponse(content={"status": "error", "error": str(e)}, status_code=500)
+         
+    token_queue = queue.Queue()
+    result_container = {"result": None, "error": None, "done": False}
+    
+    def worker():
+        thread_local_data.token_queue = token_queue
+        try:
+            res = dispatch_fn(req.inputs)
+            result_container["result"] = res
+        except Exception as e:
+            traceback.print_exc()
+            result_container["error"] = str(e)
+        finally:
+            result_container["done"] = True
+            token_queue.put(None)
+            
+    t = threading.Thread(target=worker)
+    t.start()
+    
+    async def sse_generator():
+        import asyncio
+        while not result_container["done"] or not token_queue.empty():
+            try:
+                while True:
+                    token = token_queue.get_nowait()
+                    if token is not None:
+                        yield f"data: {json.dumps({'token': token})}\n\n"
+            except queue.Empty:
+                pass
+            await asyncio.sleep(0.05)
+            
+        if result_container["error"]:
+            yield f"data: {json.dumps({'status': 'error', 'error': result_container['error']})}\n\n"
+        else:
+            yield f"data: {json.dumps({'done': True, 'result': result_container['result']})}\n\n"
+            
+    return StreamingResponse(sse_generator(), media_type="text/event-stream")
 
 # Serve the static documentation portal files
 website_path = os.path.join(BASE_DIR, "website")
