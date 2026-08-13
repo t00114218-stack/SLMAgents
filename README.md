@@ -1,5 +1,5 @@
 ---
-title: Open Source SLM Agents Community: Privacy-First AI for CPUs
+title: "Open Source SLM Agents Community: Privacy-First AI for CPUs"
 emoji: 🎯
 colorFrom: indigo
 colorTo: blue
