@@ -181,3 +181,50 @@ class SLMSearchOrchestrator:
                     all_results.append(r)
                     
         return all_results
+
+    def search_and_synthesize(self, query: str) -> dict:
+        """Retrieves search snippets and synthesizes a grounded answer using the local SLM."""
+        chunks = self.retrieve(query)
+        
+        # Build context from chunks
+        context_str = ""
+        for i, c in enumerate(chunks):
+            context_str += f"[{i+1}] Source: {c.get('href')}\nTitle: {c.get('title')}\nSnippet: {c.get('body')}\n\n"
+            
+        system_prompt = (
+            "You are a factual local AI assistant. Answer the user query based ONLY on the provided search results. "
+            "If the information is not present, construct a reasonable answer from the facts available. "
+            "Cite the sources [1], [2], etc. in your answer."
+        )
+        
+        full_prompt = (
+            "<|system|>\n"
+            f"{system_prompt}<|end|>\n"
+            "<|user|>\n"
+            f"Search Results:\n{context_str}\n"
+            f"Query: {query}<|end|>\n"
+            "<|assistant|>\n"
+        )
+        
+        input_tokens = self.tokenizer.encode(full_prompt)
+        params = og.GeneratorParams(self.model)
+        params.set_search_options(max_length=len(input_tokens) + 384, temperature=0.2)
+        
+        generator = og.Generator(self.model, params)
+        generator.append_tokens(input_tokens)
+        
+        answer = ""
+        while not generator.is_done():
+            generator.generate_next_token()
+            new_tokens = generator.get_next_tokens()
+            if len(new_tokens) > 0:
+                answer += self.tokenizer.decode(new_tokens)
+                
+        return {
+            "agent": "SLMSearchOrchestrator",
+            "status": "200 OK",
+            "search_query": query,
+            "results_count": len(chunks),
+            "retrieved_chunks": chunks,
+            "answer": answer.strip()
+        }

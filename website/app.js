@@ -759,8 +759,25 @@ const ALL_AGENT_SPECS = {
       agent: "SLMSearchOrchestrator",
       status: "200 OK",
       search_query: vals.query,
-      results_count: 5,
-      top_snippet: `DuckDuckGo RAG search results for '${vals.query}'`
+      results_count: 3,
+      retrieved_chunks: [
+        {
+          title: "ONNX Runtime CPU performance benchmarks",
+          href: "https://onnxruntime.ai/docs/performance/cpu",
+          body: "ONNX Runtime with OpenMP outperforms standard CPU executions by 2-3x on transformer models."
+        },
+        {
+          title: "Optimizing CPU execution on Hugging Face spaces",
+          href: "https://huggingface.co/blog/cpu-performance",
+          body: "Configuring environment thread variables like OMP_NUM_THREADS improves ONNX CPU utilization."
+        },
+        {
+          title: "Phi-3.5 CPU inference optimization guides",
+          href: "https://github.com/microsoft/onnxruntime-genai",
+          body: "CPU inference speed is maximized by matching threads to the number of physical cores."
+        }
+      ],
+      answer: `Based on the retrieved CPU performance benchmarks [1], ONNX Runtime outperforms standard executions by 2-3x on CPU. Optimal results are achieved by setting environment variables like OMP_NUM_THREADS [2] and aligning active threads with physical CPU cores [3].`
     })
   },
   database_migrator: {
