@@ -13,6 +13,8 @@ github_repo: t00114218-stack/SLMAgents
 
 [![Open in Hugging Face](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/spcv/slm-agents)
 
+🚀 **Official Website & Interactive Sandbox**: [www.slmagents.ai](https://www.slmagents.ai/)
+
 Welcome to the **SLM Agents** community! This repository is a unified open-source developer portal and Python codebase for running highly-constrained, secure, and privacy-first AI agent workflows locally on standard CPUs using Small Language Models (SLMs). 
 
 If you are looking for a **local AI framework**, **CPU inference library**, or **privacy-first LLM orchestrator**, you are in the right place! No GPU rigs, no subscription costs, and zero network latency. Powered by ONNX Runtime GenAI for maximum speed.
