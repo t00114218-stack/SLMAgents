@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://spcv-slm-agents.hf.space/sitemap.xml
+Sitemap: https://www.slmagents.ai/sitemap.xml

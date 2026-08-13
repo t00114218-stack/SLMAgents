@@ -3,7 +3,7 @@
 
   <!-- Home / Landing Page -->
   <url>
-    <loc>https://spcv-slm-agents.hf.space/</loc>
+    <loc>https://www.slmagents.ai/</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -11,61 +11,61 @@
 
   <!-- Productivity Agents -->
   <url>
-    <loc>https://spcv-slm-agents.hf.space/rag.html</loc>
+    <loc>https://www.slmagents.ai/rag.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/summarizer.html</loc>
+    <loc>https://www.slmagents.ai/summarizer.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/cli.html</loc>
+    <loc>https://www.slmagents.ai/cli.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/email_assistant.html</loc>
+    <loc>https://www.slmagents.ai/email_assistant.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/meeting_summarizer.html</loc>
+    <loc>https://www.slmagents.ai/meeting_summarizer.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/memory_manager.html</loc>
+    <loc>https://www.slmagents.ai/memory_manager.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/task_planner.html</loc>
+    <loc>https://www.slmagents.ai/task_planner.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/pdf_chat.html</loc>
+    <loc>https://www.slmagents.ai/pdf_chat.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/pkb_agent.html</loc>
+    <loc>https://www.slmagents.ai/pkb_agent.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/voice_agent.html</loc>
+    <loc>https://www.slmagents.ai/voice_agent.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -73,31 +73,31 @@
 
   <!-- Developer Tools -->
   <url>
-    <loc>https://spcv-slm-agents.hf.space/orchestrator.html</loc>
+    <loc>https://www.slmagents.ai/orchestrator.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/sql.html</loc>
+    <loc>https://www.slmagents.ai/sql.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/code_interpreter.html</loc>
+    <loc>https://www.slmagents.ai/code_interpreter.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/git_repo_manager.html</loc>
+    <loc>https://www.slmagents.ai/git_repo_manager.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/database_migrator.html</loc>
+    <loc>https://www.slmagents.ai/database_migrator.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -105,37 +105,37 @@
 
   <!-- Parse & Web Modules -->
   <url>
-    <loc>https://spcv-slm-agents.hf.space/json_cleaner.html</loc>
+    <loc>https://www.slmagents.ai/json_cleaner.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/document_parser.html</loc>
+    <loc>https://www.slmagents.ai/document_parser.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/vision_parser.html</loc>
+    <loc>https://www.slmagents.ai/vision_parser.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/web_agent.html</loc>
+    <loc>https://www.slmagents.ai/web_agent.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/web_scraper.html</loc>
+    <loc>https://www.slmagents.ai/web_scraper.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/search_orchestrator.html</loc>
+    <loc>https://www.slmagents.ai/search_orchestrator.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -143,31 +143,31 @@
 
   <!-- Special & System Agents -->
   <url>
-    <loc>https://spcv-slm-agents.hf.space/data_analyst.html</loc>
+    <loc>https://www.slmagents.ai/data_analyst.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/embeddings_server.html</loc>
+    <loc>https://www.slmagents.ai/embeddings_server.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/math_agent.html</loc>
+    <loc>https://www.slmagents.ai/math_agent.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/security_audit.html</loc>
+    <loc>https://www.slmagents.ai/security_audit.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://spcv-slm-agents.hf.space/translation_hub.html</loc>
+    <loc>https://www.slmagents.ai/translation_hub.html</loc>
     <lastmod>2026-08-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
