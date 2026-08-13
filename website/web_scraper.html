@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="SLM Web Scraper: Local CPU-optimized HTML data scraper compiling targets into JSON layouts offline using BeautifulSoup and Phi-3.5.">
+  
+  <link rel="canonical" href="https://www.slmagents.ai/web_scraper.html">
   <title>SLM Web Scraper | Documentation</title>
   <link rel="stylesheet" href="style.css">
   
@@ -144,13 +146,13 @@ scraper = SLMWebScraper()</code></pre>
         <p>Fetches a URL, filters out header/footer menus, dropdown lists, sidebars, and ads, and automatically parses tables and image content:</p>
 
         <h4>Hybrid Visual Scraping (Tables & Images)</h4>
-        <p>This example scrapes the vision parser documentation page <code>https://spcv-slm-agents.hf.space/vision_parser.html</code>, describing its parameters table and flowchart image automatically:</p>
+        <p>This example scrapes the vision parser documentation page <code>https://www.slmagents.ai/vision_parser.html</code>, describing its parameters table and flowchart image automatically:</p>
         <pre><code class="language-python">from slm_web_scraper.web_scraper import SLMWebScraper
 
 scraper = SLMWebScraper()
 
 # Scrapes page and converts tables/images to descriptions automatically
-clean_text = scraper.scrape_url("https://spcv-slm-agents.hf.space/vision_parser.html")
+clean_text = scraper.scrape_url("https://www.slmagents.ai/vision_parser.html")
 print(clean_text)</code></pre>
 
         <div class="tip-box">
