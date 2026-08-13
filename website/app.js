@@ -1016,6 +1016,7 @@ function renderStudioFields(agentKey) {
       html += `    <span class="rec-text">🎤 Record</span>`;
       html += `  </button>`;
       html += `</div>`;
+      html += `<div id="studio-audio-preview-container-${f.id}" style="margin-top: 8px; display: none;"></div>`;
       html += `<input type="hidden" id="studio-field-${f.id}" value="">`;
     } else {
       html += `<input type="${f.type}" id="studio-field-${f.id}" onkeyup="updateStudioOutput()" value="${f.default || ''}" style="width: 100%; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.6rem 0.8rem; color: #0f172a; font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; outline: none;">`;
@@ -1081,6 +1082,7 @@ window.handleStudioAudioUpload = function(inputEl, fieldId, maxSize) {
   const valEl = document.getElementById(`studio-field-${fieldId}`);
   if (!file) {
     if (valEl) valEl.value = "";
+    showAudioPreview(fieldId, "");
     updateStudioOutput();
     return;
   }
@@ -1088,6 +1090,7 @@ window.handleStudioAudioUpload = function(inputEl, fieldId, maxSize) {
     alert(`Audio exceeds size limit. Maximum allowed size is ${maxSize / (1024 * 1024)} MB.`);
     inputEl.value = "";
     if (valEl) valEl.value = "";
+    showAudioPreview(fieldId, "");
     updateStudioOutput();
     return;
   }
@@ -1095,6 +1098,7 @@ window.handleStudioAudioUpload = function(inputEl, fieldId, maxSize) {
   reader.onload = function(e) {
     const base64Str = e.target.result.split(",")[1];
     if (valEl) valEl.value = base64Str;
+    showAudioPreview(fieldId, base64Str);
     updateStudioOutput();
   };
   reader.readAsDataURL(file);
@@ -1133,6 +1137,7 @@ window.toggleStudioAudioRecord = async function(fieldId) {
       if (audioBlob.size > 2 * 1024 * 1024) {
         alert("Recorded audio exceeds the 2 MB limit.");
         if (valEl) valEl.value = "";
+        showAudioPreview(fieldId, "");
         return;
       }
       
@@ -1140,6 +1145,7 @@ window.toggleStudioAudioRecord = async function(fieldId) {
       reader.onload = function(e) {
         const base64Str = e.target.result.split(",")[1];
         if (valEl) valEl.value = base64Str;
+        showAudioPreview(fieldId, base64Str);
         updateStudioOutput();
         alert("Audio recorded successfully!");
       };
@@ -1248,6 +1254,180 @@ function getAgentThinkingLogs(agentKey, vals) {
   return logs;
 }
 
+function renderAudioPlayerCard(consoleEl, transcript, responseText, audioBase64) {
+  const currentLogs = consoleEl.textContent
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
+  
+  consoleEl.innerHTML = currentLogs + `[*] Inference complete. Formatting response...\n\n`;
+  
+  const cardId = "voice-card-" + Date.now();
+  const audioUrl = audioBase64 ? "data:audio/wav;base64," + audioBase64 : "";
+  
+  const audioCardHtml = `
+<div id="${cardId}" class="audio-response-card" style="margin-top: 15px; padding: 20px; background: rgba(30, 41, 59, 0.6); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <div style="margin-bottom: 12px; text-align: left;">
+    <span style="color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em;">Voice Input Transcript</span>
+    <p style="color: #f8fafc; font-size: 0.95rem; margin: 4px 0 0 0; font-weight: 500;">"${transcript}"</p>
+  </div>
+  <div style="margin-bottom: 16px; text-align: left;">
+    <span style="color: #38bdf8; font-size: 0.75rem; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em;">Agent Speech Response</span>
+    <p style="color: #f1f5f9; font-size: 1.05rem; margin: 4px 0 0 0; font-weight: 600; line-height: 1.4;">${responseText}</p>
+  </div>
+  
+  <div style="display: flex; align-items: center; gap: 15px; background: #0f172a; padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
+    ${audioUrl ? `<audio id="${cardId}-audio" src="${audioUrl}" style="display:none;"></audio>` : ''}
+    <button id="${cardId}-play-btn" style="background: #4f46e5; border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: white; transition: background 0.2s;">
+      <svg id="${cardId}-play-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    
+    <!-- Audio Waveform Visualizer -->
+    <div id="${cardId}-visualizer" style="display: flex; align-items: center; gap: 3px; height: 28px; width: 120px; overflow: hidden; margin-left: 10px;">
+      <div class="vbar" style="width: 3px; height: 8px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 12px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 6px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 16px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 10px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 14px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 6px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 10px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 18px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 8px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+      <div class="vbar" style="width: 3px; height: 12px; background: #38bdf8; border-radius: 2px; transition: height 0.15s;"></div>
+    </div>
+    
+    <span style="color: #64748b; font-size: 0.8rem; font-family: monospace; margin-left: auto;" id="${cardId}-status">Ready</span>
+  </div>
+</div>
+  `;
+  
+  const div = document.createElement("div");
+  div.innerHTML = audioCardHtml;
+  consoleEl.appendChild(div);
+  consoleEl.scrollTop = consoleEl.scrollHeight;
+  
+  const audio = document.getElementById(`${cardId}-audio`);
+  const playBtn = document.getElementById(`${cardId}-play-btn`);
+  const playIcon = document.getElementById(`${cardId}-play-icon`);
+  const statusEl = document.getElementById(`${cardId}-status`);
+  const bars = document.querySelectorAll(`#${cardId}-visualizer .vbar`);
+  
+  let animationId = null;
+  let isPlayingWebAudio = false;
+  
+  function animateBars(forceStop = false) {
+    if (forceStop || (audio && audio.paused) || (!audio && !isPlayingWebAudio)) {
+      bars.forEach(bar => { bar.style.height = "6px"; });
+      return;
+    }
+    bars.forEach(bar => {
+      const heights = [6, 10, 14, 18, 22, 26];
+      const randomHeight = heights[Math.floor(Math.random() * heights.length)];
+      bar.style.height = randomHeight + "px";
+    });
+    animationId = setTimeout(animateBars, 150);
+  }
+
+  if (audio) {
+    audio.addEventListener("play", () => {
+      playIcon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
+      statusEl.textContent = "Playing";
+      statusEl.style.color = "#38bdf8";
+      animateBars();
+    });
+    
+    audio.addEventListener("pause", () => {
+      playIcon.innerHTML = `<path d="M8 5v14l11-7z"/>`;
+      statusEl.textContent = "Paused";
+      statusEl.style.color = "#64748b";
+      clearTimeout(animationId);
+      animateBars(true);
+    });
+    
+    audio.addEventListener("ended", () => {
+      playIcon.innerHTML = `<path d="M8 5v14l11-7z"/>`;
+      statusEl.textContent = "Ended";
+      statusEl.style.color = "#64748b";
+      clearTimeout(animationId);
+      animateBars(true);
+    });
+    
+    playBtn.addEventListener("click", () => {
+      if (audio.paused) {
+        audio.play().catch(e => console.log("Play failed: " + e));
+      } else {
+        audio.pause();
+      }
+    });
+    
+    audio.play().catch(e => console.log("Autoplay blocked: " + e));
+    
+  } else {
+    let audioCtx = null;
+    let oscillator = null;
+    
+    function playWebAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (isPlayingWebAudio) {
+        stopWebAudio();
+        return;
+      }
+      
+      oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+      
+      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      oscillator.start();
+      isPlayingWebAudio = true;
+      playIcon.innerHTML = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
+      statusEl.textContent = "Synthesized";
+      statusEl.style.color = "#a78bfa";
+      animateBars();
+      
+      oscillator.onended = () => {
+        stopWebAudio();
+      };
+      
+      oscillator.stop(audioCtx.currentTime + 1.2);
+      setTimeout(() => {
+        if (isPlayingWebAudio) stopWebAudio();
+      }, 1200);
+    }
+    
+    function stopWebAudio() {
+      if (oscillator) {
+        try { oscillator.stop(); } catch(e) {}
+        oscillator.disconnect();
+        oscillator = null;
+      }
+      isPlayingWebAudio = false;
+      playIcon.innerHTML = `<path d="M8 5v14l11-7z"/>`;
+      statusEl.textContent = "Ready";
+      statusEl.style.color = "#64748b";
+      clearTimeout(animationId);
+      animateBars(true);
+    }
+    
+    playBtn.addEventListener("click", () => {
+      playWebAudio();
+    });
+    
+    playWebAudio();
+  }
+}
+
 async function runStudioAgent() {
   const consoleEl = document.getElementById("studio-output-console");
   if (!consoleEl) return;
@@ -1256,7 +1436,6 @@ async function runStudioAgent() {
   const fieldVals = getActiveFieldValues(spec);
   const logs = getAgentThinkingLogs(currentStudioAgentKey, fieldVals);
 
-  // Clear console and start streaming initial logs
   consoleEl.textContent = "";
   
   for (let i = 0; i < logs.length; i++) {
@@ -1265,7 +1444,6 @@ async function runStudioAgent() {
     await new Promise(resolve => setTimeout(resolve, 200));
   }
 
-  // Start dynamic pending thoughts during active SLM API request
   let pendingIdx = 0;
   let secondsElapsed = 0;
   const pendingThoughts = [
@@ -1310,21 +1488,29 @@ async function runStudioAgent() {
       throw new Error(data.error);
     }
     
-    consoleEl.textContent += `[*] Inference complete. Formatting JSON output response payload...\n\n[JSON Result]:\n`;
-    consoleEl.textContent += JSON.stringify(data.result, null, 2);
-    consoleEl.scrollTop = consoleEl.scrollHeight;
-    
-    // Play synthesized voice output if returned
-    if (data.result && data.result.audio) {
-      const audioObj = new Audio("data:audio/wav;base64," + data.result.audio);
-      audioObj.play().catch(e => console.log("Audio playback failed: " + e));
+    if (currentStudioAgentKey === "voice") {
+      const trans = data.result.transcript || fieldVals.transcript || "";
+      const resp = data.result.response || "";
+      const aud = data.result.audio || "";
+      renderAudioPlayerCard(consoleEl, trans, resp, aud);
+    } else {
+      consoleEl.textContent += `[*] Inference complete. Formatting JSON output response payload...\n\n[JSON Result]:\n`;
+      consoleEl.textContent += JSON.stringify(data.result, null, 2);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
     }
   } catch (err) {
     clearInterval(timerId);
-    consoleEl.textContent += `\n[Warning] Real-time CPU runner unavailable: ${err.message}\n` +
-      `[Warning] Falling back to static mock preview output:\n\n` +
-      JSON.stringify(spec.getOutput(fieldVals), null, 2);
-    consoleEl.scrollTop = consoleEl.scrollHeight;
+    if (currentStudioAgentKey === "voice") {
+      const mockOut = spec.getOutput(fieldVals);
+      consoleEl.textContent += `\n[Warning] Real-time CPU runner unavailable: ${err.message}\n` +
+        `[Warning] Falling back to static mock preview output:\n\n`;
+      renderAudioPlayerCard(consoleEl, mockOut.transcript, mockOut.response, "");
+    } else {
+      consoleEl.textContent += `\n[Warning] Real-time CPU runner unavailable: ${err.message}\n` +
+        `[Warning] Falling back to static mock preview output:\n\n` +
+        JSON.stringify(spec.getOutput(fieldVals), null, 2);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
   }
 }
 
@@ -1338,6 +1524,35 @@ function copyStudioCode() {
     alert("Copied!");
   });
 }
+
+function showAudioPreview(fieldId, base64Data) {
+  const container = document.getElementById(`studio-audio-preview-container-${fieldId}`);
+  if (!container) return;
+  
+  if (!base64Data) {
+    container.style.display = "none";
+    container.innerHTML = "";
+    return;
+  }
+  
+  container.style.display = "block";
+  container.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 8px; background: rgba(30, 41, 59, 0.05); border: 1px solid rgba(15, 23, 42, 0.08); padding: 8px 12px; border-radius: 8px; margin-top: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);">
+      <span style="font-size: 0.8rem; color: #475569; font-weight: bold; white-space: nowrap;">🔊 Clip Preview:</span>
+      <audio controls src="data:audio/wav;base64,${base64Data}" style="height: 28px; flex: 1; outline: none;"></audio>
+      <button type="button" onclick="clearStudioAudio('${fieldId}')" style="background: transparent; border: none; color: #ef4444; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 4px;" title="Remove recording">✕</button>
+    </div>
+  `;
+}
+
+window.clearStudioAudio = function(fieldId) {
+  const valEl = document.getElementById(`studio-field-${fieldId}`);
+  const uploadInput = document.getElementById(`studio-field-upload-${fieldId}`);
+  if (valEl) valEl.value = "";
+  if (uploadInput) uploadInput.value = "";
+  showAudioPreview(fieldId, "");
+  updateStudioOutput();
+};
 
 // Initializer
 document.addEventListener("DOMContentLoaded", () => {
