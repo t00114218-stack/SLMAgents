@@ -372,7 +372,10 @@ class SLMTextToSQL:
                 generator.generate_next_token()
                 new_tokens = generator.get_next_tokens()
                 if len(new_tokens) > 0:
-                    output_tokens.append(int(new_tokens[0]))
+                    token_id = int(new_tokens[0])
+                    if token_id in (151643, 151645):
+                        break
+                    output_tokens.append(token_id)
             
             raw_out = self.tokenizer.decode(output_tokens).strip()
             if "</thought>" in raw_out:
@@ -402,7 +405,10 @@ class SLMTextToSQL:
                     generator.generate_next_token()
                     new_tokens = generator.get_next_tokens()
                     if len(new_tokens) > 0:
-                        yield tokenizer_stream.decode(new_tokens[0])
+                        token_id = int(new_tokens[0])
+                        if token_id in (151643, 151645):
+                            break
+                        yield tokenizer_stream.decode(token_id)
             return token_generator()
 
         # Non-streaming agentic self-correction loop

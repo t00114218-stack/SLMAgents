@@ -209,7 +209,10 @@ class SLMOrchestrator:
                 generator.generate_next_token()
                 new_tokens = generator.get_next_tokens()
                 if len(new_tokens) > 0:
-                    output_tokens.append(int(new_tokens[0]))
+                    token_id = int(new_tokens[0])
+                    if token_id in (151643, 151645):
+                        break
+                    output_tokens.append(token_id)
                     
             response_text = self.tokenizer.decode(output_tokens).strip()
             

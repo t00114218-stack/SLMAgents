@@ -124,6 +124,9 @@ class SLMSearchOrchestrator:
             generator.generate_next_token()
             new_tokens = generator.get_next_tokens()
             if len(new_tokens) > 0:
+                token_id = int(new_tokens[0])
+                if token_id in (151643, 151645):
+                    break
                 response_text += self.tokenizer.decode(new_tokens)
 
         match = re.search(r"```json\s*(.*?)\s*```", response_text, re.DOTALL)
@@ -218,6 +221,9 @@ class SLMSearchOrchestrator:
             generator.generate_next_token()
             new_tokens = generator.get_next_tokens()
             if len(new_tokens) > 0:
+                token_id = int(new_tokens[0])
+                if token_id in (151643, 151645):
+                    break
                 answer += self.tokenizer.decode(new_tokens)
                 
         return {

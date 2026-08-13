@@ -135,6 +135,9 @@ class SLMJSONCleaner:
                     generator.generate_next_token()
                     new_tokens = generator.get_next_tokens()
                     if len(new_tokens) > 0:
+                        token_id = int(new_tokens[0])
+                        if token_id in (151643, 151645):
+                            break
                         yield self.tokenizer.decode(new_tokens)
             return _stream_generator()
 
@@ -145,6 +148,9 @@ class SLMJSONCleaner:
             generator.generate_next_token()
             new_tokens = generator.get_next_tokens()
             if len(new_tokens) > 0:
+                token_id = int(new_tokens[0])
+                if token_id in (151643, 151645):
+                    break
                 response_text += self.tokenizer.decode(new_tokens)
 
         json_block = self._extract_json_block(response_text)
