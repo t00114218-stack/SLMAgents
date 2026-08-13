@@ -1255,13 +1255,13 @@ function getAgentThinkingLogs(agentKey, vals) {
 }
 
 function renderAudioPlayerCard(consoleEl, transcript, responseText, audioBase64) {
-  const currentLogs = consoleEl.textContent
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\n/g, "<br>");
+  consoleEl.textContent += `[*] Inference complete. Formatting response...\n\n`;
   
-  consoleEl.innerHTML = currentLogs + `[*] Inference complete. Formatting response...\n\n`;
+  const parentEl = document.getElementById("studio-console-parent");
+  if (!parentEl) return;
+  
+  const oldCard = parentEl.querySelector(".audio-response-card");
+  if (oldCard) oldCard.remove();
   
   const cardId = "voice-card-" + Date.now();
   const audioUrl = audioBase64 ? "data:audio/wav;base64," + audioBase64 : "";
@@ -1304,9 +1304,10 @@ function renderAudioPlayerCard(consoleEl, transcript, responseText, audioBase64)
   `;
   
   const div = document.createElement("div");
+  div.className = "audio-response-card";
   div.innerHTML = audioCardHtml;
-  consoleEl.appendChild(div);
-  consoleEl.scrollTop = consoleEl.scrollHeight;
+  parentEl.appendChild(div);
+  parentEl.scrollTop = parentEl.scrollHeight;
   
   const audio = document.getElementById(`${cardId}-audio`);
   const playBtn = document.getElementById(`${cardId}-play-btn`);
@@ -1431,6 +1432,12 @@ function renderAudioPlayerCard(consoleEl, transcript, responseText, audioBase64)
 async function runStudioAgent() {
   const consoleEl = document.getElementById("studio-output-console");
   if (!consoleEl) return;
+
+  const parentEl = document.getElementById("studio-console-parent");
+  if (parentEl) {
+    const oldCard = parentEl.querySelector(".audio-response-card");
+    if (oldCard) oldCard.remove();
+  }
 
   const spec = ALL_AGENT_SPECS[currentStudioAgentKey] || ALL_AGENT_SPECS["voice"];
   const fieldVals = getActiveFieldValues(spec);
