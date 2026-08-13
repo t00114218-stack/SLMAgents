@@ -9,7 +9,9 @@ def main():
     print("==========================================================")
     print("")
 
-    token = input("Enter your Hugging Face Access Token (WRITE permission): ").strip()
+    token = os.environ.get("HF_TOKEN")
+    if not token:
+        token = input("Enter your Hugging Face Access Token (WRITE permission): ").strip()
     if not token:
         print("❌ Error: Token cannot be empty.")
         sys.exit(1)
