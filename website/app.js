@@ -1209,8 +1209,7 @@ function getAgentThinkingLogs(agentKey, vals) {
       `[Agent Thought] Query matches grounded context retrieval window. Extracting chunks...`,
       `[Action] Loading dense document embeddings... (Parsed ${vals.chunks ? vals.chunks.split(",").length : 0} chunks)`,
       `[Action] Setting constraint instruction: "${vals.instruction || 'None'}"`,
-      `[Agent Thought] Grounding prompt generation to prevent hallucination...`,
-      `[Action] Generating answer tokens using local Qwen2.5-Coder model...`
+      `[Agent Thought] Grounding prompt generation to prevent hallucination...`
     );
   } else if (agentKey === "search_orchestrator") {
     logs.push(
@@ -1220,42 +1219,32 @@ function getAgentThinkingLogs(agentKey, vals) {
       `    -> Variation 2: "${vals.query} benchmarks onnx"`,
       `    -> Variation 3: "${vals.query} github offline"`,
       `[Action] Querying DuckDuckGo search library... (Found 3 unique results)`,
-      `[Agent Thought] Synthesizing grounded summary answer based on retrieved snippets...`,
-      `[Action] Generating citation citations via local model...`
+      `[Agent Thought] Synthesizing grounded summary answer based on retrieved snippets...`
     );
   } else if (agentKey === "sql") {
     logs.push(
       `[Agent Thought] Input schema: "${vals.schema || ''}" and query: "${vals.query || ''}"`,
       `[Action] Parsing table schemas and building AST rules...`,
-      `[Agent Thought] Mapping natural language predicates to SQL clauses.`,
-      `[Action] Generating SQLite-compliant SQL script...`
+      `[Agent Thought] Mapping natural language predicates to SQL clauses.`
     );
   } else if (agentKey === "orchestrator") {
     logs.push(
       `[Agent Thought] Routing task: "${vals.question || ''}" among available agents: "${vals.agents || ''}"`,
       `[Action] Evaluating match vector scores for agents...`,
-      `[Agent Thought] Determined optimal routing node.`,
-      `[Action] Dispatching to best matched agent...`
+      `[Agent Thought] Determined optimal routing node.`
     );
   } else if (agentKey === "code_interpreter") {
     logs.push(
       `[Agent Thought] Target script to run: \n${vals.code || ''}`,
       `[Action] Spawning secure sub-process sandboxed container...`,
-      `[Action] Executing Python interpreter locally on CPU...`,
-      `[*] Intercepting sys.stdout and sys.stderr...`
+      `[Action] Executing Python interpreter locally on CPU...`
     );
   } else {
     logs.push(
       `[Agent Thought] Structuring target method call: ${spec.className}.${spec.methodName}()`,
-      `[Action] Setting model hyper-parameters (temperature=0.2, top_p=0.9)`,
-      `[Action] Executing offline agent pipeline inference...`
+      `[Action] Setting model hyper-parameters (temperature=0.2, top_p=0.9)`
     );
   }
-  
-  logs.push(
-    `[*] Inference complete. Formatting JSON output response payload...`,
-    `\n[JSON Result]:`
-  );
   return logs;
 }
 
@@ -1267,7 +1256,7 @@ async function runStudioAgent() {
   const fieldVals = getActiveFieldValues(spec);
   const logs = getAgentThinkingLogs(currentStudioAgentKey, fieldVals);
 
-  // Clear console and start streaming logs
+  // Clear console and start streaming initial logs
   consoleEl.textContent = "";
   
   for (let i = 0; i < logs.length; i++) {
@@ -1275,6 +1264,29 @@ async function runStudioAgent() {
     consoleEl.scrollTop = consoleEl.scrollHeight;
     await new Promise(resolve => setTimeout(resolve, 200));
   }
+
+  // Start dynamic pending thoughts during active SLM API request
+  let pendingIdx = 0;
+  let secondsElapsed = 0;
+  const pendingThoughts = [
+    `[Action] Executing offline agent pipeline inference...`,
+    `[Agent Thought] Allocating tensor memory arenas on host RAM...`,
+    `[Action] Running model forward pass on CPU (OMP_NUM_THREADS=4)...`,
+    `[Agent Thought] Evaluating token probability distributions...`,
+    `[Agent Thought] Aligning response with system prompt constraints...`,
+    `[Agent Thought] Generating response tokens sequentially...`
+  ];
+
+  const timerId = setInterval(() => {
+    secondsElapsed += 1;
+    if (pendingIdx < pendingThoughts.length) {
+      consoleEl.textContent += pendingThoughts[pendingIdx] + "\n";
+      pendingIdx++;
+    } else {
+      consoleEl.textContent += `[System] Generating... (${secondsElapsed}s elapsed)\n`;
+    }
+    consoleEl.scrollTop = consoleEl.scrollHeight;
+  }, 1000);
 
   try {
     const response = await fetch("https://spcv-slm-agents.hf.space/api/run_agent", {
@@ -1287,6 +1299,9 @@ async function runStudioAgent() {
         inputs: fieldVals
       })
     });
+    
+    clearInterval(timerId);
+    
     if (!response.ok) {
       throw new Error(`Server returned status ${response.status}`);
     }
@@ -1294,7 +1309,10 @@ async function runStudioAgent() {
     if (data.error) {
       throw new Error(data.error);
     }
+    
+    consoleEl.textContent += `[*] Inference complete. Formatting JSON output response payload...\n\n[JSON Result]:\n`;
     consoleEl.textContent += JSON.stringify(data.result, null, 2);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
     
     // Play synthesized voice output if returned
     if (data.result && data.result.audio) {
@@ -1302,9 +1320,11 @@ async function runStudioAgent() {
       audioObj.play().catch(e => console.log("Audio playback failed: " + e));
     }
   } catch (err) {
+    clearInterval(timerId);
     consoleEl.textContent += `\n[Warning] Real-time CPU runner unavailable: ${err.message}\n` +
       `[Warning] Falling back to static mock preview output:\n\n` +
       JSON.stringify(spec.getOutput(fieldVals), null, 2);
+    consoleEl.scrollTop = consoleEl.scrollHeight;
   }
 }
 
