@@ -82,7 +82,8 @@ class SLMVoiceAgent:
         # Resolve the model path
         try:
             config, config_file_path = load_config()
-            model_config = config.get("models", {}).get("voice_agent", {})
+            models_dict = config.get("models", {})
+            model_config = models_dict.get("voice") or models_dict.get("voice_agent") or {}
             config_path = model_config.get("path") or self.model_path
             if not config_path:
                 return

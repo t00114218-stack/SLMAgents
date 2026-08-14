@@ -90,9 +90,12 @@ class SLMRag:
         if not os.path.isabs(config_path) and config_file_path:
             config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
         
-        # Check if genai_config.json exists recursively in config_path
+        # Check if model directory exists
+        if os.path.exists(os.path.join(config_path, "tokenizer.json")):
+            return config_path
+            
         for root, dirs, files in os.walk(config_path):
-            if "genai_config.json" in files:
+            if "genai_config.json" in files or "tokenizer.json" in files:
                 return root
             
         # Download if configured but not present

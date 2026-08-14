@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SLM Voice Agent Sub-Models Configuration -->
+<configuration>
+  <models>
+    <stt name="whisper-tiny-onnx">
+      <description>Speech-to-Text Audio Transcriber</description>
+      <repo_id>onnx-community/whisper-tiny-ONNX</repo_id>
+      <path>../../models/whisper-tiny-onnx</path>
+    </stt>
+    
+    <llm name="qwen3.5-0.8b-onnx">
+      <description>Conversational Dialogue &amp; Agent Tool Orchestrator LLM</description>
+      <repo_id>onnx-community/Qwen3.5-0.8B-ONNX</repo_id>
+      <path>../../models/qwen3.5-0.8b-onnx</path>
+    </llm>
+    
+    <tts name="kokoro-82m-onnx">
+      <description>Text-to-Speech Voice Synthesizer</description>
+      <repo_id>onnx-community/Kokoro-82M-ONNX</repo_id>
+      <path>../../models/kokoro-82m-onnx</path>
+    </tts>
+  </models>
+</configuration>

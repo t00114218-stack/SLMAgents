@@ -31,66 +31,160 @@ for folder in os.listdir(BASE_DIR):
         sys.path.insert(0, folder_path)
 
 # Resolve default Qwen ONNX model path
-MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen2.5-1.5b-onnx")
+MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen3.5-0.8b-onnx")
 
 # Global instances for ONNX runtime model sharing
 shared_model = None
 shared_tokenizer = None
 
+class Qwen35ONNXModel:
+    def __init__(self, model_dir):
+        self.model_dir = os.path.abspath(model_dir)
+        import onnxruntime as ort
+        opts = ort.SessionOptions()
+        opts.intra_op_num_threads = 4
+        
+        embed_path = os.path.join(self.model_dir, "onnx", "embed_tokens_quantized.onnx")
+        dec_path = os.path.join(self.model_dir, "onnx", "decoder_model_merged_quantized.onnx")
+        
+        self.embed_sess = ort.InferenceSession(embed_path, opts, providers=["CPUExecutionProvider"])
+        self.dec_sess = ort.InferenceSession(dec_path, opts, providers=["CPUExecutionProvider"])
+        self.dec_output_names = [o.name for o in self.dec_sess.get_outputs()]
+
+class Qwen35ONNXTokenizer:
+    def __init__(self, model_or_dir):
+        from tokenizers import Tokenizer
+        if isinstance(model_or_dir, Qwen35ONNXModel):
+            tok_path = os.path.join(model_or_dir.model_dir, "tokenizer.json")
+        elif isinstance(model_or_dir, str):
+            tok_path = os.path.join(model_or_dir, "tokenizer.json")
+        else:
+            tok_path = os.path.join(MODEL_PATH, "tokenizer.json")
+        self._tokenizer = Tokenizer.from_file(tok_path)
+    
+    def encode(self, text):
+        return self._tokenizer.encode(text).ids
+        
+    def decode(self, token_ids):
+        if isinstance(token_ids, int):
+            token_ids = [token_ids]
+        elif hasattr(token_ids, "__iter__") and not isinstance(token_ids, list):
+            token_ids = list(token_ids)
+        return self._tokenizer.decode(token_ids)
+
+class Qwen35ONNXGenerator:
+    def __init__(self, model, params=None):
+        self.model = model
+        self.params = params
+        self.tokens_history = []
+        self.step = 0
+        self.done = False
+        self.next_tokens = []
+        self.dec_inputs = None
+        self.last_outputs = None
+        self.max_tokens = 128
+
+    def append_tokens(self, tokens):
+        import numpy as np
+        self.tokens_history.extend(tokens)
+        input_ids = np.array([self.tokens_history], dtype=np.int64)
+        seq_len = input_ids.shape[1]
+        
+        embed_out = self.model.embed_sess.run(None, {"input_ids": input_ids})[0]
+        pos_ids = np.repeat(np.arange(seq_len, dtype=np.int64).reshape(1, 1, seq_len), 3, axis=0)
+        
+        self.dec_inputs = {
+            "inputs_embeds": embed_out,
+            "attention_mask": np.ones((1, seq_len), dtype=np.int64),
+            "position_ids": pos_ids
+        }
+        
+        for inp in self.model.dec_sess.get_inputs():
+            if inp.name not in self.dec_inputs:
+                shape = [d if isinstance(d, int) else (0 if "past_sequence_length" in str(d) else 1) for d in inp.shape]
+                self.dec_inputs[inp.name] = np.zeros(shape, dtype=np.float32)
+
+    def is_done(self):
+        return self.done
+
+    def generate_next_token(self):
+        if self.done:
+            return
+        import numpy as np
+        if self.step > 0:
+            next_token = self.next_tokens[0]
+            cur_pos = len(self.tokens_history)
+            self.tokens_history.append(next_token)
+            
+            next_embed = self.model.embed_sess.run(None, {"input_ids": np.array([[next_token]], dtype=np.int64)})[0]
+            self.dec_inputs["inputs_embeds"] = next_embed
+            self.dec_inputs["attention_mask"] = np.ones((1, cur_pos + 1), dtype=np.int64)
+            self.dec_inputs["position_ids"] = np.repeat(np.array([[[cur_pos]]], dtype=np.int64), 3, axis=0)
+            
+            for idx, out_name in enumerate(self.model.dec_output_names[1:], start=1):
+                if out_name.startswith("present."):
+                    past_name = out_name.replace("present.", "past_key_values.")
+                else:
+                    past_name = out_name.replace("present_", "past_")
+                if past_name in self.dec_inputs:
+                    self.dec_inputs[past_name] = self.last_outputs[idx]
+                    
+        self.last_outputs = self.model.dec_sess.run(None, self.dec_inputs)
+        logits = self.last_outputs[0]
+        tok = int(np.argmax(logits[0, -1, :]))
+        
+        if tok in (151643, 151645, 248071) or self.step >= self.max_tokens:
+            self.done = True
+            self.next_tokens = []
+        else:
+            self.next_tokens = [tok]
+            self.step += 1
+            q = getattr(thread_local_data, "token_queue", None)
+            if q is not None and shared_tokenizer is not None:
+                try:
+                    tok_text = shared_tokenizer.decode([tok])
+                    q.put(tok_text)
+                except Exception:
+                    pass
+
+    def get_next_tokens(self):
+        return self.next_tokens
+
 def get_shared_onnx_genai():
     global shared_model, shared_tokenizer
     if shared_model is None:
         import onnxruntime_genai as og
-        if not os.path.exists(MODEL_PATH):
-            print(f"[System] Model path {MODEL_PATH} not found. Running auto-download...")
+        if not os.path.exists(os.path.join(MODEL_PATH, "onnx", "decoder_model_merged_quantized.onnx")):
+            print(f"[System] Qwen 3.5 0.8B ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen3.5-0.8B-ONNX...")
             from huggingface_hub import snapshot_download
             snapshot_download(
-                repo_id="tonythethompson/Qwen2.5-1.5B-Instruct-ONNX",
+                repo_id="onnx-community/Qwen3.5-0.8B-ONNX",
                 local_dir=MODEL_PATH,
-                ignore_patterns=["*cuda*", "*directml*"]
+                allow_patterns=[
+                    "config.json", "generation_config.json", "tokenizer.json",
+                    "tokenizer_config.json", "chat_template.jinja",
+                    "onnx/decoder_model_merged_quantized.*", "onnx/embed_tokens_quantized.*"
+                ]
             )
-        print(f"[System] Initializing shared Qwen ONNX model from: {MODEL_PATH}...")
-        shared_model = og.Model(MODEL_PATH)
-        shared_tokenizer = og.Tokenizer(shared_model)
+            
+        print(f"[System] Initializing shared Qwen 3.5 0.8B ONNX model from: {MODEL_PATH}...")
+        shared_model = Qwen35ONNXModel(MODEL_PATH)
+        shared_tokenizer = Qwen35ONNXTokenizer(shared_model)
         
-        # Monkeypatch onnxruntime-genai's Model and Tokenizer to always return the shared instances.
-        # This prevents out-of-memory errors when multiple agents are loaded simultaneously.
         class MockModel:
             def __new__(cls, *args, **kwargs):
                 return shared_model
         class MockTokenizer:
             def __new__(cls, *args, **kwargs):
                 return shared_tokenizer
-        
-        original_generator = og.Generator
-        class InterceptedGenerator:
-            def __init__(self, model, params):
-                self._gen = original_generator(shared_model, params)
-            def append_tokens(self, tokens):
-                self._gen.append_tokens(tokens)
-            def is_done(self):
-                return self._gen.is_done()
-            def generate_next_token(self):
-                self._gen.generate_next_token()
-                new_tokens = self._gen.get_next_tokens()
-                if len(new_tokens) > 0:
-                    token_id = int(new_tokens[0])
-                    q = getattr(thread_local_data, "token_queue", None)
-                    if q is not None:
-                        try:
-                            token_text = shared_tokenizer.decode([token_id])
-                            q.put(token_text)
-                        except Exception:
-                            pass
-            def get_next_tokens(self):
-                return self._gen.get_next_tokens()
-            def compute_logits(self):
-                self._gen.compute_logits()
+        class MockGenerator:
+            def __new__(cls, model, params=None):
+                return Qwen35ONNXGenerator(shared_model, params)
         
         og.Model = MockModel
         og.Tokenizer = MockTokenizer
-        og.Generator = InterceptedGenerator
-        print("[System] Monkeypatched onnxruntime_genai classes successfully.")
+        og.Generator = MockGenerator
+        print("[System] Monkeypatched onnxruntime_genai classes with Qwen 3.5 0.8B ONNX runner successfully.")
     return shared_model, shared_tokenizer
 
 # Request schema for executing agents

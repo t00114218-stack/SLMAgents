@@ -1,7 +1,7 @@
 models:
   vision_parser:
-    path: "../../models/florence-2-large"
-    repo_id: "microsoft/Florence-2-large"
+    path: "../../models/moondream2-onnx"
+    repo_id: "Xenova/moondream2"
 
 inference:
   n_threads: 4
