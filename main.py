@@ -98,6 +98,9 @@ class RunAgentRequest(BaseModel):
     agent_key: str
     inputs: dict
 
+class InitModelRequest(BaseModel):
+    agent_key: str = "rag"
+
 # Define executors mapping 26 agent keys to real library calls
 # Define helper functions for file handling and base64 conversions
 def get_file_suffix_from_bytes(data: bytes) -> str:
@@ -805,6 +808,20 @@ async def run_agent(req: RunAgentRequest):
             yield f"data: {json.dumps({'done': True, 'result': result_container['result']})}\n\n"
             
     return StreamingResponse(sse_generator(), media_type="text/event-stream")
+
+@app.post("/api/init_model")
+async def init_model(req: InitModelRequest):
+    global shared_model
+    already_cached = (shared_model is not None)
+    try:
+        if not already_cached:
+            get_shared_onnx_genai()
+            return {"status": "success", "cached": False, "message": "Model initialized"}
+        else:
+            return {"status": "success", "cached": True, "message": "Model initialized in shared cache"}
+    except Exception as e:
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"status": "error", "error": str(e), "message": f"Failed to initialize model: {e}"})
 
 # Serve the static documentation portal files
 website_path = os.path.join(BASE_DIR, "website")

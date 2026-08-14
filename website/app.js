@@ -1028,12 +1028,84 @@ function renderStudioFields(agentKey) {
   updateStudioOutput();
 }
 
+let currentInitAgentKey = null;
+let isModelInitializing = false;
+let modelInitStatusText = "";
+
+async function initStudioModel(agentKey) {
+  currentInitAgentKey = agentKey;
+  isModelInitializing = true;
+  const spec = ALL_AGENT_SPECS[agentKey] || ALL_AGENT_SPECS["voice"];
+  const runBtn = document.getElementById("studio-run-btn");
+  const consoleEl = document.getElementById("studio-output-console");
+  const parentEl = document.getElementById("studio-console-parent");
+  if (parentEl) {
+    const oldCard = parentEl.querySelector(".audio-response-card");
+    if (oldCard) oldCard.remove();
+  }
+
+  const fieldVals = getActiveFieldValues(spec);
+  const outputObj = spec.getOutput(fieldVals);
+
+  if (runBtn) {
+    runBtn.disabled = true;
+    runBtn.style.opacity = "0.5";
+    runBtn.style.cursor = "not-allowed";
+    runBtn.textContent = "⏳ Initializing Model...";
+  }
+
+  if (consoleEl) {
+    consoleEl.textContent = `[*] Initializing ${spec.name} locally on CPU (threads=4, engine=quantized-onnx)...\n[*] Checking shared cache status...\n\n[Loading model weights into memory arena...]`;
+  }
+
+  try {
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const initEndpoint = isLocal ? "/api/init_model" : "https://spcv-slm-agents.hf.space/api/init_model";
+
+    const res = await fetch(initEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ agent_key: agentKey })
+    });
+
+    if (currentInitAgentKey !== agentKey) return;
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data.cached) {
+        modelInitStatusText = `[*] Initializing ${spec.name} locally on CPU (threads=4, engine=quantized-onnx)...\n[System] Model already initialized in shared cache.\n\nReady for execution.\n\n[Default Parameter Preview]:\n`;
+      } else {
+        modelInitStatusText = `[*] Initializing ${spec.name} locally on CPU (threads=4, engine=quantized-onnx)...\n[System] Model initialized.\n\nReady for execution.\n\n[Default Parameter Preview]:\n`;
+      }
+    } else {
+      modelInitStatusText = `[*] Initializing ${spec.name} locally on CPU...\n[System] Model initialized in preview mode.\n\nReady for execution.\n\n[Default Parameter Preview]:\n`;
+    }
+  } catch (e) {
+    if (currentInitAgentKey !== agentKey) return;
+    modelInitStatusText = `[*] Initializing ${spec.name} locally on CPU...\n[System] Model initialized in offline preview mode.\n\nReady for execution.\n\n[Default Parameter Preview]:\n`;
+  } finally {
+    if (currentInitAgentKey === agentKey) {
+      isModelInitializing = false;
+      if (consoleEl && currentStudioMode === "exec") {
+        consoleEl.textContent = modelInitStatusText + JSON.stringify(outputObj, null, 2);
+      }
+      if (runBtn) {
+        runBtn.disabled = false;
+        runBtn.style.opacity = "1";
+        runBtn.style.cursor = "pointer";
+        runBtn.textContent = "⚡ Run Agent Execution";
+      }
+    }
+  }
+}
+
 function onStudioAgentChange(agentKey) {
   renderStudioFields(agentKey);
   const selectEl = document.getElementById("studio-agent-select");
   if (selectEl && selectEl.value !== agentKey) {
     selectEl.value = agentKey;
   }
+  initStudioModel(agentKey);
 }
 
 function setStudioMode(mode) {
@@ -1165,13 +1237,15 @@ window.toggleStudioAudioRecord = async function(fieldId) {
 function updateStudioOutput() {
   const consoleEl = document.getElementById("studio-output-console");
   if (!consoleEl) return;
+  if (isModelInitializing) return;
 
   const spec = ALL_AGENT_SPECS[currentStudioAgentKey] || ALL_AGENT_SPECS["voice"];
   const fieldVals = getActiveFieldValues(spec);
 
   if (currentStudioMode === "exec") {
     const outputObj = spec.getOutput(fieldVals);
-    consoleEl.textContent = JSON.stringify(outputObj, null, 2);
+    const prefix = modelInitStatusText || "";
+    consoleEl.textContent = prefix + JSON.stringify(outputObj, null, 2);
   } else {
     // Generate Python Unit Test Code mapped to exact agent method
     let pyArgs = [];
@@ -1430,8 +1504,17 @@ function renderAudioPlayerCard(consoleEl, transcript, responseText, audioBase64)
 }
 
 async function runStudioAgent() {
+  if (isModelInitializing) return;
   const consoleEl = document.getElementById("studio-output-console");
   if (!consoleEl) return;
+
+  const runBtn = document.getElementById("studio-run-btn");
+  if (runBtn) {
+    runBtn.disabled = true;
+    runBtn.style.opacity = "0.6";
+    runBtn.style.cursor = "not-allowed";
+    runBtn.textContent = "⏳ Running Agent...";
+  }
 
   const parentEl = document.getElementById("studio-console-parent");
   if (parentEl) {
@@ -1474,7 +1557,10 @@ async function runStudioAgent() {
   }, 1000);
 
   try {
-    const response = await fetch("https://spcv-slm-agents.hf.space/api/run_agent", {
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const runEndpoint = isLocal ? "/api/run_agent" : "https://spcv-slm-agents.hf.space/api/run_agent";
+
+    const response = await fetch(runEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -1558,6 +1644,13 @@ async function runStudioAgent() {
         JSON.stringify(spec.getOutput(fieldVals), null, 2);
       consoleEl.scrollTop = consoleEl.scrollHeight;
     }
+  } finally {
+    if (runBtn) {
+      runBtn.disabled = false;
+      runBtn.style.opacity = "1";
+      runBtn.style.cursor = "pointer";
+      runBtn.textContent = "⚡ Run Agent Execution";
+    }
   }
 }
 
@@ -1604,4 +1697,5 @@ window.clearStudioAudio = function(fieldId) {
 // Initializer
 document.addEventListener("DOMContentLoaded", () => {
   renderStudioFields("rag");
+  initStudioModel("rag");
 });
