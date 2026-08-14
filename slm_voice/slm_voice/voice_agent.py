@@ -1,10 +1,46 @@
 import os
+import sys
+import platform
+import subprocess
 import yaml
 
 try:
     import onnxruntime_genai as og
 except ImportError:
     og = None
+
+try:
+    import pyttsx3
+except ImportError:
+    pyttsx3 = None
+
+def _get_translation_hub():
+    """Helper to safely locate and instantiate SLMTranslationHub without hardcoded import dependency errors."""
+    _curr_dir = os.path.dirname(os.path.abspath(__file__))
+    _ws_dir = os.path.dirname(os.path.dirname(_curr_dir))
+    if _ws_dir not in sys.path:
+        sys.path.insert(0, _ws_dir)
+    _trans_pkg_dir = os.path.join(_ws_dir, "slm_translation")
+    if os.path.isdir(_trans_pkg_dir) and _trans_pkg_dir not in sys.path:
+        sys.path.insert(0, _trans_pkg_dir)
+        
+    try:
+        import importlib
+        mod = importlib.import_module("slm_translation.translation_hub")
+        cls = getattr(mod, "SLMTranslationHub", None)
+        if cls:
+            return cls()
+    except Exception:
+        pass
+    try:
+        import importlib
+        mod = importlib.import_module("translation_hub")
+        cls = getattr(mod, "SLMTranslationHub", None)
+        if cls:
+            return cls()
+    except Exception:
+        pass
+    return None
 
 def load_config() -> tuple[dict, str]:
     config_paths = [
@@ -24,7 +60,7 @@ def load_config() -> tuple[dict, str]:
 
 class SLMVoiceAgent:
     """
-    Fast offline conversational companion combining Whisper speech-to-text, 1.5B chat,
+    Fast offline conversational companion combining Whisper speech-to-text, 0.8B/1.5B chat,
     and lightweight text-to-speech pipelines on CPU.
     Supports user-configurable tool function integration and dynamic system prompts.
     """
@@ -91,10 +127,10 @@ class SLMVoiceAgent:
             if not os.path.isabs(config_path) and config_file_path:
                 config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
                 
-            # Scan to find actual directory containing genai_config.json
+            # Scan to find actual directory containing tokenizer.json / genai_config.json
             resolved_path = None
             for root, dirs, files in os.walk(config_path):
-                if "genai_config.json" in files:
+                if "genai_config.json" in files or "tokenizer.json" in files:
                     resolved_path = root
                     break
             
@@ -121,13 +157,13 @@ class SLMVoiceAgent:
             
             # Translate the filename query to the target language if not English
             if language.lower() not in ["en", "english"]:
-                try:
-                    from slm_translation.translation_hub import SLMTranslationHub
-                    hub = SLMTranslationHub()
-                    target_lang_code = self._get_lang_code(language)
-                    query = hub.translate(query, source_lang="en", target_lang=target_lang_code)
-                except Exception:
-                    pass
+                hub = _get_translation_hub()
+                if hub is not None:
+                    try:
+                        target_lang_code = self._get_lang_code(language)
+                        query = hub.translate(query, source_lang="en", target_lang=target_lang_code)
+                    except Exception:
+                        pass
             return query
         return str(audio_input)
 
@@ -139,7 +175,6 @@ class SLMVoiceAgent:
             return False
             
         # Detect if we are running inside tests to avoid playing audio and to match expected regression outputs
-        import sys
         is_test = (
             "pytest" in sys.modules or
             "regression_test" in sys.modules or
@@ -150,9 +185,6 @@ class SLMVoiceAgent:
             return False
 
         # Try macOS 'say' command first if on mac, or as fallback
-        import platform
-        import subprocess
-        
         if platform.system() == "Darwin":
             try:
                 cmd = ["say"]
@@ -165,17 +197,18 @@ class SLMVoiceAgent:
                 pass
                 
         # Try pyttsx3 fallback
-        try:
-            import pyttsx3
-            engine = pyttsx3.init()
-            if output_path:
-                engine.save_to_file(response_text, output_path)
-            else:
-                engine.say(response_text)
-            engine.runAndWait()
-            return True
-        except Exception:
-            return False
+        if pyttsx3 is not None:
+            try:
+                engine = pyttsx3.init()
+                if output_path:
+                    engine.save_to_file(response_text, output_path)
+                else:
+                    engine.say(response_text)
+                engine.runAndWait()
+                return True
+            except Exception:
+                return False
+        return False
 
     def process_speech_text(self, speech_transcript: str = None, audio_file: str = None, language: str = "english", system_prompt: str = None, user_input: str = None, barge_in: bool = None, barge_in_sensitivity: float = None, temperature: float = None, top_p: float = None, max_tokens: int = None, output_audio_path: str = None) -> dict:
         """
@@ -202,15 +235,15 @@ class SLMVoiceAgent:
         # Translate input from source language to English first (so routing and tools work in English)
         english_transcript = speech_transcript
         if language.lower() not in ["en", "english"]:
-            try:
-                from slm_translation.translation_hub import SLMTranslationHub
-                hub = SLMTranslationHub()
-                source_lang_code = self._get_lang_code(language)
-                translated = hub.translate(speech_transcript, source_lang=source_lang_code, target_lang="en")
-                if not translated.startswith("[EN Translation of"):
-                    english_transcript = translated
-            except Exception:
-                pass
+            hub = _get_translation_hub()
+            if hub is not None:
+                try:
+                    source_lang_code = self._get_lang_code(language)
+                    translated = hub.translate(speech_transcript, source_lang=source_lang_code, target_lang="en")
+                    if translated and not translated.startswith("[EN Translation of"):
+                        english_transcript = translated
+                except Exception:
+                    pass
 
         # Determine which registered tool should be triggered based on query parsing.
         selected_tool = "direct"
@@ -276,11 +309,13 @@ class SLMVoiceAgent:
         # Target language translation routing if non-English requested
         target_lang_code = self._get_lang_code(language)
         if target_lang_code != "en":
-            try:
-                from slm_translation.translation_hub import SLMTranslationHub
-                hub = SLMTranslationHub()
-                response_text = hub.translate(response_text, source_lang="en", target_lang=target_lang_code)
-            except Exception:
+            hub = _get_translation_hub()
+            if hub is not None:
+                try:
+                    response_text = hub.translate(response_text, source_lang="en", target_lang=target_lang_code)
+                except Exception:
+                    response_text = f"[{target_lang_code.upper()} Translation of '{response_text}']"
+            else:
                 response_text = f"[{target_lang_code.upper()} Translation of '{response_text}']"
 
         # Step 4: Text Response -> TTS (Text-to-Speech) Synthesis Output
@@ -297,3 +332,4 @@ class SLMVoiceAgent:
         Convenience execution method for audio-only file inputs (.wav, .mp3, .m4a).
         """
         return self.process_speech_text(audio_file=audio_file, language=language, system_prompt=system_prompt, user_input=user_input, barge_in=barge_in, barge_in_sensitivity=barge_in_sensitivity, temperature=temperature, top_p=top_p, max_tokens=max_tokens, output_audio_path=output_audio_path)
+
