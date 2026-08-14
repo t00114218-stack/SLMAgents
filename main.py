@@ -4,6 +4,34 @@ import json
 import traceback
 import threading
 import queue
+import urllib.request
+import re
+
+try:
+    import numpy as np
+except ImportError:
+    np = None
+
+try:
+    import onnxruntime as ort
+except ImportError:
+    ort = None
+
+try:
+    from tokenizers import Tokenizer
+except ImportError:
+    Tokenizer = None
+
+try:
+    import onnxruntime_genai as og
+except ImportError:
+    og = None
+
+try:
+    from huggingface_hub import snapshot_download
+except ImportError:
+    snapshot_download = None
+
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
@@ -40,7 +68,9 @@ shared_tokenizer = None
 class Qwen35ONNXModel:
     def __init__(self, model_dir):
         self.model_dir = os.path.abspath(model_dir)
-        import onnxruntime as ort
+        if ort is None:
+            raise ImportError("onnxruntime is not installed. Please run: pip install onnxruntime")
+            
         opts = ort.SessionOptions()
         opts.intra_op_num_threads = 4
         
@@ -53,7 +83,9 @@ class Qwen35ONNXModel:
 
 class Qwen35ONNXTokenizer:
     def __init__(self, model_or_dir):
-        from tokenizers import Tokenizer
+        if Tokenizer is None:
+            raise ImportError("tokenizers is not installed. Please run: pip install tokenizers")
+            
         if isinstance(model_or_dir, Qwen35ONNXModel):
             tok_path = os.path.join(model_or_dir.model_dir, "tokenizer.json")
         elif isinstance(model_or_dir, str):
@@ -85,7 +117,8 @@ class Qwen35ONNXGenerator:
         self.max_tokens = 128
 
     def append_tokens(self, tokens):
-        import numpy as np
+        if np is None:
+            return
         self.tokens_history.extend(tokens)
         input_ids = np.array([self.tokens_history], dtype=np.int64)
         seq_len = input_ids.shape[1]
@@ -108,9 +141,9 @@ class Qwen35ONNXGenerator:
         return self.done
 
     def generate_next_token(self):
-        if self.done:
+        if self.done or np is None:
             return
-        import numpy as np
+            
         if self.step > 0:
             next_token = self.next_tokens[0]
             cur_pos = len(self.tokens_history)
@@ -153,19 +186,18 @@ class Qwen35ONNXGenerator:
 def get_shared_onnx_genai():
     global shared_model, shared_tokenizer
     if shared_model is None:
-        import onnxruntime_genai as og
         if not os.path.exists(os.path.join(MODEL_PATH, "onnx", "decoder_model_merged_quantized.onnx")):
             print(f"[System] Qwen 3.5 0.8B ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen3.5-0.8B-ONNX...")
-            from huggingface_hub import snapshot_download
-            snapshot_download(
-                repo_id="onnx-community/Qwen3.5-0.8B-ONNX",
-                local_dir=MODEL_PATH,
-                allow_patterns=[
-                    "config.json", "generation_config.json", "tokenizer.json",
-                    "tokenizer_config.json", "chat_template.jinja",
-                    "onnx/decoder_model_merged_quantized.*", "onnx/embed_tokens_quantized.*"
-                ]
-            )
+            if snapshot_download is not None:
+                snapshot_download(
+                    repo_id="onnx-community/Qwen3.5-0.8B-ONNX",
+                    local_dir=MODEL_PATH,
+                    allow_patterns=[
+                        "config.json", "generation_config.json", "tokenizer.json",
+                        "tokenizer_config.json", "chat_template.jinja",
+                        "onnx/decoder_model_merged_quantized.*", "onnx/embed_tokens_quantized.*"
+                    ]
+                )
             
         print(f"[System] Initializing shared Qwen 3.5 0.8B ONNX model from: {MODEL_PATH}...")
         shared_model = Qwen35ONNXModel(MODEL_PATH)
@@ -427,7 +459,6 @@ def run_web_agent(inputs):
             f"<|assistant|>\n"
         )
         
-        import onnxruntime_genai as og
         model, tokenizer = get_shared_onnx_genai()
         params = og.GeneratorParams(model)
         params.set_search_options(max_length=128, temperature=0.0)
