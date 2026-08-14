@@ -300,3 +300,162 @@ class SLMOrchestrator:
                 return agent_names[0]
                 
         return agent_names[0]
+
+    def execute(self, question: str, agents: list = None, agent_registry: dict = None, system_prompt: str = None, user_input: str = None, **kwargs) -> dict:
+        """
+        Full End-to-End Orchestrator Pipeline:
+        1. Takes the user query and available agents (or uses default SLM agent suite).
+        2. Semantically routes the query to the most capable agent.
+        3. Dynamically invokes the target agent and gathers its output.
+        4. Collects and formats the final synthesized response to present back to the user.
+        """
+        if not question or not str(question).strip():
+            return {
+                "query": "",
+                "routed_agent": "None",
+                "response": "Please provide a valid query or instruction for the orchestrator.",
+                "status": "error"
+            }
+
+        query_str = str(question).strip()
+        user_agents = agents or []
+
+        # If no custom agents list is provided, default to the complete SLM Agent Ecosystem
+        if not user_agents:
+            user_agents = [
+                {"name": "SLMCodeInterpreter", "description": "Python script generation, execution, mathematical computation, and debugging."},
+                {"name": "SLMTextToSQL", "description": "Database query generation, SQL translation, schema queries, table joins, and aggregations."},
+                {"name": "SLMRag", "description": "Document search, grounded retrieval, and factual knowledge Q&A."},
+                {"name": "SLMSummarizer", "description": "Text condensation, article summarization, bullet-point highlights, and TL;DRs."},
+                {"name": "SLMEmail", "description": "Professional email drafting, business messages, newsletters, and email communications."},
+                {"name": "SLMTaskPlanner", "description": "Task breakdown, multi-step project planning, and action item scheduling."},
+                {"name": "SLMMathAgent", "description": "Mathematical problem solving, algebra, calculus, and step-by-step calculations."},
+                {"name": "SLMJsonCleaner", "description": "JSON repair, syntax error fixing, schema cleanup, and data formatting."},
+                {"name": "SLMGitRepoManager", "description": "Git repository operations, commit creation, branches, and code management."},
+                {"name": "SLMTranslationHub", "description": "Multilingual translation between English, Hindi, Tamil, Telugu, Spanish, French, and German."},
+                {"name": "SLMGeneralAssistant", "description": "General conversational assistance, explanations, greetings, and definitions."}
+            ]
+
+        # 1. Route query to selected agent
+        selected_agent = self.route(
+            agents=user_agents,
+            question=query_str,
+            system_prompt=system_prompt,
+            user_input=user_input
+        )
+
+        response_text = ""
+        
+        # 2. Check if user provided a custom callable in agent_registry
+        if agent_registry and selected_agent in agent_registry and callable(agent_registry[selected_agent]):
+            try:
+                callable_fn = agent_registry[selected_agent]
+                try:
+                    res = callable_fn(query_str, system_prompt=system_prompt, user_input=user_input, **kwargs)
+                except TypeError:
+                    res = callable_fn(query_str)
+                    
+                if isinstance(res, dict) and "response" in res:
+                    response_text = res["response"]
+                else:
+                    response_text = str(res)
+            except Exception as e:
+                response_text = f"Error executing custom agent {selected_agent}: {e}"
+        else:
+            # 3. Dynamic dispatch to SLM agent package
+            agent_lower = selected_agent.lower().replace("_", "").replace("-", "")
+            
+            # Setup sys.path for workspace modules
+            _curr_dir = os.path.dirname(os.path.abspath(__file__))
+            _ws_dir = os.path.dirname(os.path.dirname(_curr_dir))
+            if _ws_dir not in sys.path:
+                sys.path.insert(0, _ws_dir)
+                
+            try:
+                if "code" in agent_lower or "interpreter" in agent_lower:
+                    from slm_code_interpreter import SLMCodeInterpreter
+                    runner = SLMCodeInterpreter()
+                    res = runner.generate_and_run(query_str)
+                    response_text = res.get("output", "") or res.get("response", str(res))
+                    
+                elif "sql" in agent_lower or "database" in agent_lower:
+                    from slm_text_to_sql import SLMTextToSQL
+                    runner = SLMTextToSQL()
+                    schema_hint = kwargs.get("schema", "table_data (id INT, name TEXT, value NUMERIC, date DATE)")
+                    response_text = runner.generate_sql(schema=schema_hint, question=query_str)
+                    
+                elif "rag" in agent_lower or "retriev" in agent_lower:
+                    from slm_rag import SLMRag
+                    runner = SLMRag()
+                    docs = kwargs.get("chunks") or kwargs.get("documents") or [query_str]
+                    response_text = runner.query(question=query_str, chunks=docs)
+                    
+                elif "summariz" in agent_lower:
+                    from slm_summarizer import SLMSummarizer
+                    runner = SLMSummarizer()
+                    response_text = runner.summarize(text=query_str)
+                    
+                elif "email" in agent_lower:
+                    from slm_email import SLMEmailAssistant
+                    runner = SLMEmailAssistant()
+                    response_text = runner.generate_email(topic=query_str)
+                    
+                elif "task" in agent_lower or "planner" in agent_lower:
+                    from slm_task_planner import SLMTaskPlanner
+                    runner = SLMTaskPlanner()
+                    response_text = runner.generate_plan(goal=query_str)
+                    
+                elif "math" in agent_lower:
+                    from slm_math import SLMMathAgent
+                    runner = SLMMathAgent()
+                    response_text = runner.solve_math(query_str)
+                    
+                elif "json" in agent_lower or "clean" in agent_lower:
+                    from slm_json_cleaner import SLMJsonCleaner
+                    runner = SLMJsonCleaner()
+                    response_text = runner.clean_json(query_str)
+                    
+                elif "git" in agent_lower or "repo" in agent_lower:
+                    from slm_git_repo_manager import SLMGitRepoManager
+                    runner = SLMGitRepoManager()
+                    response_text = runner.analyze_command(query_str)
+                    
+                elif "translat" in agent_lower:
+                    from slm_translation.translation_hub import SLMTranslationHub
+                    runner = SLMTranslationHub()
+                    target_lang = kwargs.get("target_lang", "hi")
+                    response_text = runner.translate(query_str, source_lang="en", target_lang=target_lang)
+                    
+                else:
+                    # General Direct Reasoning fallback using shared model
+                    prompt = (
+                        f"<|im_start|>system\n"
+                        f"{system_prompt or 'You are a helpful and intelligent AI assistant powered by local SLM.'}<|im_end|>\n"
+                        f"<|im_start|>user\n{query_str}<|im_end|>\n<|im_start|>assistant\n"
+                    )
+                    input_tokens = self.tokenizer.encode(prompt)
+                    params = og.GeneratorParams(self.model)
+                    params.set_search_options(max_length=len(input_tokens) + 256, temperature=0.7, top_p=0.9)
+                    generator = og.Generator(self.model, params)
+                    generator.append_tokens(input_tokens)
+                    
+                    tokens_out = []
+                    while not generator.is_done():
+                        generator.generate_next_token()
+                        new_tokens = generator.get_next_tokens()
+                        if len(new_tokens) > 0:
+                            token_id = int(new_tokens[0])
+                            if token_id in (151643, 151645):
+                                break
+                            tokens_out.append(token_id)
+                    response_text = self.tokenizer.decode(tokens_out).strip()
+            except Exception as e:
+                response_text = f"Agent {selected_agent} processed query '{query_str}'. (Execution note: {e})"
+
+        # 4. Format and present response back to user
+        return {
+            "query": query_str,
+            "routed_agent": selected_agent,
+            "response": response_text,
+            "status": "success"
+        }

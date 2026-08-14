@@ -310,13 +310,21 @@ def run_orchestrator(inputs):
     get_shared_onnx_genai()
     from slm_orchestrator import SLMOrchestrator
     agent = SLMOrchestrator()
-    agent_names = [a.strip() for a in inputs.get("agents", "").split(",") if a.strip()]
-    agent_list = [{"name": name, "description": f"Handles {name} related queries"} for name in agent_names]
-    return agent.route(
+    raw_agents = inputs.get("agents", "")
+    agent_list = None
+    if raw_agents:
+        agent_names = [a.strip() for a in raw_agents.split(",") if a.strip()]
+        if agent_names:
+            agent_list = [{"name": name, "description": f"Specialized agent for {name} tasks"} for name in agent_names]
+            
+    result = agent.execute(
+        question=inputs.get("question") or inputs.get("query", ""),
         agents=agent_list,
-        question=inputs.get("question", ""),
         system_prompt=inputs.get("system_prompt")
     )
+    routed = result.get("routed_agent", "Agent")
+    res_text = result.get("response", "")
+    return f"🎯 Selected Agent: {routed}\n\n📋 Execution Result:\n{res_text}"
 
 def run_sql(inputs):
     model_dir = os.path.join(BASE_DIR, "models", "qwen2.5_coder_text2sql_onnx")
