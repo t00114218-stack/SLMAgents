@@ -10,8 +10,9 @@
   <models>
     <!-- Core Shared Reasoning & Dialogue Model -->
     <model name="qwen3.5-0.8b-onnx" category="llm_core">
-      <description>Base Qwen 3.5 0.8B ONNX reasoning engine (non-quantized)</description>
+      <description>Qwen 3.5 0.8B ONNX INT4 / Q4 Quantized reasoning engine (Fast CPU Inference)</description>
       <type>onnx_genai</type>
+      <quantization>int4</quantization>
       <repo_id>local/qwen3.5-0.8b-onnx</repo_id>
       <path>models/qwen3.5-0.8b-onnx</path>
       <used_by>

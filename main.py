@@ -116,13 +116,26 @@ class Qwen35ONNXModel:
         opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
         opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         
-        embed_q4_path = os.path.join(self.model_dir, "onnx", "embed_tokens_q4.onnx")
-        dec_q4_path = os.path.join(self.model_dir, "onnx", "decoder_model_merged_q4.onnx")
+        # Prioritize INT4 / Q4 quantized weights across all agents
+        embed_candidates = [
+            os.path.join(self.model_dir, "onnx", "embed_tokens_q4.onnx"),
+            os.path.join(self.model_dir, "onnx", "embed_tokens_int4.onnx"),
+            os.path.join(self.model_dir, "onnx", "embed_tokens_quantized.onnx"),
+            os.path.join(self.model_dir, "embed_tokens_quantized.onnx"),
+            os.path.join(self.model_dir, "model.onnx")
+        ]
+        dec_candidates = [
+            os.path.join(self.model_dir, "onnx", "decoder_model_merged_q4.onnx"),
+            os.path.join(self.model_dir, "onnx", "decoder_model_merged_int4.onnx"),
+            os.path.join(self.model_dir, "onnx", "decoder_model_merged_quantized.onnx"),
+            os.path.join(self.model_dir, "decoder_model_merged_quantized.onnx"),
+            os.path.join(self.model_dir, "model.onnx")
+        ]
         
-        embed_path = embed_q4_path if os.path.exists(embed_q4_path) else os.path.join(self.model_dir, "onnx", "embed_tokens_quantized.onnx")
-        dec_path = dec_q4_path if os.path.exists(dec_q4_path) else os.path.join(self.model_dir, "onnx", "decoder_model_merged_quantized.onnx")
+        embed_path = next((p for p in embed_candidates if os.path.exists(p)), embed_candidates[0])
+        dec_path = next((p for p in dec_candidates if os.path.exists(p)), dec_candidates[0])
         
-        print(f"[System] Loading base ONNX model weights: {dec_path}")
+        print(f"[System] Loading INT4 Quantized ONNX model weights: {dec_path}")
         self.embed_sess = ort.InferenceSession(embed_path, opts, providers=["CPUExecutionProvider"])
         self.dec_sess = ort.InferenceSession(dec_path, opts, providers=["CPUExecutionProvider"])
         self.dec_output_names = [o.name for o in self.dec_sess.get_outputs()]
@@ -285,8 +298,9 @@ def get_shared_onnx_genai():
             except Exception as e:
                 print(f"[System] Native ONNX GenAI load note: {e}")
 
-        if not os.path.exists(os.path.join(MODEL_PATH, "onnx", "decoder_model_merged_quantized.onnx")):
-            print(f"[System] Qwen 3.5 0.8B ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen3.5-0.8B-ONNX...")
+        has_int4_weights = any(os.path.exists(os.path.join(MODEL_PATH, "onnx", f)) for f in ["decoder_model_merged_q4.onnx", "decoder_model_merged_int4.onnx", "decoder_model_merged_quantized.onnx"])
+        if not has_int4_weights:
+            print(f"[System] INT4 Quantized Qwen 3.5 0.8B ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen3.5-0.8B-ONNX (INT4/Q4)...")
             if snapshot_download is not None:
                 snapshot_download(
                     repo_id="onnx-community/Qwen3.5-0.8B-ONNX",
@@ -294,11 +308,12 @@ def get_shared_onnx_genai():
                     allow_patterns=[
                         "config.json", "generation_config.json", "tokenizer.json",
                         "tokenizer_config.json", "chat_template.jinja",
+                        "onnx/decoder_model_merged_q4.*", "onnx/embed_tokens_q4.*",
                         "onnx/decoder_model_merged_quantized.*", "onnx/embed_tokens_quantized.*"
                     ]
                 )
             
-        print(f"[System] Initializing shared Qwen 3.5 0.8B ONNX model from: {MODEL_PATH}...")
+        print(f"[System] Initializing shared INT4 Quantized Qwen 3.5 0.8B ONNX model from: {MODEL_PATH}...")
         shared_model = Qwen35ONNXModel(MODEL_PATH)
         shared_tokenizer = Qwen35ONNXTokenizer(shared_model)
         
@@ -1516,8 +1531,8 @@ async def get_system_stats():
             "used_ram_gb": round(vm.used / (1024 ** 3), 1),
             "ram_percent": vm.percent,
             "cpu_percent": round(psutil.cpu_percent(interval=None), 1),
-            "model": "Base Qwen 3.5 0.8B ONNX (Reasoning)",
-            "device": "Local CPU"
+            "model": "Qwen 3.5 0.8B ONNX (INT4 Quantized)",
+            "device": "Local CPU (INT4 Engine)"
         }
     except Exception as e:
         return {"process_ram_mb": 490.0, "total_ram_gb": 16.0, "ram_percent": 35.0, "error": str(e)}
