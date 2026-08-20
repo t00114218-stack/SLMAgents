@@ -233,8 +233,8 @@ class SLMCodeInterpreter:
     def run(self, instruction: str, max_retries: int = 2, stream: bool = False, system_prompt: str = None, user_input: str = None, max_tokens: int = None):
         max_retries = max(1, min(int(max_retries), 3))
         if max_tokens is None:
-            max_tokens = int(os.environ.get("SLM_CODE_INTERPRETER_MAX_TOKENS", 512))
-        max_tokens = max(128, min(int(max_tokens), 1024))
+            max_tokens = int(os.environ.get("SLM_CODE_INTERPRETER_MAX_TOKENS", 320))
+        max_tokens = max(96, min(int(max_tokens), 512))
         if not system_prompt:
             system_prompt = (
                 "You are an expert Python software engineer.\n"

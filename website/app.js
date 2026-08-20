@@ -1,3 +1,11 @@
+// Universal API Endpoint Resolver (Works on Localhost, Hugging Face Spaces, and Custom Domains)
+function getApiEndpoint(path) {
+  if (window.location.protocol === "file:") {
+    return `http://localhost:7860${path}`;
+  }
+  return path;
+}
+
 // Tab switching logic for code panels
 function switchTab(btn, targetId) {
   const tabContainer = btn.parentElement;
@@ -1062,8 +1070,7 @@ async function initStudioModel(agentKey) {
   }
 
   try {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
-    const initEndpoint = isLocal ? "/api/init_model" : (window.location.origin.includes("hf.space") ? "/api/init_model" : "http://localhost:7860/api/init_model");
+    const initEndpoint = getApiEndpoint("/api/init_model");
 
     const res = await fetch(initEndpoint, {
       method: "POST",
@@ -1560,8 +1567,7 @@ async function runStudioAgent() {
   }, 1000);
 
   try {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
-    const runEndpoint = isLocal ? "/api/run_agent" : (window.location.origin.includes("hf.space") ? "/api/run_agent" : "http://localhost:7860/api/run_agent");
+    const runEndpoint = getApiEndpoint("/api/run_agent");
 
     const response = await fetch(runEndpoint, {
       method: "POST",
@@ -1749,8 +1755,7 @@ async function fetchLiveRAMStats() {
   if (!ramMbEl) return;
   
   try {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
-    const endpoint = isLocal ? "/api/system/stats" : "http://localhost:7860/api/system/stats";
+    const endpoint = getApiEndpoint("/api/system/stats");
     const res = await fetch(endpoint);
     if (res.ok) {
       const data = await res.json();
@@ -1786,8 +1791,7 @@ async function handleClearRamCache() {
     btn.disabled = true;
   }
   try {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
-    const endpoint = isLocal ? "/api/system/clear-cache" : "http://localhost:7860/api/system/clear-cache";
+    const endpoint = getApiEndpoint("/api/system/clear-cache");
     await fetch(endpoint, { method: "POST" });
     await fetchLiveRAMStats();
   } catch (e) {
@@ -2933,8 +2937,7 @@ async function handleChatSubmit(event) {
           history: session.messages.slice(-6).map(m => ({ role: m.role, content: m.text }))
         };
         
-        const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
-        const chatEndpoint = isLocal ? "/api/chat" : (window.location.origin.includes("hf.space") ? "/api/chat" : "http://localhost:7860/api/chat");
+        const chatEndpoint = getApiEndpoint("/api/chat");
         
         const response = await fetch(chatEndpoint, {
           method: "POST",

@@ -1253,14 +1253,17 @@ async def run_agent(req: RunAgentRequest):
     async def sse_generator():
         import asyncio
         while not result_container["done"] or not token_queue.empty():
+            has_emitted = False
             try:
                 while True:
                     token = token_queue.get_nowait()
                     if token is not None:
                         yield f"data: {json.dumps({'token': token})}\n\n"
+                        has_emitted = True
             except queue.Empty:
                 pass
-            await asyncio.sleep(0.05)
+            if not has_emitted:
+                await asyncio.sleep(0.005)
             
         if result_container["error"]:
             yield f"data: {json.dumps({'status': 'error', 'error': result_container['error']})}\n\n"
@@ -1453,12 +1456,14 @@ def chat_endpoint(req: ChatRequest):
     async def sse_generator():
         all_thoughts = []
         while not result_container["done"] or not token_queue.empty() or not thought_queue.empty():
+            has_emitted = False
             try:
                 while True:
                     thought = thought_queue.get_nowait()
                     if thought is not None:
                         all_thoughts.append(thought)
                         yield f"data: {json.dumps({'type': 'thought', 'thought': thought, 'thoughts': all_thoughts})}\n\n"
+                        has_emitted = True
             except queue.Empty:
                 pass
                 
@@ -1467,9 +1472,11 @@ def chat_endpoint(req: ChatRequest):
                     token = token_queue.get_nowait()
                     if token is not None:
                         yield f"data: {json.dumps({'type': 'token', 'token': token})}\n\n"
+                        has_emitted = True
             except queue.Empty:
                 pass
-            await asyncio.sleep(0.05)
+            if not has_emitted:
+                await asyncio.sleep(0.005)
             
         if result_container["error"]:
             yield f"data: {json.dumps({'type': 'error', 'error': result_container['error'], 'thoughts': all_thoughts})}\n\n"
