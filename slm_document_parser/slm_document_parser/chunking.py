@@ -63,7 +63,7 @@ class SLMChunker:
             
             input_tokens = self.tokenizer.encode(full_prompt)
             params = og.GeneratorParams(self.model)
-            params.set_search_options(max_length=len(input_tokens) + 1500, temperature=0.0)
+            params.set_search_options(max_length=len(input_tokens) + 1500, temperature=0.7)
             
             generator = og.Generator(self.model, params)
             generator.append_tokens(input_tokens)

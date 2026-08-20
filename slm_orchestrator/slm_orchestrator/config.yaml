@@ -1,11 +1,12 @@
 models:
   orchestrator:
     path: "../../models/qwen3.5-0.8b-onnx"
-    repo_id: "onnx-community/Qwen3.5-0.8B-ONNX"
+    repo_id: "local/qwen3.5-0.8b-onnx"
+    routing_engine: "mxbai-embed-large"
 
 # Performance tuning
 # n_threads: Number of CPU threads for ONNX Runtime inference.
-#   Increase to match your physical core count for faster generation.
-#   Recommended: 4 (default), 8 (modern desktop), or nproc output.
 inference:
-  n_threads: 4
+  n_threads: 8
+
+

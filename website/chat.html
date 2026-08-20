@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="canonical" href="https://www.slmagents.ai/chat.html">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat Studio: Local Multi-Agent SLM Orchestrator | SLMAgents</title>
+  <meta name="description" content="Full-page private AI Chat Studio powered by 26 local SLM agents. Run code interpretation, Text-to-SQL, document RAG, and multi-agent workflows offline on CPU.">
+  <link rel="stylesheet" href="style.css?v=15.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Highlight.js for code rendering -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- Marked.js for markdown formatting -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- OpenGraph / Social Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.slmagents.ai/chat.html">
+  <meta property="og:title" content="AI Chat Studio: Local Multi-Agent SLM Orchestrator | SLMAgents">
+  <meta property="og:description" content="Full-page private AI Chat Studio powered by 26 local SLM agents. Run code interpretation, Text-to-SQL, document RAG, and multi-agent workflows offline on CPU.">
+  <meta property="og:site_name" content="SLMAgents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Chat Studio: Local Multi-Agent SLM Orchestrator | SLMAgents">
+  <meta name="twitter:description" content="Full-page private AI Chat Studio powered by 26 local SLM agents. Run code interpretation, Text-to-SQL, document RAG, and multi-agent workflows offline on CPU.">
+  <!-- Structured Data / Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "AI Chat Studio: Local Multi-Agent SLM Orchestrator | SLMAgents",
+    "description": "Full-page private AI Chat Studio powered by 26 local SLM agents. Run code interpretation, Text-to-SQL, document RAG, and multi-agent workflows offline on CPU.",
+    "url": "https://www.slmagents.ai/chat.html",
+    "mainEntityOfPage": "https://www.slmagents.ai/chat.html",
+    "articleSection": "Chat",
+    "author": {
+      "@type": "Organization",
+      "name": "SLMAgents Community",
+      "url": "https://github.com/t00114218-stack/SLMAgents"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "SLMAgents",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.slmagents.ai/flowchart.png"
+      }
+    }
+  }
+  </script>
+</head>
+<body class="chat-page-body chat-light-theme">
+
+  <!-- Fullscreen Studio Layout -->
+  <div class="chat-app-container">
+    
+    <!-- Left-Side Clean Minimal Sidebar -->
+    <aside class="chat-sidebar" id="chat-sidebar">
+      
+      <!-- Top Brand Row with Home and + (New Chat) Icons -->
+      <div class="sidebar-top-brand">
+        <a href="index.html" class="sidebar-logo" title="SLM Agents Home">
+          <div class="sidebar-logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span class="sidebar-logo-text">SLM Agents</span>
+        </a>
+
+        <!-- Pure Icon Action Buttons (Home and New Chat) -->
+        <div class="sidebar-icon-actions">
+          <a href="index.html" class="sidebar-action-icon" title="Home">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+          </a>
+          <button class="sidebar-action-icon" id="btn-new-chat" onclick="createNewChatSession()" title="New Chat">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat History (Occupies full vertical space) -->
+      <div class="sidebar-history-container">
+        <div class="history-header-row">
+          <span>Recent Conversations</span>
+          <button class="btn-clear-history" onclick="clearAllChatSessions()" title="Clear Chat History">Clear</button>
+        </div>
+        <div class="chat-session-list" id="chat-session-list">
+          <!-- Populated dynamically by app.js from localStorage -->
+        </div>
+      </div>
+
+      <!-- Live Functional Local RAM Footprint Widget -->
+      <div class="chat-sidebar-footer">
+        <div class="ram-footprint-card">
+          <div class="ram-header-row">
+            <div class="ram-badge-live">
+              <span class="dot-green"></span>
+              <span>Local Engine RAM</span>
+            </div>
+            <strong class="ram-process-mb" id="stat-ram-mb">-- MB</strong>
+          </div>
+          
+          <div class="ram-detail-row">
+            <span class="ram-label">System RAM:</span>
+            <span class="ram-val" id="stat-sys-ram">-- GB</span>
+          </div>
+
+          <div class="ram-footer-actions">
+            <span class="ram-runtime-tag">Local Engine • Offline</span>
+            <button type="button" class="btn-purge-ram" id="btn-clear-ram" onclick="handleClearRamCache()" title="Purge intermediate KV cache and run garbage collection">
+              Purge Cache
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right-Side Full Page Main Chat Canvas -->
+    <main class="chat-main-pane">
+      
+      <!-- Minimalist Controls in Corner -->
+      <div class="chat-top-actions">
+        <div class="top-actions-left">
+          <button class="btn-sidebar-toggle-clean" id="chat-sidebar-toggle" onclick="toggleChatSidebar()" title="Toggle Sidebar">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+
+          <!-- Custom Modern Agent Selector Dropdown with SVG Icons -->
+          <div class="custom-agent-dropdown" id="custom-agent-dropdown">
+            <button type="button" class="custom-agent-btn" id="custom-agent-btn" onclick="toggleAgentDropdown(event)" title="Choose an agent to try">
+              <span class="agent-btn-icon" id="selected-agent-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+              </span>
+              <span class="agent-btn-text" id="selected-agent-name">Auto-Orchestrator (All 26)</span>
+              <svg class="agent-btn-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+
+            <!-- Dropdown Menu Panel -->
+            <div class="custom-agent-menu" id="custom-agent-menu" style="display: none;">
+              <!-- Populated dynamically by app.js with exact left menu SVGs -->
+            </div>
+            <input type="hidden" id="chat-agent-override" value="auto">
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Message Stream Viewport (Full Height Centered Container) -->
+      <div class="chat-messages-viewport" id="chat-messages-viewport">
+        <!-- Welcome Hero State (visible when conversation is empty) -->
+        <div class="chat-welcome-hero" id="chat-welcome-hero">
+          <h2>What would you like to build?</h2>
+          <p>Execute code, query SQL databases, analyze documents, or solve equations. Everything runs 100% locally on your CPU with zero cloud costs.</p>
+
+          <!-- Quick Suggestion Cards Grid -->
+          <div class="welcome-suggestions-grid">
+            <div class="suggestion-card" onclick="applyQuickPrompt('Write a Python script to compute the Fibonacci sequence with caching.')">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                </div>
+                <span class="card-tag">Code</span>
+              </div>
+              <strong>Fibonacci Generator</strong>
+              <p>Generates recursive & cached Python functions</p>
+            </div>
+
+            <div class="suggestion-card" onclick="applyQuickPrompt('Generate SQL to find top 5 customers with total orders > $1000 in 2024')">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                </div>
+                <span class="card-tag">Text-to-SQL</span>
+              </div>
+              <strong>SQL Aggregation</strong>
+              <p>Translate natural language into optimized SQL</p>
+            </div>
+
+            <div class="suggestion-card" onclick="applyQuickPrompt('Break down the milestone plan to launch a privacy-first mobile app.')">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                </div>
+                <span class="card-tag">Planner</span>
+              </div>
+              <strong>Milestone Roadmap</strong>
+              <p>Decomposes complex projects into actionable steps</p>
+            </div>
+
+            <div class="suggestion-card" onclick="applyQuickPrompt('Solve this math equation step-by-step: 3x^2 + 6x - 24 = 0')">
+              <div class="card-top">
+                <div class="card-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+                </div>
+                <span class="card-tag">Math</span>
+              </div>
+              <strong>Math Solver</strong>
+              <p>Step-by-step symbolic algebra & calculus</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drag & Drop Visual Overlay -->
+      <div class="chat-drag-overlay" id="chat-drag-overlay" style="display: none;">
+        <div class="drag-drop-content">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <h3>Drop documents or images to attach</h3>
+          <p>PDFs, Code, CSVs, Images processed 100% in-memory locally</p>
+        </div>
+      </div>
+
+      <!-- Floating Bottom Command Center / Input Bar -->
+      <div class="chat-floating-dock-container">
+        
+        <!-- Active Attachments Tray -->
+        <div class="chat-attachments-tray" id="chat-attachments-tray" style="display: none;"></div>
+
+        <!-- Voice Dictation Live Bar -->
+        <div class="chat-voice-recording-bar" id="chat-voice-bar" style="display: none;">
+          <div class="recording-pulse-dot"></div>
+          <span class="recording-text">Listening... Speak your command clearly</span>
+          <button type="button" class="btn-voice-cancel" onclick="cancelVoiceRecording()">Cancel</button>
+          <button type="button" class="btn-voice-done" onclick="stopVoiceRecording()">Done</button>
+        </div>
+
+        <!-- Sleek Floating Input Box -->
+        <form class="chat-command-form" id="chat-input-form" onsubmit="handleChatSubmit(event)">
+          
+          <!-- Attach File Button -->
+          <input type="file" id="chat-file-input" style="display: none;" onchange="handleFileSelected(event)" multiple>
+          <button type="button" class="btn-dock-icon" title="Attach Document, Image, or Code (In-Memory Only)" onclick="document.getElementById('chat-file-input').click()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+            </svg>
+          </button>
+
+          <!-- Voice Dictation Button -->
+          <button type="button" class="btn-dock-icon" id="chat-mic-btn" onclick="toggleVoiceRecording()" title="Speak Voice Command">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+            </svg>
+          </button>
+
+          <!-- Auto-Resizing Textarea -->
+          <textarea id="chat-text-input" class="chat-command-textarea" placeholder="Ask anything, request code, attach files, or speak..." rows="1" onkeydown="handleChatKeyDown(event)" oninput="autoResizeChatTextarea(this)"></textarea>
+
+          <!-- Submit / Send Button -->
+          <button type="submit" class="btn-dock-send" id="chat-send-btn" title="Send Message (Enter)" onclick="handleChatSubmit(event)">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </form>
+
+        <!-- Discreet Privacy Footer -->
+        <div class="chat-dock-footer">
+          <span>⚡ Local ONNX CPU Engine • 🔒 100% Private (Zero Data Leaves Machine) • Free &amp; Offline</span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="app.js?v=15.0"></script>
+</body>
+</html>

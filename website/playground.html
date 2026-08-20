@@ -3,11 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Interactive Multi-Agent Studio - Experience real-time CPU-optimized local model execution.">
+  <meta name="description" content="Interactive web sandbox to test and benchmark all 26 SLM agents side-by-side with live telemetry, CPU footprint metrics, and instant inference.">
   
   <link rel="canonical" href="https://www.slmagents.ai/playground.html">
-  <title>Interactive Multi-Agent Studio | SLM Agents</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Interactive Multi-Agent Studio & Playground | SLMAgents</title>
+  <link rel="stylesheet" href="style.css?v=2.1">
+  <!-- OpenGraph / Social Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.slmagents.ai/playground.html">
+  <meta property="og:title" content="Interactive Multi-Agent Studio & Playground | SLMAgents">
+  <meta property="og:description" content="Interactive web sandbox to test and benchmark all 26 SLM agents side-by-side with live telemetry, CPU footprint metrics, and instant inference.">
+  <meta property="og:site_name" content="SLMAgents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Interactive Multi-Agent Studio & Playground | SLMAgents">
+  <meta name="twitter:description" content="Interactive web sandbox to test and benchmark all 26 SLM agents side-by-side with live telemetry, CPU footprint metrics, and instant inference.">
+  <!-- Structured Data / Schema Markup -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Interactive Multi-Agent Studio & Playground | SLMAgents",
+    "description": "Interactive web sandbox to test and benchmark all 26 SLM agents side-by-side with live telemetry, CPU footprint metrics, and instant inference.",
+    "url": "https://www.slmagents.ai/playground.html",
+    "mainEntityOfPage": "https://www.slmagents.ai/playground.html",
+    "articleSection": "Playground",
+    "author": {
+      "@type": "Organization",
+      "name": "SLMAgents Community",
+      "url": "https://github.com/t00114218-stack/SLMAgents"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "SLMAgents",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.slmagents.ai/flowchart.png"
+      }
+    }
+  }
+  </script>
 </head>
 <body style="overflow-y: auto !important; padding-top: 64px; background: #f8fafc; color: #0f172a; font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
@@ -25,11 +59,69 @@
         </a>
       </div>
       <nav>
-        <ul style="list-style: none; display: flex; gap: 24px; margin: 0; padding: 0; align-items: center;">
-          <li><a href="index.html" style="color: #475569; text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s;">Home</a></li>
-          <li><a href="playground.html" style="color: #4f46e5; text-decoration: none; font-size: 0.95rem; font-weight: 700; transition: color 0.2s;">Playground</a></li>
-          <li><a href="https://github.com/t00114218-stack/SLMAgents" target="_blank" style="color: #475569; text-decoration: none; font-size: 0.95rem; font-weight: 600; transition: color 0.2s;">GitHub</a></li>
-          <li><a href="https://huggingface.co/spaces/spcv/slm-agents" class="btn-hf-nav" target="_blank" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: #fef3c7; border: 1px solid #f59e0b; color: #b45309; font-weight: 700; text-decoration: none; font-size: 0.85rem; transition: all 0.2s;">🤗 Hugging Face Space</a></li>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li class="dropdown">
+            <a class="dropdown-trigger">
+              Docs
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </a>
+            <div class="dropdown-content">
+              <div>
+                <div class="mega-col-title">Productivity</div>
+                <div class="mega-col-list">
+                  <a href="rag.html">📚 SLM RAG</a>
+                  <a href="summarizer.html">📝 Summarizer</a>
+                  <a href="cli.html">💻 CLI Agent</a>
+                  <a href="email_assistant.html">📧 Email Assistant</a>
+                  <a href="meeting_summarizer.html">🎙️ Meeting Summarizer</a>
+                  <a href="memory_manager.html">🧠 Memory Manager</a>
+                  <a href="task_planner.html">📋 Task Planner</a>
+                  <a href="pdf_chat.html">📑 PDF Chat</a>
+                  <a href="pkb_agent.html">🔗 PKB Agent</a>
+                  <a href="voice_agent.html">🗣️ Voice Agent</a>
+                </div>
+              </div>
+              <div>
+                <div class="mega-col-title">Developer Tools</div>
+                <div class="mega-col-list">
+                  <a href="orchestrator.html">🎯 Orchestrator</a>
+                  <a href="sql.html">📊 Text-to-SQL</a>
+                  <a href="code_interpreter.html">⚡ Code Interpreter</a>
+                  <a href="git_repo_manager.html">🐙 Git Repo Manager</a>
+                  <a href="database_migrator.html">🗄️ Database Migrator</a>
+                </div>
+              </div>
+              <div>
+                <div class="mega-col-title">Web &amp; Scraping</div>
+                <div class="mega-col-list">
+                  <a href="web_agent.html">🌐 Web Agent</a>
+                  <a href="web_scraper.html">🕷️ Web Scraper</a>
+                  <a href="search_orchestrator.html">🔎 Search Orchestrator</a>
+                </div>
+              </div>
+              <div>
+                <div class="mega-col-title">Data &amp; Utilities</div>
+                <div class="mega-col-list">
+                  <a href="json_cleaner.html">🧹 JSON Cleaner</a>
+                  <a href="document_parser.html">📄 Document Parser</a>
+                  <a href="vision_parser.html">👁️ Vision Parser</a>
+                  <a href="data_analyst.html">📈 Data Analyst</a>
+                  <a href="translation_hub.html">🌐 Translation Hub</a>
+                  <a href="math_agent.html">🧮 Math Agent</a>
+                  <a href="security_audit.html">🛡️ Security Audit</a>
+                  <a href="embeddings_server.html">🔢 Embeddings Server</a>
+                </div>
+              </div>
+            </div>
+          <li><a href="playground.html" class="active" style="color: #818cf8; font-weight: 700;">⚡ Playground</a></li>
+          <li><a href="https://github.com/t00114218-stack/SLMAgents" class="btn-github-nav" target="_blank">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+            </svg>
+            <span>GitHub</span>
+          </a></li>
+          <li><a href="https://huggingface.co/spaces/spcv/slm-agents" class="btn-hf-nav" target="_blank">🤗 HF Space</a></li>
         </ul>
       </nav>
     </div>

@@ -18,7 +18,10 @@ models/
 .DS_Store
 Thumbs.db
 
-# Build artifacts
+# Build artifacts & packages
 dist/
 *.egg-info/
 build/
+*.zip
+*.log
+*.code-workspace

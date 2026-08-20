@@ -2,3 +2,6 @@ models:
   text_to_sql:
     path: "../../models/qwen2.5_coder_text2sql_onnx"
     repo_id: "spcv/qwen2.5_coder_text2sql_onnx"
+  prem_1b_sql:
+    path: "../../models/prem_1b_sql_onnx"
+    repo_id: "onnx-community/prem-1B-SQL-ONNX"

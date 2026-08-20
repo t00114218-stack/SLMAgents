@@ -1,4 +1,4 @@
 models:
   data_analyst:
     path: "../../models/qwen3.5-0.8b-onnx"
-    repo_id: "onnx-community/Qwen3.5-0.8B-ONNX"
+    repo_id: "local/qwen3.5-0.8b-onnx"

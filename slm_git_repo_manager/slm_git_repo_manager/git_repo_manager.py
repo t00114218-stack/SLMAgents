@@ -1,7 +1,7 @@
 import os
 import sys
 import yaml
-
+import re
 try:
     import onnxruntime_genai as og
 except ImportError:
@@ -49,14 +49,16 @@ class SLMGitRepoManager:
         self.tokenizer = og.Tokenizer(self.model)
         
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
-        if model_path:
-            if not os.path.exists(model_path):
-                raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
+        if model_path and os.path.exists(model_path):
             return os.path.abspath(model_path)
+
+        shared_qwen = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "qwen3.5-0.8b-onnx")
+        if os.path.exists(shared_qwen):
+            return shared_qwen
 
         config, config_file_path = load_config()
         model_config = config.get("models", {}).get("git_repo_manager", {})
-        config_path = model_config.get("path", "../../models/qwen2.5-1.5b-onnx")
+        config_path = model_config.get("path", "../../models/qwen3.5-0.8b-onnx")
         config_path = os.path.expanduser(config_path)
         
         if not os.path.isabs(config_path) and config_file_path:
@@ -65,29 +67,23 @@ class SLMGitRepoManager:
         for root, dirs, files in os.walk(config_path):
             if "genai_config.json" in files:
                 return root
-            
-        repo_id = model_config.get("repo_id", "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX")
-        print(f"[SLMGitRepoManager] ONNX Model not found at configured path. Auto-downloading...")
-        os.makedirs(config_path, exist_ok=True)
-        
-        from huggingface_hub import snapshot_download
-        snapshot_download(
-            repo_id=repo_id,
-            local_dir=config_path,
-            ignore_patterns=["*cuda*", "*directml*"]
-        )
-        
-        for root, dirs, files in os.walk(config_path):
-            if "genai_config.json" in files:
-                return root
                 
-        return config_path
+        return shared_qwen if os.path.exists(shared_qwen) else config_path
+
+    def _clean_text(self, text: str) -> str:
+        if "</think>" in text:
+            text = text.split("</think>")[-1].strip()
+        elif "<think>" in text:
+            text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL).strip()
+            text = re.sub(r'<think>.*', '', text, flags=re.DOTALL).strip()
+        return text.strip()
 
     def generate_commit_message(self, diff_text: str, stream: bool = False, system_prompt: str = None, user_input: str = None):
         """
         Generates a Conventional Commit message based on a raw git diff text block.
         Truncates input if it exceeds reasonable context capacities.
         """
+        import re
         if len(diff_text) > 4000:
             diff_text = diff_text[:4000] + "\n... (diff truncated for SLM context window optimization) ..."
 
@@ -98,7 +94,7 @@ class SLMGitRepoManager:
             "<type>(<scope>): <short description>\n\n"
             "[optional longer body details]\n\n"
             "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert.\n"
-            "Do not think out loud or output any other text or wrapping tags. Write the final commit message directly."
+            "Do not think out loud or output any <think> tags. Write the final commit message directly."
         )
 
         full_prompt = (
@@ -111,20 +107,29 @@ class SLMGitRepoManager:
 
         input_tokens = self.tokenizer.encode(full_prompt)
         params = og.GeneratorParams(self.model)
-        params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.0)
+        params.set_search_options(max_length=len(input_tokens) + 256, temperature=0.7)
 
         if stream:
             def _stream_generator():
                 generator = og.Generator(self.model, params)
                 generator.append_tokens(input_tokens)
+                in_think = False
                 while not generator.is_done():
                     generator.generate_next_token()
                     new_tokens = generator.get_next_tokens()
                     if len(new_tokens) > 0:
                         token_id = int(new_tokens[0])
-                        if token_id in (151643, 151645):
+                        if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                             break
-                        yield self.tokenizer.decode(new_tokens)
+                        decoded_chunk = self.tokenizer.decode(new_tokens)
+                        if "<think>" in decoded_chunk:
+                            in_think = True
+                            continue
+                        if "</think>" in decoded_chunk:
+                            in_think = False
+                            continue
+                        if not in_think:
+                            yield decoded_chunk
             return _stream_generator()
 
         generator = og.Generator(self.model, params)
@@ -135,11 +140,11 @@ class SLMGitRepoManager:
             new_tokens = generator.get_next_tokens()
             if len(new_tokens) > 0:
                 token_id = int(new_tokens[0])
-                if token_id in (151643, 151645):
+                if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                     break
                 response_text += self.tokenizer.decode(new_tokens)
 
-        return response_text
+        return self._clean_text(response_text)
 
     def commit(self, message: str = None) -> tuple[bool, str]:
         """
@@ -253,7 +258,7 @@ class SLMGitRepoManager:
         
         input_tokens = self.tokenizer.encode(full_prompt)
         params = og.GeneratorParams(self.model)
-        params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.0)
+        params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.7)
         
         generator = og.Generator(self.model, params)
         generator.append_tokens(input_tokens)
@@ -263,7 +268,7 @@ class SLMGitRepoManager:
             new_tokens = generator.get_next_tokens()
             if len(new_tokens) > 0:
                 token_id = int(new_tokens[0])
-                if token_id in (151643, 151645):
+                if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                     break
                 resolved_text += self.tokenizer.decode(new_tokens)
                 

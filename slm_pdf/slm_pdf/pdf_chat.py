@@ -67,14 +67,32 @@ class SLMPDFChat:
             extracted_text = doc_data.get("markdown", "") if isinstance(doc_data, dict) else str(doc_data)
 
         if not extracted_text:
-            # Fallback simple reader if parser returned empty string
             try:
-                import pdfplumber
-                with pdfplumber.open(pdf_path) as pdf:
-                    pages = [page.extract_text() or "" for page in pdf.pages]
-                    extracted_text = "\n".join(pages)
+                import fitz
+                doc = fitz.open(pdf_path)
+                pages = [page.get_text("text") or "" for page in doc]
+                extracted_text = "\n".join(pages)
             except Exception:
-                extracted_text = f"Sample text extracted from PDF document {os.path.basename(pdf_path)}."
+                try:
+                    import pdfplumber
+                    with pdfplumber.open(pdf_path) as pdf:
+                        pages = [page.extract_text() or "" for page in pdf.pages]
+                        extracted_text = "\n".join(pages)
+                except Exception as e:
+                    return {
+                        "success": False,
+                        "file": pdf_path,
+                        "total_chunks": 0,
+                        "error": f"PDF text extraction failed: {e}"
+                    }
+
+        if not extracted_text.strip():
+            return {
+                "success": False,
+                "file": pdf_path,
+                "total_chunks": 0,
+                "error": "The PDF contained no extractable text."
+            }
 
         # Chunk text into ~500 char blocks
         raw_blocks = [block.strip() for block in extracted_text.split("\n\n") if block.strip()]
@@ -103,4 +121,4 @@ class SLMPDFChat:
         # Fallback keyword match if RAG model isn't active
         relevant = [c for c in self.loaded_chunks if any(word.lower() in c.lower() for word in question.split() if len(word) > 3)]
         context = " ".join(relevant[:2]) if relevant else self.loaded_chunks[0]
-        return f"PDF Answer Context: {context}"
+        return f"RAG model unavailable. Relevant extracted PDF context (not a generated answer): {context}"

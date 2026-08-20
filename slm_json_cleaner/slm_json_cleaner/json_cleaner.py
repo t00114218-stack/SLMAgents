@@ -51,14 +51,16 @@ class SLMJSONCleaner:
         self.tokenizer = og.Tokenizer(self.model)
         
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
-        if model_path:
-            if not os.path.exists(model_path):
-                raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
+        if model_path and os.path.exists(model_path):
             return os.path.abspath(model_path)
+
+        shared_qwen = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "qwen3.5-0.8b-onnx")
+        if os.path.exists(shared_qwen):
+            return shared_qwen
 
         config, config_file_path = load_config()
         model_config = config.get("models", {}).get("json_cleaner", {})
-        config_path = model_config.get("path", "../../models/qwen2.5-1.5b-onnx")
+        config_path = model_config.get("path", "../../models/qwen3.5-0.8b-onnx")
         config_path = os.path.expanduser(config_path)
         
         if not os.path.isabs(config_path) and config_file_path:
@@ -67,26 +69,16 @@ class SLMJSONCleaner:
         for root, dirs, files in os.walk(config_path):
             if "genai_config.json" in files:
                 return root
-            
-        repo_id = model_config.get("repo_id", "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX")
-        print(f"[SLMJSONCleaner] ONNX Model not found at configured path. Auto-downloading...")
-        os.makedirs(config_path, exist_ok=True)
-        
-        from huggingface_hub import snapshot_download
-        snapshot_download(
-            repo_id=repo_id,
-            local_dir=config_path,
-            ignore_patterns=["*cuda*", "*directml*"]
-        )
-        
-        for root, dirs, files in os.walk(config_path):
-            if "genai_config.json" in files:
-                return root
                 
-        return config_path
+        return shared_qwen if os.path.exists(shared_qwen) else config_path
 
     def _extract_json_block(self, text: str) -> str:
-        match = re.search(r"```json\s*(.*?)\s*```", text, re.DOTALL)
+        if "</think>" in text:
+            text = text.split("</think>")[-1].strip()
+        elif "<think>" in text:
+            text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL).strip()
+
+        match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
         if match:
             return match.group(1).strip()
         
@@ -103,11 +95,11 @@ class SLMJSONCleaner:
         If stream=True, returns a token generator.
         If stream=False, runs to completion and parses the cleaned structured response.
         """
+        import ast
         system_prompt = (
             "You are a local JSON sanitization utility.\n"
-            "Analyze the malformed unstructured text, think inside <thought>...</thought> tags, "
-            "and output the sanitized repaired JSON block complying with the target schema inside a ```json ... ``` code block. "
-            "Never append explanations outside the code block."
+            "Analyze the malformed text and output ONLY the valid JSON object inside a ```json ... ``` code block. "
+            "Never append explanations or <think> tags outside the code block."
         )
 
         user_prompt = (
@@ -125,20 +117,29 @@ class SLMJSONCleaner:
 
         input_tokens = self.tokenizer.encode(full_prompt)
         params = og.GeneratorParams(self.model)
-        params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.0)
+        params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.7)
 
         if stream:
             def _stream_generator():
                 generator = og.Generator(self.model, params)
                 generator.append_tokens(input_tokens)
+                in_think = False
                 while not generator.is_done():
                     generator.generate_next_token()
                     new_tokens = generator.get_next_tokens()
                     if len(new_tokens) > 0:
                         token_id = int(new_tokens[0])
-                        if token_id in (151643, 151645):
+                        if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                             break
-                        yield self.tokenizer.decode(new_tokens)
+                        decoded_chunk = self.tokenizer.decode(new_tokens)
+                        if "<think>" in decoded_chunk:
+                            in_think = True
+                            continue
+                        if "</think>" in decoded_chunk:
+                            in_think = False
+                            continue
+                        if not in_think:
+                            yield decoded_chunk
             return _stream_generator()
 
         generator = og.Generator(self.model, params)
@@ -149,13 +150,35 @@ class SLMJSONCleaner:
             new_tokens = generator.get_next_tokens()
             if len(new_tokens) > 0:
                 token_id = int(new_tokens[0])
-                if token_id in (151643, 151645):
+                if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                     break
                 response_text += self.tokenizer.decode(new_tokens)
 
         json_block = self._extract_json_block(response_text)
+        
+        # 1. Try standard JSON parser
         try:
             parsed = json.loads(json_block)
             return parsed, True
         except Exception:
-            return {"raw_output": json_block, "error": "Standard JSON decoding failed"}, False
+            pass
+
+        # 2. Try Python AST literal_eval fallback (fixes single quotes, trailing commas)
+        try:
+            cleaned_py = json_block.replace("true", "True").replace("false", "False").replace("null", "None")
+            parsed = ast.literal_eval(cleaned_py)
+            if isinstance(parsed, (dict, list)):
+                return parsed, True
+        except Exception:
+            pass
+
+        # 3. Try AST on the raw malformed text directly
+        try:
+            cleaned_py = malformed_text.replace("true", "True").replace("false", "False").replace("null", "None")
+            parsed = ast.literal_eval(cleaned_py)
+            if isinstance(parsed, (dict, list)):
+                return parsed, True
+        except Exception:
+            pass
+
+        return {"raw_output": json_block, "error": "Standard JSON decoding failed"}, False

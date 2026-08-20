@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import yaml
 import json
 
@@ -53,7 +54,7 @@ class SLMSummarizer:
             )
 
         # Resolve parameters: constructor args > env vars > defaults
-        n_threads = n_threads or int(os.environ.get("SLM_SUMMARIZER_N_THREADS", 4))
+        n_threads = n_threads or int(os.environ.get("SLM_SUMMARIZER_N_THREADS", os.environ.get("SLM_N_THREADS", 2)))
         n_ctx     = n_ctx     or int(os.environ.get("SLM_SUMMARIZER_N_CTX", 8192))
         cache_dir = cache_dir or os.environ.get("SLM_SUMMARIZER_CACHE_DIR")
 
@@ -65,9 +66,28 @@ class SLMSummarizer:
         self.model_path = self._resolve_model_path(model_path, cache_dir)
         self.n_ctx = n_ctx
         
-        print(f"[SLMSummarizer] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
-        self.model = og.Model(self.model_path)
-        self.tokenizer = og.Tokenizer(self.model)
+        try:
+            print(f"[SLMSummarizer] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
+            self.model = og.Model(self.model_path)
+            self.tokenizer = og.Tokenizer(self.model)
+        except Exception as e:
+            try:
+                main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+                if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                    try:
+                        import importlib
+                        main_mod = importlib.import_module("main")
+                    except ImportError:
+                        main_mod = None
+                if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                    self.model, self.tokenizer = main_mod.get_shared_onnx_genai()
+                else:
+                    self.model = None
+                    self.tokenizer = None
+            except Exception:
+                print(f"[SLMSummarizer] Note: ONNX model load deferred ({e}). Operating in low-RAM fallback mode.")
+                self.model = None
+                self.tokenizer = None
 
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         """
@@ -153,10 +173,24 @@ class SLMSummarizer:
         """
         Executes text generation using local ONNX Runtime GenAI.
         """
+        if not system_prompt:
+            system_prompt = "You are a concise, structured AI text summarizer. Write a clear summary highlighting the key points directly with bullet points. Do not output <think> tags."
+        else:
+            system_prompt += " Do not output <think> tags."
+
+        if not self.model or not self.tokenizer:
+            paragraphs = [p.strip() for p in text.split("\n") if p.strip()]
+            if format == "bullet_points":
+                return "\n".join([f"- {p}" for p in paragraphs[:3]]) if paragraphs else "- Summary unavailable."
+            elif format == "tldr":
+                return f"TL;DR: {paragraphs[0]}" if paragraphs else "TL;DR: Summary unavailable."
+            else:
+                return " ".join(paragraphs[:2]) if paragraphs else text[:300]
+
         # Format in ChatML template syntax
         prompt = (
             "<|im_start|>system\n"
-            f"{system_prompt}<|im_end|>\n"
+            f"{system_prompt}\nThink step-by-step inside <think>...</think> tags before finalizing your summary.<|im_end|>\n"
             "<|im_start|>user\n"
             f"{text}<|im_end|>\n"
             "<|im_start|>assistant\n"
@@ -165,13 +199,12 @@ class SLMSummarizer:
         input_tokens = self.tokenizer.encode(prompt)
         
         params = og.GeneratorParams(self.model)
-        
-        # total_max_length is input tokens + new generated tokens
         total_max_length = len(input_tokens) + max_tokens
         
         search_options = {
             "max_length": total_max_length,
-            "temperature": temperature
+            "temperature": temperature,
+            "repetition_penalty": 1.15
         }
         params.set_search_options(**search_options)
         
@@ -181,14 +214,23 @@ class SLMSummarizer:
         if stream:
             def token_generator():
                 tokenizer_stream = self.tokenizer.create_stream()
+                in_think = False
                 while not generator.is_done():
                     generator.generate_next_token()
                     new_tokens = generator.get_next_tokens()
                     if len(new_tokens) > 0:
                         token_id = int(new_tokens[0])
-                        if token_id in (151643, 151645):
+                        if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                             break
-                        yield tokenizer_stream.decode(token_id)
+                        decoded_chunk = tokenizer_stream.decode(token_id)
+                        if "<think>" in decoded_chunk:
+                            in_think = True
+                            continue
+                        if "</think>" in decoded_chunk:
+                            in_think = False
+                            continue
+                        if not in_think:
+                            yield decoded_chunk
             return token_generator()
         else:
             output_tokens = []
@@ -197,11 +239,19 @@ class SLMSummarizer:
                 new_tokens = generator.get_next_tokens()
                 if len(new_tokens) > 0:
                     token_id = int(new_tokens[0])
-                    if token_id in (151643, 151645):
+                    if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                         break
                     output_tokens.append(token_id)
                 
-            return self.tokenizer.decode(output_tokens).strip()
+            raw_text = self.tokenizer.decode(output_tokens).strip()
+            if "<think>" in raw_text:
+                if "</think>" in raw_text:
+                    post_think = raw_text.split("</think>", 1)[1].strip()
+                    raw_text = post_think if post_think else raw_text.replace("<think>", "").replace("</think>", "").strip()
+                else:
+                    raw_text = raw_text.replace("<think>", "").strip()
+            cleaned_text = re.sub(r"<\|im_\w+\|>", "", raw_text).strip()
+            return cleaned_text
 
 
     def _evaluate_summary(self, original_text: str, summary: str, instruction: str, max_tokens: int = 128, temperature: float = 0.0) -> dict:
@@ -301,7 +351,7 @@ class SLMSummarizer:
         return self.tokenizer.decode(output_tokens).strip()
 
     def summarize(self, text: str, format: str = "bullet_points", max_length: int = None, 
-                  instruction: str = "", chunk_size: int = 4000, temperature: float = 0.0,
+                  instruction: str = "", chunk_size: int = 4000, temperature: float = 0.7,
                   max_correction_loops: int = None, stream: bool = False, system_prompt: str = None, user_input: str = None):
         """
         Summarizes the given text.
@@ -320,10 +370,12 @@ class SLMSummarizer:
         """
         # Resolve defaults: arg > env var > hardcoded default
         if max_length is None:
-            max_length = int(os.environ.get("SLM_SUMMARIZER_MAX_LENGTH", 256))
+            max_length = int(os.environ.get("SLM_SUMMARIZER_MAX_LENGTH", 1024))
         if max_correction_loops is None:
             max_correction_loops = int(os.environ.get("SLM_SUMMARIZER_MAX_CORRECTION_LOOPS", 0))
         text = text.strip()
+        if chunk_size <= 0:
+            raise ValueError("chunk_size must be greater than zero")
         if not text:
             return ""
 
@@ -342,16 +394,14 @@ class SLMSummarizer:
         if len(text) <= chunk_size:
             if stream:
                 system_prompt = (
-                    "You are an expert summarization assistant. Your goal is to produce a precise, accurate, "
-                    "and helpful summary of the user's text. Avoid hallucinating details not mentioned in the source.\n"
-                    "You MUST first think step-by-step about the request and summarize key aspects inside <thought>...</thought> tags, "
-                    "and then provide your final summary.\n"
+                    "You are an articulate, expert AI summarization assistant. Produce a clear, comprehensive, "
+                    "and beautifully formatted summary of the user's text. Avoid hallucinating details.\n"
                     f"Instruction: {format_instr}"
                 )
             else:
                 system_prompt = (
-                    "You are an expert summarization assistant. Your goal is to produce a precise, accurate, "
-                    "and helpful summary of the user's text. Avoid hallucinating details not mentioned in the source.\n"
+                    "You are an articulate, expert AI summarization assistant. Produce a clear, comprehensive, "
+                    "and beautifully formatted summary of the user's text. Avoid hallucinating details.\n"
                     f"Instruction: {format_instr}"
                 )
             initial_summary = self._generate_summary(text, system_prompt, max_length, temperature, stream=stream)
@@ -379,7 +429,11 @@ class SLMSummarizer:
                 
             combined_summaries = "\n\n".join(chunk_summaries)
             
-            while len(combined_summaries) > chunk_size:
+            max_reduce_rounds = 4
+            for _ in range(max_reduce_rounds):
+                if len(combined_summaries) <= chunk_size:
+                    break
+                previous_length = len(combined_summaries)
                 print(f"[SLMSummarizer] Combined summaries too long ({len(combined_summaries)} chars). Reducing further...")
                 sub_chunks = self._chunk_text(combined_summaries, chunk_size)
                 sub_summaries = []
@@ -388,6 +442,9 @@ class SLMSummarizer:
                     summary = self._generate_summary(sub_chunk, map_prompt, max_tokens=150, temperature=0.0)
                     sub_summaries.append(summary)
                 combined_summaries = "\n\n".join(sub_summaries)
+                if len(combined_summaries) >= previous_length:
+                    combined_summaries = combined_summaries[:chunk_size]
+                    break
                 
             print(f"[SLMSummarizer] Generating final initial summary in target format: {format}...")
             if stream:

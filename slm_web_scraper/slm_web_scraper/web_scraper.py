@@ -237,7 +237,7 @@ class SLMWebScraper:
             try:
                 input_tokens = self.tokenizer.encode(full_prompt)
                 params = og.GeneratorParams(self.model)
-                params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.0)
+                params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.7)
                 
                 generator = og.Generator(self.model, params)
                 generator.append_tokens(input_tokens)
@@ -248,7 +248,7 @@ class SLMWebScraper:
                     new_tokens = generator.get_next_tokens()
                     if len(new_tokens) > 0:
                         token_id = int(new_tokens[0])
-                        if token_id in (151643, 151645):
+                        if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                             break
                         response_text += self.tokenizer.decode(new_tokens)
                 
@@ -326,7 +326,7 @@ class SLMWebScraper:
 
             input_tokens = self.tokenizer.encode(full_prompt)
             params = og.GeneratorParams(self.model)
-            params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.0)
+            params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.7)
             
             generator = og.Generator(self.model, params)
             generator.append_tokens(input_tokens)
@@ -337,7 +337,7 @@ class SLMWebScraper:
                 new_tokens = generator.get_next_tokens()
                 if len(new_tokens) > 0:
                     token_id = int(new_tokens[0])
-                    if token_id in (151643, 151645):
+                    if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                         break
                     response_text += self.tokenizer.decode(new_tokens)
 

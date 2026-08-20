@@ -1,0 +1,36 @@
+# Core Hubs
+/home /index.html 301
+/chat /chat.html 301
+/playground /playground.html 301
+
+# Legacy Slugs & 404 Fixes
+/git_copilot /git_repo_manager.html 301
+/git_copilot.html /git_repo_manager.html 301
+
+# Clean URL Extensionless Rewrites (301 Permanent Redirect)
+/rag /rag.html 301
+/summarizer /summarizer.html 301
+/cli /cli.html 301
+/email_assistant /email_assistant.html 301
+/meeting_summarizer /meeting_summarizer.html 301
+/memory_manager /memory_manager.html 301
+/task_planner /task_planner.html 301
+/pdf_chat /pdf_chat.html 301
+/pkb_agent /pkb_agent.html 301
+/voice_agent /voice_agent.html 301
+/orchestrator /orchestrator.html 301
+/sql /sql.html 301
+/code_interpreter /code_interpreter.html 301
+/git_repo_manager /git_repo_manager.html 301
+/database_migrator /database_migrator.html 301
+/web_agent /web_agent.html 301
+/web_scraper /web_scraper.html 301
+/search_orchestrator /search_orchestrator.html 301
+/json_cleaner /json_cleaner.html 301
+/document_parser /document_parser.html 301
+/vision_parser /vision_parser.html 301
+/data_analyst /data_analyst.html 301
+/translation_hub /translation_hub.html 301
+/math_agent /math_agent.html 301
+/security_audit /security_audit.html 301
+/embeddings_server /embeddings_server.html 301

@@ -1,0 +1,210 @@
+{
+  "model_id": "spcv/qwen2.5_coder_text2sql_onnx",
+  "architecture": "Qwen2.5-Coder-1.5B-Instruct (INT4 ONNX GenAI)",
+  "total_cases": 20,
+  "execution_accuracy_ex": "95.00%",
+  "execution_validity_rate": "100.00%",
+  "average_latency_ms": "3570.09 ms",
+  "detailed_results": [
+    {
+      "id": 1,
+      "question": "List all users who have an active status.",
+      "gold": "SELECT * FROM users WHERE status = 'active';",
+      "pred": "SELECT * FROM users WHERE status = 'active';",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 3719.417095184326
+    },
+    {
+      "id": 2,
+      "question": "How many products are in stock for each category?",
+      "gold": "SELECT category_id, SUM(stock) FROM products GROUP BY category_id;",
+      "pred": "SELECT category_id, SUM(stock) FROM products GROUP BY category_id;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 2995.591163635254
+    },
+    {
+      "id": 3,
+      "question": "Find the names of users who placed order number 5.",
+      "gold": "SELECT u.name FROM users u JOIN orders o ON u.id = o.customer_id WHERE o.id = 5;",
+      "pred": "SELECT u.name FROM users u JOIN orders o ON u.id = o.customer_id WHERE o.id = 5;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 3861.6080284118652
+    },
+    {
+      "id": 4,
+      "question": "Calculate the total amount spent by customer 'John Doe'.",
+      "gold": "SELECT SUM(o.total_amount) FROM orders o JOIN users u ON o.customer_id = u.id WHERE u.name = 'John Doe';",
+      "pred": "SELECT SUM(p.amount) FROM payments p JOIN orders o ON p.order_id = o.id JOIN users u ON o.customer_id = u.id WHERE u.name = 'John Doe';",
+      "execution_match": false,
+      "valid": true,
+      "error": "",
+      "latency_ms": 2766.969919204712
+    },
+    {
+      "id": 5,
+      "question": "Show the average review rating for the product named 'Laptop'.",
+      "gold": "SELECT AVG(r.rating) FROM reviews r JOIN products p ON r.product_id = p.id WHERE p.name = 'Laptop';",
+      "pred": "SELECT AVG(r.rating) FROM reviews r WHERE r.product_id = (     SELECT p.id     FROM products p     WHERE p.name = 'Laptop' );",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 3122.124195098877
+    },
+    {
+      "id": 6,
+      "question": "How many successful logins happened in the last 30 days?",
+      "gold": "SELECT COUNT(*) FROM user_login_attempts WHERE success_status = 1 AND attempt_time >= datetime('now', '-30 days');",
+      "pred": "SELECT COUNT(*) FROM user_login_attempts WHERE success_status = 1 AND attempt_time >= datetime('now', '-30 days');",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 2571.7849731445312
+    },
+    {
+      "id": 7,
+      "question": "Get support tickets subject for users who have a 'dark' theme preference.",
+      "gold": "SELECT s.subject FROM support_tickets s JOIN users u ON s.user_id = u.id JOIN user_profiles p ON u.id = p.user_id WHERE p.theme = 'dark';",
+      "pred": "SELECT st.subject FROM support_tickets st JOIN users u ON st.user_id = u.id JOIN user_profiles up ON u.id = up.id WHERE up.theme = 'dark';",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 4085.4127407073975
+    },
+    {
+      "id": 8,
+      "question": "List products that were ordered by users using an 'Android' device.",
+      "gold": "SELECT DISTINCT p.name FROM products p JOIN order_items oi ON p.id = oi.product_id JOIN orders o ON oi.order_id = o.id JOIN devices d ON o.customer_id = d.user_id WHERE d.platform = 'Android';",
+      "pred": "SELECT p.name FROM products p JOIN order_items oi ON p.id = oi.product_id JOIN orders o ON oi.order_id = o.id JOIN devices d ON o.customer_id = d.user_id WHERE d.platform = 'Android';",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 4127.770185470581
+    },
+    {
+      "id": 9,
+      "question": "Find the total quantity of cart items in user 'Jane Smith's cart.",
+      "gold": "SELECT SUM(ci.quantity) FROM cart_items ci JOIN cart c ON ci.cart_id = c.id JOIN users u ON c.user_id = u.id WHERE u.name = 'Jane Smith';",
+      "pred": "SELECT SUM(cart_items.quantity) FROM cart_items JOIN cart ON cart_items.cart_id = cart.id JOIN users ON cart.user_id = users.id WHERE users.name = 'Jane Smith';",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 4553.694009780884
+    },
+    {
+      "id": 10,
+      "question": "Get all active coupons with a discount percentage greater than 20.",
+      "gold": "SELECT * FROM coupons WHERE active = 1 AND discount_percent > 20;",
+      "pred": "SELECT * FROM coupons WHERE discount_percent > 20 AND active = 1;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 3517.679214477539
+    },
+    {
+      "id": 11,
+      "question": "Find the tracking number for the shipment of order number 3.",
+      "gold": "SELECT tracking_number FROM shipments WHERE order_id = 3;",
+      "pred": "SELECT tracking_number FROM shipments WHERE order_id = 3;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 5110.705137252808
+    },
+    {
+      "id": 12,
+      "question": "List all orders with a status of 'delivered'.",
+      "gold": "SELECT * FROM orders WHERE status = 'delivered';",
+      "pred": "SELECT * FROM orders WHERE status = 'delivered';",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 4489.474773406982
+    },
+    {
+      "id": 13,
+      "question": "Get the email addresses of users who have never placed an order.",
+      "gold": "SELECT u.email FROM users u WHERE u.id NOT IN (SELECT customer_id FROM orders);",
+      "pred": "SELECT u.email FROM users u LEFT JOIN orders o ON u.id = o.customer_id WHERE o.customer_id IS NULL;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 4136.007070541382
+    },
+    {
+      "id": 14,
+      "question": "Count the number of reviews for each product.",
+      "gold": "SELECT product_id, COUNT(*) AS review_count FROM reviews GROUP BY product_id;",
+      "pred": "SELECT product_id, COUNT(*) AS review_count FROM reviews GROUP BY product_id;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 3360.7919216156006
+    },
+    {
+      "id": 15,
+      "question": "Find all payments made using 'credit_card'.",
+      "gold": "SELECT * FROM payments WHERE payment_method = 'credit_card';",
+      "pred": "SELECT * FROM payments WHERE payment_method = 'credit_card';",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 2696.3870525360107
+    },
+    {
+      "id": 16,
+      "question": "List the names and prices of products that cost more than 100.",
+      "gold": "SELECT name, price FROM products WHERE price > 100;",
+      "pred": "SELECT name, price FROM products WHERE price > 100;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 3474.6687412261963
+    },
+    {
+      "id": 17,
+      "question": "How many devices does each user have?",
+      "gold": "SELECT user_id, COUNT(*) AS device_count FROM devices GROUP BY user_id;",
+      "pred": "SELECT user_id, COUNT(*) AS device_count FROM devices GROUP BY user_id;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 3415.069818496704
+    },
+    {
+      "id": 18,
+      "question": "Get the top 5 most expensive products.",
+      "gold": "SELECT name, price FROM products ORDER BY price DESC LIMIT 5;",
+      "pred": "SELECT name, price FROM products ORDER BY price DESC LIMIT 5;",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 2948.678731918335
+    },
+    {
+      "id": 19,
+      "question": "Find all shipments that have not yet been shipped (status is pending).",
+      "gold": "SELECT * FROM shipments WHERE status = 'pending';",
+      "pred": "SELECT * FROM shipments WHERE status = 'pending';",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 3806.107997894287
+    },
+    {
+      "id": 20,
+      "question": "Get the total revenue from all completed payments.",
+      "gold": "SELECT SUM(amount) FROM payments WHERE payment_status = 'completed';",
+      "pred": "SELECT SUM(p.amount) FROM payments p WHERE p.payment_status = 'completed';",
+      "execution_match": true,
+      "valid": true,
+      "error": "",
+      "latency_ms": 2641.839027404785
+    }
+  ]
+}

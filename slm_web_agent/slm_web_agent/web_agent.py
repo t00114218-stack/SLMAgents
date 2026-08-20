@@ -1,6 +1,9 @@
 import os
 import sys
-import yaml
+try:
+    import yaml
+except ImportError:
+    yaml = None
 import json
 import re
 
@@ -53,8 +56,12 @@ class SLMWebAgent:
         for path in config_paths:
             if path and os.path.exists(path):
                 try:
+                    if yaml is None:
+                        continue
                     with open(path, "r") as f:
-                        config, config_file_path = yaml.safe_load(f) or {}, os.path.abspath(path)
+                        loaded = yaml.safe_load(f) or {}
+                        config = loaded
+                        config_file_path = os.path.abspath(path)
                         break
                 except Exception:
                     pass
@@ -129,16 +136,18 @@ class SLMWebAgent:
         if not self.page:
             success = self.start_browser()
             if not success:
-                # Mock fallback if playwright is missing or fails
                 return {
-                    "success": True,
-                    "history": ["Mock browser navigation successful"],
+                    "success": False,
+                    "history": ["Browser startup failed; no browser actions were executed."],
                     "current_url": start_url,
-                    "stdout": "Mock page content describing the goal achieved. Confirmation: ORDER-99411"
+                    "stdout": "",
+                    "finish_reason": "dependency_unavailable"
                 }
 
         self.page.goto(start_url)
         history = [f"Navigated to {start_url}"]
+        goal_reached = False
+        finish_reason = "max_steps"
         
         for step in range(max_steps):
             url = self.page.url
@@ -176,7 +185,7 @@ class SLMWebAgent:
 
             input_tokens = self.tokenizer.encode(full_prompt)
             params = og.GeneratorParams(self.model)
-            params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.0)
+            params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.7)
             
             generator = og.Generator(self.model, params)
             generator.append_tokens(input_tokens)
@@ -186,7 +195,7 @@ class SLMWebAgent:
                 new_tokens = generator.get_next_tokens()
                 if len(new_tokens) > 0:
                     token_id = int(new_tokens[0])
-                    if token_id in (151643, 151645):
+                    if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                         break
                     response_text += self.tokenizer.decode(new_tokens)
 
@@ -196,14 +205,22 @@ class SLMWebAgent:
             try:
                 action_data = json.loads(action_json)
             except Exception:
-                action_data = {"action": "done", "target": ""}
+                history.append("The model returned an invalid browser action.")
+                finish_reason = "invalid_action"
+                break
 
             action = action_data.get("action", "done")
             target = action_data.get("target", "")
             value = action_data.get("value", "")
 
-            if action == "done" or not target:
-                history.append("Goal reached or terminated by agent.")
+            if action == "done":
+                history.append("The agent marked the browser goal complete.")
+                goal_reached = True
+                finish_reason = "completed"
+                break
+            if not target:
+                history.append("The browser action did not include a target.")
+                finish_reason = "invalid_action"
                 break
 
             # Find matching element via case-insensitive/fuzzy logic
@@ -233,11 +250,14 @@ class SLMWebAgent:
                     history.append(f"Skipping action: Element '{target}' not found in clickable targets.")
             except Exception as e:
                 history.append(f"Failed to execute action {action} on {target}: {e}")
+                finish_reason = "action_error"
+                break
 
         final_text = self.page.inner_text("body") if self.page else "No content"
         return {
-            "success": True,
+            "success": goal_reached,
             "history": history,
             "current_url": self.page.url if self.page else start_url,
-            "stdout": final_text[:2000]
+            "stdout": final_text[:2000],
+            "finish_reason": finish_reason
         }

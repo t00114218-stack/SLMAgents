@@ -72,19 +72,25 @@ class SLMDataAnalyst:
             "print(df.describe(include='all'))\n"
         )
 
-        exec_stdout = "Ran pandas describe successfully."
+        exec_stdout = ""
+        execution_error = "The code interpreter is unavailable."
         if self.interpreter:
             try:
                 res = self.interpreter.run(f"Write a script loading '{file_path}' to answer: {query}", stream=False)
                 if isinstance(res, dict) and res.get("success"):
-                    exec_stdout = res.get("stdout", exec_stdout)
-            except Exception:
-                pass
+                    exec_stdout = res.get("stdout", "")
+                    script = res.get("code", script)
+                    execution_error = ""
+                else:
+                    execution_error = (res or {}).get("stderr", "Data analysis execution failed.") if isinstance(res, dict) else "Data analysis execution failed."
+            except Exception as e:
+                execution_error = str(e)
 
         return {
-            "success": True,
+            "success": not execution_error,
             "file": file_path,
             "columns": columns,
             "script": script,
-            "summary": exec_stdout
+            "summary": exec_stdout,
+            "error": execution_error
         }

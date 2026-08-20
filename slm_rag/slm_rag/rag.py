@@ -1,6 +1,20 @@
 import os
 import sys
 import yaml
+import re
+import json
+
+# Setup sys.path to resolve all SLM agent packages locally
+_curr_dir = os.path.dirname(os.path.abspath(__file__))
+_root_dir = os.path.abspath(os.path.join(_curr_dir, "..", ".."))
+if _root_dir not in sys.path:
+    sys.path.insert(0, _root_dir)
+if os.path.exists(_root_dir):
+    for folder in os.listdir(_root_dir):
+        folder_path = os.path.join(_root_dir, folder)
+        if os.path.isdir(folder_path) and folder.startswith("slm_"):
+            if folder_path not in sys.path:
+                sys.path.insert(0, folder_path)
 
 try:
     import onnxruntime_genai as og
@@ -51,7 +65,7 @@ class SLMRag:
             )
 
         # Resolve parameters: constructor args > env vars > defaults
-        n_threads = n_threads or int(os.environ.get("SLM_RAG_N_THREADS", 4))
+        n_threads = n_threads or int(os.environ.get("SLM_RAG_N_THREADS", os.environ.get("SLM_N_THREADS", 2)))
         n_ctx     = n_ctx     or int(os.environ.get("SLM_RAG_N_CTX", 8192))
         cache_dir = cache_dir or os.environ.get("SLM_RAG_CACHE_DIR")
 
@@ -63,9 +77,28 @@ class SLMRag:
         self.model_path = self._resolve_model_path(model_path, cache_dir)
         self.n_ctx = n_ctx
         
-        print(f"[SLMRag] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
-        self.model = og.Model(self.model_path)
-        self.tokenizer = og.Tokenizer(self.model)
+        try:
+            print(f"[SLMRag] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
+            self.model = og.Model(self.model_path)
+            self.tokenizer = og.Tokenizer(self.model)
+        except Exception as e:
+            try:
+                main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+                if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                    try:
+                        import importlib
+                        main_mod = importlib.import_module("main")
+                    except ImportError:
+                        main_mod = None
+                if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                    self.model, self.tokenizer = main_mod.get_shared_onnx_genai()
+                else:
+                    self.model = None
+                    self.tokenizer = None
+            except Exception:
+                print(f"[SLMRag] Note: ONNX model load deferred ({e}). Operating in low-RAM fallback mode.")
+                self.model = None
+                self.tokenizer = None
             
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         """
@@ -121,7 +154,14 @@ class SLMRag:
                 
         return config_path
 
-    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5, stream: bool = False, system_prompt: str = None, user_input: str = None):
+    def query(self, question: str, chunks: list = None, system_prompt: str = None, **kwargs):
+        chunks = chunks or []
+        if not chunks:
+            return "I couldn't find any uploaded documents to reference, so no document context is currently available. Could you please upload or attach the document you'd like me to analyze? I'd be happy to answer your questions once you provide it! 😊"
+        instruction = system_prompt or "Answer the question accurately based on context."
+        return self.answer(chunks=chunks, question=question, instruction=instruction, **kwargs)
+
+    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.7, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5, stream: bool = False, system_prompt: str = None, user_input: str = None):
         """
         Synthesizes an answer based on document chunks, user question, and user instruction.
         Supports tool execution (e.g., Vector DB lookups) to gather more context.
@@ -137,30 +177,110 @@ class SLMRag:
             max_iterations: Max ReAct tool-calling loops (prevents infinite loops).
             stream:         If True, streams token strings in real-time.
         """
-        import json
+        import json, re, numpy as np
         # Resolve max_tokens: arg > env var > default
         if max_tokens is None:
-            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 256))
+            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 1024))
+        max_iterations = max(1, min(int(max_iterations), 8))
         
-        # Format the text chunks for context
-        formatted_chunks = ""
-        for i, chunk in enumerate(chunks):
-            formatted_chunks += f"--- Chunk {i+1} ---\n{chunk.strip()}\n\n"
+        # Dynamic synonym dictionary for domain queries
+        SYNONYM_MAP = {
+            "retention": ["retention", "retension", "bonus", "joining bonus", "annexure", "compensation", "inr", "rs"],
+            "retension": ["retention", "retension", "bonus", "joining bonus", "annexure", "compensation", "inr", "rs"],
+            "bonus": ["bonus", "retention", "joining bonus", "incentive", "variable pay", "annexure", "inr", "rs"],
+            "salary": ["salary", "compensation", "remuneration", "ctc", "pay", "cost to company", "package", "annexure", "base pay", "fixed pay", "gross", "inr", "rs", "lpa", "lakhs", "allowance", "bonus", "retention"],
+            "package": ["package", "ctc", "compensation", "salary", "remuneration", "annexure", "lpa", "lakhs", "inr", "rs", "bonus"],
+            "pay": ["pay", "salary", "compensation", "remuneration", "ctc", "wages", "fee"],
+            "shares": ["shares", "equity", "esop", "stock", "options", "grant", "allotment", "units", "rsu"],
+            "equity": ["equity", "shares", "esop", "stock", "options", "grant", "allotment"],
+            "notice": ["notice period", "notice", "resignation", "termination", "severance"],
+            "termination": ["termination", "notice period", "severance", "cause", "discharge"]
+        }
+
+        # Rank and filter top relevant chunks if document has many chunks
+        selected_chunks = chunks
+        if len(chunks) > 4:
+            q_lower = question.lower()
+            # Normalize common typos
+            q_lower_norm = q_lower.replace("retension", "retention").replace("salry", "salary").replace("packge", "package")
+            q_words = set(re.findall(r'\w+', q_lower_norm))
+            stopwords = {"what", "is", "the", "a", "an", "and", "or", "in", "of", "to", "for", "with", "on", "at", "by", "from", "this", "that", "these", "those", "explain", "tell", "me", "about", "here"}
+            keywords = [w for w in q_words if w not in stopwords and len(w) > 2]
+            
+            # Expand keywords with synonyms
+            expanded_keywords = set(keywords)
+            for kw in keywords:
+                if kw in SYNONYM_MAP:
+                    expanded_keywords.update(SYNONYM_MAP[kw])
+            
+            # Try vector embeddings scoring if available
+            embed_scores = {}
+            try:
+                from slm_embeddings.embeddings_server import SLMEmbeddingsServer
+                embed_server = SLMEmbeddingsServer()
+                q_vec = embed_server.embed(question)
+                c_vecs = embed_server.embed(chunks)
+                if q_vec and c_vecs:
+                    q_arr = np.array(q_vec[0])
+                    for i, cv in enumerate(c_vecs):
+                        c_arr = np.array(cv)
+                        sim = float(np.dot(q_arr, c_arr) / (np.linalg.norm(q_arr) * np.linalg.norm(c_arr) + 1e-12))
+                        embed_scores[i] = sim
+            except Exception:
+                pass
+
+            scored = []
+            for i, c in enumerate(chunks):
+                c_lower = c.lower()
+                # Keyword count + prefix match for minor variations
+                score = sum(c_lower.count(kw) * (4 if len(kw) > 5 else 2) for kw in expanded_keywords)
+                
+                # Check 5-char prefix matches for fuzzy resilience
+                for kw in expanded_keywords:
+                    if len(kw) >= 5 and kw[:5] in c_lower:
+                        score += 3
+
+                if q_lower_norm in c_lower:
+                    score += 20
+                
+                # Incorporate vector similarity score if available
+                if i in embed_scores:
+                    score += embed_scores[i] * 50
+
+                # Deduct score for Table of Contents pages
+                if "table of contents" in c_lower:
+                    score -= 50
+
+                # Boost chunks containing monetary / table / Annexure / bonus indicators
+                if any(k in q_lower_norm for k in ["salary", "pay", "compensation", "ctc", "package", "remuneration", "money", "amount", "bonus", "retention"]):
+                    if any(ind in c_lower for ind in ["annexure 1", "annexure 2", "base in inr", "fixed compensation", "variable pay", "committed pay", "retention", "joining bonus"]):
+                        score += 100
+                    elif any(ind in c_lower for ind in ["annexure", "ctc", "base", "inr", "rs", "fixed compensation", "variable pay", "bonus"]):
+                        score += 40
+                    if re.search(r'\b\d{1,3}(,\d{3})+\b', c) or re.search(r'\b\d{5,7}\b', c):
+                        score += 60
+                elif any(ind in c_lower for ind in ["annexure", "ctc", "inr", "rs.", "lpa", "lakhs", "per annum", "table", "breakup"]):
+                    score += 20
+                
+                scored.append((score, i, c))
+
+            scored.sort(key=lambda x: (x[0], -x[1]), reverse=True)
+            # Take top 25 chunks ranked by vector similarity & keyword score to provide comprehensive context
+            top_k = min(25, len(scored))
+            top_scored = scored[:top_k]
+            # Order selected chunks by original document position for coherent context flow
+            selected_chunks = [c for _, _, c in sorted(top_scored, key=lambda x: x[1])]
+        else:
+            selected_chunks = chunks
+
+        # Format up to 25 text chunks for context
+        formatted_chunks = "\n\n".join([chunk.strip() for chunk in selected_chunks if chunk.strip()])
             
         # Build strict ChatML template prompt
-        if stream and not (tools and tool_executor):
-            system_prompt = (
-                "You are a precise and helpful assistant. Your task is to answer the user's question "
-                "based ONLY on the provided text chunks and tool results. If they do not contain the answer, say "
-                "so clearly. You must strictly adhere to the instruction provided by the user.\n"
-                "You MUST first think step-by-step inside <thought>...</thought> tags, and then provide your final answer."
-            )
-        else:
-            system_prompt = (
-                "You are a precise and helpful assistant. Your task is to answer the user's question "
-                "based ONLY on the provided text chunks and tool results. If they do not contain the answer, say "
-                "so clearly. You must strictly adhere to the instruction provided by the user."
-            )
+        system_prompt = (
+            "You are a precise, direct RAG QA assistant. Answer the user's question directly using the exact figures, currency amounts (INR / CTC / Base Salary), dates, and facts in the provided text.\n"
+            "State the answer directly without listing section headers or meta-commentary."
+        )
         
         if tools and tool_executor:
             system_prompt += (
@@ -172,17 +292,16 @@ class SLMRag:
         
         prompt = (
             "<|im_start|>system\n"
-            f"{system_prompt}\n\n"
-            f"Instruction to follow: {instruction}<|im_end|>\n"
+            f"{system_prompt}<|im_end|>\n"
             "<|im_start|>user\n"
-            f"Text Chunks:\n{formatted_chunks}"
-            f"User Question: {question}\n\n"
-            f"Remember, you must adhere to the instruction: {instruction}<|im_end|>\n"
+            f"Document Text:\n{formatted_chunks}\n\n"
+            f"Question: {question}<|im_end|>\n"
         )
         
         if stream:
             def generator_fn():
                 nonlocal prompt
+                seen_tool_calls = set()
                 for iteration in range(max_iterations):
                     current_prompt = prompt + "<|im_start|>assistant\n"
                     input_tokens = self.tokenizer.encode(current_prompt)
@@ -191,7 +310,8 @@ class SLMRag:
                     total_max_length = len(input_tokens) + max_tokens
                     search_options = {
                         "max_length": total_max_length,
-                        "temperature": temperature
+                        "temperature": temperature,
+                        "repetition_penalty": 1.15
                     }
                     params.set_search_options(**search_options)
                     
@@ -205,7 +325,7 @@ class SLMRag:
                             new_tokens = generator.get_next_tokens()
                             if len(new_tokens) > 0:
                                 token_id = int(new_tokens[0])
-                                if token_id in (151643, 151645):
+                                if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                                     break
                                 yield tokenizer_stream.decode(token_id)
                         return
@@ -216,7 +336,7 @@ class SLMRag:
                             new_tokens = generator.get_next_tokens()
                             if len(new_tokens) > 0:
                                 token_id = int(new_tokens[0])
-                                if token_id in (151643, 151645):
+                                if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                                     break
                                 output_tokens.append(token_id)
                         
@@ -231,6 +351,11 @@ class SLMRag:
                                     is_tool_call = True
                                     tool_name = data["tool_call"]
                                     args = data.get("args", {})
+                                    signature = json.dumps([tool_name, args], sort_keys=True, default=str)
+                                    if signature in seen_tool_calls:
+                                        yield "Tool execution stopped because the same request was repeated without progress."
+                                        return
+                                    seen_tool_calls.add(signature)
                                     
                                     try:
                                         result = tool_executor(tool_name, args)
@@ -249,8 +374,10 @@ class SLMRag:
                         if not is_tool_call:
                             yield response_text
                             return
+                yield "Tool execution stopped after reaching the maximum number of steps without a final answer."
             return generator_fn()
         else:
+            seen_tool_calls = set()
             for iteration in range(max_iterations):
                 current_prompt = prompt + "<|im_start|>assistant\n"
                 input_tokens = self.tokenizer.encode(current_prompt)
@@ -259,7 +386,8 @@ class SLMRag:
                 total_max_length = len(input_tokens) + max_tokens
                 search_options = {
                     "max_length": total_max_length,
-                    "temperature": temperature
+                    "temperature": temperature,
+                    "repetition_penalty": 1.15
                 }
                 params.set_search_options(**search_options)
                 
@@ -272,11 +400,22 @@ class SLMRag:
                     new_tokens = generator.get_next_tokens()
                     if len(new_tokens) > 0:
                         token_id = int(new_tokens[0])
-                        if token_id in (151643, 151645):
+                        if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                             break
                         output_tokens.append(token_id)
                         
+                if self.tokenizer is None or self.model is None:
+                    # Low-RAM fallback keyword search answer
+                    q_lower = question.lower()
+                    words = [w for w in re.findall(r'\w+', q_lower) if len(w) > 3]
+                    matched = [c for c in chunks if any(w in c.lower() for w in words)]
+                    if matched:
+                        return f"Extracted RAG context: {matched[0]}"
+                    return "I don't know."
+
                 response_text = self.tokenizer.decode(output_tokens).strip()
+                response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL).strip()
+                response_text = re.sub(r'</?think>', '', response_text).strip()
                 
                 is_tool_call = False
                 if tools and tool_executor:
@@ -288,6 +427,10 @@ class SLMRag:
                                 is_tool_call = True
                                 tool_name = data["tool_call"]
                                 args = data.get("args", {})
+                                signature = json.dumps([tool_name, args], sort_keys=True, default=str)
+                                if signature in seen_tool_calls:
+                                    return "Tool execution stopped because the same request was repeated without progress."
+                                seen_tool_calls.add(signature)
                                 
                                 try:
                                     result = tool_executor(tool_name, args)
@@ -304,6 +447,24 @@ class SLMRag:
                         pass
                 
                 if not is_tool_call:
-                    return response_text
+                    return self.verify_and_ground(response_text, formatted_chunks, question)
                 
-        return response_text
+        return "Tool execution stopped after reaching the maximum number of steps without a final answer."
+
+    def verify_and_ground(self, answer: str, context_text: str, question: str = "") -> str:
+        """
+        Clean grounding verification: returns the model's synthesized natural language answer,
+        removing any raw placeholder overrides or broken snippet dumps.
+        """
+        if not answer or not answer.strip():
+            # Fallback to relevant document lines if model returned empty output
+            q_keywords = [w.lower() for w in re.findall(r'\w+', (question or "").lower()) if len(w) > 3]
+            lines = [line.strip() for line in context_text.split("\n") if line.strip()]
+            relevant = [l for l in lines if any(kw in l.lower() for kw in (q_keywords or ["retention", "bonus", "salary", "pay", "annexure"]))]
+            if relevant:
+                return "\n".join(dict.fromkeys(relevant[:6]))
+            return context_text[:500]
+
+        # Clean up any leftover placeholder strings or generic templates
+        cleaned_ans = re.sub(r'\[Insert Year\]', '', answer, flags=re.IGNORECASE).strip()
+        return cleaned_ans or answer

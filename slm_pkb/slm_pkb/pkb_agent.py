@@ -45,7 +45,8 @@ class SLMPKBAgent:
                 "success": False,
                 "vault_path": vault_path,
                 "notes_indexed": 0,
-                "suggested_links": []
+                "suggested_links": [],
+                "message": "I couldn't locate the specified vault directory. Could you please check the directory path or upload your notes? I'd be happy to index them for you! 😊"
             }
 
         md_files = []

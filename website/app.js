@@ -347,6 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (activeList) {
     activeList.innerHTML = `
       <li class="sidebar-item" id="nav-home"><a href="index.html"><svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home</a></li>
+      <li class="sidebar-item" id="nav-chat"><a href="chat.html"><svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Chat</a></li>
       
       <!-- Productivity Category -->
       <div class="sidebar-group-title" style="margin-top:1.2rem; font-size:0.72rem; color:#4f46e5; text-transform: uppercase; font-weight: 800; letter-spacing: 0.08em;">Productivity</div>
@@ -392,6 +393,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const page = path.split("/").pop();
     if (page === "index.html" || page === "") {
       document.getElementById("nav-home")?.classList.add("active");
+    } else if (page === "chat.html") {
+      document.getElementById("nav-chat")?.classList.add("active");
     } else if (page === "orchestrator.html") {
       document.getElementById("nav-orchestrator")?.classList.add("active");
     } else if (page === "rag.html") {
@@ -1059,8 +1062,8 @@ async function initStudioModel(agentKey) {
   }
 
   try {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    const initEndpoint = isLocal ? "/api/init_model" : "https://spcv-slm-agents.hf.space/api/init_model";
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
+    const initEndpoint = isLocal ? "/api/init_model" : (window.location.origin.includes("hf.space") ? "/api/init_model" : "http://localhost:7860/api/init_model");
 
     const res = await fetch(initEndpoint, {
       method: "POST",
@@ -1557,8 +1560,8 @@ async function runStudioAgent() {
   }, 1000);
 
   try {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    const runEndpoint = isLocal ? "/api/run_agent" : "https://spcv-slm-agents.hf.space/api/run_agent";
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
+    const runEndpoint = isLocal ? "/api/run_agent" : (window.location.origin.includes("hf.space") ? "/api/run_agent" : "http://localhost:7860/api/run_agent");
 
     const response = await fetch(runEndpoint, {
       method: "POST",
@@ -1596,22 +1599,24 @@ async function runStudioAgent() {
           const jsonStr = line.slice(6).trim();
           if (!jsonStr) continue;
           
+          let data;
           try {
-            const data = JSON.parse(jsonStr);
-            if (data.token) {
+            data = JSON.parse(jsonStr);
+          } catch (e) {
+            console.log("Error parsing stream line:", e);
+            continue;
+          }
+          if (data.token) {
               if (!startedStreaming) {
                 consoleEl.textContent += `\n[Streaming Response Output]:\n`;
                 startedStreaming = true;
               }
               consoleEl.textContent += data.token;
               consoleEl.scrollTop = consoleEl.scrollHeight;
-            } else if (data.status === "error") {
-              throw new Error(data.error);
-            } else if (data.done) {
-              finalData = data;
-            }
-          } catch (e) {
-            console.log("Error parsing stream line:", e);
+          } else if (data.status === "error") {
+            throw new Error(data.error);
+          } else if (data.done) {
+            finalData = data;
           }
         }
       }
@@ -1696,6 +1701,1390 @@ window.clearStudioAudio = function(fieldId) {
 
 // Initializer
 document.addEventListener("DOMContentLoaded", () => {
-  renderStudioFields("rag");
-  initStudioModel("rag");
+  if (document.getElementById("studio-field-container")) {
+    renderStudioFields("rag");
+    initStudioModel("rag");
+  }
+  if (document.getElementById("chat-messages-viewport")) {
+    initChatPage();
+  }
 });
+
+/* ==========================================================================
+   AI Chat Studio Module
+   ========================================================================== */
+
+let chatSessions = [];
+let currentSessionId = null;
+let chatAttachments = [];
+let isVoiceRecording = false;
+let mediaRecorder = null;
+let audioChunks = [];
+let speechRecognitionInstance = null;
+let chatTTSActive = false;
+if (window.speechSynthesis) {
+  window.speechSynthesis.cancel();
+}
+
+function initChatPage() {
+  loadChatSessionsFromStorage();
+  if (chatSessions.length === 0) {
+    createNewChatSession(false);
+  } else if (!currentSessionId || !chatSessions.find(s => s.id === currentSessionId)) {
+    currentSessionId = chatSessions[0].id;
+  }
+  renderChatSessionList();
+  renderCurrentSessionMessages();
+  startLiveRAMMonitor();
+  initCustomAgentDropdown();
+  
+  const txtInput = document.getElementById("chat-text-input");
+  if (txtInput) txtInput.focus();
+}
+
+let ramMonitorInterval = null;
+async function fetchLiveRAMStats() {
+  const ramMbEl = document.getElementById("stat-ram-mb");
+  const sysRamEl = document.getElementById("stat-sys-ram");
+  if (!ramMbEl) return;
+  
+  try {
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
+    const endpoint = isLocal ? "/api/system/stats" : "http://localhost:7860/api/system/stats";
+    const res = await fetch(endpoint);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.process_ram_mb !== undefined) {
+        ramMbEl.textContent = `${data.process_ram_mb} MB`;
+      }
+      if (sysRamEl) {
+        if (data.used_ram_gb !== undefined && data.total_ram_gb !== undefined) {
+          sysRamEl.textContent = `${data.used_ram_gb} / ${data.total_ram_gb} GB (${data.ram_percent}%)`;
+        } else if (data.ram_percent !== undefined) {
+          sysRamEl.textContent = `${data.ram_percent}% used`;
+        }
+      }
+    }
+  } catch (e) {
+    // Graceful fallback
+    if (ramMbEl.textContent === "-- MB") {
+      ramMbEl.textContent = "~173 MB";
+    }
+  }
+}
+
+function startLiveRAMMonitor() {
+  fetchLiveRAMStats();
+  if (ramMonitorInterval) clearInterval(ramMonitorInterval);
+  ramMonitorInterval = setInterval(fetchLiveRAMStats, 3000);
+}
+
+async function handleClearRamCache() {
+  const btn = document.getElementById("btn-clear-ram");
+  if (btn) {
+    btn.textContent = "Purging...";
+    btn.disabled = true;
+  }
+  try {
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
+    const endpoint = isLocal ? "/api/system/clear-cache" : "http://localhost:7860/api/system/clear-cache";
+    await fetch(endpoint, { method: "POST" });
+    await fetchLiveRAMStats();
+  } catch (e) {
+    console.warn("Failed to clear cache:", e);
+  } finally {
+    if (btn) {
+      btn.textContent = "Purge Cache";
+      btn.disabled = false;
+    }
+  }
+}
+
+function loadChatSessionsFromStorage() {
+  try {
+    const raw = localStorage.getItem("slm_chat_sessions");
+    if (raw) {
+      chatSessions = JSON.parse(raw);
+    } else {
+      chatSessions = [];
+    }
+  } catch (e) {
+    chatSessions = [];
+  }
+}
+
+function saveChatSessionsToStorage() {
+  try {
+    localStorage.setItem("slm_chat_sessions", JSON.stringify(chatSessions));
+  } catch (e) {
+    console.error("Failed to save chat sessions to localStorage:", e);
+  }
+}
+
+function createNewChatSession(render = true) {
+  const newId = "session_" + Date.now();
+  const newSession = {
+    id: newId,
+    title: "New Conversation",
+    createdAt: new Date().toISOString(),
+    messages: []
+  };
+  chatSessions.unshift(newSession);
+  currentSessionId = newId;
+  saveChatSessionsToStorage();
+  
+  if (render) {
+    renderChatSessionList();
+    renderCurrentSessionMessages();
+    const txtInput = document.getElementById("chat-text-input");
+    if (txtInput) txtInput.focus();
+  }
+}
+
+function renderChatSessionList() {
+  const listEl = document.getElementById("chat-session-list");
+  if (!listEl) return;
+  listEl.innerHTML = "";
+  
+  if (chatSessions.length === 0) {
+    listEl.innerHTML = `<div style="padding: 12px 8px; font-size: 0.75rem; color: #64748b; text-align: center;">No chat sessions yet.</div>`;
+    return;
+  }
+  
+  chatSessions.forEach(session => {
+    const item = document.createElement("div");
+    item.className = `chat-session-item ${session.id === currentSessionId ? 'active' : ''}`;
+    item.onclick = () => switchChatSession(session.id);
+    
+    const titleSpan = document.createElement("span");
+    titleSpan.className = "chat-session-title";
+    titleSpan.textContent = session.title || "Conversation";
+    
+    const delBtn = document.createElement("button");
+    delBtn.className = "chat-session-delete";
+    delBtn.innerHTML = "✕";
+    delBtn.title = "Delete conversation";
+    delBtn.onclick = (e) => deleteChatSession(session.id, e);
+    
+    item.appendChild(titleSpan);
+    item.appendChild(delBtn);
+    listEl.appendChild(item);
+  });
+}
+
+function switchChatSession(id) {
+  currentSessionId = id;
+  renderChatSessionList();
+  renderCurrentSessionMessages();
+  
+  // Close mobile sidebar if open
+  const sidebar = document.getElementById("chat-sidebar");
+  if (sidebar && sidebar.classList.contains("open")) {
+    sidebar.classList.remove("open");
+  }
+}
+
+function deleteChatSession(id, e) {
+  if (e) e.stopPropagation();
+  chatSessions = chatSessions.filter(s => s.id !== id);
+  if (currentSessionId === id) {
+    currentSessionId = chatSessions.length > 0 ? chatSessions[0].id : null;
+  }
+  if (!currentSessionId) {
+    createNewChatSession(false);
+  }
+  saveChatSessionsToStorage();
+  renderChatSessionList();
+  renderCurrentSessionMessages();
+}
+
+function clearAllChatSessions() {
+  if (confirm("Are you sure you want to clear all chat conversations?")) {
+    chatSessions = [];
+    createNewChatSession(false);
+    saveChatSessionsToStorage();
+    renderChatSessionList();
+    renderCurrentSessionMessages();
+  }
+}
+
+function getCurrentSession() {
+  if (!currentSessionId || chatSessions.length === 0) {
+    if (chatSessions.length === 0) {
+      createNewChatSession(false);
+    } else {
+      currentSessionId = chatSessions[0].id;
+    }
+  }
+  let s = chatSessions.find(item => item.id === currentSessionId);
+  if (!s) {
+    if (chatSessions.length > 0) {
+      currentSessionId = chatSessions[0].id;
+      s = chatSessions[0];
+    } else {
+      createNewChatSession(false);
+      s = chatSessions[0];
+    }
+  }
+  return s;
+}
+
+function renderCurrentSessionMessages() {
+  const viewport = document.getElementById("chat-messages-viewport");
+  if (!viewport) return;
+  
+  const session = getCurrentSession();
+  if (!session || !session.messages || session.messages.length === 0) {
+    viewport.innerHTML = `
+      <div class="chat-welcome-hero" id="chat-welcome-hero">
+        <h2>What would you like to build?</h2>
+        <p>Execute code, query SQL databases, analyze documents, or solve equations. Everything runs 100% locally on your CPU with zero cloud costs.</p>
+        <div class="welcome-suggestions-grid">
+          <div class="suggestion-card" onclick="applyQuickPrompt('Write a Python script to compute the Fibonacci sequence with caching.')">
+            <div class="card-top">
+              <div class="card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              </div>
+              <span class="card-tag">Code</span>
+            </div>
+            <strong>Fibonacci Generator</strong>
+            <p>Generates recursive & cached Python functions</p>
+          </div>
+          <div class="suggestion-card" onclick="applyQuickPrompt('Generate SQL to find top 5 customers with total orders > $1000 in 2024')">
+            <div class="card-top">
+              <div class="card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+              </div>
+              <span class="card-tag">Text-to-SQL</span>
+            </div>
+            <strong>SQL Aggregation</strong>
+            <p>Translate natural language into optimized SQL</p>
+          </div>
+          <div class="suggestion-card" onclick="applyQuickPrompt('Break down the milestone plan to launch a privacy-first mobile app.')">
+            <div class="card-top">
+              <div class="card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1 2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              </div>
+              <span class="card-tag">Planner</span>
+            </div>
+            <strong>Milestone Roadmap</strong>
+            <p>Decomposes complex projects into actionable steps</p>
+          </div>
+          <div class="suggestion-card" onclick="applyQuickPrompt('Solve this math equation step-by-step: 3x^2 + 6x - 24 = 0')">
+            <div class="card-top">
+              <div class="card-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+              </div>
+              <span class="card-tag">Math</span>
+            </div>
+            <strong>Math Solver</strong>
+            <p>Step-by-step symbolic algebra & calculus</p>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  
+  viewport.innerHTML = "";
+  session.messages.forEach(msg => {
+    appendMessageElementToViewport(msg.role, msg.text, msg.attachments, msg.routedAgent, msg.thoughts, false);
+  });
+  viewport.scrollTop = viewport.scrollHeight;
+}
+
+function appendMessageElementToViewport(role, text, attachments = [], routedAgent = "", thoughts = [], animateScroll = true) {
+  const viewport = document.getElementById("chat-messages-viewport");
+  if (!viewport) return;
+  
+  const hero = document.getElementById("chat-welcome-hero");
+  if (hero) hero.remove();
+  
+  const row = document.createElement("div");
+  row.className = `chat-msg-row ${role}`;
+  
+  const avatar = document.createElement("div");
+  avatar.className = "chat-avatar";
+  avatar.innerHTML = role === "user" 
+    ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`
+    : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
+  
+  const container = document.createElement("div");
+  container.className = "chat-bubble-container";
+  
+  // Meta header
+  const meta = document.createElement("div");
+  meta.className = "chat-msg-meta";
+  if (role === "user") {
+    meta.innerHTML = `<span>You</span>`;
+  } else {
+    const rawAgent = routedAgent || "SLM Orchestrator";
+    const agentLabel = rawAgent.replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "").trim();
+    
+    let thoughtIconHtml = "";
+    if (thoughts && thoughts.length > 0) {
+      const cleanThoughts = thoughts.map(t => typeof t === "string" ? t.replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "").trim() : t);
+      thoughtIconHtml = `
+        <span class="trace-hover-wrapper">
+          <svg class="trace-icon-btn" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <div class="trace-popover-card">
+            <div class="trace-popover-header">Thought Process</div>
+            <div class="trace-popover-list">
+              ${cleanThoughts.map(t => `<div class="trace-popover-item">${t}</div>`).join("")}
+            </div>
+          </div>
+        </span>
+      `;
+    }
+    
+    meta.innerHTML = `<span>Assistant</span> <span class="agent-routed-ghost" title="${agentLabel}"><span class="ghost-dot"></span><span class="ghost-text">${agentLabel}</span></span> ${thoughtIconHtml}`;
+  }
+  container.appendChild(meta);
+  
+  // Attachments preview
+  if (attachments && attachments.length > 0) {
+    const attContainer = document.createElement("div");
+    attContainer.className = "chat-msg-attachments";
+    attachments.forEach(att => {
+      if (att.type && (att.type.startsWith("image") || att.name.match(/\.(png|jpe?g|webp|gif)$/i))) {
+        const img = document.createElement("img");
+        img.src = att.data;
+        img.alt = att.name;
+        img.className = "msg-att-img";
+        attContainer.appendChild(img);
+      } else {
+        const fileChip = document.createElement("div");
+        fileChip.className = "msg-att-file";
+        fileChip.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>${att.name}</span>`;
+        attContainer.appendChild(fileChip);
+      }
+    });
+    container.appendChild(attContainer);
+  }
+  
+  // Bubble text
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  
+  if (role === "user") {
+    bubble.textContent = text;
+    container.appendChild(bubble);
+  } else {
+    let cleanedText = text || "";
+    if (cleanedText.includes("</think>")) {
+      cleanedText = cleanedText.split("</think>").pop().trim();
+    }
+    cleanedText = cleanedText.replace(/<think>[\s\S]*?<\/think>/g, "").replace(/<think>/g, "").replace(/<\/think>/g, "").trim();
+
+    // Parse Markdown and Highlight Code Blocks
+    try {
+      if (typeof marked !== "undefined") {
+        bubble.innerHTML = marked.parse(cleanedText);
+      } else {
+        bubble.innerHTML = cleanedText.replace(/\n/g, "<br>");
+      }
+    } catch (e) {
+      bubble.textContent = cleanedText;
+    }
+    
+    // Wrap code blocks with headers & copy buttons
+    bubble.querySelectorAll("pre").forEach((pre) => {
+      const codeBlock = pre.querySelector("code") || pre;
+      if (typeof hljs !== "undefined") {
+        hljs.highlightElement(codeBlock);
+      }
+      
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-block-wrapper";
+      
+      const header = document.createElement("div");
+      header.className = "code-header";
+      header.innerHTML = `
+        <span>Code Output</span>
+        <button class="code-copy-btn" onclick="copyCodeSnippet(this)">Copy</button>
+      `;
+      
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(header);
+      wrapper.appendChild(pre);
+    });
+    
+    container.appendChild(bubble);
+
+    // Assistant Ghost Action Row (Copy Message, Speak Audio)
+    const actionRow = document.createElement("div");
+    actionRow.className = "chat-msg-actions";
+    const encoded = encodeURIComponent(cleanedText);
+    actionRow.innerHTML = `
+      <button class="btn-ghost-action" onclick="copyMsgText(this, decodeURIComponent('${encoded.replace(/'/g, "\\'")}'))" title="Copy response">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <span>Copy</span>
+      </button>
+      <button class="btn-ghost-action" onclick="playMessageSpeech('${encoded.replace(/'/g, "\\'")}', this)" title="Listen to response">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        <span>Listen</span>
+      </button>
+    `;
+    container.appendChild(actionRow);
+  }
+  row.appendChild(avatar);
+  row.appendChild(container);
+  viewport.appendChild(row);
+  
+  if (animateScroll) {
+    viewport.scrollTop = viewport.scrollHeight;
+  }
+}
+
+window.copyMsgText = function(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const span = btn.querySelector("span");
+    if (span) {
+      const orig = span.textContent;
+      span.textContent = "Copied!";
+      setTimeout(() => { span.textContent = orig; }, 1800);
+    }
+  });
+};
+
+window.copyCodeSnippet = function(btn) {
+  const code = btn.closest(".code-block-wrapper").querySelector("code").innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = "Copied!";
+    setTimeout(() => { btn.textContent = "Copy"; }, 2000);
+  });
+};
+
+function autoResizeChatTextarea(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 160) + "px";
+}
+
+function handleChatKeyDown(event) {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    handleChatSubmit(event);
+  }
+}
+
+function applyQuickPrompt(text) {
+  const input = document.getElementById("chat-text-input");
+  if (input) {
+    input.value = text;
+    autoResizeChatTextarea(input);
+    input.focus();
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+}
+
+const AGENT_SAMPLE_PROMPTS = {
+  "auto": "Write a Python script to compute the Fibonacci sequence with caching and benchmark execution speed.",
+  // Productivity
+  "SLMSummarizer": "Summarize this quarterly financial report focusing on revenue growth, operating margin, and market risks:\n\"Q3 revenue reached $4.2B, up 14% YoY. Net income was $820M with operating margins expanding to 24.5%. Key risks include foreign exchange headwinds and rising compute infrastructure costs.\"",
+  "SLMRag": "Retrieve context from uploaded knowledge documents and answer: What are our SLA commitments and escalation procedures for Tier-1 outage incidents?",
+  "SLMCliAgent": "Find all .log files in /var/log modified within the last 24 hours and compress them into a gzip archive named recent_logs.tar.gz.",
+  "SLMEmailAssistant": "Draft a polite and concise executive email declining the vendor proposal due to a temporary budget freeze until Q3.",
+  "SLMMeetingSummarizer": "Extract action items, assignees, and deadlines from this meeting transcript:\n\"Alice: I will finalize the API schema document by Friday.\nBob: I will review and deploy the benchmark suite by next Monday.\nCarol: I'll coordinate staging environment tests.\"",
+  "SLMMemoryManager": "Remember preference: The user always prefers modular Python 3.11 code with strict type hints and docstrings.",
+  "SLMTaskPlanner": "Decompose a step-by-step milestone plan with dependencies to build and launch a privacy-first mobile AI assistant.",
+  "SLMPDFChat": "Extract Table 2 (financial balance sheet) and summarize the core liability terms from the attached document.",
+  "SLMPKBAgent": "Index these notes and map semantic knowledge links between 'Sub-Billion SLM Quantization' and 'ONNX Runtime CPU Inference'.",
+  "SLMVoiceAgent": "Process voice intent and generate an offline synthesized speech reply for: What is the current CPU utilization and RAM footprint?",
+  // Developer Tools
+  "SLMOrchestrator": "Execute a multi-agent workflow: Analyze the sales dataset, calculate profit margins per region, and synthesize an executive brief.",
+  "SLMTextToSQL": "Generate optimized PostgreSQL query: Find the top 5 customers with total orders exceeding $1000 in 2024, grouped by country.",
+  "SLMCodeInterpreter": "Write a Python function to solve the Traveling Salesperson Problem using dynamic programming with bitmasking, and test it.",
+  "SLMGitRepoManager": "Analyze recent commit history, detect potential merge conflict risks across branches, and draft release notes for v1.2.0.",
+  "SLMDatabaseMigrator": "Generate an Alembic zero-downtime migration script to add an indexed 'status' column to the users table.",
+  // Web & Scraping
+  "SLMWebAgent": "Navigate to the pricing page, extract tier feature comparison table, and output clean markdown.",
+  "SLMWebScraper": "Scrape product title, price, and customer rating from the target product catalog page.",
+  "SLMSearchOrchestrator": "Search technical papers and synthesize the latest advancements in INT4 CPU weight quantization for edge devices.",
+  // Data & Utilities
+  "SLMJsonCleaner": "Fix syntax errors, normalize all dictionary keys to snake_case, and validate schema for this payload:\n{ 'UserID': 101, 'FirstName': 'Alex', 'is_active': 'true', }",
+  "SLMDocumentParser": "Parse this unstructured invoice text and extract vendor name, invoice date, line items, tax, and total amount.",
+  "SLMVisionParser": "Extract tabular data points and trend percentages from the provided bar chart image into a Markdown table.",
+  "SLMDataAnalyst": "Load sales.csv, compute month-over-month growth rate, and write Python matplotlib code to generate a revenue trend chart.",
+  "SLMTranslationHub": "Translate this technical API error documentation from English to German preserving Markdown code blocks and JSON keys.",
+  "SLMMathAgent": "Solve step-by-step: Solve the differential equation dy/dx + 2y = 4e^x with initial condition y(0) = 1.",
+  "SLMSecurityAudit": "Audit this user prompt and SQL snippet for SQL injection vectors, command execution vulnerabilities, and PII leaks.",
+  "SLMEmbeddingsServer": "Generate 384-dimensional dense semantic embeddings for this document chunk and calculate cosine similarity."
+};
+
+const ALL_AGENTS_METADATA = [
+  {
+    key: "auto",
+    name: "Auto-Orchestrator (All 26)",
+    category: "General",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`
+  },
+  // Productivity
+  {
+    key: "SLMSummarizer",
+    name: "SLM Summarizer",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`
+  },
+  {
+    key: "SLMRag",
+    name: "SLM RAG",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-2.239 10-5V5c0-2.761-4.477-5-10-5S2 2.239 2 5v12c0 2.761 4.477 5 10 5z"></path><path d="M2 5c0 2.761 4.477 5 10 5s10-2.239 10-5"></path><path d="M2 11c0 2.761 4.477 5 10 5s10-2.239 10-5"></path></svg>`
+  },
+  {
+    key: "SLMCliAgent",
+    name: "SLM CLI Agent",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>`
+  },
+  {
+    key: "SLMEmailAssistant",
+    name: "SLM Email Assistant",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`
+  },
+  {
+    key: "SLMMeetingSummarizer",
+    name: "SLM Meeting Summarizer",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`
+  },
+  {
+    key: "SLMMemoryManager",
+    name: "SLM Memory Manager",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="18" cy="18" r="3"></circle><line x1="6" y1="9" x2="9" y2="12"></line><line x1="6" y1="15" x2="9" y2="12"></line><line x1="18" y1="9" x2="15" y2="12"></line><line x1="18" y1="15" x2="15" y2="12"></line></svg>`
+  },
+  {
+    key: "SLMTaskPlanner",
+    name: "SLM Task Planner",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`
+  },
+  {
+    key: "SLMPDFChat",
+    name: "SLM PDF Chat",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`
+  },
+  {
+    key: "SLMPKBAgent",
+    name: "SLM PKB Agent",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>`
+  },
+  {
+    key: "SLMVoiceAgent",
+    name: "SLM Voice Agent",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`
+  },
+  // Developer Tools
+  {
+    key: "SLMOrchestrator",
+    name: "SLM Orchestrator",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`
+  },
+  {
+    key: "SLMTextToSQL",
+    name: "SLM Text-to-SQL",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>`
+  },
+  {
+    key: "SLMCodeInterpreter",
+    name: "SLM Code Interpreter",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`
+  },
+  {
+    key: "SLMGitRepoManager",
+    name: "SLM Git Repo Manager",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 15V9a4 4 0 0 0-4-4H9"></path><line x1="6" y1="9" x2="6" y2="15"></line></svg>`
+  },
+  {
+    key: "SLMDatabaseMigrator",
+    name: "SLM Database Migrator",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>`
+  },
+  // Web & Scraping
+  {
+    key: "SLMWebAgent",
+    name: "SLM Web Agent",
+    category: "Web & Scraping",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect><line x1="2" y1="8" x2="22" y2="8"></line><line x1="6" y1="6" x2="6" y2="6"></line><line x1="10" y1="6" x2="10" y2="6"></line></svg>`
+  },
+  {
+    key: "SLMWebScraper",
+    name: "SLM Web Scraper",
+    category: "Web & Scraping",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>`
+  },
+  {
+    key: "SLMSearchOrchestrator",
+    name: "SLM Search Orchestrator",
+    category: "Web & Scraping",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`
+  },
+  // Data & Utilities
+  {
+    key: "SLMJsonCleaner",
+    name: "SLM JSON Cleaner",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>`
+  },
+  {
+    key: "SLMDocumentParser",
+    name: "SLM Document Parser",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`
+  },
+  {
+    key: "SLMVisionParser",
+    name: "SLM Vision Parser",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`
+  },
+  {
+    key: "SLMDataAnalyst",
+    name: "SLM Data Analyst",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`
+  },
+  {
+    key: "SLMTranslationHub",
+    name: "SLM Translation Hub",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>`
+  },
+  {
+    key: "SLMMathAgent",
+    name: "SLM Math Agent",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>`
+  },
+  {
+    key: "SLMSecurityAudit",
+    name: "SLM Security Audit",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
+  },
+  {
+    key: "SLMEmbeddingsServer",
+    name: "SLM Embeddings Server",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>`
+  }
+];
+
+function initCustomAgentDropdown() {
+  const menu = document.getElementById("custom-agent-menu");
+  if (!menu) return;
+  
+  let currentCat = "";
+  let html = "";
+  const currentKey = document.getElementById("chat-agent-override")?.value || "auto";
+  
+  ALL_AGENTS_METADATA.forEach(agent => {
+    if (agent.category !== currentCat && agent.category !== "General") {
+      currentCat = agent.category;
+      html += `<div class="dropdown-cat-label">${currentCat}</div>`;
+    }
+    const isSelected = agent.key === currentKey;
+    html += `
+      <div class="dropdown-agent-item ${isSelected ? 'selected' : ''}" data-key="${agent.key}" onclick="selectCustomAgent('${agent.key}')">
+        <div class="dropdown-item-left">
+          <span class="agent-svg">${agent.svg}</span>
+          <span>${agent.name}</span>
+        </div>
+        ${isSelected ? '<span class="dropdown-check-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>' : ''}
+      </div>
+    `;
+  });
+  
+  menu.innerHTML = html;
+}
+
+function toggleAgentDropdown(event) {
+  if (event) event.stopPropagation();
+  const btn = document.getElementById("custom-agent-btn");
+  const menu = document.getElementById("custom-agent-menu");
+  if (!btn || !menu) return;
+  
+  const isOpen = menu.style.display === "flex";
+  if (isOpen) {
+    menu.style.display = "none";
+    btn.classList.remove("open");
+  } else {
+    initCustomAgentDropdown();
+    menu.style.display = "flex";
+    btn.classList.add("open");
+  }
+}
+
+function selectCustomAgent(key) {
+  const agent = ALL_AGENTS_METADATA.find(a => a.key === key) || ALL_AGENTS_METADATA[0];
+  const hiddenInput = document.getElementById("chat-agent-override");
+  const iconSpan = document.getElementById("selected-agent-icon");
+  const nameSpan = document.getElementById("selected-agent-name");
+  const btn = document.getElementById("custom-agent-btn");
+  const menu = document.getElementById("custom-agent-menu");
+  
+  if (hiddenInput) hiddenInput.value = agent.key;
+  if (iconSpan) iconSpan.innerHTML = agent.svg;
+  if (nameSpan) nameSpan.textContent = agent.name;
+  
+  if (menu) menu.style.display = "none";
+  if (btn) btn.classList.remove("open");
+  
+  onAgentModeChange();
+}
+
+// Close dropdown on outside click
+document.addEventListener("click", (e) => {
+  const dropdown = document.getElementById("custom-agent-dropdown");
+  const menu = document.getElementById("custom-agent-menu");
+  const btn = document.getElementById("custom-agent-btn");
+  if (dropdown && !dropdown.contains(e.target)) {
+    if (menu) menu.style.display = "none";
+    if (btn) btn.classList.remove("open");
+  }
+});
+
+function onAgentModeChange() {
+  const select = document.getElementById("chat-agent-override");
+  if (!select) return;
+  const val = select.value;
+  
+  const badgeText = document.getElementById("chat-current-agent-text");
+  if (badgeText) {
+    const agent = ALL_AGENTS_METADATA.find(a => a.key === val);
+    if (val === "auto") {
+      badgeText.textContent = "Auto-Orchestrator Active";
+    } else {
+      badgeText.textContent = `Locked: ${agent ? agent.name : val}`;
+    }
+  }
+
+  // Auto pre-fill input with the best test case for the selected agent
+  const prompt = AGENT_SAMPLE_PROMPTS[val] || AGENT_SAMPLE_PROMPTS["auto"];
+  const input = document.getElementById("chat-text-input");
+  if (input && prompt) {
+    input.value = prompt;
+    autoResizeChatTextarea(input);
+    input.focus();
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+}
+
+window.selectGalleryAgent = function(agentKey, el) {
+  const items = document.querySelectorAll(".sidebar-item");
+  items.forEach(item => item.classList.remove("active"));
+  if (el) el.classList.add("active");
+  
+  selectCustomAgent(agentKey);
+};
+
+function addFilesToAttachments(files) {
+  if (!files || files.length === 0) return;
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const exists = chatAttachments.some(a => a.name === file.name && a.size === file.size);
+      if (!exists) {
+        chatAttachments.push({
+          name: file.name,
+          type: file.type || (file.name.toLowerCase().endsWith(".pdf") ? "application/pdf" : "application/octet-stream"),
+          data: e.target.result,
+          size: file.size
+        });
+        renderAttachmentsTray();
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function handleFileSelected(event) {
+  if (event && event.target && event.target.files) {
+    addFilesToAttachments(event.target.files);
+    event.target.value = "";
+  }
+}
+
+function renderAttachmentsTray() {
+  const tray = document.getElementById("chat-attachments-tray");
+  if (!tray) return;
+  
+  if (chatAttachments.length === 0) {
+    tray.style.display = "none";
+    tray.innerHTML = "";
+    return;
+  }
+  
+  tray.style.display = "flex";
+  tray.innerHTML = "";
+  chatAttachments.forEach((att, idx) => {
+    const chip = document.createElement("div");
+    chip.className = "attachment-chip";
+    
+    let iconSvg = "";
+    if (att.type.startsWith("image")) {
+      iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>`;
+    } else if (att.name.toLowerCase().endsWith(".pdf") || att.type.includes("pdf")) {
+      iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+    } else {
+      iconSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`;
+    }
+    
+    const sizeKb = att.size ? ` (${Math.max(1, Math.round(att.size / 1024))} KB)` : "";
+    
+    chip.innerHTML = `
+      <span class="attachment-chip-icon">${iconSvg}</span>
+      <span style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${att.name}${sizeKb}</span>
+      <button type="button" class="chip-remove-btn" onclick="removeAttachment(${idx})" title="Remove attachment">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    `;
+    tray.appendChild(chip);
+  });
+}
+
+function removeAttachment(idx) {
+  chatAttachments.splice(idx, 1);
+  renderAttachmentsTray();
+}
+
+// Initialize Global Drag & Drop & Paste Listeners safely
+function setupAttachmentDropAndPaste() {
+  const overlay = document.getElementById("chat-drag-overlay");
+  let dragCounter = 0;
+
+  window.addEventListener("dragenter", (e) => {
+    // Only respond if actual files are being dragged
+    if (e.dataTransfer && Array.from(e.dataTransfer.types || []).includes("Files")) {
+      e.preventDefault();
+      dragCounter++;
+      if (overlay) {
+        overlay.style.display = "flex";
+      }
+    }
+  });
+
+  window.addEventListener("dragleave", (e) => {
+    if (e.dataTransfer && Array.from(e.dataTransfer.types || []).includes("Files")) {
+      e.preventDefault();
+      dragCounter--;
+      if (dragCounter <= 0) {
+        dragCounter = 0;
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+      }
+    }
+  });
+
+  window.addEventListener("dragover", (e) => {
+    if (e.dataTransfer && Array.from(e.dataTransfer.types || []).includes("Files")) {
+      e.preventDefault();
+    }
+  });
+
+  window.addEventListener("drop", (e) => {
+    dragCounter = 0;
+    if (overlay) {
+      overlay.style.display = "none";
+    }
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      e.preventDefault();
+      addFilesToAttachments(e.dataTransfer.files);
+    }
+  });
+
+  // Support clipboard paste (e.g. pasted screenshots or copied files)
+  window.addEventListener("paste", (e) => {
+    if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+      addFilesToAttachments(e.clipboardData.files);
+    }
+  });
+}
+
+// Call setup on initialization
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupAttachmentDropAndPaste);
+  } else {
+    setupAttachmentDropAndPaste();
+  }
+}
+
+/* Audio / Voice Recording */
+function toggleVoiceRecording() {
+  if (isVoiceRecording) {
+    stopVoiceRecording();
+  } else {
+    startVoiceRecording();
+  }
+}
+
+function startVoiceRecording() {
+  const voiceBar = document.getElementById("chat-voice-bar");
+  const micBtn = document.getElementById("chat-mic-btn");
+  
+  // Use Web Speech API if available for instant real-time transcription
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition) {
+    try {
+      speechRecognitionInstance = new SpeechRecognition();
+      speechRecognitionInstance.continuous = true;
+      speechRecognitionInstance.interimResults = true;
+      speechRecognitionInstance.lang = "en-US";
+      
+      const txtInput = document.getElementById("chat-text-input");
+      let baseText = txtInput ? txtInput.value : "";
+      
+      speechRecognitionInstance.onresult = (event) => {
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          transcript += event.results[i][0].transcript;
+        }
+        if (txtInput) {
+          txtInput.value = (baseText + " " + transcript).trim();
+          autoResizeChatTextarea(txtInput);
+        }
+      };
+      
+      speechRecognitionInstance.onerror = (event) => {
+        console.warn("Speech recognition notice:", event.error);
+      };
+      
+      speechRecognitionInstance.start();
+      isVoiceRecording = true;
+      if (voiceBar) voiceBar.style.display = "flex";
+      if (micBtn) micBtn.style.color = "#ef4444";
+      return;
+    } catch (e) {
+      console.warn("Web Speech API error, falling back to MediaRecorder:", e);
+    }
+  }
+  
+  // Fallback to MediaRecorder
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          chatAttachments.push({
+            name: "voice_recording.wav",
+            type: "audio/wav",
+            data: e.target.result,
+            size: audioBlob.size
+          });
+          renderAttachmentsTray();
+        };
+        reader.readAsDataURL(audioBlob);
+      };
+      mediaRecorder.start();
+      isVoiceRecording = true;
+      if (voiceBar) voiceBar.style.display = "flex";
+      if (micBtn) micBtn.style.color = "#ef4444";
+    }).catch(err => {
+      alert("Microphone access is required for voice input: " + err.message);
+    });
+  } else {
+    alert("Voice input is not supported in your browser.");
+  }
+}
+
+function stopVoiceRecording() {
+  const voiceBar = document.getElementById("chat-voice-bar");
+  const micBtn = document.getElementById("chat-mic-btn");
+  
+  if (speechRecognitionInstance) {
+    try { speechRecognitionInstance.stop(); } catch(e) {}
+    speechRecognitionInstance = null;
+  }
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    mediaRecorder.stop();
+  }
+  isVoiceRecording = false;
+  if (voiceBar) voiceBar.style.display = "none";
+  if (micBtn) micBtn.style.color = "";
+}
+
+function cancelVoiceRecording() {
+  stopVoiceRecording();
+  audioChunks = [];
+}
+
+/* TTS Speech Playback */
+function toggleChatTTS() {
+  chatTTSActive = !chatTTSActive;
+  const label = document.getElementById("tts-status-label");
+  const btn = document.getElementById("chat-tts-toggle");
+  if (label) label.textContent = `Voice Output: ${chatTTSActive ? 'ON' : 'OFF'}`;
+  if (btn) btn.classList.toggle("active", chatTTSActive);
+  if (!chatTTSActive && window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+function playMessageSpeech(encodedText, btn) {
+  try {
+    const text = decodeURIComponent(encodedText);
+    if (!('speechSynthesis' in window)) return;
+    
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      if (btn) btn.classList.remove("speaking");
+      return;
+    }
+    
+    const cleanText = text.replace(/```[\s\S]*?```/g, "Code block omitted.").replace(/[#*`_]/g, "");
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    
+    if (btn) {
+      btn.classList.add("speaking");
+      utterance.onend = () => btn.classList.remove("speaking");
+      utterance.onerror = () => btn.classList.remove("speaking");
+    }
+    
+    window.speechSynthesis.speak(utterance);
+  } catch (e) {
+    console.warn("TTS notice:", e);
+  }
+}
+
+
+/* Real-time Streaming Markdown & Code Box Renderer */
+function renderLiveStreamedContent(container, rawTokens) {
+  let clean = rawTokens || "";
+  if (clean.includes("</think>")) {
+    clean = clean.split("</think>").pop().trim();
+  }
+  clean = clean.replace(/<think>[\s\S]*?<\/think>/g, "").replace(/<think>/g, "").replace(/<\/think>/g, "").trim();
+
+  // If a code block was started (odd number of ```), temporarily close it for markdown parsing
+  const backtickMatches = clean.match(/```/g);
+  const backtickCount = backtickMatches ? backtickMatches.length : 0;
+  let parseText = clean;
+  if (backtickCount % 2 !== 0) {
+    parseText += "\n```";
+  }
+
+  let html = "";
+  try {
+    if (typeof marked !== "undefined") {
+      html = marked.parse(parseText);
+    } else {
+      html = parseText.replace(/\n/g, "<br>");
+    }
+  } catch (e) {
+    html = parseText;
+  }
+
+  container.innerHTML = html;
+
+  // Format and highlight all code blocks inside clean .code-block-wrapper boxes
+  container.querySelectorAll("pre").forEach((pre) => {
+    const codeBlock = pre.querySelector("code") || pre;
+    if (typeof hljs !== "undefined") {
+      hljs.highlightElement(codeBlock);
+    }
+    
+    // Check language
+    const langClass = Array.from(codeBlock.classList).find(c => c.startsWith("language-"));
+    const langName = langClass ? langClass.replace("language-", "").toUpperCase() : "CODE";
+    
+    const wrapper = document.createElement("div");
+    wrapper.className = "code-block-wrapper";
+    
+    const header = document.createElement("div");
+    header.className = "code-header";
+    header.innerHTML = `
+      <span>${langName}</span>
+      <button class="code-copy-btn" onclick="copyCodeSnippet(this)">Copy</button>
+    `;
+    
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(header);
+    wrapper.appendChild(pre);
+  });
+}
+
+/* Chat Submission */
+async function handleChatSubmit(event) {
+  if (event) event.preventDefault();
+  
+  const inputEl = document.getElementById("chat-text-input");
+  const sendBtn = document.getElementById("chat-send-btn");
+  const selectMode = document.getElementById("chat-agent-override");
+  
+  if (!inputEl) return;
+  const message = inputEl.value.trim();
+  const attachments = [...chatAttachments];
+  
+  if (!message && attachments.length === 0) return;
+  
+  const session = getCurrentSession();
+  if (!session) return;
+  
+  // Set session title from first user query
+  if (session.messages.length === 0) {
+    session.title = message ? (message.length > 28 ? message.substring(0, 28) + "..." : message) : attachments[0].name;
+    renderChatSessionList();
+  }
+  
+  // 1. Record and append user message
+  const userMsg = {
+    role: "user",
+    text: message,
+    attachments: attachments,
+    timestamp: new Date().toISOString()
+  };
+  session.messages.push(userMsg);
+  appendMessageElementToViewport("user", message, attachments);
+      
+      // Clear input fields
+      inputEl.value = "";
+      autoResizeChatTextarea(inputEl);
+      chatAttachments = [];
+      renderAttachmentsTray();
+      
+      // Disable send button while processing
+      if (sendBtn) sendBtn.disabled = true;
+      
+      // 2. Append live thinking card with active thought stream
+      const viewport = document.getElementById("chat-messages-viewport");
+      const typingRow = document.createElement("div");
+      typingRow.className = "chat-msg-row assistant";
+      typingRow.id = "chat-typing-indicator";
+      typingRow.innerHTML = `
+        <div class="chat-avatar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="chat-bubble-container" style="width: 100%;">
+          <div class="chat-msg-meta">
+            <span>Assistant</span>
+            <span class="agent-routed-ghost" id="chat-live-routed-pill" title="Reasoning & Routing...">
+              <span class="ghost-dot" style="animation: pulseRec 1s infinite;"></span>
+              <span class="ghost-text">Reasoning &amp; Routing...</span>
+            </span>
+          </div>
+          <!-- Animated Live Engine Execution Card -->
+          <div class="live-engine-card" id="chat-live-engine-card">
+            <div class="live-engine-header">
+              <div class="live-engine-title-wrap">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span class="live-engine-title" id="chat-live-thought-title">Executing Reasoning Pipeline</span>
+              </div>
+              <div class="live-engine-timer" id="chat-live-timer">0.0s</div>
+            </div>
+            <div class="live-engine-timeline" id="chat-live-timeline">
+              <div class="live-step-row active" id="live-step-0">
+                <div class="live-step-icon">
+                  <div class="step-spinner"></div>
+                </div>
+                <div class="live-step-text">Analyzing query &amp; extracting execution constraints...</div>
+              </div>
+            </div>
+          </div>
+          <!-- Beautiful styled streaming response box -->
+          <div class="chat-bubble" id="chat-live-response-box" style="display: none; padding-top: 4px;">
+            <div id="chat-live-token-stream"></div>
+          </div>
+        </div>
+      `;
+      viewport.appendChild(typingRow);
+      viewport.scrollTop = viewport.scrollHeight;
+      
+      const targetAgent = selectMode ? selectMode.value : "auto";
+      const liveTitle = document.getElementById("chat-live-thought-title");
+      const liveTimeline = document.getElementById("chat-live-timeline");
+      const liveTimer = document.getElementById("chat-live-timer");
+      const liveBox = document.getElementById("chat-live-response-box");
+      const streamEl = document.getElementById("chat-live-token-stream");
+      const livePill = document.getElementById("chat-live-routed-pill");
+      
+      // Start stopwatch timer
+      const startTime = Date.now();
+      const timerInterval = setInterval(() => {
+        if (liveTimer) {
+          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+          liveTimer.textContent = `${elapsed}s`;
+        }
+      }, 100);
+      
+      try {
+        const payload = {
+          session_id: session.id || "default_session",
+          message: message,
+          target_agent: targetAgent,
+          attachments: attachments,
+          history: session.messages.slice(-6).map(m => ({ role: m.role, content: m.text }))
+        };
+        
+        const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.port === "7860" || window.location.protocol === "file:";
+        const chatEndpoint = isLocal ? "/api/chat" : (window.location.origin.includes("hf.space") ? "/api/chat" : "http://localhost:7860/api/chat");
+        
+        const response = await fetch(chatEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Server returned HTTP ${response.status}`);
+        }
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let finalPayload = null;
+        let accumulatedThoughts = ["Analyzing query & extracting execution constraints..."];
+        let accumulatedTokens = "";
+        let streamBuffer = "";
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          streamBuffer += decoder.decode(value, { stream: true });
+          const lines = streamBuffer.split("\n\n");
+          streamBuffer = lines.pop();
+          
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              let data;
+              try {
+                data = JSON.parse(line.slice(6));
+              } catch (e) {
+                console.log("Error parsing stream line:", e);
+                continue;
+              }
+              if (data.type === "thought") {
+                  const cleanThought = data.thought.replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "").trim();
+                  if (liveTitle) {
+                    liveTitle.textContent = cleanThought.length > 44 ? cleanThought.substring(0, 44) + "..." : cleanThought;
+                  }
+                  if (data.thought.includes("Routed to: ") && livePill) {
+                    const ag = data.thought.split("Routed to: ")[1].trim().replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "");
+                    const label = livePill.querySelector(".ghost-label");
+                    if (label) label.textContent = `Routed: ${ag}`;
+                  }
+                  if (liveTimeline && !accumulatedThoughts.includes(cleanThought)) {
+                    accumulatedThoughts.push(cleanThought);
+                    
+                    // Mark previous steps as completed
+                    liveTimeline.querySelectorAll(".live-step-row").forEach(row => {
+                      row.className = "live-step-row completed";
+                      const icon = row.querySelector(".live-step-icon");
+                      if (icon) icon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                    });
+                    
+                    // Add new active step
+                    const newStep = document.createElement("div");
+                    newStep.className = "live-step-row active";
+                    newStep.innerHTML = `
+                      <div class="live-step-icon">
+                        <div class="step-spinner"></div>
+                      </div>
+                      <div class="live-step-text">${cleanThought}</div>
+                    `;
+                    liveTimeline.appendChild(newStep);
+                    viewport.scrollTop = viewport.scrollHeight;
+                  }
+                } else if (data.type === "token") {
+                  if (data.token && !data.token.includes("<think>") && !data.token.includes("</think>")) {
+                    accumulatedTokens += data.token;
+                    if (liveBox) liveBox.style.display = "block";
+                    if (streamEl) {
+                      renderLiveStreamedContent(streamEl, accumulatedTokens);
+                      viewport.scrollTop = viewport.scrollHeight;
+                    }
+                  }
+                } else if (data.type === "done") {
+                  finalPayload = data;
+              } else if (data.type === "error") {
+                throw new Error(data.error);
+              }
+            }
+          }
+        }
+        
+        clearInterval(timerInterval);
+    typingRow.remove();
+    
+    if (!finalPayload) {
+      throw new Error("The response stream ended before a final result was received.");
+    }
+    let rawResp = finalPayload.response || "No response text generated.";
+    let extractedThoughts = (finalPayload && finalPayload.thoughts && finalPayload.thoughts.length > 0) ? [...finalPayload.thoughts] : [...accumulatedThoughts];
+    
+    if (typeof rawResp === "string" && rawResp.includes("</think>")) {
+      const parts = rawResp.split("</think>");
+      const thinkBlock = parts[0].replace("<think>", "").trim();
+      if (thinkBlock) {
+        extractedThoughts.push(`🧠 Step-by-Step CoT Reasoning:\n${thinkBlock}`);
+      }
+      rawResp = parts.slice(1).join("</think>").trim();
+    }
+    if (typeof rawResp === "string") {
+      rawResp = rawResp.replace(/<think>[\s\S]*?<\/think>/g, "").replace(/<think>/g, "").replace(/<\/think>/g, "").trim();
+    }
+
+    const assistantMsg = {
+      role: "assistant",
+      text: rawResp,
+      routedAgent: finalPayload ? (finalPayload.routed_agent || "SLM Orchestrator") : "SLM Orchestrator",
+      thoughts: extractedThoughts,
+      timestamp: new Date().toISOString()
+    };
+    session.messages.push(assistantMsg);
+    saveChatSessionsToStorage();
+    
+    appendMessageElementToViewport("assistant", assistantMsg.text, [], assistantMsg.routedAgent, assistantMsg.thoughts);
+    
+    // Update live badge in header
+    const liveBadge = document.getElementById("chat-current-agent-text");
+    if (liveBadge) liveBadge.textContent = `Routed: ${assistantMsg.routedAgent}`;
+    
+    // Speech synthesis disabled
+    if (window.speechSynthesis && window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+    }
+  } catch (err) {
+    if (typingRow) typingRow.remove();
+    const errorMsg = {
+      role: "assistant",
+      text: `⚠️ **Execution Error**: Failed to process query through orchestrator.\n\n\`${err.message}\``,
+      routedAgent: "System Error Handler",
+      thoughts: ["Connection or inference execution error", err.message],
+      timestamp: new Date().toISOString()
+    };
+    session.messages.push(errorMsg);
+    saveChatSessionsToStorage();
+    appendMessageElementToViewport("assistant", errorMsg.text, [], errorMsg.routedAgent, errorMsg.thoughts);
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+    inputEl.focus();
+  }
+}
+
+function toggleChatSidebar() {
+  const sidebar = document.getElementById("chat-sidebar");
+  if (!sidebar) return;
+  if (window.innerWidth <= 860) {
+    sidebar.classList.toggle("open");
+  } else {
+    sidebar.classList.toggle("collapsed");
+  }
+}

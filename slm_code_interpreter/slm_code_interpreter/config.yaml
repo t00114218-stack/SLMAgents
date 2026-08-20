@@ -1,8 +1,9 @@
 models:
   code_interpreter:
     path: "../../models/qwen3.5-0.8b-onnx"
-    repo_id: "onnx-community/Qwen3.5-0.8B-ONNX"
+    repo_id: "local/qwen3.5-0.8b-onnx"
 
 inference:
   n_threads: 4
   n_ctx: 2048
+  max_tokens: 192

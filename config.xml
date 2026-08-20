@@ -3,15 +3,16 @@
 <configuration>
   <environment>
     <threads>4</threads>
-    <engine>quantized-onnx</engine>
+    <engine>onnx</engine>
     <device>cpu</device>
   </environment>
 
   <models>
     <!-- Core Shared Reasoning & Dialogue Model -->
     <model name="qwen3.5-0.8b-onnx" category="llm_core">
-      <description>Qwen 3.5 0.8B INT4 Quantized ONNX autoregressive text reasoning engine</description>
-      <repo_id>onnx-community/Qwen3.5-0.8B-ONNX</repo_id>
+      <description>Base Qwen 3.5 0.8B ONNX reasoning engine (non-quantized)</description>
+      <type>onnx_genai</type>
+      <repo_id>local/qwen3.5-0.8b-onnx</repo_id>
       <path>models/qwen3.5-0.8b-onnx</path>
       <used_by>
         <agent>slm_rag</agent>

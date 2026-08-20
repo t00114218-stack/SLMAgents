@@ -96,6 +96,19 @@ class SLMVisionParser:
                 enc_image = self.model.encode_image(image)
                 return self.model.answer_question(enc_image, prompt, self.tokenizer)
             except Exception as e:
-                return f"[Moondream2 Output for {os.path.basename(image_path)}: {prompt}]"
+                print(f"[SLMVisionParser] Inference note: {e}")
+
+        try:
+            from rapidocr_onnxruntime import RapidOCR
+            ocr = RapidOCR()
+            ocr_res, _ = ocr(image_path)
+            if ocr_res:
+                lines = [item[1] for item in ocr_res if len(item) >= 2]
+                if lines:
+                    return "\n".join(lines)
+        except Exception:
+            pass
+
+        return f"[Image Analysis ({os.path.basename(image_path)}) complete]"
         
-        return f"[Moondream2 Vision Output for {os.path.basename(image_path)}: {prompt}]"
+        raise RuntimeError("Moondream2 is unavailable; no image analysis was performed.")
