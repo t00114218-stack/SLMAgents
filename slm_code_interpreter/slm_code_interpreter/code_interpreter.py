@@ -230,11 +230,11 @@ class SLMCodeInterpreter:
                 return clean_code, s_out, s_err, r_code
         return code, stdout, stderr, ret_code
 
-    def run(self, instruction: str, max_retries: int = 2, stream: bool = False, system_prompt: str = None, user_input: str = None, max_tokens: int = None):
-        max_retries = max(1, min(int(max_retries), 3))
+    def run(self, instruction: str, max_retries: int = 1, stream: bool = False, system_prompt: str = None, user_input: str = None, max_tokens: int = None, token_callback: callable = None):
+        max_retries = max(1, min(int(max_retries), 2))
         if max_tokens is None:
-            max_tokens = int(os.environ.get("SLM_CODE_INTERPRETER_MAX_TOKENS", 320))
-        max_tokens = max(96, min(int(max_tokens), 512))
+            max_tokens = int(os.environ.get("SLM_CODE_INTERPRETER_MAX_TOKENS", 160))
+        max_tokens = max(80, min(int(max_tokens), 320))
         if not system_prompt:
             system_prompt = (
                 "You are an expert Python software engineer.\n"
@@ -276,7 +276,7 @@ class SLMCodeInterpreter:
                             break
             return _stream_generator()
 
-        # Self-correction execution loop when stream=False
+        # Direct execution loop with live token streaming
         last_response_text = ""
         last_code = ""
         last_stdout = ""
@@ -290,7 +290,7 @@ class SLMCodeInterpreter:
 
             input_tokens = self.tokenizer.encode(full_prompt)
             params = og.GeneratorParams(self.model)
-            params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.2, repetition_penalty=1.18)
+            params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.2, repetition_penalty=1.20)
             generator = og.Generator(self.model, params)
             generator.append_tokens(input_tokens)
             
@@ -299,6 +299,9 @@ class SLMCodeInterpreter:
             if q is not None:
                 self._mark_output_streamed()
                 q.put(response_text)
+            if token_callback is not None:
+                token_callback(response_text)
+                
             in_think = False
             while not generator.is_done():
                 generator.generate_next_token()
@@ -314,14 +317,18 @@ class SLMCodeInterpreter:
                     if "</think>" in tok_text:
                         in_think = False
                         continue
-                    if q is not None and not in_think:
-                        q.put(tok_text)
+                    if not in_think:
+                        if q is not None:
+                            q.put(tok_text)
+                        if token_callback is not None:
+                            token_callback(tok_text)
                     if "\n" in tok_text:
                         lines = response_text.splitlines()
                         if len(lines) >= 4 and lines[-1].strip() and lines[-1].strip() == lines[-2].strip() == lines[-3].strip():
                             break
                     if self._generation_complete(response_text):
                         break
+
 
             last_response_text = response_text
             code = self._extract_code(response_text)

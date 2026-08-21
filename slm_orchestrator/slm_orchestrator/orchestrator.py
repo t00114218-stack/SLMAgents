@@ -284,6 +284,17 @@ class SLMOrchestrator:
             if last_content and isinstance(last_content, str):
                 routing_text = f"Context: {last_content[:180]}. Request: {question}"
         
+        # Fast Intent Dispatcher (0ms instant routing for unambiguous intents)
+        if any(kw in q_lower for kw in ["python script", "write a python", "write python", "python function", "fibonacci", "write code", "implement in python", "code interpreter"]):
+            if "SLMCodeInterpreter" in agent_names:
+                return "SLMCodeInterpreter"
+        if any(kw in q_lower for kw in ["sql query", "select *", "table schema", "write a query", "database query", "group by"]):
+            if "SLMTextToSQL" in agent_names:
+                return "SLMTextToSQL"
+        if any(kw in q_lower for kw in ["summarize", "summarizer", "tldr", "tl;dr", "key takeaways", "bullet points summary"]):
+            if "SLMSummarizer" in agent_names:
+                return "SLMSummarizer"
+
         # 1. Dense Semantic Vector & 0.8B SLM Orchestrator Dynamic Decision Engine
         candidate_agents = agents
         needle_selected = None
@@ -291,8 +302,10 @@ class SLMOrchestrator:
         if self.embeddings_server is not None and np is not None:
             try:
                 query_vec = np.array(self.embeddings_server.embed(routing_text)[0])
-                agent_texts = [f"{a['name']}: {a.get('description', '')}" for a in agents]
-                agent_vecs = np.array(self.embeddings_server.embed(agent_texts))
+                if not hasattr(self, "_cached_agent_vecs") or self._cached_agent_vecs is None:
+                    agent_texts = [f"{a['name']}: {a.get('description', '')}" for a in agents]
+                    self._cached_agent_vecs = np.array(self.embeddings_server.embed(agent_texts))
+                agent_vecs = self._cached_agent_vecs
                 
                 q_norm = np.linalg.norm(query_vec)
                 a_norms = np.linalg.norm(agent_vecs, axis=1)
@@ -313,7 +326,7 @@ class SLMOrchestrator:
                 # Filter out SLMMathAgent for non-mathematical queries
                 has_math_intent = any(kw in q_lower for kw in [
                     "solve", "calculate", "equation", "integral", "derivative", "algebra", "calculus", 
-                    "math", "compute", "matrix", "sqrt", "fibonacci", "monomial", "formula"
+                    "math", "compute", "matrix", "sqrt", "monomial", "formula"
                 ]) or bool(re.search(r'\d+\s*[\+\-\*\/\^=]\s*\d+', q_lower))
 
                 if not has_math_intent:
@@ -322,9 +335,9 @@ class SLMOrchestrator:
                         candidate_agents = [a for a in agents if a["name"] not in ("SLMGeneralAssistant", "SLMMathAgent")]
 
                 needle_selected = candidate_agents[0]["name"] if candidate_agents else agents[0]["name"]
-                
-                top_matches = [f"{a['name']} ({sims[i]:.3f})" for i, a in zip(candidate_indices, [agents[i] for i in candidate_indices])]
-                print(f"[SLMOrchestrator] Vector similarity candidate chunks: {', '.join(top_matches)}")
+                # If high-confidence vector match, return immediately without 16-token SLM generation
+                if candidate_agents and sims[candidate_indices[0]] >= 0.35:
+                    return candidate_agents[0]["name"]
             except Exception as e:
                 print(f"[SLMOrchestrator] Semantic embedding candidate filter error: {e}")
 
@@ -594,7 +607,7 @@ class SLMOrchestrator:
                     task_part = query_str.split("[Current Task]:")[-1].strip().lower()
                     if any(kw in task_part for kw in ["execute", "run", "implement", "do this", "build this", "start"]):
                         code_inst = f"{query_str}\n\nInstruction: Write the complete, robust Python implementation code for Phase 1 / the primary action item with functions, classes, and execution test cases."
-                res = runner.run(instruction=code_inst, max_retries=2)
+                res = runner.run(instruction=code_inst, max_retries=1, token_callback=token_callback)
                 if isinstance(res, dict):
                     code_snip = res.get("code", "").strip()
                     stdout_out = res.get("stdout", "").strip()
