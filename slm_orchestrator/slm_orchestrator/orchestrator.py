@@ -578,12 +578,13 @@ class SLMOrchestrator:
                 pipeline.append("SLMEmail")
         return pipeline
 
-    def _dispatch_single_agent(self, agent_name: str, query_str: str, agent_registry: dict = None, system_prompt: str = None, user_input: str = None, **kwargs) -> str:
+    def _dispatch_single_agent(self, agent_name: str, query_str: str, agent_registry: dict = None, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> str:
+        token_cb = token_callback or kwargs.get("token_callback")
         if agent_registry and agent_name in agent_registry and callable(agent_registry[agent_name]):
             try:
                 callable_fn = agent_registry[agent_name]
                 try:
-                    res = callable_fn(query_str, system_prompt=system_prompt, user_input=user_input, **kwargs)
+                    res = callable_fn(query_str, system_prompt=system_prompt, user_input=user_input, token_callback=token_cb, **kwargs)
                 except TypeError:
                     res = callable_fn(query_str)
                 if isinstance(res, dict) and "response" in res:
@@ -607,7 +608,7 @@ class SLMOrchestrator:
                     task_part = query_str.split("[Current Task]:")[-1].strip().lower()
                     if any(kw in task_part for kw in ["execute", "run", "implement", "do this", "build this", "start"]):
                         code_inst = f"{query_str}\n\nInstruction: Write the complete, robust Python implementation code for Phase 1 / the primary action item with functions, classes, and execution test cases."
-                res = runner.run(instruction=code_inst, max_retries=1, token_callback=token_callback)
+                res = runner.run(instruction=code_inst, max_retries=1, token_callback=token_cb)
                 if isinstance(res, dict):
                     code_snip = res.get("code", "").strip()
                     stdout_out = res.get("stdout", "").strip()
