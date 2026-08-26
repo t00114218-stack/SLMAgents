@@ -1,7 +1,7 @@
 import os
 from huggingface_hub import snapshot_download
 
-# Defined HuggingFace ONNX model catalog for each agent domain (< 6GB, CPU execution)
+# Defined HuggingFace ONNX model catalog for build-time caching (< 1.5GB total, CPU execution)
 AGENT_MODELS = [
     {
         "name": "Qwen 2.5 Coder Text-to-SQL & Core Reasoning ONNX (Primary Engine)",
@@ -14,50 +14,9 @@ AGENT_MODELS = [
         "repo": "onnx-community/all-MiniLM-L6-v2-ONNX",
         "dir": "all-minilm-l6-v2-onnx",
         "allow_patterns": ["*"]
-    },
-    {
-        "name": "Qwen 2.5 Math 1.5B ONNX (Math engine)",
-        "repo": "onnx-community/Qwen2.5-Math-1.5B-Instruct",
-        "dir": "qwen2.5-math-1.5b-onnx",
-        "allow_patterns": ["*.json", "onnx/*"]
-    },
-    {
-        "name": "BGE Reranker Base ONNX (Search Orchestrator engine)",
-        "repo": "onnx-community/bge-reranker-base-ONNX",
-        "dir": "bge-reranker-base-onnx",
-        "allow_patterns": ["*"]
-    },
-    {
-        "name": "Whisper Small ONNX (Voice STT engine)",
-        "repo": "onnx-community/whisper-small",
-        "dir": "whisper-small-onnx",
-        "allow_patterns": ["*"]
-    },
-    {
-        "name": "Qwen2 VL 2B ONNX (Vision Parser engine)",
-        "repo": "onnx-community/Qwen2-VL-2B-Instruct",
-        "dir": "qwen2-vl-2b-onnx",
-        "allow_patterns": ["*.json", "onnx/*"]
-    },
-    {
-        "name": "Llama 3.2 3B ONNX (RAG & Meeting summarization engine)",
-        "repo": "onnx-community/Llama-3.2-3B-Instruct",
-        "dir": "llama-3.2-3b-onnx",
-        "allow_patterns": ["*.json", "onnx/*"]
-    },
-    {
-        "name": "Qwen 2.5 Coder 1.5B ONNX (CLI, Data, DB Migration, Security, Git, Web Agent engine)",
-        "repo": "onnx-community/Qwen2.5-Coder-1.5B-Instruct",
-        "dir": "qwen2.5-coder-1.5b-onnx",
-        "allow_patterns": ["*.json", "onnx/*"]
-    },
-    {
-        "name": "Qwen 2.5 1.5B ONNX (Translation, Document Parser, Email, PDF, PKB engine)",
-        "repo": "onnx-community/Qwen2.5-1.5B-Instruct",
-        "dir": "qwen2.5-1.5b-onnx",
-        "allow_patterns": ["*.json", "onnx/*"]
     }
 ]
+
 
 def main():
     base_dir = os.path.dirname(os.path.abspath(__file__))
