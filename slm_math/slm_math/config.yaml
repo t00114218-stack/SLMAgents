@@ -1,4 +1,4 @@
 models:
-  math_agent:
-    path: "../../models/qwen3.5-0.8b-onnx"
-    repo_id: "onnx-community/Qwen3.5-0.8B-ONNX"
+  math:
+    path: ../../models/qwen2.5-math-1.5b-onnx
+    repo_id: onnx-community/Qwen2.5-Math-1.5B-Instruct

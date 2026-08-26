@@ -1,3 +1,5 @@
 from .db_migrator import SLMDBMigrator
 
-__all__ = ["SLMDBMigrator"]
+SLMDatabaseMigrator = SLMDBMigrator
+
+__all__ = ["SLMDBMigrator", "SLMDatabaseMigrator"]

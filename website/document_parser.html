@@ -87,7 +87,7 @@
             </div>
           </li>
           <li><a href="playground.html">Playground</a></li>
-          <li><a href="index.html#upcoming">Roadmap</a></li>
+          <li><a href="index.html#agents">All 26 Agents</a></li>
           <li><a href="https://huggingface.co/spaces/spcv/slm-agents" class="btn-hf-nav" target="_blank" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: #fef3c7; border: 1px solid #f59e0b; color: #b45309; font-weight: 700; text-decoration: none; font-size: 0.85rem; transition: all 0.2s;">🤗 Hugging Face Space</a></li>
         </ul>
       </nav>
@@ -120,7 +120,7 @@
 
         
         <h2>🚀 Overview &amp; Capabilities</h2>
-        <p>The SLM Document Parser leverages Microsoft's MIT-licensed <strong>Phi-3.5-mini-instruct</strong> and <strong>Florence-2-large</strong> models optimized via ONNX Runtime GenAI to parse multi-formatted documents offline. It supports high-fidelity layout preservation for scanned PDFs and legacied formats (<code>.pdf</code>, <code>.docx</code>, <code>.doc</code>, <code>.pptx</code>, <code>.ppt</code>, <code>.txt</code>) to output structured text and semantic RAG database chunks.</p>
+        <p>The SLM Document Parser leverages high-performance local neural reasoning and visual document parsing engines optimized via ONNX Runtime GenAI to parse multi-formatted documents offline. It supports high-fidelity layout preservation for scanned PDFs and legacied formats (<code>.pdf</code>, <code>.docx</code>, <code>.doc</code>, <code>.pptx</code>, <code>.ppt</code>, <code>.txt</code>) to output structured text and semantic RAG database chunks.</p>
       </section>
 
         <section class="doc-section" id="workflow">
@@ -129,8 +129,8 @@
         <ul>
           <li><strong>LibreOffice Conversion Layer:</strong> Converts complex formats (DOC/PPT/PPTX) into intermediate PDFs in the background using headless <code>soffice</code> conversions.</li>
           <li><strong>Page Image Rendering:</strong> Renders PDF page indices to images sequentially using <code>pypdfium2</code>.</li>
-          <li><strong>Florence-2 OCR &amp; OD:</strong> Scans rendered page layouts, running Object Detection (<code>&lt;OD&gt;</code>) to locate table and figure boxes. Crops table boxes to OCR them individually, and runs detailed caption generation (<code>&lt;DETAILED_CAPTION&gt;</code>) for diagrams.</li>
-          <li><strong>Layout Reconstruction:</strong> Passes text, parsed tables, and diagram captions to Phi-3.5 to synthesize a unified, formatted Markdown page representation.</li>
+          <li><strong>Visual OCR &amp; Object Detection:</strong> Scans rendered page layouts, running Object Detection (<code>&lt;OD&gt;</code>) to locate table and figure boxes. Crops table boxes to OCR them individually, and runs detailed caption generation (<code>&lt;DETAILED_CAPTION&gt;</code>) for diagrams.</li>
+          <li><strong>Layout Reconstruction:</strong> Passes text, parsed tables, and diagram captions to the local neural engine to synthesize a unified, formatted Markdown page representation.</li>
           <li><strong>Semantic Chunker &amp; Linker:</strong> Segments markdown into structured paragraph chunks, extracts heading hierarchies, resolves product entities, and links related sections together.</li>
         </ul>
       </section>
@@ -181,8 +181,8 @@ parser = SLMDocumentParser(n_ctx=4096, n_threads=4)</code></pre>
             <tr><th>Parameter</th><th>Type / Default</th><th>Description</th></tr>
           </thead>
           <tbody>
-            <tr><td>model_path</td><td>str | None</td><td>Local path to Phi-3.5 weight checkpoints. Defaults to "../../models/phi-3.5-mini-instruct-onnx".</td></tr>
-            <tr><td>n_ctx</td><td>int | 4096</td><td>Inference token window size. Phi-3.5 supports up to 128K context tokens.</td></tr>
+            <tr><td>model_path</td><td>str | None</td><td>Local path to model weight checkpoints.</td></tr>
+            <tr><td>n_ctx</td><td>int | 4096</td><td>Inference token window size. Supports deep multi-page context windows.</td></tr>
             <tr><td>n_threads</td><td>int | 4</td><td>Allocated CPU cores for ORT execution.</td></tr>
                         <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
               <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
@@ -241,7 +241,7 @@ parser.export_chunks_to_excel(chunks, "rag_dataset.xlsx", append=False)</code></
       </section>
 
         <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
-          <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
+          <p>© 2026 SLM Agents. Privacy-First Local AI Multi-Agent Architecture.</p>
         </footer>
       </div>
     
@@ -293,6 +293,6 @@ parser.export_chunks_to_excel(chunks, "rag_dataset.xlsx", append=False)</code></
 </main>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=21.0"></script>
 </body>
 </html>

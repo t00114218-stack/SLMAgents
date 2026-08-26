@@ -49,10 +49,31 @@ class SLMSearchOrchestrator:
         os.environ["OMP_NUM_THREADS"] = str(n_threads)
         os.environ["MKL_NUM_THREADS"] = str(n_threads)
             
+        try:
+            main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+            if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                try:
+                    import importlib
+                    main_mod = importlib.import_module("main")
+                except Exception:
+                    main_mod = None
+            if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                self.model, self.tokenizer = main_mod.get_shared_onnx_genai()
+                if self.model and self.tokenizer:
+                    self.model_path = "shared_onnx"
+                    return
+        except Exception:
+            pass
+
         self.model_path = self._resolve_model_path(model_path, cache_dir)
-        print(f"[SLMSearchOrchestrator] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
-        self.model = og.Model(self.model_path)
-        self.tokenizer = og.Tokenizer(self.model)
+        try:
+            print(f"[SLMSearchOrchestrator] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
+            self.model = og.Model(self.model_path)
+            self.tokenizer = og.Tokenizer(self.model)
+        except Exception as e:
+            print(f"[SLMSearchOrchestrator] ONNX load note: {e}")
+            self.model = None
+            self.tokenizer = None
 
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         if model_path:
@@ -81,7 +102,6 @@ class SLMSearchOrchestrator:
                 except Exception:
                     pass
 
-        # Check shared Qwen 3.5 ONNX model path first
         shared_qwen_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "qwen3.5-0.8b-onnx")
         if os.path.exists(shared_qwen_path):
             return shared_qwen_path
@@ -137,8 +157,9 @@ class SLMSearchOrchestrator:
         )
 
         input_tokens = self.tokenizer.encode(full_prompt)
+        max_tokens = int(os.environ.get("SLM_SEARCH_ORCHESTRATOR_MAX_TOKENS", 3000))
         params = og.GeneratorParams(self.model)
-        params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.7)
+        params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.7)
         
         generator = og.Generator(self.model, params)
         generator.append_tokens(input_tokens)
@@ -385,8 +406,9 @@ class SLMSearchOrchestrator:
                 f"<|im_start|>assistant\n"
             )
             input_tokens = self.tokenizer.encode(full_prompt)
+            max_tokens = int(os.environ.get("SLM_SEARCH_ORCHESTRATOR_MAX_TOKENS", 3000))
             params = og.GeneratorParams(self.model)
-            params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.2, repetition_penalty=1.22)
+            params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.2, repetition_penalty=1.22)
             generator = og.Generator(self.model, params)
             generator.append_tokens(input_tokens)
             answer_tokens = []
@@ -438,8 +460,9 @@ class SLMSearchOrchestrator:
         )
         
         input_tokens = self.tokenizer.encode(full_prompt)
+        max_tokens = int(os.environ.get("SLM_SEARCH_ORCHESTRATOR_MAX_TOKENS", 3000))
         params = og.GeneratorParams(self.model)
-        params.set_search_options(max_length=len(input_tokens) + 768, temperature=0.2, repetition_penalty=1.22)
+        params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.2, repetition_penalty=1.22)
         
         generator = og.Generator(self.model, params)
         generator.append_tokens(input_tokens)

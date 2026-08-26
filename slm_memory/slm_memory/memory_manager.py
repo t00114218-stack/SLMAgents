@@ -90,10 +90,18 @@ class SLMMemoryManager:
             "last_agent TEXT, "
             "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)"
         )
-        try:
-            cursor.execute("ALTER TABLE session_metadata ADD COLUMN active_doc_data TEXT")
-        except Exception:
-            pass
+        for col, col_type in [
+            ("active_topic", "TEXT"),
+            ("active_doc_name", "TEXT"),
+            ("active_doc_data", "TEXT"),
+            ("vector_db_path", "TEXT"),
+            ("last_agent", "TEXT"),
+            ("updated_at", "DATETIME DEFAULT CURRENT_TIMESTAMP")
+        ]:
+            try:
+                cursor.execute(f"ALTER TABLE session_metadata ADD COLUMN {col} {col_type}")
+            except Exception:
+                pass
         conn.commit()
         conn.close()
 
@@ -103,16 +111,12 @@ class SLMMemoryManager:
             session_id = "default_session"
         if session_id not in self._session_store:
             session = SessionState(session_id)
-            # Restore active document from SQLite database if available
+            # Restore active document for this specific session from SQLite database if available
             try:
                 conn = sqlite3.connect(self.db_path)
                 cursor = conn.cursor()
                 cursor.execute("SELECT active_doc_data, vector_db_path, last_agent FROM session_metadata WHERE session_id = ?", (session_id,))
                 row = cursor.fetchone()
-                if not row and session_id != "default_session":
-                    # Check fallback to most recent session
-                    cursor.execute("SELECT active_doc_data, vector_db_path, last_agent FROM session_metadata ORDER BY updated_at DESC LIMIT 1")
-                    row = cursor.fetchone()
                 conn.close()
                 if row:
                     active_doc_data, v_path, l_agent = row
@@ -128,6 +132,48 @@ class SLMMemoryManager:
                 pass
             self._session_store[session_id] = session
         return self._session_store[session_id]
+
+    def clear_session(self, session_id: str) -> bool:
+        """Completely clears and resets all memory, documents, and context for a specific session."""
+        if not session_id:
+            session_id = "default_session"
+        if session_id in self._session_store:
+            session = self._session_store[session_id]
+            if session.vector_db_path and os.path.exists(session.vector_db_path):
+                try:
+                    os.remove(session.vector_db_path)
+                except Exception:
+                    pass
+            del self._session_store[session_id]
+        
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM session_metadata WHERE session_id = ?", (session_id,))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception:
+            return False
+
+    def clear_all(self) -> bool:
+        """Clears all session memories, documents, and active contexts globally."""
+        for session in self._session_store.values():
+            if session.vector_db_path and os.path.exists(session.vector_db_path):
+                try:
+                    os.remove(session.vector_db_path)
+                except Exception:
+                    pass
+        self._session_store.clear()
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM session_metadata")
+            conn.commit()
+            conn.close()
+            return True
+        except Exception:
+            return False
 
     def set_vector_db_path(self, session_id: str, vector_db_path: str):
         """Sets and persists the vector database file path for a session."""
@@ -249,8 +295,58 @@ class SLMMemoryManager:
         session = self.get_or_create_session(session_id or "default_session")
         return session.active_document
 
+    def extract_memory_facts_with_phi(self, user_text: str) -> list[str]:
+        """Uses the Phi 4B ONNX engine to extract structured long-term facts/preferences from user input."""
+        if not user_text or len(user_text.split()) < 3:
+            return []
+        
+        # Pre-filter for explicit fact/preference indicators
+        memory_keywords = ["remember", "my name", "i like", "i prefer", "my email", "my database", "my company", "always use", "never use", "favourite", "favorite", "our stack", "my timezone"]
+        if not any(kw in user_text.lower() for kw in memory_keywords):
+            return []
+
+        try:
+            import sys
+            main_mod = sys.modules.get("main")
+            if main_mod and hasattr(main_mod, "get_shared_orchestrator"):
+                orchestrator = main_mod.get_shared_orchestrator()
+                if orchestrator and hasattr(orchestrator, "model") and orchestrator.model:
+                    prompt = (
+                        "<|im_start|>system\n"
+                        "Extract key personal facts, preferences, or technical specifications from the user text. "
+                        "Return ONLY bullet points starting with '- '. If no long-term fact is present, output 'None'.<|im_end|>\n"
+                        f"<|im_start|>user\n{user_text}<|im_end|>\n"
+                        "<|im_start|>assistant\n"
+                    )
+                    import onnxruntime_genai as og
+                    input_tokens = orchestrator.tokenizer.encode(prompt)
+                    params = og.GeneratorParams(orchestrator.model)
+                    params.set_search_options(max_length=len(input_tokens) + 48, temperature=0.1)
+                    generator = og.Generator(orchestrator.model, params)
+                    generator.append_tokens(input_tokens)
+                    output_tokens = []
+                    while not generator.is_done():
+                        generator.generate_next_token()
+                        new_tokens = generator.get_next_tokens()
+                        if len(new_tokens) > 0:
+                            tok_id = int(new_tokens[0])
+                            if tok_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
+                                break
+                            output_tokens.append(tok_id)
+                    raw_out = orchestrator.tokenizer.decode(output_tokens).strip()
+                    facts = [line.lstrip("- ").strip() for line in raw_out.splitlines() if line.strip().startswith("- ") and len(line.strip()) > 3]
+                    for f in facts:
+                        self.store_fact(f)
+                    return facts
+        except Exception as e:
+            print(f"[SLMMemoryManager] Phi fact extraction note: {e}")
+
+        # Fallback fact storage
+        self.store_fact(user_text.strip())
+        return [user_text.strip()]
+
     def record_turn(self, session_id: str, user_text: str, assistant_text: str, agent: str = None):
-        """Records a conversational turn in session working memory."""
+        """Records a conversational turn in session working memory and extracts long-term facts via Phi 4B."""
         session = self.get_or_create_session(session_id)
         turn = {
             "user": user_text,
@@ -263,6 +359,9 @@ class SLMMemoryManager:
             session.turns = session.turns[-15:]
         if agent:
             session.last_agent = agent
+
+        # Extract long-term facts via Phi 4B engine
+        self.extract_memory_facts_with_phi(user_text)
 
     def get_session_history(self, session_id: str) -> list[dict]:
         """Retrieves recent conversation turns for context resolution."""
@@ -279,16 +378,12 @@ class SLMMemoryManager:
         v_path = session.vector_db_path
         q_lower = (query or "").lower().strip()
 
-        # Check intent triggers
+        # Check explicit intent overrides (only override if explicitly requesting code execution or SQL)
         non_doc_intents = ["run python", "write python", "execute code", "generate sql", "write sql", "translate to", "send email", "solve equation"]
         is_explicit_other = any(intent in q_lower for intent in non_doc_intents)
         
-        # Follow-up indicators for document Q&A
-        doc_keywords = ["document", "pdf", "file", "bonus", "salary", "clause", "reverify", "accurate", "verify", "agreement", "contract", "section", "table", "amount", "figure", "inr"]
-        has_doc_kw = any(kw in q_lower for kw in doc_keywords)
-        is_short_followup = len(q_lower.split()) <= 12 and not is_explicit_other
-
-        is_doc_followup = bool(active_doc) and (is_short_followup or has_doc_kw or not is_explicit_other)
+        # Any query while a document context is active routes to SLMRag
+        is_doc_followup = bool(active_doc) and not is_explicit_other
 
         return {
             "session_id": session.session_id,
@@ -298,7 +393,7 @@ class SLMMemoryManager:
             "documents": session.documents,
             "assets": session.assets,
             "is_doc_followup": is_doc_followup,
-            "suggested_agent": "SLMRag" if (is_doc_followup and active_doc) else None,
+            "suggested_agent": "SLMRag" if is_doc_followup else None,
             "state_graph": session.state_graph,
             "recent_turns": session.turns[-5:] if session.turns else []
         }

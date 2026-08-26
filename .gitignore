@@ -25,3 +25,5 @@ build/
 *.zip
 *.log
 *.code-workspace
+scratch_*
+multi_sheet_statement.xlsx

@@ -45,10 +45,31 @@ class SLMCLIAgent:
         os.environ["OMP_NUM_THREADS"] = str(n_threads)
         os.environ["MKL_NUM_THREADS"] = str(n_threads)
             
+        try:
+            main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+            if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                try:
+                    import importlib
+                    main_mod = importlib.import_module("main")
+                except Exception:
+                    main_mod = None
+            if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                self.model, self.tokenizer = main_mod.get_shared_onnx_genai()
+                if self.model and self.tokenizer:
+                    self.model_path = "shared_onnx"
+                    return
+        except Exception:
+            pass
+
         self.model_path = self._resolve_model_path(model_path, cache_dir)
-        print(f"[SLMCLIAgent] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
-        self.model = og.Model(self.model_path)
-        self.tokenizer = og.Tokenizer(self.model)
+        try:
+            print(f"[SLMCLIAgent] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
+            self.model = og.Model(self.model_path)
+            self.tokenizer = og.Tokenizer(self.model)
+        except Exception as e:
+            print(f"[SLMCLIAgent] ONNX load note: {e}")
+            self.model = None
+            self.tokenizer = None
         
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         if model_path and os.path.exists(model_path):
@@ -57,6 +78,10 @@ class SLMCLIAgent:
         shared_qwen = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "qwen3.5-0.8b-onnx")
         if os.path.exists(shared_qwen):
             return shared_qwen
+
+        shared_phi = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4")
+        if os.path.exists(shared_phi):
+            return shared_phi
 
         config, config_file_path = load_config()
         model_config = config.get("models", {}).get("cli_agent", {})
@@ -70,7 +95,7 @@ class SLMCLIAgent:
             if "genai_config.json" in files:
                 return root
                 
-        return shared_qwen if os.path.exists(shared_qwen) else config_path
+        return shared_phi if os.path.exists(shared_phi) else config_path
 
     def _extract_command(self, text: str) -> str:
         match = re.search(r"```bash\s*(.*?)\s*```", text, re.DOTALL)
@@ -91,11 +116,11 @@ class SLMCLIAgent:
             text = text.replace("<think>", "").strip()
         return text.strip()
 
-    def generate_command(self, query: str, stream: bool = False):
+    def generate_command(self, query: str, stream: bool = False, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs):
         """
         Translates a natural language request to a command sequence.
         """
-        system_prompt = (
+        system_prompt = system_prompt or (
             "You are a local shell automation CLI helper.\n"
             "Analyze the user request and output the precise command wrapped inside a single ```bash ... ``` code block. "
             "Explain briefly what the command does, prioritizing non-destructive execution flag options. Do not output <think> tags."
@@ -110,8 +135,9 @@ class SLMCLIAgent:
         )
 
         input_tokens = self.tokenizer.encode(full_prompt)
+        max_tokens = int(os.environ.get("SLM_CLI_AGENT_MAX_TOKENS", 3000))
         params = og.GeneratorParams(self.model)
-        params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.7)
+        params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.7)
 
         if stream:
             def _stream_generator():
@@ -146,7 +172,13 @@ class SLMCLIAgent:
                 token_id = int(new_tokens[0])
                 if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                     break
-                response_text += self.tokenizer.decode(new_tokens)
+                tok_str = self.tokenizer.decode(new_tokens)
+                response_text += tok_str
+                if token_callback:
+                    try:
+                        token_callback(tok_str)
+                    except Exception:
+                        pass
 
         cleaned_response = self._clean_text(response_text)
         command = self._extract_command(cleaned_response)
@@ -177,7 +209,7 @@ class SLMCLIAgent:
         except Exception as e:
             return 0, "", str(e)
 
-    def run(self, query: str, system_prompt: str = None, user_input: str = None) -> dict:
+    def run(self, query: str, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> dict:
         """
         Translates a natural language query into a command, executes it safely if appropriate,
         and returns a structured dict of the results.

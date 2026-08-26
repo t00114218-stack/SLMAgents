@@ -27,7 +27,7 @@ This monorepo is organized into the following main projects:
 
 | Folder | Description | Installation |
 | :--- | :--- | :--- |
-| [**`slm_orchestrator`**](./slm_orchestrator) | Semantic router powered by 1.5B ONNX models with dynamic few-shot mapping and autonomous routing. | `pip install slm-orchestrator` |
+| [**`slm_orchestrator`**](./slm_orchestrator) | Semantic router powered by local ONNX neural models with dynamic few-shot mapping and autonomous routing. | `pip install slm-orchestrator` |
 | [**`slm_rag`**](./slm_rag) | High-efficiency local CPU Retrieval-Augmented Generation library via ONNX Runtime with autonomous tool use. | `pip install slm-rag` |
 | [**`slm_summarizer`**](./slm_summarizer) | High-efficiency local CPU text summarization agent via ONNX Runtime with an evaluator-corrector loop. | `pip install slm-summarizer` |
 | [**`slm_text_to_sql`**](./slm_text_to_sql) | CPU-optimized Text-to-SQL agent via ONNX Runtime, with built-in QLoRA TPU/GPU fine-tuning. | `pip install slm-text-to-sql` |
@@ -48,11 +48,11 @@ This monorepo is organized into the following main projects:
 | [**`slm_task_planner`**](./slm_task_planner) | Autonomous goal decomposition engine mapping dependency DAGs to specialized sub-agents. | `pip install -e ./slm_task_planner` |
 | [**`slm_pdf`**](./slm_pdf) | Document conversation RAG interface built on top of the document parser modules. | `pip install -e ./slm_pdf` |
 | [**`slm_pkb`**](./slm_pkb) | Markdown indexing agent generating semantic link relationships in personal knowledge bases. | `pip install -e ./slm_pkb` |
-| [**`slm_data`**](./slm_data) | Offline CSV dataset analyst parsing profiles and executing pandas evaluation script tasks. | `pip install -e ./slm_data` |
-| [**`slm_translation`**](./slm_translation) | Multilingual dynamic translation engine supporting local NLLB-200 and IndicTrans2 models. | `pip install -e ./slm_translation` |
-| [**`slm_math`**](./slm_math) | Natural language arithmetic parser solving equations symbolically with SymPy. | `pip install -e ./slm_math` |
-| [**`slm_security`**](./slm_security) | Security guardrail audit redacting PII data and blocking malicious command injections. | `pip install -e ./slm_security` |
-| [**`slm_embeddings`**](./slm_embeddings) | Local vector embeddings server calculating cosine semantic similarity of text. | `pip install -e ./slm_embeddings` |
+| [**`slm_data`**](./slm_data) | Multi-sheet Excel & CSV statistical profiling engine detecting trends and generating direct insights. | `pip install -e ./slm_data` |
+| [**`slm_translation`**](./slm_translation) | Multilingual dynamic translation engine supporting Indian and global language pairs. | `pip install -e ./slm_translation` |
+| [**`slm_math`**](./slm_math) | Natural language arithmetic parser solving equations step-by-step with symbolic algebra. | `pip install -e ./slm_math` |
+| [**`slm_security`**](./slm_security) | Application security auditor scanning code, SQL queries, and endpoints for CWE vulnerabilities and PII leaks. | `pip install -e ./slm_security` |
+| [**`slm_embeddings`**](./slm_embeddings) | Local dense vector embeddings server calculating cosine semantic similarity of text. | `pip install -e ./slm_embeddings` |
 
 
 ---
@@ -150,14 +150,14 @@ for token in stream:
 
 ---
 
-## Model Details & Hardware Requirements
+## Execution & Hardware Architecture
 
-All three libraries in this monorepo are optimized for local CPU execution via **ONNX Runtime GenAI** and share a single model cache to minimize resource overhead:
+All libraries in this monorepo are optimized for local CPU execution via **ONNX Runtime GenAI** and share efficient memory arenas to minimize resource overhead:
 
-*   **Model**: `tonythethompson/Qwen2.5-1.5B-Instruct-ONNX` (INT4 quantized).
-*   **License**: **Apache 2.0** (100% Permissive). Safe for commercial distribution without restrictive LLM community agreements.
-*   **Memory Footprint (RAM)**: **~1.5 GB to 2.0 GB** during active inference.
-*   **Disk Storage**: **~1.1 GB** total. The model directory is cached under `~/.cache/slm_summarizer/qwen2.5-1.5b-onnx` and shared across orchestrator, RAG, and summarizer libraries to prevent redundant downloads.
+*   **Architecture**: Quantized local SLM neural engines.
+*   **Privacy**: 100% offline edge execution with zero cloud calls or data telemetry.
+*   **Memory Footprint (RAM)**: **~1.5 GB to 2.5 GB** during active inference.
+*   **Disk Storage**: Shared model weight cache across libraries to prevent redundant downloads.
 
 ---
 
@@ -182,6 +182,6 @@ The community landing page is built using HTML5 and Vanilla CSS. To run the deve
 
 ## Contributing
 
-We welcome contributions! Please feel free to open Issues or pull requests to improve the libraries or expand the roadmap for upcoming agents (such as SQL Agent, Code Interpreter, and Web Crawler).
+We welcome contributions! Please feel free to open Issues or pull requests to improve any of the 26 live agent frameworks.
 
 Released under the **MIT License**.

@@ -108,7 +108,7 @@
         <ul class="sidebar-list" id="sidebar-active-list"></ul>
       </div>
       <div class="sidebar-group">
-        <div class="sidebar-group-title">Upcoming Ecosystem</div>
+        <div class="sidebar-group-title">Live Agent Catalog</div>
         <ul class="sidebar-list" id="sidebar-upcoming-list"></ul>
       </div>
     </aside>
@@ -188,9 +188,9 @@
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
             </svg>
-            Apache 2.0 Permissive
+            Permissive & Open Source
           </h3>
-          <p>Both our codebases and Qwen 2.5 1.5B models are under the Apache 2.0 license. Safe and free for commercial enterprise deployment.</p>
+          <p>Built for privacy-first enterprise workflows. 100% offline edge inference with zero cloud data transmission and complete local data privacy.</p>
         </div>
       </div>
 
@@ -408,16 +408,16 @@
 
 
 
-  <!-- Coming Soon Agents Section -->
-  <section class="upcoming-section" id="upcoming">
+  <!-- Complete Live Agent Catalog Section -->
+  <section class="upcoming-section" id="agents">
     <div class="section-header">
-        <h2 class="section-title">Envisioned Agent Ecosystem &amp; Roadmap</h2>
-        <p class="section-subtitle">We are designing and building 20+ CPU-optimized, secure, and fully offline local SLM agents.</p>
+        <h2 class="section-title">Complete Multi-Agent Ecosystem (All 26 Live Frameworks)</h2>
+        <p class="section-subtitle">Explore all 26 high-performance, secure, and 100% offline local SLM agents running with zero cloud latency.</p>
       </div>
 
       <!-- Interactive Search & Filtering -->
       <div class="agent-search-container">
-        <input type="text" id="agent-search" class="agent-search-input" onkeyup="applyFilters()" placeholder="Search 20+ upcoming agents...">
+        <input type="text" id="agent-search" class="agent-search-input" onkeyup="applyFilters()" placeholder="Search all 26 live agents...">
       </div>
 
       <div class="category-tabs">
@@ -435,7 +435,7 @@
             <span class="agent-cat-tag badge-web" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: #22d3ee;">Web &amp; Scraping</span>
             <h3>SLM Web Agent</h3>
           </div>
-          <p>Automate multi-step browser tasks offline. Plans actions, selects locators, and navigates forms using Playwright and Phi-3.5 on CPU.</p>
+          <p>Automate multi-step browser tasks offline. Plans actions, selects locators, and navigates forms using Playwright on local CPU.</p>
         </div>
 
         <div class="upcoming-card" data-category="web" onclick="location.href='web_scraper.html'" style="cursor: pointer;">
@@ -541,7 +541,7 @@
             <span class="agent-cat-tag badge-prod">Productivity</span>
             <h3>SLM Voice Agent</h3>
           </div>
-          <p>Fast offline conversational companion combining Whisper speech-to-text, 1.5B chat, and lightweight text-to-speech pipelines on CPU.</p>
+          <p>Fast offline conversational companion combining local speech-to-text, edge neural reasoning, and lightweight CPU audio synthesis.</p>
         </div>
 
         <div class="upcoming-card" data-category="productivity" onclick="location.href='memory_manager.html'" style="cursor: pointer;">
@@ -582,7 +582,7 @@
             <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
             <h3>SLM JSON Cleaner</h3>
           </div>
-          <p>Extracts, repairs, and validates malformed or truncated JSON strings produced by small language model generations.</p>
+          <p>Real-time RFC 8259 syntax repair engine that normalizes corrupted webhooks, converts single quotes, strips comments, and standardizes snake_case keys.</p>
         </div>
 
         <div class="upcoming-card" data-category="data" onclick="location.href='document_parser.html'" style="cursor: pointer;">
@@ -590,7 +590,7 @@
             <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
             <h3>SLM Document Parser</h3>
           </div>
-          <p>Chunking and parsing engine that converts raw PDF, DOCX, and TXT files into clean vector embeddings and text chunks.</p>
+          <p>Universal multi-format parser supporting PDF, DOCX, XLSX, and TXT files with layout preservation, semantic chunking, and token metadata.</p>
         </div>
 
         <div class="upcoming-card" data-category="data" onclick="location.href='vision_parser.html'" style="cursor: pointer;">
@@ -598,7 +598,7 @@
             <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
             <h3>SLM Vision Parser</h3>
           </div>
-          <p>Lightweight Florence-2 vision model integration for image captioning, OCR text extraction, and bounding box detection.</p>
+          <p>Local multimodal visual reasoning engine for chart transcription, diagram analysis, and image table extraction.</p>
         </div>
 
         <div class="upcoming-card" data-category="data" onclick="location.href='data_analyst.html'" style="cursor: pointer;">
@@ -606,7 +606,7 @@
             <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
             <h3>SLM Data Analyst</h3>
           </div>
-          <p>Loads local CSV, Parquet, or Excel files. Answers statistical questions, performs calculations, and auto-generates data visualization code.</p>
+          <p>Domain-agnostic multi-sheet Excel & CSV statistical profiling engine that detects trends, aggregates data, and delivers direct analytical insights.</p>
         </div>
 
         <div class="upcoming-card" data-category="data" onclick="location.href='translation_hub.html'" style="cursor: pointer;">
@@ -614,7 +614,7 @@
             <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
             <h3>SLM Translation Hub</h3>
           </div>
-          <p>Quantized multilingual translation library designed for offline local document conversion across 20+ language profiles.</p>
+          <p>Local neural multilingual translation hub supporting Indian & global languages while preserving Markdown formatting, error codes, and JSON keys.</p>
         </div>
 
         <div class="upcoming-card" data-category="data" onclick="location.href='math_agent.html'" style="cursor: pointer;">
@@ -630,7 +630,7 @@
             <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
             <h3>SLM Security Audit</h3>
           </div>
-          <p>Guardrail system that scans inputs and outputs for PII leaks, system command injections, and safety violations before model execution.</p>
+          <p>Comprehensive application security auditor that scans code, SQL queries, and endpoints for CWE vulnerabilities, injection vectors, and PII leaks.</p>
         </div>
 
         <div class="upcoming-card" data-category="data" onclick="location.href='embeddings_server.html'" style="cursor: pointer;">
@@ -638,7 +638,7 @@
             <span class="agent-cat-tag badge-data">Data &amp; Utilities</span>
             <h3>SLM Embeddings Server</h3>
           </div>
-          <p>Starts a local CPU-optimized embedding server to compute dense document and query vectors on standard hardware.</p>
+          <p>Local CPU-optimized dense vector embedding engine providing normalized vector representations and live cosine similarity without document uploads.</p>
         </div>
       </div>
   </section>
@@ -689,7 +689,7 @@
         <div class="footer-links">
           <h4>Resources</h4>
           <ul>
-            <li><a href="#upcoming">Upcoming Projects</a></li>
+            <li><a href="#agents">All 26 Live Agents</a></li>
             <li><a href="https://github.com/t00114218-stack" target="_blank">Developer Profile</a></li>
           </ul>
         </div>
@@ -722,6 +722,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=16.0"></script>
+  <script src="app.js?v=37.0"></script>
 </body>
 </html>

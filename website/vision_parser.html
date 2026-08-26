@@ -87,7 +87,7 @@
             </div>
           </li>
           <li><a href="playground.html">Playground</a></li>
-          <li><a href="index.html#upcoming">Roadmap</a></li>
+          <li><a href="index.html#agents">All 26 Agents</a></li>
           <li><a href="https://huggingface.co/spaces/spcv/slm-agents" class="btn-hf-nav" target="_blank" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: #fef3c7; border: 1px solid #f59e0b; color: #b45309; font-weight: 700; text-decoration: none; font-size: 0.85rem; transition: all 0.2s;">🤗 Hugging Face Space</a></li>
         </ul>
       </nav>
@@ -108,12 +108,12 @@
           <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM Vision Parser</span></div>
           <div class="badge-pill">👁️ Visual Layout Parsing</div>
           <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM Vision Parser</h1>
-          <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Extract text nodes, bounding boxes, chart labels, and table grids locally on CPU using Microsoft's MIT-licensed Florence-2-large model.</p>
+          <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Extract text nodes, bounding boxes, chart labels, and table grids locally on CPU using local CPU-optimized visual neural models.</p>
         </section>
 
         <section class="doc-section">
         <h2>🚀 Overview &amp; Capabilities</h2>
-        <p>The SLM Vision Parser uses the sequence-to-sequence <strong>Florence-2-large</strong> model to translate image structures directly. It is designed to run offline on CPU under 1.5 GB memory footprint, making it ideal for visual PDF OCR, diagram relationship mappings, and whiteboard extractions.</p>
+        <p>The SLM Vision Parser uses local multimodal neural models to translate image structures directly. It is designed to run offline on CPU under 1.5 GB memory footprint, making it ideal for visual PDF OCR, diagram relationship mappings, and whiteboard extractions.</p>
       </section>
 
         <section class="doc-section" id="install">
@@ -135,13 +135,13 @@ pip install slm-vision-parser</code></pre>
           <li><strong>OCR Node Extraction:</strong> Translates raster text strings from diagrams.</li>
           <li><strong>Region Mapping:</strong> Generates bounding box parameters mapping visual coordinates for web rendering.</li>
           <li><strong>Semantic Image Captioning:</strong> Extracts visual flow structures (e.g., arrows, shapes, labels) into a raw description.</li>
-          <li><strong>Agentic LLM Refinement:</strong> Pipe Florence-2's raw description or OCR nodes directly into the local Phi-3.5 ONNX model. By guiding the text model with a template prompt, you can synthesize exact custom descriptions (e.g., describing step hierarchies and the exact count of connecting arrows).</li>
+          <li><strong>Agentic LLM Refinement:</strong> Pipe raw visual description nodes directly into the local neural reasoning model. By guiding the text model with a template prompt, you can synthesize exact custom descriptions (e.g., describing step hierarchies and the exact count of connecting arrows).</li>
         </ul>
       </section>
 
         <section class="doc-section">
         <h2>⚡ CPU Performance Tuning Guidelines</h2>
-        <p>Florence-2 utilizes complex visual transformers. To run model prediction tasks efficiently on CPU under 2.0 GB memory:</p>
+        <p>Local vision models utilize visual transformers. To run model prediction tasks efficiently on CPU under 2.0 GB memory:</p>
         <ul>
           <li><strong>Sequential execution:</strong> Process page scans sequentially rather than in batches to avoid CPU memory thrashing.</li>
           <li><strong>Garbage Collection:</strong> Clear cache blocks after processing high-resolution images:
@@ -157,7 +157,7 @@ gc.collect()</code></pre>
           <strong>Tip for Scanned Diagrams:</strong> Contrast is key for visual OCR models. Preprocess low-contrast diagram images by resizing them to a standard width of <code>1024px</code> and scaling contrast values using Pillow before parsing.
         </div>
         <div class="warn-box">
-          <strong>Task Tag Wrapper:</strong> Always encapsulate Florence-2 model instructions in explicit brackets (e.g., <code>"&lt;OCR&gt;"</code> or <code>"&lt;DETAILED_CAPTION&gt;"</code>) to trigger correct task headers.
+          <strong>Task Tag Wrapper:</strong> Always encapsulate vision model instructions in explicit brackets (e.g., <code>"&lt;OCR&gt;"</code> or <code>"&lt;DETAILED_CAPTION&gt;"</code>) to trigger correct task headers.
         </div>
       </section>
 
@@ -173,7 +173,7 @@ parser = SLMVisionParser()</code></pre>
             <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
           </thead>
           <tbody>
-            <tr><td>model_path</td><td>str</td><td>Local directory containing pre-downloaded Florence-2 checkpoints. Defaults to "../../models/florence-2-large".</td></tr>
+            <tr><td>model_path</td><td>str</td><td>Local directory containing vision model checkpoints.</td></tr>
                         <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
               <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
 </tbody>
@@ -201,7 +201,7 @@ print(result)</code></pre>
       </section>
 
         <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
-          <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
+          <p>© 2026 SLM Agents. Privacy-First Local AI Multi-Agent Architecture.</p>
         </footer>
       </div>
     
@@ -253,6 +253,6 @@ print(result)</code></pre>
 </main>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=21.0"></script>
 </body>
 </html>

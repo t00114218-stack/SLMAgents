@@ -31,10 +31,33 @@ class SLMWebAgent:
         os.environ["OMP_NUM_THREADS"] = str(n_threads)
         os.environ["MKL_NUM_THREADS"] = str(n_threads)
             
+        try:
+            main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+            if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                try:
+                    import importlib
+                    main_mod = importlib.import_module("main")
+                except Exception:
+                    main_mod = None
+            if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                self.model, self.tokenizer = main_mod.get_shared_onnx_genai()
+                if self.model and self.tokenizer:
+                    self.model_path = "shared_onnx"
+                    self.browser_context = None
+                    self.page = None
+                    return
+        except Exception:
+            pass
+
         self.model_path = self._resolve_model_path(model_path, cache_dir)
-        print(f"[SLMWebAgent] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
-        self.model = og.Model(self.model_path)
-        self.tokenizer = og.Tokenizer(self.model)
+        try:
+            print(f"[SLMWebAgent] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
+            self.model = og.Model(self.model_path)
+            self.tokenizer = og.Tokenizer(self.model)
+        except Exception as e:
+            print(f"[SLMWebAgent] ONNX load note: {e}")
+            self.model = None
+            self.tokenizer = None
         self.browser_context = None
         self.page = None
 
@@ -184,8 +207,9 @@ class SLMWebAgent:
             )
 
             input_tokens = self.tokenizer.encode(full_prompt)
+            max_tokens = int(os.environ.get("SLM_WEB_AGENT_MAX_TOKENS", 3000))
             params = og.GeneratorParams(self.model)
-            params.set_search_options(max_length=len(input_tokens) + 512, temperature=0.7)
+            params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.7)
             
             generator = og.Generator(self.model, params)
             generator.append_tokens(input_tokens)

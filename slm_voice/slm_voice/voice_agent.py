@@ -64,7 +64,7 @@ class SLMVoiceAgent:
     and lightweight text-to-speech pipelines on CPU.
     Supports user-configurable tool function integration and dynamic system prompts.
     """
-    def __init__(self, model_path=None, tools=None, system_prompt=None, cache_dir=None, n_threads=4, barge_in: bool = True, barge_in_sensitivity: float = 0.5, temperature: float = 0.7, top_p: float = 0.9, max_tokens: int = 256):
+    def __init__(self, model_path=None, tools=None, system_prompt=None, cache_dir=None, n_threads=4, barge_in: bool = True, barge_in_sensitivity: float = 0.5, temperature: float = 0.7, top_p: float = 0.9, max_tokens: int = 3000):
         self.config, _ = load_config()
         self.model_path = model_path
         self.cache_dir = cache_dir or os.environ.get("SLM_VOICE_AGENT_CACHE_DIR", "~/.cache/slm-voice/")
@@ -76,22 +76,29 @@ class SLMVoiceAgent:
         self.top_p = top_p
         self.max_tokens = max_tokens
         self.system_prompt = system_prompt or (
-            "You are a local CPU Voice Assistant. Select the most relevant agent tool from the following list:\n"
-            f"{list(self.tools.keys())}\n"
-            "If none match, reply with 'direct'."
+            "You are an intelligent, natural offline Voice Assistant.\n"
+            "Provide a concise, direct, spoken-friendly answer to the user's inquiry."
         )
+        self.model = None
+        self.tokenizer = None
+        try:
+            main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+            if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                try:
+                    import importlib
+                    main_mod = importlib.import_module("main")
+                except Exception:
+                    main_mod = None
+            if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                self.model, self.tokenizer = main_mod.get_shared_onnx_genai()
+        except Exception:
+            pass
 
     def register_tool(self, name: str, callable_fn) -> None:
         """
         Registers a new agent or tool function that can be triggered by the voice agent.
         """
         self.tools[name] = callable_fn
-        # Update default system prompt to include new tool
-        self.system_prompt = (
-            "You are a local CPU Voice Assistant. Select the most relevant agent tool from the following list:\n"
-            f"{list(self.tools.keys())}\n"
-            "If none match, reply with 'direct'."
-        )
 
     def _get_lang_code(self, language: str) -> str:
         lang_lower = language.lower().strip()

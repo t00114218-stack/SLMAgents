@@ -1,4 +1,4 @@
 models:
   translation:
-    indic_repo: "ai4bharat/indictrans2-en-indic-1B"
-    nllb_repo: "facebook/nllb-200-distilled-600M"
+    path: ../../models/qwen2.5-1.5b-onnx
+    repo_id: onnx-community/Qwen2.5-1.5B-Instruct

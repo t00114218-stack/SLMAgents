@@ -1,4 +1,4 @@
-security:
-  redact_pii: true
-  block_injections: true
-  max_latency_ms: 10
+models:
+  security:
+    path: ../../models/qwen2.5-coder-1.5b-onnx
+    repo_id: onnx-community/Qwen2.5-Coder-1.5B-Instruct

@@ -1,8 +1,4 @@
 models:
   web_scraper:
-    path: "../../models/phi-3.5-mini-instruct-onnx"
-    repo_id: "microsoft/Phi-3.5-mini-instruct-onnx"
-
-inference:
-  n_threads: 4
-  n_ctx: 4096
+    path: ../../models/qwen3.5-0.8b-onnx
+    repo_id: onnx-community/Qwen3.5-0.8B-ONNX

@@ -1,4 +1,4 @@
 models:
   embeddings:
-    path: "../../models/mxbai-embed-large-onnx"
-    repo_id: "mixbread-ai/mxbai-embed-large"
+    path: ../../models/all-minilm-l6-v2-onnx
+    repo_id: onnx-community/all-MiniLM-L6-v2-ONNX

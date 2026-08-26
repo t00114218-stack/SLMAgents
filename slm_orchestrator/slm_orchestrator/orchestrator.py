@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import re
+import threading
 
 # Setup sys.path to resolve all SLM agent packages locally
 _curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -171,6 +172,10 @@ class OrchestratorEvaluator:
 
         return cleaned_str
 
+_shared_orchestrator_model = None
+_shared_orchestrator_tokenizer = None
+_shared_orchestrator_lock = threading.Lock()
+
 class SLMOrchestrator:
     """
     A configurable semantic routing orchestrator powered by a local Small Language Model (SLM)
@@ -192,8 +197,8 @@ class SLMOrchestrator:
 
         # Resolve parameters: constructor args > env vars > config.yaml > defaults
         config, _ = load_config()
-        cfg_threads = config.get("inference", {}).get("n_threads", 8)
-        n_threads = n_threads or int(os.environ.get("SLM_ORCHESTRATOR_N_THREADS", cfg_threads))
+        cfg_threads = config.get("inference", {}).get("n_threads", 2)
+        n_threads = n_threads or int(os.environ.get("SLM_ORCHESTRATOR_N_THREADS", 2))
         n_ctx     = n_ctx     or int(os.environ.get("SLM_ORCHESTRATOR_N_CTX", 2048))
         cache_dir = cache_dir or os.environ.get("SLM_ORCHESTRATOR_CACHE_DIR")
 
@@ -203,12 +208,19 @@ class SLMOrchestrator:
             
         self.n_ctx = n_ctx
         self.embeddings_server = SLMEmbeddingsServer() if SLMEmbeddingsServer is not None else None
+        global _shared_orchestrator_model, _shared_orchestrator_tokenizer
         try:
             self.model_path = self._resolve_model_path(model_path, cache_dir)
-            self.model = og.Model(self.model_path) if og is not None else None
-            self.tokenizer = og.Tokenizer(self.model) if og is not None and self.model is not None else None
+            if _shared_orchestrator_model is None:
+                with _shared_orchestrator_lock:
+                    if _shared_orchestrator_model is None:
+                        print(f"[SLMOrchestrator] Loading shared ONNX model from: {self.model_path} (threads={n_threads})...", flush=True)
+                        _shared_orchestrator_model = og.Model(self.model_path) if og is not None else None
+                        _shared_orchestrator_tokenizer = og.Tokenizer(_shared_orchestrator_model) if og is not None and _shared_orchestrator_model is not None else None
+            self.model = _shared_orchestrator_model
+            self.tokenizer = _shared_orchestrator_tokenizer
         except Exception as e:
-            print(f"[SLMOrchestrator] LLM model load skipped ({e}). Using Needle mxbai-embed-large embedding router.")
+            print(f"[SLMOrchestrator] LLM model load skipped ({e}). Using Needle mxbai-embed-large embedding router.", flush=True)
             self.model = None
             self.tokenizer = None
             
@@ -220,6 +232,12 @@ class SLMOrchestrator:
             if not os.path.exists(model_path):
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
             return os.path.abspath(model_path)
+
+        shared_phi = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4")
+        if os.path.exists(shared_phi):
+            return shared_phi
+
+
 
         # Check config.yaml
         config, config_file_path = load_config()
@@ -276,26 +294,50 @@ class SLMOrchestrator:
         q_lower = (question or "").lower().strip()
         history = kwargs.get("history") or []
         
-        # Prepend last conversation turn context for short/ambiguous queries (e.g. "give me code for this")
+        # Contextual & Direct Action Follow-up Handler for App Building, Python & Coding
+        if any(kw in q_lower for kw in ["python", "code", "script", "fibonacci", "algorithm", "function", "build", "build thos", "build this", "complete app", "code it", "implement", "create script", "write code", "develop"]):
+            if "SLMCodeInterpreter" in agent_names:
+                return "SLMCodeInterpreter"
+        if any(kw in q_lower for kw in ["sql", "query", "database", "table", "run sql", "generate sql"]):
+            if "SLMTextToSQL" in agent_names:
+                return "SLMTextToSQL"
+
+        # Explicit Milestone & Task Planning Handler
+        if any(kw in q_lower for kw in ["milestone", "milestone plan", "task plan", "roadmap", "break down", "breakdown", "decompose"]):
+            if "SLMTaskPlanner" in agent_names:
+                return "SLMTaskPlanner"
+
+        # Explicit CLI & System Shell Command Handler
+        if any(kw in q_lower for kw in [
+            "find all", "tar.gz", ".tar.gz", "gzip", "compress", "/var/log", "/etc/", "/usr/", "/home/",
+            "bash", "shell command", "cli command", "terminal command", "linux command", "chmod", "chown",
+            "grep -", "awk", "sed", "cron", "systemctl", "docker run", "kill -", "lsof", "find /", "find .",
+            "archive", "compress them", "log files", "command line", "powershell", "curl -", "wget"
+        ]):
+            if "SLMCLIAgent" in agent_names:
+                return "SLMCLIAgent"
+            if "SLMCliAgent" in agent_names:
+                return "SLMCliAgent"
+
+        # Explicit PKB & Knowledge Base Vault Handler
+        if any(kw in q_lower for kw in [
+            "index these notes", "knowledge link", "knowledge links", "knowledge base", "obsidian",
+            "notion vault", "logseq", "map semantic", "vault", "markdown notes", "link notes", "note linking", "pkb"
+        ]):
+            if "SLMPKBAgent" in agent_names:
+                return "SLMPKBAgent"
+            if "SLMPkbAgent" in agent_names:
+                return "SLMPkbAgent"
+
+        # Prepend last conversation turn context for short/ambiguous queries
         routing_text = question
         if history and len(history) > 0 and len(q_lower.split()) <= 6:
             last_turn = history[-1]
             last_content = last_turn.get("content", "") if isinstance(last_turn, dict) else str(last_turn)
             if last_content and isinstance(last_content, str):
-                routing_text = f"Context: {last_content[:180]}. Request: {question}"
+                routing_text = f"Request: {question}. Prior Context: {last_content[:120]}"
         
-        # Fast Intent Dispatcher (0ms instant routing for unambiguous intents)
-        if any(kw in q_lower for kw in ["python script", "write a python", "write python", "python function", "fibonacci", "write code", "implement in python", "code interpreter"]):
-            if "SLMCodeInterpreter" in agent_names:
-                return "SLMCodeInterpreter"
-        if any(kw in q_lower for kw in ["sql query", "select *", "table schema", "write a query", "database query", "group by"]):
-            if "SLMTextToSQL" in agent_names:
-                return "SLMTextToSQL"
-        if any(kw in q_lower for kw in ["summarize", "summarizer", "tldr", "tl;dr", "key takeaways", "bullet points summary"]):
-            if "SLMSummarizer" in agent_names:
-                return "SLMSummarizer"
-
-        # 1. Dense Semantic Vector & 0.8B SLM Orchestrator Dynamic Decision Engine
+        # 1. Dense Semantic Vector Embedding Search & Candidate Retrieval
         candidate_agents = agents
         needle_selected = None
         
@@ -312,32 +354,10 @@ class SLMOrchestrator:
                 sims = np.dot(agent_vecs, query_vec) / (np.maximum(a_norms, 1e-12) * np.maximum(q_norm, 1e-12))
                 
                 top_indices = np.argsort(sims)[::-1]
-                top_k = min(8, len(agents))
+                top_k = min(6, len(agents))
                 candidate_indices = top_indices[:top_k]
                 candidate_agents = [agents[i] for i in candidate_indices]
-
-                # Filter out SLMGeneralAssistant for non-greeting queries
-                is_pure_greeting = q_lower in ("hi", "hello", "hey", "good morning", "good evening", "thanks", "thank you", "bye", "goodbye")
-                if not is_pure_greeting:
-                    candidate_agents = [a for a in candidate_agents if a["name"] != "SLMGeneralAssistant"]
-                    if not candidate_agents:
-                        candidate_agents = [a for a in agents if a["name"] != "SLMGeneralAssistant"]
-
-                # Filter out SLMMathAgent for non-mathematical queries
-                has_math_intent = any(kw in q_lower for kw in [
-                    "solve", "calculate", "equation", "integral", "derivative", "algebra", "calculus", 
-                    "math", "compute", "matrix", "sqrt", "monomial", "formula"
-                ]) or bool(re.search(r'\d+\s*[\+\-\*\/\^=]\s*\d+', q_lower))
-
-                if not has_math_intent:
-                    candidate_agents = [a for a in candidate_agents if a["name"] != "SLMMathAgent"]
-                    if not candidate_agents:
-                        candidate_agents = [a for a in agents if a["name"] not in ("SLMGeneralAssistant", "SLMMathAgent")]
-
                 needle_selected = candidate_agents[0]["name"] if candidate_agents else agents[0]["name"]
-                # If high-confidence vector match, return immediately without 16-token SLM generation
-                if candidate_agents and sims[candidate_indices[0]] >= 0.35:
-                    return candidate_agents[0]["name"]
             except Exception as e:
                 print(f"[SLMOrchestrator] Semantic embedding candidate filter error: {e}")
 
@@ -354,8 +374,12 @@ class SLMOrchestrator:
                     "Output ONLY the selected agent name (e.g. SLMSearchOrchestrator or SLMCodeInterpreter):\nSelected Agent:"
                 )
                 
-                prompt = f"<|im_start|>system\n{review_prompt}<|im_end|>\n<|im_start|>user\nRequest: {routing_text}<|im_end|>\n<|im_start|>assistant\n"
-                input_tokens = self.tokenizer.encode(prompt)
+                prompt = f"<|system|>\n{review_prompt}<|end|>\n<|user|>\nRequest: {routing_text}<|end|>\n<|assistant|>\n"
+                try:
+                    input_tokens = self.tokenizer.encode(prompt)
+                except Exception:
+                    prompt = f"System: {review_prompt}\nUser: {routing_text}\nAssistant:"
+                    input_tokens = self.tokenizer.encode(prompt)
                 
                 params = og.GeneratorParams(self.model)
                 params.set_search_options(max_length=len(input_tokens) + 16, temperature=0.01)
@@ -635,7 +659,7 @@ class SLMOrchestrator:
                 from slm_text_to_sql import SLMTextToSQL
                 runner = SLMTextToSQL()
                 schema_hint = kwargs.get("schema", "CREATE TABLE customers (customer_id INT PRIMARY KEY, customer_name TEXT);\nCREATE TABLE orders (order_id INT PRIMARY KEY, customer_id INT, total_amount NUMERIC, order_date DATE);")
-                return runner.generate_sql(schema=schema_hint, question=query_str)
+                return runner.generate_sql(schema=schema_hint, question=query_str, token_callback=token_cb)
                 
             elif "rag" in agent_lower or "retriev" in agent_lower:
                 from slm_rag import SLMRag
@@ -653,17 +677,17 @@ class SLMOrchestrator:
                         docs = []
                 if not docs:
                     return "I couldn't find any uploaded documents or notes to reference, so no document context is currently available for grounded retrieval. Could you please upload or attach the document you'd like me to index? I'd be happy to help once you provide it! 😊"
-                return runner.query(question=query_str, chunks=docs)
+                return runner.query(question=query_str, chunks=docs, token_callback=token_cb)
                 
             elif "summariz" in agent_lower:
                 from slm_summarizer import SLMSummarizer
                 runner = SLMSummarizer()
-                return runner.summarize(text=query_str)
+                return runner.summarize(text=query_str, token_callback=token_cb)
                 
             elif "email" in agent_lower:
                 from slm_email import SLMEmailAssistant
                 runner = SLMEmailAssistant()
-                res = runner.process_email(email_text=query_str)
+                res = runner.process_email(email_text=query_str, token_callback=token_cb)
                 if isinstance(res, dict) and "draft_reply" in res:
                     subj = res.get("subject", "Email Draft")
                     return f"**Subject**: {subj}\n\n{res['draft_reply']}"
@@ -672,7 +696,7 @@ class SLMOrchestrator:
             elif "task" in agent_lower or "planner" in agent_lower:
                 from slm_task_planner import SLMTaskPlanner
                 runner = SLMTaskPlanner()
-                res = runner.build_plan(goal=query_str)
+                res = runner.build_plan(goal=query_str, token_callback=token_cb)
                 if isinstance(res, dict):
                     if "plan_markdown" in res and res["plan_markdown"]:
                         return res["plan_markdown"]
@@ -684,25 +708,26 @@ class SLMOrchestrator:
             elif "math" in agent_lower:
                 from slm_math import SLMMathAgent
                 runner = SLMMathAgent()
-                res = runner.solve(query_str)
+                res = runner.solve(query_str, token_callback=token_cb)
                 if isinstance(res, dict):
-                    steps_list = res.get('steps', [])
-                    steps_md = "\n".join([f"- {s}" if not s.startswith("-") else s for s in steps_list])
-                    eq_str = res.get('equation', query_str)
-                    ans = res.get('result', '')
-                    return f"### 📐 Mathematical Solution\n\n**Problem Formulation**: `{eq_str}`\n\n**Step-by-Step Derivation**:\n{steps_md}\n\n🎯 **Final Answer**: **{ans}**"
+                    if res.get("response"):
+                        return res["response"]
+                    if res.get("explanation"):
+                        return res["explanation"]
+                    if res.get("result"):
+                        return str(res["result"])
                 return str(res)
                 
             elif "jsoncleaner" in agent_lower or agent_lower == "slmjsoncleaner":
                 from slm_json_cleaner import SLMJSONCleaner
                 runner = SLMJSONCleaner()
-                parsed, ok = runner.clean_json(malformed_text=query_str, schema_dict={"output": "repaired_data"})
+                parsed, ok = runner.clean_json(malformed_text=query_str, schema_dict={"output": "repaired_data"}, token_callback=token_cb)
                 return json.dumps(parsed, indent=2) if isinstance(parsed, (dict, list)) else str(parsed)
                 
             elif "cli" in agent_lower or "command" in agent_lower:
                 from slm_cli_agent import SLMCLIAgent
                 runner = SLMCLIAgent()
-                res = runner.run(query=query_str)
+                res = runner.run(query=query_str, token_callback=token_cb)
                 if isinstance(res, dict):
                     cmd = res.get("command", "")
                     expl = res.get("explanation", "")
@@ -720,13 +745,22 @@ class SLMOrchestrator:
             elif "git" in agent_lower or "repo" in agent_lower:
                 from slm_git_repo_manager import SLMGitRepoManager
                 runner = SLMGitRepoManager()
-                return runner.generate_commit_message(diff_text=query_str)
+                return runner.generate_commit_message(diff_text=query_str, token_callback=token_cb)
                 
             elif "translat" in agent_lower:
                 from slm_translation.translation_hub import SLMTranslationHub
                 runner = SLMTranslationHub()
                 target_lang = kwargs.get("target_lang", "hi")
-                return runner.translate(query_str, source_lang="en", target_lang=target_lang)
+                return runner.translate(query_str, source_lang="en", target_lang=target_lang, token_callback=token_cb)
+
+            elif "pkb" in agent_lower or "vault" in agent_lower:
+                from slm_pkb import SLMPKBAgent
+                runner = SLMPKBAgent()
+                res = runner.index_notes_or_text(query_str, token_callback=token_cb)
+                if isinstance(res, dict) and "response" in res:
+                    return res["response"]
+                return str(res)
+
 
             elif "search" in agent_lower:
                 try:
@@ -758,7 +792,7 @@ class SLMOrchestrator:
                     prompt = f"<|im_start|>system\n{factual_sys}<|im_end|>\n<|im_start|>user\n{query_str}<|im_end|>\n<|im_start|>assistant\n"
                     input_tokens = self.tokenizer.encode(prompt)
                     params = og.GeneratorParams(self.model)
-                    params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.7)
+                    params.set_search_options(max_length=len(input_tokens) + 3000, temperature=0.7)
                     generator = og.Generator(self.model, params)
                     generator.append_tokens(input_tokens)
                     tokens_out = []
@@ -819,7 +853,7 @@ class SLMOrchestrator:
                 )
                 input_tokens = self.tokenizer.encode(prompt)
                 params = og.GeneratorParams(self.model)
-                params.set_search_options(max_length=len(input_tokens) + 1536, temperature=0.7, top_p=0.9)
+                params.set_search_options(max_length=len(input_tokens) + 3000, temperature=0.7, top_p=0.9)
                 generator = og.Generator(self.model, params)
                 generator.append_tokens(input_tokens)
                 
@@ -883,6 +917,83 @@ class SLMOrchestrator:
             
         return q_clean
 
+    def generate_orchestration_plan(self, question: str, system_prompt: str = None, token_callback: callable = None, **kwargs) -> str:
+        """
+        Formulates a comprehensive, structured Multi-Agent Execution Plan.
+        """
+        q_clean = (question or "").strip()
+        if not q_clean:
+            return "Please provide a goal, project description, or task to orchestrate!"
+
+        # Ensure shared ONNX model is attached
+        try:
+            main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+            if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                try:
+                    import importlib
+                    main_mod = importlib.import_module("main")
+                except Exception:
+                    main_mod = None
+            if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                m, tok = main_mod.get_shared_onnx_genai()
+                if m and tok:
+                    self.model = m
+                    self.tokenizer = tok
+        except Exception:
+            pass
+
+        default_sys = (
+            "You are the Master AI Orchestrator commanding 26 specialized Small Language Model (SLM) agents.\n"
+            "Formulate a structured, comprehensive, and actionable Multi-Agent Execution Plan to accomplish the user's objective.\n\n"
+            "Structure your response with clear Markdown headings:\n"
+            "### Strategic Objective & Scope\n"
+            "Summarize the goal and architectural requirements.\n\n"
+            "### Specialized Agent Allocation\n"
+            "Specify which specialized agents to assign and their exact roles (e.g. SLMTextToSQL, SLMCodeInterpreter, SLMRag, SLMCLIAgent, SLMTaskPlanner, SLMDataAnalyst, etc.).\n\n"
+            "### Step-by-Step Execution Roadmap\n"
+            "Detail the execution phases, data handoffs between agents, and milestone outputs.\n\n"
+            "### Guardrails & Verification\n"
+            "Define validation criteria, error fallbacks, and quality guardrails."
+        )
+        active_sys = system_prompt or default_sys
+        
+        prompt = (
+            "<|im_start|>system\n"
+            f"{active_sys}<|im_end|>\n"
+            f"<|im_start|>user\nFormulate the multi-agent execution plan for: {q_clean}<|im_end|>\n"
+            "<|im_start|>assistant\n"
+        )
+        
+        try:
+            input_tokens = self.tokenizer.encode(prompt)
+            params = og.GeneratorParams(self.model)
+            params.set_search_options(max_length=len(input_tokens) + 600, temperature=0.7, top_p=0.9)
+            generator = og.Generator(self.model, params)
+            generator.append_tokens(input_tokens)
+            
+            tokens_out = []
+            while not generator.is_done():
+                generator.generate_next_token()
+                new_tokens = generator.get_next_tokens()
+                if len(new_tokens) > 0:
+                    tok_id = int(new_tokens[0])
+                    if tok_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
+                        break
+                    tokens_out.append(tok_id)
+                    if token_callback:
+                        tok_str = self.tokenizer.decode([tok_id])
+                        token_callback(tok_str)
+            raw_plan = self.tokenizer.decode(tokens_out).strip()
+            if "<|im_end|>" in raw_plan:
+                raw_plan = raw_plan.replace("<|im_end|>", "").strip()
+            return raw_plan
+        except Exception as e:
+            return (
+                f"### Strategic Objective & Scope\nAnalyze the requirements and modularize '{q_clean}'.\n\n"
+                f"### Specialized Agent Allocation\n- **SLMTaskPlanner**: Decomposes steps and workflows.\n- **SLMCodeInterpreter**: Implements logic and execution scripts.\n- **SLMDataAnalyst**: Processes metrics and data transformations.\n\n"
+                f"### Step-by-Step Execution Roadmap\n1. Ingest input dataset and validate schema.\n2. Execute modular agent transformations.\n3. Verify results and format final summary."
+            )
+
     def execute(self, question: str, agents: list = None, agent_registry: dict = None, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> dict:
         """
         Claude Code-Style Multi-Agent Collaboration Engine:
@@ -907,17 +1018,31 @@ class SLMOrchestrator:
 
         if not user_agents:
             user_agents = [
+                {"name": "SLMCLIAgent", "description": "Linux shell commands, bash scripts, terminal commands, finding files in directory (/var/log, etc.), tar/gzip file compression, system utilities, and CLI command execution."},
                 {"name": "SLMCodeInterpreter", "description": "Software code generation, writing programming code, code implementation, Python scripts, functions, algorithms, software development, HTML/JS/CSS code, and code creation for any project plan or task."},
                 {"name": "SLMTextToSQL", "description": "Database query generation, SQL queries, database schemas, table joins, and SQL aggregations."},
                 {"name": "SLMRag", "description": "Document search, grounded PDF/file retrieval, and document Q&A."},
                 {"name": "SLMSummarizer", "description": "Text condensation, article summarization, bullet-point highlights, and TL;DRs."},
                 {"name": "SLMEmail", "description": "Drafting formal outbound email messages, newsletters, subject lines, sending email communications, and email responses."},
-                {"name": "SLMTaskPlanner", "description": "Task breakdown, multi-step project planning, and action item scheduling."},
-                {"name": "SLMMathAgent", "description": "Mathematical problem solving, algebra, calculus, equations, and step-by-step math calculations."},
+                {"name": "SLMMeetingSummarizer", "description": "Meeting transcript analysis, meeting minutes, speaker action items, deadlines, and decision tracking."},
+                {"name": "SLMTaskPlanner", "description": "Task breakdown, multi-step project planning, milestone roadmaps, and action item scheduling."},
+                {"name": "SLMMathAgent", "description": "Mathematical problem solving, algebra, calculus, quadratic equations, and step-by-step math calculations."},
                 {"name": "SLMJsonCleaner", "description": "JSON repair, malformed JSON syntax fixing, schema cleanup, and JSON formatting."},
                 {"name": "SLMGitRepoManager", "description": "Git repository operations, commit creation, branches, and version control management."},
                 {"name": "SLMTranslationHub", "description": "Multilingual translation between English, Hindi, Tamil, Telugu, Spanish, French, and German."},
-                {"name": "SLMSearchOrchestrator", "description": "Primary real-world search engine, web scraper, movie recommendations, movie suggestions, film lists, entertainment lookups, and universal factual knowledge orchestrator. Answers any question under the sun or beyond—including real-world facts, general knowledge, news, current events, banking, personal loans, home loans, interest rates, financial services, HDFC, SBI, ICICI, science, history, geography, technology, health, sports, people, places, entities, online research, and web information retrieval."},
+                {"name": "SLMSearchOrchestrator", "description": "Live web search engine, DuckDuckGo internet queries, finding current information online, facts, research, news, current events, and online search."},
+                {"name": "SLMWebAgent", "description": "Autonomous browser navigation, visiting websites, clicking buttons and links across sub-pages, multi-step web workflows, filling forms, and web automation."},
+                {"name": "SLMWebScraper", "description": "Web scraping, scraping web pages or URLs, extracting structured data, product catalog scraping, harvesting tables, prices, titles, ratings, and parsing HTML into schemas."},
+                {"name": "SLMSecurityAudit", "description": "Security auditing, PII detection, sensitive data redaction, and vulnerability scanning."},
+                {"name": "SLMDocumentParser", "description": "Document text extraction, PDF, DOCX, and text file parsing."},
+                {"name": "SLMDataAnalyst", "description": "Data analysis, tabular CSV exploration, statistics, summaries, and dataset aggregation."},
+                {"name": "SLMDBMigrator", "description": "Database migrations, schema migration scripts, ALTER tables, and DDL transitions."},
+                {"name": "SLMPDFChat", "description": "PDF chat assistant, reading multi-page PDFs, and PDF section extraction."},
+                {"name": "SLMPKBAgent", "description": "Personal Knowledge Base, markdown note linking, Obsidian / Notion vault linking."},
+                {"name": "SLMVisionParser", "description": "Visual document understanding, image parsing, OCR, and diagram analysis."},
+                {"name": "SLMVoiceAgent", "description": "Voice command handling, speech transcription post-processing, and audio summaries."},
+                {"name": "SLMMemoryManager", "description": "Long-term episodic memory, cross-session user context, and conversation recall."},
+                {"name": "SLMEmbeddingsServer", "description": "Dense vector embedding generation and text representation vectors."},
                 {"name": "SLMGeneralAssistant", "description": "Strictly limited to single-word or two-word social greetings like hi, hello, hey, good morning, thanks, and bye. DOES NOT answer questions or give movie recommendations."}
             ]
 

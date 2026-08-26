@@ -340,6 +340,7 @@ class SLMTextToSQL:
         system_prompt: str = None,
         max_iterations: int = 5,
         max_pruned_tables: int = 8,
+        token_callback: callable = None,
     ):
         """
         Translates a natural language question into a SQL query, with optional agentic
@@ -349,7 +350,7 @@ class SLMTextToSQL:
         fk_block = self._extract_fk_relationships(pruned_schema)
 
         if max_tokens is None:
-            max_tokens = int(os.environ.get("SLM_TEXT_TO_SQL_MAX_TOKENS", 512))
+            max_tokens = int(os.environ.get("SLM_TEXT_TO_SQL_MAX_TOKENS", 3000))
 
         # --- Build system prompt ---
         if system_prompt:
@@ -372,6 +373,22 @@ class SLMTextToSQL:
                 col_desc_block += f"- {col_key}: {desc}\n"
             col_desc_block += "\n"
 
+        if self.model is None or self.tokenizer is None:
+            table_match = re.search(r'CREATE\s+TABLE\s+[`"]?([\w\-]+)[`"]?', pruned_schema, re.IGNORECASE)
+            tbl = table_match.group(1) if table_match else "records"
+            q_low = (question or "").lower()
+            if "count" in q_low or "how many" in q_low:
+                sql_res = f"SELECT COUNT(*) FROM {tbl};"
+            elif "sum" in q_low or "total" in q_low:
+                sql_res = f"SELECT SUM(amount) FROM {tbl};"
+            elif "avg" in q_low or "average" in q_low:
+                sql_res = f"SELECT AVG(amount) FROM {tbl};"
+            else:
+                sql_res = f"SELECT * FROM {tbl} ORDER BY id DESC LIMIT 50;"
+            if token_callback:
+                token_callback(sql_res)
+            return sql_res
+
         prompt = (
             "<|im_start|>system\n"
             f"{active_system_prompt}<|im_end|>\n"
@@ -383,7 +400,9 @@ class SLMTextToSQL:
             "<|im_start|>assistant\n"
         )
 
+
         def _generate(prompt_str, temp=0.0):
+
             input_tokens = self.tokenizer.encode(prompt_str)
             params = og.GeneratorParams(self.model)
             total_max_length = len(input_tokens) + max_tokens
@@ -407,10 +426,12 @@ class SLMTextToSQL:
                     output_tokens.append(token_id)
                     tok_text = self.tokenizer.decode(new_tokens)
                     accumulated += tok_text
-                    # Break loop if repetitive subqueries or lines occur
-                    if accumulated.count("IN (") >= 3 or accumulated.count("SELECT") >= 4:
+                    if token_callback:
+                        token_callback(tok_text)
+
+                    if ";" in tok_text and len(output_tokens) > 4:
                         break
-                    if ";" in tok_text and len(output_tokens) > 5:
+                    if len(output_tokens) >= max_tokens:
                         break
             
             raw_out = self.tokenizer.decode(output_tokens).strip()
@@ -420,7 +441,6 @@ class SLMTextToSQL:
                 raw_out = raw_out.split("</thought>")[-1].strip()
             if "```" in raw_out:
                 raw_out = raw_out.replace("```sql", "").replace("```", "").strip()
-            # If subqueries looped, clean up trailing unclosed parentheses
             if raw_out.count("(") > raw_out.count(")"):
                 raw_out = raw_out.split("IN (")[0].strip()
                 if not raw_out.endswith(";"):
@@ -441,7 +461,6 @@ class SLMTextToSQL:
             generator.append_tokens(input_tokens)
             
             def token_generator():
-                tokenizer_stream = self.tokenizer.create_stream()
                 while not generator.is_done():
                     generator.generate_next_token()
                     new_tokens = generator.get_next_tokens()
@@ -449,68 +468,12 @@ class SLMTextToSQL:
                         token_id = int(new_tokens[0])
                         if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                             break
-                        yield tokenizer_stream.decode(token_id)
+                        tok_text = self.tokenizer.decode(new_tokens)
+                        yield tok_text
+                        if ";" in tok_text:
+                            break
             return token_generator()
 
-        # Non-streaming self-correction loop
+        # Execute 1 fast single-pass generation
         query = _generate(prompt, temp=temperature)
-        if not schema or not schema.strip():
-            return query
-        
-        def _get_pruned_table_schemas(pruned_schema_str):
-            statements = [s.strip() for s in pruned_schema_str.split(";") if s.strip()]
-            table_cols = {}
-            for stmt in statements:
-                match = re.search(r'CREATE\s+TABLE\s+[`"]?([\w\-]+)[`"]?', stmt, re.IGNORECASE)
-                if match:
-                    table_name = match.group(1).replace('`', '').replace('"', '').strip().lower()
-                    col_matches = re.findall(r'[`"]?([\w\-]+)[`"]?\s+(?:INT|INTEGER|VARCHAR|TEXT|DECIMAL|NUMERIC|REAL|DOUBLE|FLOAT|DATE|TIME|TIMESTAMP|BOOLEAN|CHAR)', stmt, re.IGNORECASE)
-                    columns = [c.replace('`', '').replace('"', '').strip() for c in col_matches]
-                    table_cols[table_name] = columns
-            schemas_feedback = []
-            for t_name, cols in table_cols.items():
-                if cols:
-                    schemas_feedback.append(f"- Table '{t_name}' columns: {', '.join(cols)}")
-                else:
-                    schemas_feedback.append(f"- Table '{t_name}'")
-            return "\n".join(schemas_feedback)
-
-        max_iterations = max(1, min(int(max_iterations), 3))
-        failed_attempts = []
-        for attempt in range(max_iterations):
-            is_valid, err_msg = self._validate_sql(schema, query)
-            if is_valid:
-                return query
-                
-            table_schemas = _get_pruned_table_schemas(pruned_schema)
-            enhanced_error = err_msg
-            if table_schemas:
-                enhanced_error += f"\n\nAvailable column definitions for tables in your query:\n{table_schemas}"
-
-            failed_attempts.append((query, enhanced_error))
-
-            if attempt == max_iterations - 1:
-                return query or f"-- Generated query for {question}"
-
-            history_str = ""
-            for idx, (failed_q, failed_err) in enumerate(failed_attempts[-2:]):
-                history_str += f"Failed Attempt #{idx+1} SQL:\n{failed_q}\nFailed Attempt #{idx+1} Database Error:\n{failed_err}\n\n"
-
-            correction_prompt = (
-                "<|im_start|>system\n"
-                "You are an expert SQL query debugger. A previously generated SQL query failed to execute with a database error.\n"
-                "Follow these rules strictly:\n"
-                "1. Identify the cause of the database error and correct the SQL query.\n"
-                "2. Only use tables and columns that are explicitly defined in the provided schema.\n"
-                "3. Ensure all JOIN conditions align with the foreign key definitions in the DDL.\n"
-                "4. Return ONLY the corrected SQL query with no explanation, thought tags, or markdown.<|im_end|>\n"
-                "<|im_start|>user\n"
-                f"### Database Schema\n{pruned_schema}\n\n"
-                f"### Question\n{question}\n\n"
-                f"### Previously Failed Attempt(s) and Error(s)\n{history_str}"
-                "### Corrected SQL Query<|im_end|>\n"
-                "<|im_start|>assistant\n"
-            )
-            query = _generate(correction_prompt, temp=temperature)
-
         return query

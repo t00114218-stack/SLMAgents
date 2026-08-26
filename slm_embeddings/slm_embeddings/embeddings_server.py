@@ -28,39 +28,51 @@ def load_config() -> tuple[dict, str]:
 
 class SLMEmbeddingsServer:
     """
-    A lightweight local CPU-optimized embedding engine powered by ONNX runtime and Rust tokenizers.
+    A lightweight local CPU-optimized neural embedding engine powered by all-MiniLM-L6-v2 ONNX runtime and Rust tokenizers.
     Runs with near-zero memory footprint (< 30 MB RAM overhead).
     """
-    MODEL_NAME = "mixbread-ai/mxbai-embed-large"
+    MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
     def __init__(self, model_path=None):
         self.config, _ = load_config()
-        self.model_path = model_path or self.config.get("models", {}).get("embeddings", {}).get("path", "../../models/mxbai-embed-large-onnx")
+        self.model_path = model_path
         self.session = None
         self.tokenizer = None
-        self.vector_dim = 1024
+        self.vector_dim = 384
+        self._find_and_load_model()
 
-    def _ensure_loaded(self):
+    def _find_and_load_model(self):
         if self.session is not None or ort is None:
             return
-        
-        if os.path.exists(self.model_path):
-            try:
-                model_file = os.path.join(self.model_path, "model.onnx")
-                tok_file = os.path.join(self.model_path, "tokenizer.json")
+
+        candidate_paths = [
+            self.model_path,
+            os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "all-minilm-l6-v2-onnx"),
+            "./models/all-minilm-l6-v2-onnx",
+            "../models/all-minilm-l6-v2-onnx",
+            os.path.expanduser("~/Documents/SLMAgents/models/all-minilm-l6-v2-onnx")
+        ]
+
+        for p in candidate_paths:
+            if p and os.path.exists(p):
+                model_file = os.path.join(p, "onnx", "model.onnx") if os.path.exists(os.path.join(p, "onnx", "model.onnx")) else os.path.join(p, "model.onnx")
+                tok_file = os.path.join(p, "tokenizer.json")
                 if os.path.exists(model_file) and os.path.exists(tok_file) and Tokenizer is not None:
-                    opts = ort.SessionOptions()
-                    opts.intra_op_num_threads = int(os.environ.get("SLM_N_THREADS", 2))
-                    opts.inter_op_num_threads = 1
-                    self.session = ort.InferenceSession(model_file, opts, providers=["CPUExecutionProvider"])
-                    self.tokenizer = Tokenizer.from_file(tok_file)
-            except Exception as e:
-                print(f"[SLMEmbeddingsServer] Note: ONNX model load deferred: {e}")
+                    try:
+                        opts = ort.SessionOptions()
+                        opts.intra_op_num_threads = int(os.environ.get("SLM_N_THREADS", 2))
+                        opts.inter_op_num_threads = 1
+                        self.session = ort.InferenceSession(model_file, opts, providers=["CPUExecutionProvider"])
+                        self.tokenizer = Tokenizer.from_file(tok_file)
+                        self.model_path = p
+                        return
+                    except Exception as e:
+                        print(f"[SLMEmbeddingsServer] ONNX load note: {e}")
 
     def embed(self, texts: list[str] | str, system_prompt: str = None, user_input: str = None) -> list[list[float]]:
         """
-        Embeds a single string or list of text strings into dense vector representations.
-        Returns a list of float arrays (dimension: 1024).
+        Embeds a single string or list of text strings into dense 384-dimensional vector representations.
+        Returns a list of float arrays (dimension: 384).
         """
         if isinstance(texts, str):
             texts = [texts]
@@ -68,23 +80,38 @@ class SLMEmbeddingsServer:
         if not texts:
             return []
 
-        self._ensure_loaded()
+        self._find_and_load_model()
 
         if self.session and self.tokenizer:
             try:
-                encodings = self.tokenizer.encode_batch(texts)
-                input_ids = np.array([e.ids[:512] for e in encodings], dtype=np.int64)
-                attention_mask = np.array([e.attention_mask[:512] for e in encodings], dtype=np.int64)
-                onnx_inputs = {"input_ids": input_ids, "attention_mask": attention_mask}
-                outputs = self.session.run(None, onnx_inputs)
-                embeddings = outputs[0][:, 0, :]  # Mean/CLS pool
-                norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
-                normalized = (embeddings / np.maximum(norms, 1e-12)).tolist()
-                return normalized
+                results = []
+                for text in texts:
+                    encoded = self.tokenizer.encode(text)
+                    input_ids = np.array([encoded.ids[:512]], dtype=np.int64)
+                    attention_mask = np.array([encoded.attention_mask[:512]], dtype=np.int64)
+                    
+                    onnx_inputs = {"input_ids": input_ids, "attention_mask": attention_mask}
+                    if "token_type_ids" in [inp.name for inp in self.session.get_inputs()]:
+                        onnx_inputs["token_type_ids"] = np.array([encoded.type_ids[:512]], dtype=np.int64)
+                    
+                    outputs = self.session.run(None, onnx_inputs)
+                    last_hidden_state = outputs[0]  # shape: (1, seq_len, hidden_dim)
+                    
+                    # Mean pooling with attention mask
+                    input_mask_expanded = np.expand_dims(attention_mask, -1).astype(float)
+                    sum_embeddings = np.sum(last_hidden_state * input_mask_expanded, 1)
+                    sum_mask = np.clip(input_mask_expanded.sum(1), a_min=1e-9, a_max=None)
+                    embeddings = sum_embeddings / sum_mask
+                    
+                    # Normalize to unit sphere
+                    norm = np.linalg.norm(embeddings, axis=1, keepdims=True)
+                    normalized = (embeddings / np.maximum(norm, 1e-12))[0].tolist()
+                    results.append(normalized)
+                return results
             except Exception as e:
-                print(f"[SLMEmbeddingsServer] Inference note: {e}")
+                print(f"[SLMEmbeddingsServer] Neural inference note: {e}")
 
-        # High-speed feature hashing embedding vector generator (< 1ms CPU overhead)
+        # Fallback dense hash generator
         results = []
         for text in texts:
             vec = np.zeros(self.vector_dim, dtype=np.float32)
@@ -93,10 +120,6 @@ class SLMEmbeddingsServer:
             for word in words:
                 idx1 = abs(hash(word)) % self.vector_dim
                 vec[idx1] += 1.0
-                for i in range(max(0, len(word) - 2)):
-                    ngram = word[i:i+3]
-                    idx2 = abs(hash(ngram)) % self.vector_dim
-                    vec[idx2] += 0.5
             norm = np.linalg.norm(vec)
             if norm > 1e-12:
                 vec /= norm

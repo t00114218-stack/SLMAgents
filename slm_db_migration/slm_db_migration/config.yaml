@@ -1,4 +1,4 @@
 models:
-  database_migrator:
-    path: "../../models/qwen3.5-0.8b-onnx"
-    repo_id: "onnx-community/Qwen3.5-0.8B-ONNX"
+  db_migration:
+    path: ../../models/qwen2.5-coder-1.5b-onnx
+    repo_id: onnx-community/Qwen2.5-Coder-1.5B-Instruct

@@ -87,7 +87,7 @@
             </div>
           </li>
           <li><a href="playground.html">Playground</a></li>
-          <li><a href="index.html#upcoming">Roadmap</a></li>
+          <li><a href="index.html#agents">All 26 Agents</a></li>
           <li><a href="https://huggingface.co/spaces/spcv/slm-agents" class="btn-hf-nav" target="_blank" style="display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; background: #fef3c7; border: 1px solid #f59e0b; color: #b45309; font-weight: 700; text-decoration: none; font-size: 0.85rem; transition: all 0.2s;">🤗 Hugging Face Space</a></li>
         </ul>
       </nav>
@@ -108,7 +108,7 @@
           <div class="breadcrumb" style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; font-weight: 600;"><a href="index.html" style="color: #4f46e5; text-decoration: none;">Home</a> <span style="margin: 0 6px;">›</span> <span style="color: #0f172a;">SLM Web Scraper</span></div>
           <div class="badge-pill">🔍 Layout Sanitization</div>
           <h1 style="font-size: 2.25rem; color: #0f172a; font-weight: 800; margin-bottom: 0.75rem;">SLM Web Scraper</h1>
-          <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Extract structured JSON directly from dirty, obfuscated HTML layouts offline using BeautifulSoup and Phi-3.5-mini.</p>
+          <p style="font-size: 1.05rem; color: #334155; line-height: 1.65; font-weight: 500; margin: 0;">Extract structured JSON directly from dirty, obfuscated HTML layouts offline using BeautifulSoup and local neural reasoning.</p>
         </section>
 
         <section class="doc-section">
@@ -135,7 +135,7 @@ pip install slm-web-scraper</code></pre>
           <li><strong>DOM Pruning:</strong> Automatically strips scripts, styles, metadata tags, and ad headers using BeautifulSoup.</li>
           <li><strong>Visual Image OCR:</strong> Identifies image tags (<code>&lt;img&gt;</code>) on the page, downloads them, and runs them through the local <strong>SLMVisionParser</strong> to generate natural language text descriptions, replacing the tags with the descriptions.</li>
           <li><strong>Whitespaces Compacting:</strong> Collapses contiguous whitespace blocks into single space delimiters.</li>
-          <li><strong>Schema Alignment:</strong> Instructs the local Phi-3.5 model to match and structure the sanitized text into clean JSON.</li>
+          <li><strong>Schema Alignment:</strong> Instructs the local neural model to match and structure the sanitized text into clean JSON.</li>
         </ul>
       </section>
 
@@ -170,7 +170,7 @@ scraper = SLMWebScraper()</code></pre>
             <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
           </thead>
           <tbody>
-            <tr><td>model_path</td><td>str</td><td>Local path to Phi-3.5 weights. Defaults to "../../models/phi-3.5-mini-instruct-onnx".</td></tr>
+            <tr><td>model_path</td><td>str</td><td>Local path to model weights.</td></tr>
                         <tr><td>system_prompt</td><td>str | None</td><td>Optional custom system prompt instructions overriding the default template.</td></tr>
               <tr><td>user_input</td><td>str | None</td><td>Optional additional user-supplied target parameters or variables.</td></tr>
 </tbody>
@@ -193,14 +193,14 @@ print(clean_text)</code></pre>
           <strong>Cleaned Webpage Text Output with Visual Descriptions:</strong><br>
           <pre><code>SLM Vision Parser | Documentation
 Overview
-The SLM Vision Parser uses the sequence-to-sequence Florence-2-large model to translate image structures directly.
+The SLM Vision Parser uses local multimodal vision models to extract image structures directly.
 
 API Reference
 `SLMVisionParser` Initialization
 from slm_vision_parser.vision_parser import SLMVisionParser
 parser = SLMVisionParser()
 
-[Table Description: The HTML table represents the constructor parameter configuration for SLMVisionParser, detailing the "model_path" parameter of type string (str), which references the local directory containing pre-downloaded checkpoints and defaults to "../../models/florence-2-large".]
+[Table Description: The HTML table represents the constructor parameter configuration for SLMVisionParser, detailing the "model_path" parameter of type string (str), which references the local directory containing pre-downloaded checkpoints and defaults to local model weights.]
 
 `parse_image` Method
 Run coordinate mappings or caption generation by supplying task tags. Below is the input flowchart diagram processed by the vision model:
@@ -209,7 +209,7 @@ Run coordinate mappings or caption generation by supplying task tags. Below is t
       </section>
 
         <footer style="margin-top: 3rem; text-align: center; border-top: 1px solid #cbd5e1; padding-top: 2rem; color: #475569; font-size: 0.9rem; font-weight: 500;">
-          <p>© 2026 SLM Agents. Built with Apache 2.0 Permissive Open Source License.</p>
+          <p>© 2026 SLM Agents. Privacy-First Local AI Multi-Agent Architecture.</p>
         </footer>
       </div>
     
@@ -261,6 +261,6 @@ Run coordinate mappings or caption generation by supplying task tags. Below is t
 </main>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=21.0"></script>
 </body>
 </html>

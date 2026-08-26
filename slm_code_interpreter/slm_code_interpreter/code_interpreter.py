@@ -78,6 +78,9 @@ class SLMCodeInterpreter:
             if not os.path.exists(model_path):
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
             return os.path.abspath(model_path)
+        shared_phi = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4")
+        if os.path.exists(shared_phi):
+            return shared_phi
 
         config, config_file_path = load_config()
         model_config = config.get("models", {}).get("code_interpreter", {})
@@ -233,15 +236,23 @@ class SLMCodeInterpreter:
     def run(self, instruction: str, max_retries: int = 1, stream: bool = False, system_prompt: str = None, user_input: str = None, max_tokens: int = None, token_callback: callable = None):
         max_retries = max(1, min(int(max_retries), 2))
         if max_tokens is None:
-            max_tokens = int(os.environ.get("SLM_CODE_INTERPRETER_MAX_TOKENS", 160))
-        max_tokens = max(80, min(int(max_tokens), 320))
+            max_tokens = int(os.environ.get("SLM_CODE_INTERPRETER_MAX_TOKENS", 3000))
+        max_tokens = max(160, min(int(max_tokens), 3000))
+        inst_lower = (instruction or "").lower()
         if not system_prompt:
-            system_prompt = (
-                "You are an expert Python software engineer.\n"
-                "Write clean, idiomatic, elegant, and fully working Python code inside ```python ``` markdown block.\n"
-                "Use Python standard library features (such as functools.lru_cache for caching/memoization).\n"
-                "Do NOT write repetitive statements, unrolled loops, or incomplete code snippets. Always include example execution at the bottom."
-            )
+            if any(kw in inst_lower for kw in ["app", "application", "build", "frontend", "web app", "gui"]):
+                system_prompt = (
+                    "You are an expert full-stack Python application developer.\n"
+                    "Write a complete, fully functional Python web application or REST API backend (using Flask/FastAPI or Python standard library w/ HTML5 UI) that implements the actual working app with working routes, data encryption/storage, and interactive features.\n"
+                    "Do NOT write document generators, text mocks, or pseudocode. Output ONLY valid, executable Python application code inside ```python ``` block."
+                )
+            else:
+                system_prompt = (
+                    "You are an expert Python software engineer.\n"
+                    "Write clean, idiomatic, elegant, and fully working Python code inside ```python ``` markdown block.\n"
+                    "Use Python standard library features (such as functools.lru_cache for caching/memoization).\n"
+                    "Do NOT write repetitive statements, unrolled loops, or incomplete code snippets. Always include example execution at the bottom."
+                )
 
         messages = [
             {"role": "system", "content": system_prompt},
@@ -296,11 +307,16 @@ class SLMCodeInterpreter:
             
             response_text = "```python\n"
             q = _get_token_queue() if attempt == 0 else None
-            if q is not None:
-                self._mark_output_streamed()
-                q.put(response_text)
-            if token_callback is not None:
-                token_callback(response_text)
+            def emit_token(tok_str):
+                if not tok_str:
+                    return
+                if token_callback is not None:
+                    token_callback(tok_str)
+                elif q is not None:
+                    self._mark_output_streamed()
+                    q.put(tok_str)
+
+            emit_token(response_text)
                 
             in_think = False
             while not generator.is_done():
@@ -318,10 +334,7 @@ class SLMCodeInterpreter:
                         in_think = False
                         continue
                     if not in_think:
-                        if q is not None:
-                            q.put(tok_text)
-                        if token_callback is not None:
-                            token_callback(tok_text)
+                        emit_token(tok_text)
                     if "\n" in tok_text:
                         lines = response_text.splitlines()
                         if len(lines) >= 4 and lines[-1].strip() and lines[-1].strip() == lines[-2].strip() == lines[-3].strip():

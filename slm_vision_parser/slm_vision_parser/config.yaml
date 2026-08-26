@@ -1,7 +1,4 @@
 models:
   vision_parser:
-    path: "../../models/moondream2-onnx"
-    repo_id: "Xenova/moondream2"
-
-inference:
-  n_threads: 4
+    path: ../../models/qwen2-vl-2b-onnx
+    repo_id: onnx-community/Qwen2-VL-2B-Instruct

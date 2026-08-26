@@ -119,27 +119,31 @@ class SLMChunker:
             if not para:
                 continue
                 
-            if para.startswith("# "):
-                current_h1 = para[2:].strip()
-                continue
-            elif para.startswith("## "):
-                current_h2 = para[3:].strip()
-                continue
-            elif para.startswith("### "):
-                current_h2 = para[4:].strip()
-                continue
+            lines = [l.strip() for l in para.split("\n") if l.strip()]
+            body_lines = []
+            for line in lines:
+                if line.startswith("# "):
+                    current_h1 = line[2:].strip()
+                elif line.startswith("## "):
+                    current_h2 = line[3:].strip()
+                elif line.startswith("### "):
+                    current_h2 = line[4:].strip()
+                else:
+                    body_lines.append(line)
+                    
+            chunk_body = "\n".join(body_lines).strip() if body_lines else "\n".join(lines).strip()
                 
             product = ""
-            words = para.split()
+            words = chunk_body.split()
             for w in words:
                 w_clean = re.sub(r'[^\w]', '', w)
                 if w_clean.istitle() and len(w_clean) > 4:
                     product = w_clean
                     break
                     
-            if len(para.split()) >= 3:
+            if len(chunk_body.split()) >= 2:
                 chunks.append({
-                    "text": para,
+                    "text": chunk_body,
                     "metadata": {
                         "source": os.path.basename(source_name),
                         "heading": current_h1,

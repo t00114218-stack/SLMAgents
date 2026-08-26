@@ -112,10 +112,13 @@ class SLMSummarizer:
         if not os.path.isabs(config_path) and config_file_path:
             config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
         
-        # Check if genai_config.json exists in config_path or its subdirectories
-        for root, dirs, files in os.walk(config_path):
-            if "genai_config.json" in files:
-                return root
+        # Check if genai_config.json or model files exist in config_path
+        if os.path.exists(config_path):
+            for root, dirs, files in os.walk(config_path):
+                if any(f in files for f in ["genai_config.json", "model_q4.onnx", "model.onnx"]):
+                    return root
+            return config_path
+
             
         # Download if configured but not present
         repo_id = model_config.get("repo_id")
@@ -370,7 +373,7 @@ class SLMSummarizer:
         """
         # Resolve defaults: arg > env var > hardcoded default
         if max_length is None:
-            max_length = int(os.environ.get("SLM_SUMMARIZER_MAX_LENGTH", 1024))
+            max_length = int(os.environ.get("SLM_SUMMARIZER_MAX_LENGTH", 3000))
         if max_correction_loops is None:
             max_correction_loops = int(os.environ.get("SLM_SUMMARIZER_MAX_CORRECTION_LOOPS", 0))
         text = text.strip()

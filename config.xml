@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Centralized Model Registry Configuration for Open Source SLM Agents Framework -->
+<!-- Centralized Model Registry Configuration for SLM Agents Framework (< 6GB CPU Footprint) -->
 <configuration>
   <environment>
     <threads>4</threads>
@@ -8,35 +8,39 @@
   </environment>
 
   <models>
-    <!-- Core Shared Reasoning & Dialogue Model -->
-    <model name="qwen3.5-0.8b-onnx" category="llm_core">
-      <description>Qwen 3.5 0.8B ONNX INT4 / Q4 Quantized reasoning engine (Fast CPU Inference)</description>
-      <type>onnx_genai</type>
+    <!-- Core Orchestrator Reasoning Model -->
+    <model name="phi3.5-mini-instruct-onnx" category="orchestrator">
+      <description>Phi-3.5 Mini Instruct INT4 AWQ ONNX model for high-reasoning agent routing</description>
       <quantization>int4</quantization>
-      <repo_id>local/qwen3.5-0.8b-onnx</repo_id>
-      <path>models/qwen3.5-0.8b-onnx</path>
+      <repo_id>microsoft/Phi-3.5-mini-instruct-onnx</repo_id>
+      <path>models/phi-3.5-mini-instruct-onnx</path>
       <used_by>
-        <agent>slm_rag</agent>
         <agent>slm_orchestrator</agent>
-        <agent>slm_voice</agent>
-        <agent>slm_cli_agent</agent>
-        <agent>slm_code_interpreter</agent>
-        <agent>slm_git_repo_manager</agent>
-        <agent>slm_json_cleaner</agent>
-        <agent>slm_email</agent>
-        <agent>slm_meeting</agent>
-        <agent>slm_task_planner</agent>
-        <agent>slm_pdf</agent>
-        <agent>slm_pkb</agent>
-        <agent>slm_data</agent>
-        <agent>slm_db_migration</agent>
-        <agent>slm_math</agent>
       </used_by>
     </model>
 
-    <!-- Fine-tuned Specialized Models -->
+    <!-- Primary High-Precision Reasoning, RAG & Coding Model -->
+    <model name="qwen2.5-coder-3b-onnx" category="core_rag_code">
+      <description>Qwen2.5 Coder 3B Instruct ONNX INT4 model for RAG PDF Chat, Orchestrator reasoning, and Code synthesis</description>
+      <quantization>int4</quantization>
+      <repo_id>onnx-community/Qwen2.5-Coder-3B-Instruct</repo_id>
+      <path>models/qwen2.5-coder-3b-onnx</path>
+      <used_by>
+        <agent>slm_rag</agent>
+        <agent>slm_orchestrator</agent>
+        <agent>slm_code_interpreter</agent>
+        <agent>slm_summarizer</agent>
+        <agent>slm_meeting</agent>
+        <agent>slm_pdf</agent>
+        <agent>slm_document_parser</agent>
+      </used_by>
+    </model>
+
+
+    <!-- Fine-tuned Text-to-SQL Model -->
     <model name="qwen2.5-coder-text2sql-onnx" category="text2sql">
-      <description>Fine-tuned Qwen 2.5 Coder 1.5B ONNX for Text-to-SQL schema parsing and query synthesis</description>
+      <description>Fine-tuned Qwen 2.5 Coder Text-to-SQL ONNX model for database schema parsing and query synthesis</description>
+      <quantization>int4</quantization>
       <repo_id>spcv/qwen2.5_coder_text2sql_onnx</repo_id>
       <path>models/qwen2.5_coder_text2sql_onnx</path>
       <used_by>
@@ -44,81 +48,126 @@
       </used_by>
     </model>
 
-    <model name="phi3.5-mini-instruct-onnx" category="instruction_parsing">
-      <description>Phi-3.5 Mini Instruct ONNX INT4 CPU optimized</description>
-      <repo_id>microsoft/Phi-3.5-mini-instruct-onnx</repo_id>
-      <path>models/phi-3.5-mini-instruct-onnx</path>
+    <!-- Fine-tuned Math Reasoning Model -->
+    <model name="qwen2.5-math-1.5b-onnx" category="math">
+      <description>Fine-tuned Qwen 2.5 Math 1.5B Instruct ONNX model for symbolic computation and LaTeX math derivation</description>
+      <quantization>int4</quantization>
+      <repo_id>onnx-community/Qwen2.5-Math-1.5B-Instruct</repo_id>
+      <path>models/qwen2.5-math-1.5b-onnx</path>
       <used_by>
-        <agent>slm_document_parser</agent>
-        <agent>slm_web_scraper</agent>
-        <agent>slm_web_agent</agent>
-        <agent>slm_search_orchestrator</agent>
+        <agent>slm_math</agent>
       </used_by>
     </model>
 
-    <model name="moondream2-onnx" category="vision">
-      <description>Moondream2 1.86B lightweight vision-language model for image captioning, OCR, and Visual QA</description>
-      <repo_id>Xenova/moondream2</repo_id>
-      <path>models/moondream2-onnx</path>
+    <!-- Vision & OCR Model -->
+    <model name="qwen2-vl-2b-onnx" category="vision">
+      <description>Qwen2-VL 2B Instruct ONNX model for visual chart parsing, document OCR, and image understanding</description>
+      <quantization>int4</quantization>
+      <repo_id>onnx-community/Qwen2-VL-2B-Instruct</repo_id>
+      <path>models/qwen2-vl-2b-onnx</path>
       <used_by>
         <agent>slm_vision_parser</agent>
       </used_by>
     </model>
 
-    <!-- Voice Agent Audio Sub-Models -->
-    <model name="whisper-tiny-onnx" category="stt">
-      <description>Whisper Tiny ONNX offline speech-to-text audio transcriber</description>
-      <repo_id>onnx-community/whisper-tiny-ONNX</repo_id>
-      <path>models/whisper-tiny-onnx</path>
+    <!-- Voice Speech-to-Text Model -->
+    <model name="whisper-small-onnx" category="stt">
+      <description>Whisper Small ONNX offline speech-to-text audio transcription engine</description>
+      <quantization>int8</quantization>
+      <repo_id>onnx-community/whisper-small</repo_id>
+      <path>models/whisper-small-onnx</path>
       <used_by>
         <agent>slm_voice</agent>
       </used_by>
     </model>
 
-    <model name="kokoro-82m-onnx" category="tts">
-      <description>Kokoro 82M ONNX lightweight text-to-speech voice audio synthesizer</description>
-      <repo_id>onnx-community/Kokoro-82M-ONNX</repo_id>
-      <path>models/kokoro-82m-onnx</path>
-      <used_by>
-        <agent>slm_voice</agent>
-      </used_by>
-    </model>
-
-    <!-- Embeddings & Translation -->
-    <model name="mxbai-embed-large-onnx" category="embeddings">
-      <description>MixedBread AI Embed Large ONNX dense vector embedding model</description>
-      <repo_id>mixedbread-ai/mxbai-embed-large</repo_id>
-      <path>models/mxbai-embed-large-onnx</path>
+    <!-- Dense Vector Embeddings Model -->
+    <model name="all-minilm-l6-v2-onnx" category="embeddings">
+      <description>all-MiniLM-L6-v2 ONNX dense vector embedding model for fast CPU semantic search</description>
+      <quantization>int8</quantization>
+      <repo_id>onnx-community/all-MiniLM-L6-v2-ONNX</repo_id>
+      <path>models/all-minilm-l6-v2-onnx</path>
       <used_by>
         <agent>slm_embeddings</agent>
-        <agent>slm_rag</agent>
       </used_by>
     </model>
 
-    <model name="nllb-200-indic" category="translation">
-      <description>NLLB-200 / IndicTrans2 multilingual neural translation engine</description>
-      <repo_id>facebook/nllb-200-distilled-600M</repo_id>
-      <path>models/nllb-200-indic</path>
+    <!-- Cross-Encoder Reranker Model -->
+    <model name="bge-reranker-base-onnx" category="reranking">
+      <description>BGE Reranker Base ONNX cross-encoder model for search result scoring</description>
+      <quantization>int8</quantization>
+      <repo_id>onnx-community/bge-reranker-base-ONNX</repo_id>
+      <path>models/bge-reranker-base-onnx</path>
+      <used_by>
+        <agent>slm_search_orchestrator</agent>
+      </used_by>
+    </model>
+
+    <!-- RAG & Meeting Summarization Model -->
+    <model name="llama-3.2-3b-onnx" category="rag_summarization">
+      <description>Llama 3.2 3B Instruct ONNX INT4 model for grounded retrieval and meeting synthesis</description>
+      <quantization>int4</quantization>
+      <repo_id>onnx-community/Llama-3.2-3B-Instruct</repo_id>
+      <path>models/llama-3.2-3b-onnx</path>
+      <used_by>
+        <agent>slm_rag</agent>
+        <agent>slm_meeting</agent>
+      </used_by>
+    </model>
+
+    <!-- Abstractive Summarizer Model -->
+    <model name="llama-3.2-1b-onnx" category="summarization">
+      <description>Llama 3.2 1B Instruct ONNX model for abstractive executive summarization</description>
+      <quantization>int4</quantization>
+      <repo_id>onnx-community/Llama-3.2-1B-Instruct-ONNX</repo_id>
+      <path>models/llama-3.2-1b-onnx</path>
+      <used_by>
+        <agent>slm_summarizer</agent>
+      </used_by>
+    </model>
+
+    <!-- Specialized Technical Agent Model (CLI, Data, Security, Git, DB Migration, Web Agent) -->
+    <model name="qwen2.5-coder-1.5b-onnx" category="technical_specialized">
+      <description>Qwen2.5 Coder 1.5B Instruct ONNX INT4 model for CLI, Data, Security, and Git tasks</description>
+      <quantization>int4</quantization>
+      <repo_id>onnx-community/Qwen2.5-Coder-1.5B-Instruct</repo_id>
+      <path>models/qwen2.5-coder-1.5b-onnx</path>
+      <used_by>
+        <agent>slm_cli_agent</agent>
+        <agent>slm_data</agent>
+        <agent>slm_db_migration</agent>
+        <agent>slm_security</agent>
+        <agent>slm_git_repo_manager</agent>
+        <agent>slm_web_agent</agent>
+      </used_by>
+    </model>
+
+    <!-- Multilingual Translation & Document Processing Model -->
+    <model name="qwen2.5-1.5b-onnx" category="multilingual_document">
+      <description>Qwen2.5 1.5B Instruct ONNX model for translation, PDF, PKB, and Email</description>
+      <quantization>int4</quantization>
+      <repo_id>onnx-community/Qwen2.5-1.5B-Instruct</repo_id>
+      <path>models/qwen2.5-1.5b-onnx</path>
       <used_by>
         <agent>slm_translation</agent>
+        <agent>slm_document_parser</agent>
+        <agent>slm_email</agent>
+        <agent>slm_pdf</agent>
+        <agent>slm_pkb</agent>
       </used_by>
     </model>
 
-    <model name="llama-guard-3-1b-onnx" category="security">
-      <description>Llama Guard 3 1B ONNX safety and prompt injection scanner</description>
-      <repo_id>onnx-community/Llama-Guard-3-1B-ONNX</repo_id>
-      <path>models/llama-guard-3-1b-onnx</path>
+    <!-- Fast Core SLM Engine -->
+    <model name="qwen3.5-0.8b-onnx" category="llm_core">
+      <description>Qwen 3.5 0.8B ONNX INT4 model for task planning, JSON cleaning, memory, and web scraping</description>
+      <quantization>int4</quantization>
+      <repo_id>onnx-community/Qwen3.5-0.8B-ONNX</repo_id>
+      <path>models/qwen3.5-0.8b-onnx</path>
       <used_by>
-        <agent>slm_security</agent>
-      </used_by>
-    </model>
-
-    <model name="mem0-tiny-onnx" category="memory">
-      <description>Mem0 Tiny ONNX conversation state and entity graph memory manager</description>
-      <repo_id>mem0/mem0-tiny-onnx</repo_id>
-      <path>models/mem0-tiny-onnx</path>
-      <used_by>
+        <agent>slm_task_planner</agent>
+        <agent>slm_json_cleaner</agent>
         <agent>slm_memory</agent>
+        <agent>slm_web_scraper</agent>
       </used_by>
     </model>
   </models>

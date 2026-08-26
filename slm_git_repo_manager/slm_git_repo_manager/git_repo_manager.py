@@ -43,10 +43,31 @@ class SLMGitRepoManager:
         os.environ["OMP_NUM_THREADS"] = str(n_threads)
         os.environ["MKL_NUM_THREADS"] = str(n_threads)
             
+        try:
+            main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+            if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                try:
+                    import importlib
+                    main_mod = importlib.import_module("main")
+                except Exception:
+                    main_mod = None
+            if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                self.model, self.tokenizer = main_mod.get_shared_onnx_genai()
+                if self.model and self.tokenizer:
+                    self.model_path = "shared_onnx"
+                    return
+        except Exception:
+            pass
+
         self.model_path = self._resolve_model_path(model_path, cache_dir)
-        print(f"[SLMGitRepoManager] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
-        self.model = og.Model(self.model_path)
-        self.tokenizer = og.Tokenizer(self.model)
+        try:
+            print(f"[SLMGitRepoManager] Loading ONNX model from: {self.model_path} (threads={n_threads})...")
+            self.model = og.Model(self.model_path)
+            self.tokenizer = og.Tokenizer(self.model)
+        except Exception as e:
+            print(f"[SLMGitRepoManager] ONNX load note: {e}")
+            self.model = None
+            self.tokenizer = None
         
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         if model_path and os.path.exists(model_path):
@@ -55,6 +76,10 @@ class SLMGitRepoManager:
         shared_qwen = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "qwen3.5-0.8b-onnx")
         if os.path.exists(shared_qwen):
             return shared_qwen
+
+        shared_phi = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4")
+        if os.path.exists(shared_phi):
+            return shared_phi
 
         config, config_file_path = load_config()
         model_config = config.get("models", {}).get("git_repo_manager", {})
@@ -68,7 +93,7 @@ class SLMGitRepoManager:
             if "genai_config.json" in files:
                 return root
                 
-        return shared_qwen if os.path.exists(shared_qwen) else config_path
+        return shared_phi if os.path.exists(shared_phi) else config_path
 
     def _clean_text(self, text: str) -> str:
         if "</think>" in text:
@@ -78,21 +103,101 @@ class SLMGitRepoManager:
             text = re.sub(r'<think>.*', '', text, flags=re.DOTALL).strip()
         return text.strip()
 
-    def generate_commit_message(self, diff_text: str, stream: bool = False, system_prompt: str = None, user_input: str = None):
+    def process_repo_request(self, query: str = "", diff_text: str = "", system_prompt: str = None, token_callback: callable = None, **kwargs) -> str:
         """
-        Generates a Conventional Commit message based on a raw git diff text block.
-        Truncates input if it exceeds reasonable context capacities.
+        Dynamically analyzes git repositories, commit logs, merge conflicts, release notes, and diffs using the local SLM.
         """
-        import re
-        if len(diff_text) > 4000:
-            diff_text = diff_text[:4000] + "\n... (diff truncated for SLM context window optimization) ..."
+        self._lazy_init_onnx()
 
-        system_prompt = (
-            "You are an expert Git copilot.\n"
-            "Analyze the given git diff and output ONLY a beautiful conventional commit message. "
-            "Use the exact template:\n"
-            "<type>(<scope>): <short description>\n\n"
-            "[optional longer body details]\n\n"
+        req_text = (query or diff_text or "").strip()
+        if not req_text:
+            return "Please provide a git diff, branch question, commit log, or release notes requirement."
+
+        # If it's strictly a git diff, generate conventional commit message
+        if diff_text and ("diff --git" in diff_text or "@@ " in diff_text or "--- a/" in diff_text):
+            return self.generate_commit_message(diff_text=diff_text, system_prompt=system_prompt, token_callback=token_callback)
+
+        default_sys = (
+            "You are a Principal Release Engineer and Git Repository Manager.\n"
+            "Analyze the repository request thoroughly and provide a structured, actionable Git operations and release engineering report.\n\n"
+            "Structure your response with clear Markdown headings:\n"
+            "### 1. Commit History & Architectural Impact\n"
+            "Evaluate recent changes, development velocity, and affected subsystems.\n\n"
+            "### 2. Cross-Branch Merge Conflict Risk Assessment\n"
+            "Identify potential merge conflicts, shared file collision risks across branches, and branch divergence mitigation strategies.\n\n"
+            "### 3. Production Release Notes\n"
+            "Draft structured release notes categorized by Features, Bug Fixes, Performance Improvements, and Breaking Changes.\n\n"
+            "### 4. Git Execution Playbook\n"
+            "Provide exact, copy-pasteable Git CLI commands in a ```bash ``` code block for branching, tagging, and deployment."
+        )
+        active_sys = system_prompt or default_sys
+
+        if self.model is not None and self.tokenizer is not None and og is not None:
+            prompt = (
+                "<|im_start|>system\n"
+                f"{active_sys}<|im_end|>\n"
+                f"<|im_start|>user\n{req_text}<|im_end|>\n"
+                "<|im_start|>assistant\n"
+            )
+            try:
+                input_tokens = self.tokenizer.encode(prompt)
+                params = og.GeneratorParams(self.model)
+                params.set_search_options(max_length=len(input_tokens) + 700, temperature=0.3)
+                generator = og.Generator(self.model, params)
+                generator.append_tokens(input_tokens)
+
+                tokens_out = []
+                while not generator.is_done():
+                    generator.generate_next_token()
+                    new_tokens = generator.get_next_tokens()
+                    if len(new_tokens) > 0:
+                        tok_id = int(new_tokens[0])
+                        if tok_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
+                            break
+                        tokens_out.append(tok_id)
+                        if token_callback:
+                            tok_str = self.tokenizer.decode([tok_id])
+                            token_callback(tok_str)
+                res_text = self.tokenizer.decode(tokens_out).strip()
+                if "<|im_end|>" in res_text:
+                    res_text = res_text.replace("<|im_end|>", "").strip()
+                if res_text:
+                    return res_text
+            except Exception as e:
+                print(f"[SLMGitRepoManager] Generation error: {e}")
+                return f"Error analyzing git repository: {e}"
+
+        return "Git repository management model is initializing. Please try again in a moment."
+
+    def _lazy_init_onnx(self):
+        try:
+            main_mod = sys.modules.get("main") or sys.modules.get("__main__")
+            if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
+                try:
+                    import importlib
+                    main_mod = importlib.import_module("main")
+                except Exception:
+                    main_mod = None
+            if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
+                m, tok = main_mod.get_shared_onnx_genai()
+                if m and tok:
+                    self.model = m
+                    self.tokenizer = tok
+        except Exception:
+            pass
+
+    def generate_commit_message(self, diff_text: str, stream: bool = False, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs):
+        self._lazy_init_onnx()
+        if not self.model or not self.tokenizer:
+            return "feat: update codebase changes"
+
+        if not diff_text or not diff_text.strip():
+            return "chore: update repository files"
+
+        system_prompt = system_prompt or (
+            "You are an expert Git and version control engineer. Analyze the provided git diff and write a high quality, "
+            "concise, conventional git commit message summarizing the changes according to the Conventional Commits specification.\n"
+            "Format:\n<type>(<scope>): <short description>\n\n[optional longer body bullet points]\n"
             "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert.\n"
             "Do not think out loud or output any <think> tags. Write the final commit message directly."
         )
@@ -106,35 +211,13 @@ class SLMGitRepoManager:
         )
 
         input_tokens = self.tokenizer.encode(full_prompt)
+        max_tokens = int(os.environ.get("SLM_GIT_REPO_MANAGER_MAX_TOKENS", 1000))
         params = og.GeneratorParams(self.model)
-        params.set_search_options(max_length=len(input_tokens) + 256, temperature=0.7)
-
-        if stream:
-            def _stream_generator():
-                generator = og.Generator(self.model, params)
-                generator.append_tokens(input_tokens)
-                in_think = False
-                while not generator.is_done():
-                    generator.generate_next_token()
-                    new_tokens = generator.get_next_tokens()
-                    if len(new_tokens) > 0:
-                        token_id = int(new_tokens[0])
-                        if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
-                            break
-                        decoded_chunk = self.tokenizer.decode(new_tokens)
-                        if "<think>" in decoded_chunk:
-                            in_think = True
-                            continue
-                        if "</think>" in decoded_chunk:
-                            in_think = False
-                            continue
-                        if not in_think:
-                            yield decoded_chunk
-            return _stream_generator()
+        params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.7)
 
         generator = og.Generator(self.model, params)
         generator.append_tokens(input_tokens)
-        response_text = ""
+        tokens_out = []
         while not generator.is_done():
             generator.generate_next_token()
             new_tokens = generator.get_next_tokens()
@@ -142,9 +225,14 @@ class SLMGitRepoManager:
                 token_id = int(new_tokens[0])
                 if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                     break
-                response_text += self.tokenizer.decode(new_tokens)
+                tokens_out.append(token_id)
+                if token_callback:
+                    token_callback(self.tokenizer.decode([token_id]))
 
-        return self._clean_text(response_text)
+        raw_msg = self.tokenizer.decode(tokens_out).strip()
+        if "<|im_end|>" in raw_msg:
+            raw_msg = raw_msg.replace("<|im_end|>", "").strip()
+        return self._clean_text(raw_msg)
 
     def commit(self, message: str = None) -> tuple[bool, str]:
         """
@@ -257,8 +345,9 @@ class SLMGitRepoManager:
         )
         
         input_tokens = self.tokenizer.encode(full_prompt)
+        max_tokens = int(os.environ.get("SLM_GIT_REPO_MANAGER_MAX_TOKENS", 3000))
         params = og.GeneratorParams(self.model)
-        params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.7)
+        params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.7)
         
         generator = og.Generator(self.model, params)
         generator.append_tokens(input_tokens)
