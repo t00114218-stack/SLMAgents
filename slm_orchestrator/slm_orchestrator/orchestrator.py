@@ -288,7 +288,10 @@ class SLMOrchestrator:
         q_lower = (question or "").lower().strip()
         history = kwargs.get("history") or []
         
-        # Contextual & Direct Action Follow-up Handler for App Building, Python & Coding
+        # Fast Intent Dispatchers (0ms instant routing for unambiguous intents)
+        if any(kw in q_lower for kw in ["summarize", "summary", "summarizer", "tldr", "tl;dr", "financial report", "key takeaways", "bullet point summary", "give me a summary"]):
+            if "SLMSummarizer" in agent_names:
+                return "SLMSummarizer"
         if any(kw in q_lower for kw in ["python", "code", "script", "fibonacci", "algorithm", "function", "build", "build thos", "build this", "complete app", "code it", "implement", "create script", "write code", "develop"]):
             if "SLMCodeInterpreter" in agent_names:
                 return "SLMCodeInterpreter"

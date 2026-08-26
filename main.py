@@ -95,8 +95,8 @@ if FastAPI is not None:
 else:
     app = None
 
-# Resolve default high-precision reasoning model (Qwen 3.5 0.8B INT4 ONNX) path
-MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen3.5-0.8b-onnx")
+# Resolve default high-precision reasoning model (Qwen 2.5 Coder ONNX) path
+MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen2.5_coder_text2sql_onnx")
 
 # Global instances for ONNX runtime model sharing
 shared_model = None
@@ -129,13 +129,13 @@ class Qwen35ONNXModel:
             os.path.join(self.model_dir, "model.onnx")
         ]
         dec_candidates = [
-            os.path.join(self.model_dir, "model.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_quantized.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_q4.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_int4.onnx"),
             os.path.join(self.model_dir, "onnx", "model_quantized.onnx"),
             os.path.join(self.model_dir, "onnx", "model_q4.onnx"),
             os.path.join(self.model_dir, "decoder_model_merged_quantized.onnx"),
+            os.path.join(self.model_dir, "model.onnx"),
         ]
         
         embed_path = next((p for p in embed_candidates if os.path.exists(p)), None)
@@ -350,17 +350,27 @@ def get_shared_onnx_genai():
     if shared_model is None:
         has_model_weights = os.path.exists(os.path.join(MODEL_PATH, "genai_config.json")) or any(os.path.exists(os.path.join(MODEL_PATH, f)) for f in ["model.onnx", "model_q4.onnx"]) or any(os.path.exists(os.path.join(MODEL_PATH, "onnx", f)) for f in ["decoder_model_merged_quantized.onnx", "decoder_model_merged_q4.onnx", "model_q4.onnx", "model_quantized.onnx"])
         if not has_model_weights:
-            print(f"[System] Qwen 3.5 0.8B ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen3.5-0.8B-ONNX...")
+            print(f"[System] ONNX model not found at {MODEL_PATH}. Downloading spcv/qwen2.5_coder_text2sql_onnx...")
             if snapshot_download is not None:
                 snapshot_download(
-                    repo_id="onnx-community/Qwen3.5-0.8B-ONNX",
+                    repo_id="spcv/qwen2.5_coder_text2sql_onnx",
                     local_dir=MODEL_PATH,
                 )
+
+        # 1. Native High-Performance onnxruntime-genai C++ Engine (Primary)
+        if os.path.exists(os.path.join(MODEL_PATH, "genai_config.json")) or os.path.exists(os.path.join(MODEL_PATH, "model.onnx")):
+            try:
+                import onnxruntime_genai as native_og
+                shared_model = native_og.Model(MODEL_PATH)
+                shared_tokenizer = native_og.Tokenizer(shared_model)
+                print(f"[System] ✅ Native onnxruntime-genai C++ engine initialized from: {MODEL_PATH}")
+                return shared_model, shared_tokenizer
+            except Exception as e:
+                print(f"[System] Native ONNX GenAI fallback note: {e}")
             
-        print(f"[System] Initializing shared INT4 Quantized Qwen 3.5 0.8B ONNX model from: {MODEL_PATH}...")
+        print(f"[System] Initializing shared INT4 Quantized ONNX fallback model from: {MODEL_PATH}...")
 
         shared_model = Qwen35ONNXModel(MODEL_PATH)
-
         shared_tokenizer = Qwen35ONNXTokenizer(shared_model)
         
         class MockModel:
@@ -395,6 +405,7 @@ def get_shared_onnx_genai():
             sys.modules["onnxruntime_genai"].Generator = MockGenerator
         print("[System] Monkeypatched onnxruntime_genai classes globally with Qwen 3.5 0.8B ONNX runner successfully.")
     return shared_model, shared_tokenizer
+
 
 shared_orchestrator = None
 orchestrator_lock = threading.Lock()
