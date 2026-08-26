@@ -233,12 +233,6 @@ class SLMOrchestrator:
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
             return os.path.abspath(model_path)
 
-        shared_phi = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4")
-        if os.path.exists(shared_phi):
-            return shared_phi
-
-
-
         # Check config.yaml
         config, config_file_path = load_config()
         model_config = config.get("models", {}).get("orchestrator")

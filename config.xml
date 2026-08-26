@@ -20,11 +20,11 @@
     </model>
 
     <!-- Primary High-Precision Reasoning, RAG & Coding Model -->
-    <model name="qwen2.5-coder-3b-onnx" category="core_rag_code">
-      <description>Qwen2.5 Coder 3B Instruct ONNX INT4 model for RAG PDF Chat, Orchestrator reasoning, and Code synthesis</description>
+    <model name="qwen3.5-0.8b-onnx" category="core_rag_code">
+      <description>Qwen 3.5 0.8B Instruct ONNX INT4 model for RAG PDF Chat, Orchestrator reasoning, and Code synthesis</description>
       <quantization>int4</quantization>
-      <repo_id>onnx-community/Qwen2.5-Coder-3B-Instruct</repo_id>
-      <path>models/qwen2.5-coder-3b-onnx</path>
+      <repo_id>onnx-community/Qwen3.5-0.8B-ONNX</repo_id>
+      <path>models/qwen3.5-0.8b-onnx</path>
       <used_by>
         <agent>slm_rag</agent>
         <agent>slm_orchestrator</agent>

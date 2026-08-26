@@ -95,12 +95,8 @@ if FastAPI is not None:
 else:
     app = None
 
-# Resolve default high-precision RAG model (Qwen 2.5 Coder 3B ONNX Instruct) path
-MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen2.5-coder-3b-onnx")
-
-
-
-
+# Resolve default high-precision reasoning model (Qwen 3.5 0.8B INT4 ONNX) path
+MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen3.5-0.8b-onnx")
 
 # Global instances for ONNX runtime model sharing
 shared_model = None
@@ -124,26 +120,41 @@ class Qwen35ONNXModel:
         opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
         opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         
-        # Prioritize INT4 / Q4 quantized weights across all agents
+        # Robust candidate resolution for INT4 / Q4 quantized weights
         embed_candidates = [
+            os.path.join(self.model_dir, "onnx", "embed_tokens_quantized.onnx"),
             os.path.join(self.model_dir, "onnx", "embed_tokens_q4.onnx"),
             os.path.join(self.model_dir, "onnx", "embed_tokens_int4.onnx"),
-            os.path.join(self.model_dir, "onnx", "embed_tokens_quantized.onnx"),
             os.path.join(self.model_dir, "embed_tokens_quantized.onnx"),
             os.path.join(self.model_dir, "model.onnx")
         ]
         dec_candidates = [
-            os.path.join(self.model_dir, "onnx", "model_q4.onnx"),
-            os.path.join(self.model_dir, "onnx", "model_quantized.onnx"),
+            os.path.join(self.model_dir, "model.onnx"),
+            os.path.join(self.model_dir, "onnx", "decoder_model_merged_quantized.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_q4.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_int4.onnx"),
-            os.path.join(self.model_dir, "onnx", "decoder_model_merged_quantized.onnx"),
+            os.path.join(self.model_dir, "onnx", "model_quantized.onnx"),
+            os.path.join(self.model_dir, "onnx", "model_q4.onnx"),
             os.path.join(self.model_dir, "decoder_model_merged_quantized.onnx"),
-            os.path.join(self.model_dir, "model.onnx")
         ]
         
         embed_path = next((p for p in embed_candidates if os.path.exists(p)), None)
-        dec_path = next((p for p in dec_candidates if os.path.exists(p)), dec_candidates[0])
+        dec_path = next((p for p in dec_candidates if os.path.exists(p)), None)
+        
+        # Fallback: scan model_dir recursively for any valid .onnx files
+        if not dec_path:
+            for root, dirs, files in os.walk(self.model_dir):
+                for f in files:
+                    if f.endswith(".onnx") and not f.endswith(".onnx.data") and not f.endswith(".onnx_data"):
+                        full_p = os.path.join(root, f)
+                        if "embed" in f.lower():
+                            if not embed_path:
+                                embed_path = full_p
+                        elif not dec_path or any(q in f.lower() for q in ["quant", "q4", "int4", "merged", "model"]):
+                            dec_path = full_p
+                            
+        if not dec_path:
+            raise FileNotFoundError(f"Could not locate any valid ONNX model file in: {self.model_dir}")
         
         print(f"[System] Loading INT4 Quantized ONNX model weights: {dec_path}")
         self.dec_sess = ort.InferenceSession(dec_path, opts, providers=["CPUExecutionProvider"])
@@ -179,7 +190,8 @@ class Qwen35ONNXTokenizer:
         self._tokenizer = Tokenizer.from_file(tok_path)
     
     def encode(self, text):
-        return self._tokenizer.encode(text).ids
+        ids = self._tokenizer.encode(text).ids
+        return [min(i, 151645) if i > 151935 else i for i in ids]
         
     def decode(self, token_ids):
         if isinstance(token_ids, int):
@@ -213,7 +225,10 @@ class Qwen35ONNXGenerator:
     def append_tokens(self, tokens):
         if np is None:
             return
-        self.tokens_history.extend(tokens)
+        if isinstance(tokens, int):
+            tokens = [tokens]
+        clean_tokens = [min(int(t), 151645) if int(t) > 151935 else int(t) for t in tokens]
+        self.tokens_history.extend(clean_tokens)
         input_ids = np.array([self.tokens_history], dtype=np.int64)
         seq_len = input_ids.shape[1]
         
@@ -261,52 +276,67 @@ class Qwen35ONNXGenerator:
             self.finish_reason = "length"
             self.next_tokens = []
             return
-            
         if self.step > 0:
             next_token = self.next_tokens[0]
             cur_pos = len(self.tokens_history)
             self.tokens_history.append(next_token)
+            clamped_token = min(int(next_token), 151645) if int(next_token) > 151935 else int(next_token)
             
             if "inputs_embeds" in self.model.dec_input_names:
-                next_embed = self.model.embed_sess.run(None, {"input_ids": np.array([[next_token]], dtype=np.int64)})[0]
+                next_embed = self.model.embed_sess.run(None, {"input_ids": np.array([[clamped_token]], dtype=np.int64)})[0]
                 self.dec_inputs["inputs_embeds"] = next_embed
             else:
-                self.dec_inputs["input_ids"] = np.array([[next_token]], dtype=np.int64)
+                self.dec_inputs["input_ids"] = np.array([[clamped_token]], dtype=np.int64)
                 
             self.dec_inputs["attention_mask"] = np.ones((1, cur_pos + 1), dtype=np.int64)
+            pos_ids = np.repeat(np.array([[[cur_pos]]], dtype=np.int64), 3, axis=0)
             if "position_ids" in self.model.dec_input_names:
-                self.dec_inputs["position_ids"] = np.repeat(np.array([[[cur_pos]]], dtype=np.int64), 3, axis=0)
-            
+                self.dec_inputs["position_ids"] = pos_ids
+                
             # Fast zero-overhead KV cache pointer update using pre-computed kv_mappings
             last_outputs = self.last_outputs
             dec_inputs = self.dec_inputs
             for idx, past_name in self.model.kv_mappings:
                 dec_inputs[past_name] = last_outputs[idx]
                     
-        self.last_outputs = self.model.dec_sess.run(None, self.dec_inputs)
-        logits = self.last_outputs[0]
-        tok = int(np.argmax(logits[0, -1, :]))
-        
-        EOS_SET = {
-            151643, 151645, 248046, 248044, 248045, # Qwen 2.5 / 3.5 ChatML (<|endoftext|>, <|im_end|>)
-            32000, 32007, 107, 128001, 128009    # Phi-3.5 / Llama EOS tokens
-        }
-        
-        tok_text = ""
-        if shared_tokenizer is not None:
-            try:
-                tok_text = shared_tokenizer.decode([tok])
-            except Exception:
-                tok_text = ""
-                
-        if tok in EOS_SET or "<|im_end|>" in tok_text or "<|endoftext|>" in tok_text or "</s>" in tok_text:
-            self.done = True
-            self.finish_reason = "eos"
-            self.next_tokens = []
+            self.last_outputs = self.model.dec_sess.run(None, self.dec_inputs)
         else:
-            self.next_tokens = [tok]
-            self.step += 1
-
+            self.last_outputs = self.model.dec_sess.run(None, self.dec_inputs)
+            
+        logits = self.last_outputs[0]
+        next_token_logits = logits[0, -1, :]
+        
+        # Apply temperature and repetition penalty
+        temp = self.params.search_options.get("temperature", 0.7) if self.params and hasattr(self.params, "search_options") else 0.7
+        rep_penalty = self.params.search_options.get("repetition_penalty", 1.0) if self.params and hasattr(self.params, "search_options") else 1.0
+        
+        if rep_penalty != 1.0 and len(self.tokens_history) > 0:
+            for past_tok in set(self.tokens_history):
+                if past_tok < len(next_token_logits):
+                    if next_token_logits[past_tok] < 0:
+                        next_token_logits[past_tok] *= rep_penalty
+                    else:
+                        next_token_logits[past_tok] /= rep_penalty
+                        
+        if temp > 0.01:
+            scaled_logits = next_token_logits / temp
+            exp_logits = np.exp(scaled_logits - np.max(scaled_logits))
+            probs = exp_logits / np.sum(exp_logits)
+            next_token = int(np.random.choice(len(probs), p=probs))
+        else:
+            next_token = int(np.argmax(next_token_logits))
+            
+        self.next_tokens = [next_token]
+        self.step += 1
+        
+        # Check standard EOS stop tokens
+        if next_token in (
+            151643, 151645, 248046, 248044, 248045, # Qwen 2.5 / 3.5 ChatML (<|endoftext|>, <|im_end|>)
+            32000, 32007, # Phi-3.5 (<|end|>, <|endoftext|>)
+            128001, 128009 # Llama 3.2 (<|end_of_text|>, <|eot_id|>)
+        ):
+            self.done = True
+            self.finish_reason = "stop"
 
     def compute_logits(self):
         # Compatibility with callers written for onnxruntime-genai's two-step API.
@@ -318,28 +348,16 @@ class Qwen35ONNXGenerator:
 def get_shared_onnx_genai():
     global shared_model, shared_tokenizer
     if shared_model is None:
-        if os.path.exists(os.path.join(MODEL_PATH, "genai_config.json")) or os.path.exists(os.path.join(MODEL_PATH, "model.onnx")):
-            print(f"[System] Loading native ONNX GenAI model from: {MODEL_PATH}...")
-            try:
-                import onnxruntime_genai as native_og
-                shared_model = native_og.Model(MODEL_PATH)
-                shared_tokenizer = native_og.Tokenizer(shared_model)
-                print("[System] ✅ Native onnxruntime-genai model loaded successfully!")
-                return shared_model, shared_tokenizer
-            except Exception as e:
-                print(f"[System] Native ONNX GenAI load note: {e}")
-
-
-        has_int4_weights = os.path.exists(os.path.join(MODEL_PATH, "genai_config.json")) or any(os.path.exists(os.path.join(MODEL_PATH, f)) for f in ["model.onnx", "model_q4.onnx"]) or any(os.path.exists(os.path.join(MODEL_PATH, "onnx", f)) for f in ["model_q4.onnx", "model_quantized.onnx"])
-        if not has_int4_weights:
-            print(f"[System] Phi-3.5-mini-Instruct ONNX model not found at {MODEL_PATH}. Downloading microsoft/Phi-3.5-mini-instruct-onnx...")
+        has_model_weights = os.path.exists(os.path.join(MODEL_PATH, "genai_config.json")) or any(os.path.exists(os.path.join(MODEL_PATH, f)) for f in ["model.onnx", "model_q4.onnx"]) or any(os.path.exists(os.path.join(MODEL_PATH, "onnx", f)) for f in ["decoder_model_merged_quantized.onnx", "decoder_model_merged_q4.onnx", "model_q4.onnx", "model_quantized.onnx"])
+        if not has_model_weights:
+            print(f"[System] Qwen 3.5 0.8B ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen3.5-0.8B-ONNX...")
             if snapshot_download is not None:
                 snapshot_download(
-                    repo_id="microsoft/Phi-3.5-mini-instruct-onnx",
+                    repo_id="onnx-community/Qwen3.5-0.8B-ONNX",
                     local_dir=MODEL_PATH,
                 )
             
-        print(f"[System] Initializing shared INT4 Quantized Phi-3.5-mini 3.8B ONNX model from: {MODEL_PATH}...")
+        print(f"[System] Initializing shared INT4 Quantized Qwen 3.5 0.8B ONNX model from: {MODEL_PATH}...")
 
         shared_model = Qwen35ONNXModel(MODEL_PATH)
 

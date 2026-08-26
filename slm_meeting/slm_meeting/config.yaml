@@ -1,5 +1,5 @@
 models:
   meeting:
-    path: ../../models/qwen2.5-coder-3b-onnx
-    repo_id: onnx-community/Qwen2.5-Coder-3B-Instruct
+    path: ../../models/qwen3.5-0.8b-onnx
+    repo_id: "local/qwen3.5-0.8b-onnx"
 
