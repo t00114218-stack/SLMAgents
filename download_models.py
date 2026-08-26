@@ -4,10 +4,14 @@ from huggingface_hub import snapshot_download
 # Defined HuggingFace ONNX model catalog for build-time caching (< 1.5GB total, CPU execution)
 AGENT_MODELS = [
     {
-        "name": "Qwen 2.5 Coder Text-to-SQL & Core Reasoning ONNX (Primary Engine)",
-        "repo": "spcv/qwen2.5_coder_text2sql_onnx",
-        "dir": "qwen2.5_coder_text2sql_onnx",
-        "allow_patterns": ["*"]
+        "name": "Qwen 3.5 0.8B ONNX (Primary Core Engine)",
+        "repo": "onnx-community/Qwen3.5-0.8B-ONNX",
+        "dir": "qwen3.5-0.8b-onnx",
+        "allow_patterns": [
+            "config.json", "generation_config.json", "tokenizer.json",
+            "tokenizer_config.json", "vocab.json", "merges.txt", "chat_template.jinja", "genai_config.json",
+            "model.onnx", "model_q4.onnx", "onnx/*"
+        ]
     },
     {
         "name": "all-MiniLM-L6-v2 ONNX (Embeddings engine)",
@@ -16,6 +20,7 @@ AGENT_MODELS = [
         "allow_patterns": ["*"]
     }
 ]
+
 
 
 def main():

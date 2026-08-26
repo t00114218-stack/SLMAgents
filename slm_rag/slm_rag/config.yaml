@@ -1,5 +1,6 @@
 models:
   rag:
-    path: ../../models/qwen2.5_coder_text2sql_onnx
-    repo_id: "spcv/qwen2.5_coder_text2sql_onnx"
+    path: ../../models/qwen3.5-0.8b-onnx
+    repo_id: "onnx-community/Qwen3.5-0.8B-ONNX"
+
 

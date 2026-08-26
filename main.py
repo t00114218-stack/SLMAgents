@@ -95,8 +95,9 @@ if FastAPI is not None:
 else:
     app = None
 
-# Resolve default high-precision reasoning model (Qwen 2.5 Coder ONNX) path
-MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen2.5_coder_text2sql_onnx")
+# Resolve default high-precision reasoning model (Qwen 3.5 0.8B INT4 ONNX) path
+MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen3.5-0.8b-onnx")
+
 
 # Global instances for ONNX runtime model sharing
 shared_model = None
@@ -350,10 +351,10 @@ def get_shared_onnx_genai():
     if shared_model is None:
         has_model_weights = os.path.exists(os.path.join(MODEL_PATH, "genai_config.json")) or any(os.path.exists(os.path.join(MODEL_PATH, f)) for f in ["model.onnx", "model_q4.onnx"]) or any(os.path.exists(os.path.join(MODEL_PATH, "onnx", f)) for f in ["decoder_model_merged_quantized.onnx", "decoder_model_merged_q4.onnx", "model_q4.onnx", "model_quantized.onnx"])
         if not has_model_weights:
-            print(f"[System] ONNX model not found at {MODEL_PATH}. Downloading spcv/qwen2.5_coder_text2sql_onnx...")
+            print(f"[System] ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen3.5-0.8B-ONNX...")
             if snapshot_download is not None:
                 snapshot_download(
-                    repo_id="spcv/qwen2.5_coder_text2sql_onnx",
+                    repo_id="onnx-community/Qwen3.5-0.8B-ONNX",
                     local_dir=MODEL_PATH,
                 )
 
