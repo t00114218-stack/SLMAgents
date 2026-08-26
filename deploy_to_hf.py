@@ -44,7 +44,7 @@ def main():
             os.remove(bin_path)
 
     # Copy root config files
-    for config_file in ["Dockerfile", "requirements.txt", ".dockerignore", "main.py", "README.md", "config.xml"]:
+    for config_file in ["Dockerfile", "requirements.txt", ".dockerignore", "main.py", "README.md", "config.xml", "download_models.py"]:
         if os.path.exists(config_file):
             shutil.copy(config_file, os.path.join(temp_dir, config_file))
 

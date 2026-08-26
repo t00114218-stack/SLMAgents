@@ -21,6 +21,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy the rest of the monorepo codebase
 COPY . .
 
+# Pre-download verified ONNX models into the Docker image filesystem at build time
+RUN python3 download_models.py
+
 # Expose Hugging Face Space port
 EXPOSE 7860
 

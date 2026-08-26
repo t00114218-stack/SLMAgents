@@ -4,31 +4,15 @@ from huggingface_hub import snapshot_download
 # Defined HuggingFace ONNX model catalog for each agent domain (< 6GB, CPU execution)
 AGENT_MODELS = [
     {
-        "name": "Qwen 3.5 0.8B ONNX (Primary engine for task planner, memory, json cleaner, scraper)",
-        "repo": "onnx-community/Qwen3.5-0.8B-ONNX",
-        "dir": "qwen3.5-0.8b-onnx",
-        "allow_patterns": [
-            "config.json", "generation_config.json", "tokenizer.json",
-            "tokenizer_config.json", "chat_template.jinja",
-            "onnx/decoder_model_merged_quantized.*", "onnx/embed_tokens_quantized.*"
-        ]
-    },
-    {
-        "name": "Phi 3.5 Mini INT4 AWQ ONNX (Orchestrator engine)",
-        "repo": "microsoft/Phi-3.5-mini-instruct-onnx",
-        "dir": "phi-3.5-mini-instruct-onnx",
-        "allow_patterns": ["cpu_and_mobile/cpu-int4-awq-block-128-acc-level-4/*"]
-    },
-    {
-        "name": "Qwen 2.5 Coder 3B ONNX (Code Interpreter engine)",
-        "repo": "onnx-community/Qwen2.5-Coder-3B-Instruct",
-        "dir": "qwen2.5-coder-3b-onnx",
-        "allow_patterns": ["*.json", "onnx/*"]
-    },
-    {
-        "name": "Qwen 2.5 Coder Text-to-SQL ONNX (Text-to-SQL engine)",
+        "name": "Qwen 2.5 Coder Text-to-SQL & Core Reasoning ONNX (Primary Engine)",
         "repo": "spcv/qwen2.5_coder_text2sql_onnx",
         "dir": "qwen2.5_coder_text2sql_onnx",
+        "allow_patterns": ["*"]
+    },
+    {
+        "name": "all-MiniLM-L6-v2 ONNX (Embeddings engine)",
+        "repo": "onnx-community/all-MiniLM-L6-v2-ONNX",
+        "dir": "all-minilm-l6-v2-onnx",
         "allow_patterns": ["*"]
     },
     {
@@ -36,12 +20,6 @@ AGENT_MODELS = [
         "repo": "onnx-community/Qwen2.5-Math-1.5B-Instruct",
         "dir": "qwen2.5-math-1.5b-onnx",
         "allow_patterns": ["*.json", "onnx/*"]
-    },
-    {
-        "name": "all-MiniLM-L6-v2 ONNX (Embeddings engine)",
-        "repo": "onnx-community/all-MiniLM-L6-v2-ONNX",
-        "dir": "all-minilm-l6-v2-onnx",
-        "allow_patterns": ["*"]
     },
     {
         "name": "BGE Reranker Base ONNX (Search Orchestrator engine)",
