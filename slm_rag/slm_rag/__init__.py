@@ -1,3 +1,4 @@
 from .rag import SLMRag
 
-__all__ = ["SLMRag"]
+SLMRAG = SLMRag
+__all__ = ["SLMRag", "SLMRAG"]

@@ -1,3 +1,4 @@
 from .json_cleaner import SLMJSONCleaner
 
-__all__ = ["SLMJSONCleaner"]
+SLMJsonCleaner = SLMJSONCleaner
+__all__ = ["SLMJSONCleaner", "SLMJsonCleaner"]

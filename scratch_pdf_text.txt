@@ -1,0 +1,1167 @@
+
+[PAGE 1]
+ 
+ 
+ 
+ 
+1 
+ 
+ 
+ 
+ 
+ 
+EMPLOYMENT AGREEMENT 
+ 
+ 
+AMONGST 
+SENSEFORTH AI RESEARCH PRIVATE LIMITED 
+ 
+AND 
+SURYAPRAKASH CV 
+ 
+ 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 2]
+ 
+ 
+ 
+ 
+2 
+TABLE OF CONTENTS 
+CLAUSE 1 DEFINITIONS AND INTERPRETATION ....................................................................... 4 
+CLAUSE 2 APPOINTMENT AND CONDITIONS OF EMPLOYMENT ............................................ 7 
+CLAUSE 3 DUTIES AND OBLIGATIONS OF THE EMPLOYEE ..................................................... 7 
+CLAUSE 4 COMPENSATION ............................................................................................................ 8 
+CLAUSE 5 CONFIDENTIALITY, NON-COMPETE AND NON-SOLICITATION .......................... 10 
+CLAUSE 6 INTELLECTUAL PROPERTY RIGHTS ........................................................................ 12 
+CLAUSE 7 TERMINATION ............................................................................................................. 13 
+CLAUSE 8 COMPUTER AND INTERNET USAGE......................................................................... 15 
+CLAUSE 9 REPRESENTATIONS AND WARRANTIES ................................................................. 15 
+CLAUSE 10 EQUITABLE RELIEF ................................................................................................... 15 
+CLAUSE 11 MISCELLANEOUS ...................................................................................................... 16 
+ANNEXURE 1  COMPENSATION ................................................................................................... 22 
+ANNEXURE 2  RETENTION PAYMENT ........................................................................................ 23 
+ 
+ 
+ 
+ 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 3]
+ 
+ 
+ 
+ 
+3 
+EMPLOYMENT AGREEMENT 
+This Employment Agreement (“Agreement”) entered into on this 26 September 2022 (“Execution 
+Date”) and is effective from 27 August 2021 (“Effective Date”) is made by and between: 
+SENSEFORTH AI RESEARCH PRIVATE LIMITED, a company duly incorporated under the 
+Companies Act, 2013, and having its registered office at 4 Floor, Indiqube Gamma, Unit GAE88-GAE91 
+S.293/154/172 Kadubeesanahalli, Outer Ring Rd Bangalore KA 560103 (hereinafter individually 
+referred to as “Company”, which expression shall, unless repugnant to the meaning or context thereof, 
+be deemed to include its successors and permitted assigns), of the FIRST PART; 
+and 
+Suryaprakash CV, an adult Indian citizen and currently residing at G7, Sharavati Apartment, 
+Owners court east layout, Kasavanahalli, Bangalore 560035 (hereinafter referred to as the 
+“Employee”, which expression shall, unless it be repugnant to the context or meaning thereof, be deemed 
+to include his successors, legal heirs and permitted assigns) of the SECOND PART. 
+The Company and the Employee are hereinafter collectively referred to as “Parties” and individually as 
+a “Party” as the context may require. 
+WHEREAS: 
+A. 
+The Company is presently engaged in the business of development, consulting, advising and 
+providing services related to artificial intelligence powered conversational tools, platforms and 
+systems including “chatbots” and all technologies behind automated messaging, response and 
+speech-enabled applications that offer human-like interactions between computers and humans 
+for use across communication channels for global enterprises in consumer packaged goods, retail, 
+financial services, retail, healthcare and life sciences, technology, media, telecom and insurance 
+industries among others, include any other business subsequently undertaken by the Company, 
+in accordance with the provisions of the Share Purchase Agreement (as defined hereinafter) 
+(“Business”). 
+B. 
+The Employee has been involved in the management of the Company in the capacity of a VP 
+Technology and having considerable expertise in the Business, is desirous of continuing to 
+perform the functions of the VP Technology of the Company.  
+C. 
+The Company, the Employee and the other shareholders of the Company have entered into a 
+share purchase agreement dated August 3, 2021 (“Share Purchase Agreement”) with Fractal 
+Analytics Private Limited (“Fractal”) in relation to proposed acquisition of a 100% of the equity 
+share capital of the Company by Fractal.  
+D. 
+The Parties are now desirous of entering into this Agreement to record their understanding, define 
+their mutual rights and obligations and the terms and conditions of the Employee’s employment 
+as the VP Technology of the Company, henceforth. 
+NOW THEREFORE, in consideration of the foregoing and the mutual covenants and promises 
+contained herein and other good and valuable consideration, the adequacy of which is hereby 
+acknowledged, the Parties intending to be bound legally, agree as follows: 
+ 
+ 
+ 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 4]
+ 
+ 
+ 
+ 
+4 
+CLAUSE 1 
+DEFINITIONS AND INTERPRETATION 
+1.1 
+Definitions 
+For the purposes of this Agreement, the following terms shall have the meanings set forth below 
+unless otherwise specified. Capitalised terms used but not defined in this Agreement shall have 
+the meaning given to them in the SPA.  
+1.1.1 
+“Act” means the Companies Act, 2013 and shall include all amendments, modifications and re-
+enactments of the foregoing and all rules, regulations, notifications, circulars, instruments or 
+orders made under the Act; 
+1.1.2 
+“Affiliate” of a Person (the “Subject Person”) means (i) in the case of any Subject Person other 
+than a natural person, any other Person that, either directly or indirectly through one or more 
+intermediate Persons, Controls, is Controlled by or is under common Control with the Subject 
+Person, and (ii) in the case of any Subject Person that is a natural person, shall include a Relative 
+of such Subject Person. For the purpose of this definition, in relation to an Investor, an Affiliate 
+shall include any investment fund or special purpose vehicle that shares the same investment 
+manager and/ or the same investment advisor (such investment advisor being corporate entities) 
+but shall not include any portfolio company into which the Investor, and/ or its respective 
+Affiliates have invested; 
+1.1.3 
+“Agreement” shall mean this employment agreement and any annexures attached hereto or 
+incorporated herein by reference or any written amendments hereto from time to time; 
+1.1.4 
+“Applicable Laws” means and includes all applicable statutes, enactments, acts of legislature or 
+the Parliament, laws, ordinances, rules, by-laws, regulations, notifications, guidelines, policies, 
+directions, directives and orders of any Governmental Authority, tribunal, board, court or a 
+recognised stock exchange of India. 
+1.1.5 
+“Board” shall mean the board of directors of the Company from time to time; 
+1.1.6 
+“Business” shall have the meaning ascribed to such term in Recital A; 
+1.1.7 
+“Business Day” shall mean a day, other than a Saturday, Sunday or a public holiday, on which 
+banks in Mumbai, (India) and Bangalore, India are open for retail banking business; 
+1.1.8 
+“Cause” shall mean the happening of any one or more of the following events in relation to the 
+Employee: 
+(a) 
+the Employee being charge sheeted for any offence involving moral turpitude, deceit, 
+dishonesty or fraud (“charge sheeted” for these purposes, means the framing of charges 
+by a court of competent jurisdiction, and shall not include a mere allegation, complaint 
+or the filing of a first information report); 
+(b) 
+gross negligence of the Employee in connection with the performance of the Employee’s 
+duties to the Company; 
+(c) 
+entering into, engaging in or participating in any business or profession other than being 
+engaged in the employment of the Company; 
+(d) 
+willful misconduct of the Employee in connection with the performance of the 
+Employee’s duties of the Company, as determined through an assessment by an 
+independent third party appointed by the Board (excluding the Employee);  
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 5]
+ 
+ 
+ 
+ 
+5 
+(e) 
+breach by the Employee of any material terms of this Agreement or directions of the 
+Board, or of the terms hereof, as determined through an assessment by an independent 
+third party appointed by the Board (excluding the Employee), through simple majority;   
+1.1.9 
+“Closing Date” shall have the meaning ascribed to it in Clause 5.1 of the Share Purchase 
+Agreement; 
+1.1.10 “Confidential Information” shall mean information relating to the business, products, affairs, 
+performance, future plans and finances of the Company, which for the time being is confidential 
+to it or treated by it as such and proprietary information and trade secrets (including training 
+materials, details of channel partners, technical and financial data, business plans, intellectual 
+property and know-how) relating to the business of the Company or of any of its employees, 
+suppliers or clients.  
+However, no information constitutes Confidential Information: 
+(a) 
+if it is otherwise publicly known and in the public domain or comes into the public 
+domain due to no fault of any of the Parties receiving such information; 
+(b) 
+if it was known to a Party prior to its disclosure by the disclosing Party; 
+(c) 
+if the Company provides a written approval to the disclosure of such Confidential 
+Information by the other Party(ies). 
+1.1.11 “Control” means the power to direct the management or policies of any Person, whether through 
+the ownership of over 50% (fifty per cent) of the voting power of such Person or through the 
+power to appoint more than half of the board of directors or similar governing body of such entity 
+or through contractual arrangements or otherwise, and “Controls” and “Controlled” shall be 
+construed accordingly; 
+1.1.12 “Good Reason” means termination of employment of the Employee with the Company where 
+such termination is pursuant to a resignation by the Employee and such resignation is acceptable 
+by the Board acting reasonably; 
+1.1.13 “Governmental Authority” means any statutory authority, government department, agency, 
+commission, board, tribunal, court or other entity in India authorised to make Applicable Laws; 
+1.1.14 “Intellectual Property” includes: domain names, technology, computer programs, ideas, 
+concepts, creations, discoveries, inventions, improvements, know how, trade or business secrets, 
+trademarks, service marks, designs, utility models, tools, devices, models, methods, procedures, 
+processes, systems, principles, synthesis protocol, algorithms, works of authorship, flowcharts, 
+drawings, books, papers, models, sketches, formulas, teaching techniques, proprietary 
+techniques, research projects, copyright, designs, and other confidential and proprietary 
+information, databases, data, documents, instruction manuals, records, memoranda, notes, user 
+guides, in either printed or machine-readable form, whether or not copyrightable or patentable or 
+protectable under any other intellectual property law, or any written or verbal instructions or 
+comments; 
+1.1.15 “Person” means any natural person, limited or unlimited liability company, corporation, 
+partnership (whether limited or unlimited), proprietorship, Hindu undivided family, trust, union, 
+association, government or any agency or political subdivision thereof or any other entity that 
+may be treated as a person under Applicable Law; 
+1.1.16 “Relatives” shall have the meaning ascribed to such term in Section 2(77) of the Companies Act, 
+2013; 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 6]
+ 
+ 
+ 
+ 
+6 
+1.1.17 “Restricted Business” means development, consulting, advising and providing services related 
+to conversational artificial intelligence and its various use cases, including “chatbots.” 
+1.1.18 “Restricted Period” means the period commencing on the Closing Date and ending on the five 
+(5) year anniversary of the Closing Date; provided, that if the Employee is terminated with or 
+without Cause, then the Restricted Period for such Employee shall terminate on the earlier of (a) 
+the one (2) year anniversary of such termination, or (b) the five (5) year anniversary of the 
+Closing Date. 
+1.1.19 “Share Purchase Agreement” shall have the meaning ascribed to such term in Recital C; 
+1.1.20 “Stock Options” means the stock options issued to the Employee under an employee stock 
+option plan of Fractal; and 
+1.1.21 “Term” means the period commencing on and from the Commencement Date as set out in Clause 
+2.1.1 below and shall continue until termination thereof as per Clause 7 below.  
+1.2 
+Interpretation 
+In this Agreement, unless the context requires otherwise: 
+(a) 
+the expression “in the agreed terms” or “agreed form” means in the form agreed among 
+the Parties and signed for the purposes of identification by or on behalf of each of the 
+Parties; 
+(b) 
+references to “include” or “including” are to be construed without limitation; 
+(c) 
+references to a “company” include any company, corporation or other body corporate 
+wherever and however incorporated or established;  
+(d) 
+a Party or any other Person includes its successors in title, permitted assigns and 
+permitted transferees; 
+(e) 
+the table of contents and headings are inserted for convenience only and shall not affect 
+the construction or interpretation of this Agreement; 
+(f) 
+words in the singular include the plural and vice versa, and a reference to any gender 
+includes all other genders; 
+(g) 
+references to any statute or statutory provision include a reference to that statute or 
+statutory provision as amended, consolidated or replaced from time to time (whether 
+before or after the date of this Agreement) and include any subordinate legislation made 
+under the relevant statute or statutory provision; 
+(h) 
+any reference to a Clause or an Annexure shall be deemed to be a reference to a Clause 
+or Annexure of this Agreement; 
+(i) 
+the Annexures shall form an integral part of this Agreement; and 
+(j) 
+the terms “hereof,” “herein,” “hereby” and derivative or similar words refer to this entire 
+Agreement and not to any particular clause, article or section of this Agreement. 
+1.3 
+No provision of this Agreement shall be interpreted in favour of, or against, any Party by reason 
+of the extent to which such Party or its counsel participated in the drafting hereof or by reason of 
+the extent to which any such provision is inconsistent with any prior draft hereof. 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 7]
+ 
+ 
+ 
+ 
+7 
+CLAUSE 2 
+APPOINTMENT AND CONDITIONS OF EMPLOYMENT 
+2.1 
+Term 
+2.1.1 
+The Employee’s employment with the Company shall continue from 01 July2017 
+(“Commencement Date”) but shall be subject to the terms and conditions of this Agreement 
+from the Closing Date. The employment shall continue until terminated as per the provisions of 
+this Agreement. All prior employment agreements between the Employee and the Company 
+shall, on Closing Date, be terminated and the terms and conditions of this Agreement shall 
+supersede all such agreements.  
+2.2 
+Appointment 
+2.2.1 
+The Company hereby agrees to continue employing the Employee as the VP Technology, and 
+the Employee unequivocally accepts to continue in his employment with the Company and 
+provide services in accordance with the terms of this Agreement.  
+CLAUSE 3 
+DUTIES AND OBLIGATIONS OF THE EMPLOYEE 
+3.1 
+Description of Role 
+3.1.1 
+The Employee will be responsible for undertaking such functions of the Company as may be 
+delegated by the Board and is consistent with the role of a VP Technology. 
+3.2 
+Performance of Duties 
+3.2.1 
+During the Term, the Employee shall: 
+(a) 
+exercise all powers and perform all the duties as the CEO may confer or impose upon 
+him through Board resolutions passed from time to time on various matters in accordance 
+with the Act and he shall work under the direction and control of the Board, consistent 
+with the role of a VP Technology.  
+(b) 
+devote all his time, attention, knowledge and skill to the Business and interests of the 
+Company both during normal business hours and during such additional hours as are 
+reasonably necessary for the proper performance of his duties as a VP Technology or as 
+the Board and the CEO may reasonably require from time to time, consistent with the 
+role of VP Technology ;  
+(c) 
+use his best efforts to promote the success of the Business and cooperate fully with the 
+Board and the CEO in the advancement of the best interests of the Company; 
+(d) 
+comply with all of the Company’s reasonable and lawful policies, rules, regulations and 
+procedures from time to time in force as notified to him; 
+(e) 
+make full and true disclosure in writing to the Company of any direct or indirect interest 
+or benefit that he has derived or is likely to derive through or in connection with any 
+contractual arrangements, dealings, transactions or affairs of the Company, as required 
+by any Applicable Law in force; and 
+(f) 
+not willingly do or permit to do anything to the prejudice of the Company or any trade 
+or business in which the Company may, for the time be, directly or indirectly interested.   
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 8]
+ 
+ 
+ 
+ 
+8 
+3.2.2 
+During the Term, the Employee will be authorised to manage the day-to-day Business, in 
+accordance with the provisions of Applicable Law, this Agreement, the articles of association of 
+the Company, resolutions passed by the shareholders of the Company, Board resolutions, and 
+policies and procedures of the Company, if any, as may be passed and framed from time to time.  
+3.2.3 
+If the Employee becomes aware of any material facts, matters, circumstances or information 
+which may relate to or affect the Company, or any trade or business in which the Company is for 
+the time being interested, he shall communicate the same at the earliest to the Board and the 
+CEO, giving full particulars of the matters of which he is aware.  
+3.2.4 
+The Employee shall at all times keep the Board and the CEO promptly and fully informed of the 
+Business and affairs of the Company and provide all such reasonable explanations as the Board 
+and the CEO may require. 
+3.2.5 
+The Employee shall not knowingly, at any time, make any untrue statement in relation to the 
+Company and in addition shall not, after the termination of his employment hereunder represent 
+himself as being employed by or connected with the Company. 
+3.2.6 
+The Employee shall also be bound by the Fractal’s policies and procedures which are all available 
+at the knowledge management portal: https://km.fractalanalytics.com which may be updated 
+from time to time. The Employee will acquaint himself with the terms and conditions contained 
+in such policies and procedures. If the Employee has any question on the meaning and/or 
+implication of any of the terms and conditions contained therein, the Employee may consult the 
+human resources business partner at Fractal. 
+3.2.7 
+The Company shall enable and assist the Employee to perform his duties and obligations under 
+this Agreement in an efficient and effective manner. 
+3.3 
+Place of office 
+3.3.1 
+The Employee shall primarily be stationed in Bangalore. If the Company, with appropriate notice, 
+reasonably requires the Employee to relocate his place of residence within India or outside India, 
+then the Company shall reimburse the Employee for all costs incurred by him for the relocation 
+in accordance with Company’s policies.  
+3.3.2 
+The Employee may be required from time to time to travel and / or work within or outside of 
+India during his employment.   
+CLAUSE 4 
+COMPENSATION 
+4.1 
+In consideration of the services rendered by the Employee to the Company and for agreeing to 
+be bound by the covenants and other provisions of this Agreement, the Employee shall receive 
+an annual compensation as set out under Annexure 1 and the same would be subject to an 
+adjustment, as per the discretion of the Board. The Employee shall be eligible for bonuses, 
+incentives and revisions, as may be approved by the Board from time to time. 
+4.2 
+The payments made to the Employee by the Company for the services rendered to the Company 
+by the Employee, shall be subject to the withholding of taxes, as may be applicable, under 
+Applicable Laws. The Parties expressly agree that the Employee shall be liable for any income 
+tax (and any surcharge thereon) and other applicable taxes, if any, arising out of the payments 
+received by the Employee by way of compensation as stated in this Clause 4. 
+4.3 
+The Company shall reimburse the Employee for such traveling, hotel, entertainment and other 
+out of pocket expenses as are from time to time properly, reasonably and necessarily incurred by 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 9]
+ 
+ 
+ 
+ 
+9 
+him in the course of his employment and claimed by him provided that the Company shall be 
+entitled to require claims for such expenses to be supported by receipts, vouchers or other 
+evidence of payment, in accordance with the Company policy. 
+4.4 
+Leave Policy and Other Benefits 
+4.4.1 
+The Employee shall be entitled to leaves in accordance with the terms of the Company’s leave 
+policy and as will be in effect from time to time. 
+4.4.2 
+During the course of employment of the Employee with the Company, the Employee shall be 
+entitled to participate in all of the Company’s customary employee benefit plans and programs 
+and as will be in effect from time to time, subject to eligibility requirements, enrolment criteria, 
+and the other terms and conditions of such plans and programs. Subject to Applicable Law, the 
+Company reserves the right to change or rescind any of its benefit plans and programs and alter 
+employee contribution levels in its discretion. 
+4.5 
+Hours of Work  
+The regular weekly working hours of the Employee shall be in accordance with the Company 
+policy.  
+4.6 
+Stock Options and Vesting Schedule  
+The Employee shall be entitled to Stock Options, details of which shall be set out in the grant 
+certificate to be issued to the Employee by Fractal. The Employee agrees that if his employment 
+is terminated ‘With Cause’, the Company shall at its sole discretion have the right to purchase or 
+cause the purchase of the shares held by the Employee (through any identified entity or person), 
+such shares being held on account of conversion of the Stock Options, at the lower of (i) cost or 
+(ii) fair market value as may be determined by independent valuer appointed by Fractal. The 
+exercise of such right by the Company to purchase or cause the purchase of the shares as 
+mentioned hereinabove shall not constitute a waiver of any of the obligations of the Employee 
+set out in this Agreement including but not limited to the obligations set out in Clause 5 
+(Confidentiality, Non-Competition and Non-Solicitation) and Clause 6 (Intellectual Property).  
+4.7 
+Retention Payments 
+4.7.1 
+Subject to the terms and conditions set out herein, the Employee shall be entitled to receive 
+retention payment for the period of employment beginning from Closing Date till 5th 
+Anniversary of Closing Date) (“Retention Bonus”). The Retention Bonus shall be payable in 
+accordance with the payment schedule set out in Annexure 2 hereto (each payment date being 
+referred to as “Retention Bonus Payment Date”); provided that the Employee’s employment 
+has not been terminated, in accordance with the provisions of this Agreement, on or before 
+Retention Bonus Payment Date. In the event the Employee’s employment with the Company has 
+been terminated on or before any Retention Bonus Payment Date, the Employee shall not be 
+entitled to any portion of his future Retention Bonus entitlement.  
+4.7.2 
+In the event: (A) the Employee voluntarily terminates his employment under this Agreement with 
+the Company before any Retention Bonus Payment Date; or (B) the Employee is in breach of the 
+provisions of Clause 5.2.1 (Non-Compete); or (C) the Employee being charge-sheeted for fraud, 
+(each, a “Clawback Event”), then  the Company may upon notice to the Employee, require the 
+Employee to payback or refund to the Company, in the designated bank account of the Company 
+(details of which shall be provided by the Company to the Employee in writing), 80% (eighty per 
+cent) of the Retention Bonus amount already paid to the Employee in the financial year 
+immediately preceding  the financial year in which the Clawback Event takes place, less any 
+taxes paid by the Employee on such Retention Bonus amount (“Clawback Amount”), in 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 10]
+ 
+ 
+ 
+ 
+10 
+immediately available funds and the Employee hereby agrees to refund such Retention Bonus 
+amount in accordance with this Clause. For avoidance of doubt, it is clarified that the Employee 
+shall not be liable to refund the Clawback Amount, if (i) the Employee’s employment agreement 
+is terminated  by the Company without Cause or with Cause (other than circumstances covered 
+in Clause 4.7.2(B) or 4.7.2(C) above, in which case the Company has the right to require the 
+Employee to payback or refund the Clawback Amount in accordance with the provisions of this 
+Clause 4.7.2); (ii) upon the Employee’s death or permanent disability (as certified by an 
+independent  medical practitioner appointed by the Board) or serious medical illness which 
+renders such Employee permanently incapable of taking up employment or engaging in any 
+professional activity (as certified by an independent  medical practitioner appointed by the 
+Board); or (iii) voluntary resignation by the Employee without Cause, upon merger or 
+consolidation of the Company which materially alters  the Employee’s roles and responsibilities 
+of the Employee. 
+4.7.3 
+In the event the Company does not have adequate funds to pay the Retention Bonus in accordance 
+with and subject to the provisions of this Agreement, Fractal shall, in accordance with applicable 
+laws, take necessary actions, including by infusing capital into the Company or by providing an 
+inter-corporate deposit to the Company, to enable the Company to pay the Retention Bonus, in 
+accordance with the terms of this Agreement.  
+CLAUSE 5 
+CONFIDENTIALITY, NON-COMPETE AND NON-SOLICITATION 
+5.1 
+Confidentiality 
+5.1.1 
+The Employee agrees and acknowledges that during the Term, the Employee will have access to 
+Confidential Information. The Employee understands and acknowledges that access to the 
+Confidential Information has been provided to the Employee solely in respect of his employment 
+with the Company in order to enable the Employee to optimise the performance of his duties to 
+the Company, if any. The Employee further understands that the Company, if any shall have no 
+obligation to make available to the Employee any Confidential Information.  
+5.1.2 
+The Employee understands and acknowledges that the Confidential Information is of immense 
+value to the Company, if any and/or its clients. The Employee understands that any use or 
+disclosure of such Confidential Information including any inadvertent disclosure can cause 
+immense and irreparable harm, loss, damage and injury to the Company, and its reputation and 
+hence undertakes to keep such Confidential Information confidential and use it solely in the 
+manner expressly authorized by the Company and only during the Term.  
+5.1.3 
+The Employee agrees and undertakes, at all times during the Term of his employment and 
+thereafter on termination of his employment for whatever reason, to hold in the strictest 
+confidence, and not to use, except for the benefit of the Company, and absolutely refrain from in 
+any manner divulging, discussing, disclosing or in any manner directly or indirectly using, the 
+Confidential Information without the written authorisation of the Board.  
+5.1.4 
+The Employee recognises that the Company has received and may receive in the future from 
+third-parties, information that would be confidential and proprietary in nature to such third 
+parties. The Employee agrees to hold all such third-party information in the strictest confidence 
+and not to disclose it to any Person, firm or corporation or to use it except as necessary in carrying 
+out his work for the Company in a manner consistent with the Company’s agreement with such 
+third party. 
+5.1.5 
+The Employee shall use his best efforts and highest degree of care, diligence, and prudence to 
+ensure that no Confidential Information prematurely leaks or otherwise prematurely makes its 
+way into the public domain or any public forum, including, without limitation, into any trade 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 11]
+ 
+ 
+ 
+ 
+11 
+publications, internet chat rooms, or other similar forums. In the event that the Employee 
+becomes aware of any premature leak of Confidential Information or becomes aware of any 
+circumstances creating a risk of such a leak, the Employee shall immediately inform the Board, 
+of such leak or of such circumstances. 
+5.1.6 
+The Employee acknowledges and agrees that all Confidential Information is and shall remain the 
+property of the Company and its Affiliates, if any and/ or its licensors, and the Employee shall 
+not be entitled to use such Confidential Information or make copies thereof for any purpose 
+(including for personal use) other than as required in the usual course of his employment. Nothing 
+contained in this Agreement shall be construed as granting or conferring any rights either as a 
+license or otherwise in the Confidential Information.  
+5.2 
+Non-Compete and Non-Solicitation 
+5.2.1 
+Covenant Not To Compete.  The Employee shall not, and shall cause his or its Affiliates and 
+Related Parties not to, during the Restricted Period, directly or indirectly, participate in, own, 
+operate, manage, control, invest in, lend to, or otherwise have any interest (of record or 
+beneficial) in, or be employed by, have any interest as a consultant in, advise, engage in services 
+for or otherwise aid or assist in any manner any Person or other business that engages in a 
+business (other than the Company and Senseforth Inc.) that directly or indirectly engages in, or 
+directly or indirectly competes with, the Restricted Business in the United States, India or any 
+location worldwide. 
+5.2.2 
+Non-Solicitation of Customers. 
+(a) 
+The Employee shall not, and shall cause his or its Affiliates and immediate family 
+members not to, during the Restricted Period, solicit, attempt to solicit, or assist any other 
+Person to solicit or attempt to solicit any business from any Person in connection with 
+the Restricted Business who is a customer, referral source of the Company at any time 
+during the twelve month period preceding the Closing Date. 
+(b) 
+The Employee shall not, and shall cause his or its Affiliates and immediate family 
+members not to, during the applicable Restricted Period, take any action that is intended, 
+or could reasonably be expected, to discourage any Person who is a past or present 
+licensor, customer, supplier, licensee, business prospect or other business associate or 
+relation of the Company or any of its Affiliates at any time during the twelve-month 
+period preceding the Closing Date from entering into or maintaining, or to terminate, 
+cease or otherwise adversely change, its relationship with the Company or in any other 
+way interfere with the relationship between the Company, on the one hand, and any such 
+lessor, licensor, customer, supplier, licensee, business prospect or other business 
+associate or relation, on the other hand. 
+5.2.3 
+Non-Solicitation for Employment. The Employee shall not, and shall cause his or its Affiliates 
+and immediate family members not to, during the applicable Restricted Period: (i) solicit or 
+attempt to solicit for employment, hire or attempt to hire, engage or attempt to engage or in any 
+other way induce or attempt to induce to leave the employ of or engagement by the Company, 
+any person who is on the Closing Date or was during the twelve (12) month period preceding the 
+Closing Date, a director, officer, employee or consultant to the Company; or (ii) in any other way 
+interfere with the relationship between the Company and any such Person, in each case except 
+with respect to any such Employee for performance of his duties as an employee, director or 
+officer of, or consultant to, the Company, to the extent applicable. 
+5.2.4 
+Post-Closing Inquiries.  Following the Closing, the Employee shall not take any action that is 
+designed or intended to have the effect of discouraging any licensor, supplier, distributor, 
+customer or any other Person from establishing and maintaining a relationship with the Company, 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 12]
+ 
+ 
+ 
+ 
+12 
+Fractal or any of their respective Affiliates after the Closing, and for a period of three (3) years 
+after the Closing, the Employee shall refer any inquiries from the Company’s business relations 
+concerning the Business to Fractal and the Company. 
+5.2.5 
+Other Obligations.  The Employee agrees and acknowledges that his or its obligations set forth 
+in this Clause 5.2 are in addition to, and not in lieu of, any obligations such Employee has to the 
+Company and its Affiliates pursuant to any other Contract between such Seller and the Company 
+or its Affiliates, at common Law or otherwise. 
+CLAUSE 6 
+INTELLECTUAL PROPERTY RIGHTS 
+6.1 
+The Employee agrees and acknowledges that all Intellectual Property, including Intellectual 
+Property which he solely or jointly has or will conceive or develop or reduce to practice or cause 
+to be conceived or developed or reduced to practice, during the period Commencement Date until 
+termination/ resignation in accordance with this Agreement (in pursuance of the Business), shall 
+belong to the Company absolutely and the Company alone, at its sole discretion, shall have the 
+right to exploit any and all of the said rights by any means throughout the world during and after 
+the Term. The Employee shall not have nor claim any right in any of the aforementioned 
+Intellectual Property in any manner whatsoever.  
+6.2 
+Notwithstanding anything stated in Clause 6.1, the Employee hereby grants, assigns, conveys 
+and transfers unto the Company all rights together with all ancillary rights relating to the 
+Intellectual Property ab initio in perpetuity for the entire world, the entire right, title, claim and 
+interest, benefit, including personal and moral rights in and to any and all inventions, original 
+works of authorship, developments, concepts, know-how, improvements, trademarks, domain 
+names or trade secrets, whether or not patentable or registrable under patent, trademark, copyright 
+or similar laws, that he may solely or jointly conceive or develop or reduce to practice or fix in a 
+tangible medium, or cause to be conceived or developed or reduced to practice or fixed in a 
+tangible medium, within the scope of and during the course of his employment with the 
+Company. 
+6.3 
+The Employee shall promptly disclose and deliver to the Company, all the information and data 
+in his possession which is necessary to impart a full understanding of the said Intellectual 
+Property, or any improvement, processes, systems or designs developed by him in respect 
+thereof.  
+6.4 
+The Employee hereby irrevocably and unconditionally waives any and all moral rights or any 
+rights of similar nature under any law in any jurisdiction in and to any and all material written, 
+created or devised by him whether solely or jointly and pertaining specifically to the operation 
+or Business or resulting from or suggested by anything which the Employee shall have done 
+during the period from Commencement Date until termination/ resignation in accordance with 
+this Agreement , except material written, created or devised by the Employee which is not related 
+to the Business or operations of the Company.  
+6.5 
+The Employee shall do all acts, deeds and things including execution of necessary documents 
+without charge or compensation, but at the cost of the Company, for fully and effectively vesting 
+in the Company the rights in any Intellectual Property which the Employee solely or jointly 
+conceives or develops or reduces to practice or causes to be conceived or developed or reduced 
+to practice, during the period from Commencement Date until termination/ resignation in 
+accordance with this Agreement ; in any and all countries, including, but not limited to, the 
+disclosure to the Company of all pertinent information and data with respect thereto, the 
+execution of all applications, specifications, oaths, assignments and all other instruments that the 
+Company deems necessary in order to apply for and obtain such rights and in order to assign and 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 13]
+ 
+ 
+ 
+ 
+13 
+convey to the Company, its successors, assigns, and nominees the sole and exclusive rights, title 
+and interest in and to such Intellectual Property. 
+6.6 
+The Employee hereby irrevocably appoints the Company as his attorney for the purpose of 
+executing in the name and on behalf of the Employee all such deeds and documents as may be 
+required pursuant to this Clause 6. 
+6.7 
+The Employee agrees to keep and maintain adequate and current written records of all Intellectual 
+Property during the Term. The records shall be in the form of notes, sketches, drawings and any 
+other format that may be reasonably specified by the Company. The records will remain the 
+Company’s sole property at all times.  
+6.8 
+The Employee specifically acknowledges that the Company does not wish to acquire or require 
+the Employee to use in the performance of his obligations, any trade secrets and other intellectual 
+property belonging to a third party which he had knowledge of, and the Employee agrees that he 
+shall not knowingly or intentionally violate the rights of any third party in intellectual property, 
+including material provisions of any agreement entered into by the Employee, by making 
+unauthorised copies of such intellectual property which was provided to the Employee for use, 
+access, custody or control. 
+6.9 
+The Employee acknowledges that his employment and the compensation paid by the Company 
+to the Employee is a good, valuable and adequate consideration, to be bound by the terms and 
+conditions of this Agreement including the assignment of Intellectual Property as set out in this 
+Clause 6 and adhering to the restrictions set out elsewhere in this Agreement. 
+6.10 
+Unless otherwise stated, the Parties agree and acknowledge that the obligations set out in this 
+Clause 6 shall survive the termination of this Agreement. 
+CLAUSE 7 
+TERMINATION 
+7.1 
+Death: The Agreement shall terminate immediately upon the Employee’s death. In the event of 
+a termination pursuant to this Clause 7.1, the Employee’s legal heirs shall be entitled to receive 
+any unpaid salary, performance bonus declared prior to the date of the Employee’s death, any 
+unpaid dues, any statutory payments and encashment with respect to accrued leaves to which the 
+Employee may have been entitled to or may have earned (but which have not yet been paid) as 
+of and up to the date of the Employee’s death. 
+7.2 
+Disability: If, during the Term, the Employee becomes physically or mentally disabled, in the 
+determination of a reputed medical practitioner  appointed or selected by the Board, or, if due to 
+any physical or mental condition, the Employee becomes unable for a continuous period of more 
+than 90 (ninety) consecutive days during any 6 (six) month period to substantially perform his 
+duties under this Agreement as determined by a reputed medical practitioner selected by the 
+Board, then the Company may, at its option, terminate this Agreement with not less than 30 
+(thirty) days prior written notice. In the event of a termination pursuant to this Clause 7.2, the 
+Employee shall be entitled to receive any unpaid salary, performance bonus declared prior to the 
+date of the Employee’s death, any unpaid dues, any statutory payments and encashment with 
+respect to accrued leaves to which the Employee may have been entitled to or may have earned 
+(but which have not yet been paid) as of and up to the effective date of termination.  
+7.3 
+Termination without Cause:  
+(a) 
+the Employee may resign for Good Reason by giving the Company 90 (ninety) days’ 
+written notice or payment of 90 (ninety) days’ salary in lieu thereof.  
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 14]
+ 
+ 
+ 
+ 
+14 
+(b) 
+this Agreement and the employment of the Employee with the Company may be 
+terminated by the Company, without Cause by giving the Employee 30 (thirty) days’ 
+written notice. . 
+7.4 
+Termination for Cause: The Company shall have the right to terminate this Agreement, and 
+thereby the appointment of the Employee as VP Technology, for Cause, by providing a written 
+notice.  
+7.5 
+The directorship of the Employee shall stand vacated with immediate effect upon termination of 
+the employment of the Employee with the Company, including on account of death (as per Clause 
+7.1 above), disability (as per Clause 7.2 above), with Cause (as per Clause 7.4 above) or without 
+Cause (as per Clause 7.3 above). 
+7.6 
+The Company reserves the right to suspend the Employee on full pay for any period if, by reason 
+of a requirement to investigate the Employee’s conduct or for any other reasonable reason, the 
+Board considers it in the best interests of the Company to do so. Such suspension shall continue 
+for as long as may be necessary to carry out a reasonable and proper investigation and if necessary 
+a disciplinary hearing may be held as may be reasonably determined by the Board for the best 
+interests of the Company. 
+7.7 
+The Company shall not be liable to the Employee for any loss, damages or compensation of any 
+kind whatsoever arising out of or in connection with such termination other than as set out in this 
+Clause 7. 
+7.8 
+If the Employment is terminated by reason of the liquidation of the Company or for the purposes 
+of amalgamation or reconstruction and the Employee is offered employment with any concern or 
+undertaking resulting from such amalgamation or reconstruction on terms not less favorable than 
+the terms of this Agreement, the Employee shall have no claim against the Company in respect 
+of the termination of his employment by the Company hereunder. 
+7.9 
+The termination of this Agreement for any reason whatsoever shall not release either Party from 
+any liabilities or obligations set forth in this Agreement, which: (a) the Parties have expressly 
+agreed shall survive any such termination; or (b) remain to be performed or by their nature would 
+be intended to be applicable following any such termination. Further, the termination of the 
+employment of the Employee with the Company for any reason shall not release the Employee 
+from undertaking any of his liabilities or performing any of his obligations, under the Share 
+Purchase Agreement and the US Stock Purchase Agreement executed between Senseforth Inc. 
+and the Employee. 
+7.10 
+In the event of termination by either Party, all payments due to the Employee under this 
+Agreement and all outstanding advances due to the Company by the Employee shall be settled 
+in full within 30 (thirty) days of the date of termination, unless required otherwise under 
+Applicable Laws. 
+7.11 
+Other than any sums due under the terms of this Agreement, upon termination of the Employment 
+for whatever reason, the Company will not be obliged to make any further payment to the 
+Employee beyond such amounts actually accrued and due as on the date of termination and 
+unpaid and the Company shall be entitled to offset and deduct from any such sums, all and any 
+amounts owed by the Employee to the Company. 
+7.12 
+The Employee agrees that promptly after termination of the Employment for any reason, the 
+Employee shall return to the Company, all property of the Company then in his possession, 
+including without limitation, papers, documents, computers, software, computer disks, data files, 
+vehicles, keys, credit cards and Confidential Information, and shall neither make nor retain copies 
+of the same and shall confirm in writing to the Company regarding the same. 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 15]
+ 
+ 
+ 
+ 
+15 
+7.13 
+Any provision or covenant of this Agreement, which expressly, imposes obligations beyond the 
+expiration or termination of this Agreement, shall survive such expiration or termination. 
+CLAUSE 8 
+COMPUTER AND INTERNET USAGE 
+The Employee shall comply with the Company’s systems security policy, which may be updated from 
+time to time to take into account current legislation and business requirements. Additional information 
+on these policies will be as set out in the Company’s policies in this regard.  
+CLAUSE 9 
+REPRESENTATIONS AND WARRANTIES 
+9.1 
+The Employee hereby represents, warrants, and covenants to the Company as follows: 
+(a) 
+the Employee has executed and delivered this Agreement freely and voluntarily, after 
+having determined that the provisions contained herein are fair and reasonable; 
+(b) 
+the Employee has read and fully understood the terms and conditions set forth herein, 
+has had time to reflect on and consider the benefits and consequences of entering into 
+this Agreement, and has obtained independent legal advice in connection with the 
+execution of this Agreement; 
+(c) 
+save and except the provisions contained herein, the Employee is not subject to any 
+written non-solicitation or non-competition agreement affecting his employment with 
+the Company, which is not otherwise informed by the Employee or known to the 
+Company; 
+(d) 
+save and except the provisions contained herein, the Employee is not subject to any 
+written confidentiality or non-disclosure agreement affecting his employment with the 
+Company, which is not otherwise informed by the Employee or known to the Company;  
+(e) 
+the Employee does not have in his possession any trade secrets, confidential business 
+information, documents of a prior employer; and 
+(f) 
+the Employee is a law-abiding citizen and/ or does not have any actions or proceedings, 
+civil or criminal, pending against or instituted by him in India or anywhere else in the 
+world which may, in any manner, affect his ability to perform or the performance of his 
+obligations hereunder. 
+9.2 
+Each of the Parties hereby represents and warrants that in entering into and/ or in performing this 
+Agreement, it is not in breach of any express or implied terms of any contract or of any 
+obligations to any third party. 
+CLAUSE 10 
+EQUITABLE RELIEF 
+10.1 
+The Employee acknowledges and agrees that the covenants and obligations as set forth above in 
+Clause 5 and 9 relate to special, unique and extraordinary matters, and that a violation of any of 
+the terms of such covenants and obligations will cause the Company irreparable injury. 
+10.2 
+Therefore, the Employee agrees that the Company shall be entitled to seek an interim injunction, 
+restraining order or such other equitable relief as a court of competent jurisdiction may deem 
+necessary or appropriate to restrain the Employee from committing any violation of the covenants 
+and obligations contained in the Clauses mentioned herein. These injunctive remedies are 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 16]
+ 
+ 
+ 
+ 
+16 
+cumulative and are in addition to any other rights and remedies that the Company may have at 
+law or in equity. 
+CLAUSE 11 
+MISCELLANEOUS 
+11.1 
+Notices 
+11.1.1 All notices and other communications required or permitted to be given under the provisions of 
+this Agreement shall be in writing (which term includes email with proof of read receipt or 
+courier) in the English language and shall be deemed to be received upon the earlier of: (a) 
+delivery, if by hand; (b) upon receipt, if sent by mail (certified or registered mail, return receipt 
+requested, postage prepaid) or by an internationally recognized courier service; (c) facsimile 
+transmission (with request of assurance of receipt in a manner customary for communication of 
+such type); or (d) addressed to the intended recipient at his email address, to the Parties at the 
+following addresses or email addresses or fax numbers, or to such other Persons at such other 
+addresses or email addresses or fax numbers as any Party may request by notice in writing to the 
+other Party to this Agreement: 
+If to the Employee, to 
+: Attention: Suryaprakash CV 
+ 
+ 
+[]  
+ 
+ 
+Email: suryaprakash.cv@senseforth.com 
+ 
+ 
+ 
+If to the Company, to 
+: Attention: CEO and Board  
+ 
+ 
+4 Floor, Indiqube Gamma, Unit  
+Kadubeesanahalli, Outer Ring Rd  
+Bangalore KA 560103 IN 
+ 
+ 
+Email: sridhar@senseforth.com 
+ 
+11.1.2 Any change in the address of either the Company or the Employee shall be notified to the other 
+Party in the same manner mentioned hereinabove. 
+11.2 
+Governing Law and Jurisdiction 
+11.2.1 This Agreement shall be governed by and construed in accordance with the laws of India.  
+11.2.2 Each of the Parties hereby: 
+(a) 
+agrees that, subject to the provisions of Clause 11.2, any action with respect to this 
+Agreement shall be brought in the courts of Bangalore exclusively; 
+(b) 
+irrevocably waives any objection, including, without limitation, any objection to the 
+venue or based on the grounds of forum non-conveniens, which it may now or hereafter 
+have to the bringing of any action in this jurisdiction; and 
+(c) 
+irrevocably consents to the service of process of any of the courts referred to above in 
+any action by the mailing of copies of the process to the other Party. 
+11.3 
+Dispute Resolution 
+11.3.1 In the event of a dispute, difference, controversy or claim arising out of or in connection with or 
+relating to any of the matters set out in this Agreement, including any dispute regarding its 
+existence, validity, interpretation or breach (“Dispute”), the Parties shall discuss in good faith to 
+resolve the Dispute. In case the Dispute is not settled within 30 (thirty) calendar days, either Party 
+may refer the Dispute to arbitration in accordance with Clause 11.3.2. 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 17]
+ 
+ 
+ 
+ 
+17 
+11.3.2 All Disputes that have not been satisfactorily resolved under Clause 11.3.1 above shall be referred 
+to arbitration. Such arbitration shall be governed by the Arbitration and Conciliation Act, 1996 
+or any statutory modification or re-enactment thereof for the time being in force (“1996 Act”). 
+Provided that, if such Dispute is in relation to a matter under the Share Purchase Agreement, then 
+the provisions for Dispute Resolution as mentioned in Clause 9.3 of the Share Purchase 
+Agreement shall be applicable. In such an event, a consolidation of claims shall be undertaken, 
+to the extent possible.  
+11.3.3 This Agreement and the rights and obligations of the Parties contained in this Agreement shall 
+remain in full force and effect, pending issuance of the award in such arbitration proceedings, 
+which award, if appropriate, shall determine whether and when any termination of this 
+Agreement shall become effective.  
+11.3.4 The language of the arbitration shall be English, and all documents submitted (including those 
+submitted as filings, evidence or exhibits) shall be certified English translations if in a language 
+other than English. The juridical seat and venue of arbitration shall be Bangalore, India.  
+11.3.5 There shall be 1 (one) arbitrator who shall be mutually appointed by either disputing Parties to 
+be appointed in accordance with the 1996 Act as given below, all of whom shall be fluent in 
+English. If either Party fails to appoint an arbitrator, then the arbitrator shall be appointed in 
+accordance with the 1996 Act. 
+11.3.6 The arbitrator(s) will not have the power to alter, amend, or add to the provisions of the 
+Agreement. 
+11.3.7 The arbitration award shall be made in accordance with the 1996 Act and shall be final and 
+binding on the Parties and the Parties agree to be bound thereby and to act accordingly. The 
+award shall be enforceable in any competent court of law. 
+11.3.8 The award shall be in writing and shall be a reasoned award. 
+11.3.9 Any deposits to cover the costs of arbitration shall be shared equally by the parties thereto.  
+11.3.10 The award rendered by the arbitrator shall, in addition to dealing with the merits of the case, fix 
+the costs of the arbitration and decide which of the parties thereto shall bear such costs or in what 
+proportions such costs shall be borne by such parties. 
+11.3.11 Nothing shall preclude a Party from seeking interim equitable or injunctive relief, or both, from 
+any Governmental Authority or court having jurisdiction. The pursuit of equitable or injunctive 
+relief shall not be a waiver of the rights of the Parties to pursue any remedy through arbitration 
+under this Clause 11.3. 
+11.4 
+Amendment 
+THIS AGREEMENT MAY BE AMENDED OR MODIFIED, AND ANY OF THE TERMS 
+HEREOF MAY BE WAIVED, ONLY BY A WRITTEN INSTRUMENT DULY EXECUTED 
+BY OR ON BEHALF OF EACH PARTY. NO WAIVER BY EITHER PARTY OF ANY TERM 
+OR CONDITION CONTAINED IN THIS AGREEMENT, IN ANY ONE OR MORE 
+INSTANCES, SHALL BE DEEMED TO BE OR CONSTRUED AS A WAIVER OF THE 
+SAME OR ANY OTHER TERM OR CONDITION OF THIS AGREEMENT ON ANY 
+FUTURE OCCASION.  
+11.5 
+Severability 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 18]
+ 
+ 
+ 
+ 
+18 
+If any provision of this Agreement (or any portion thereof) or the application of any such 
+provision (or any portion thereof) to any Person or circumstance shall be held invalid, illegal or 
+unenforceable in any respect by any Governmental Authority or court of competent jurisdiction, 
+such invalidity, illegality or unenforceability shall not affect any other provision hereof (or the 
+remaining portion thereof), or the application of such provision to any other persons or 
+circumstances. 
+11.6 
+Survival of Obligations 
+Any provision or covenant of this Agreement, which expressly, imposes obligations beyond the 
+expiration, or termination of this Agreement, shall survive such expiration or termination.  
+11.7 
+Waiver 
+No waiver of any provision of this Agreement shall be effective unless set forth in a written 
+instrument signed by the Party waiving such provision. No failure or delay by a Party in 
+exercising any right, power or remedy under this Agreement shall operate as a waiver thereof, 
+nor shall any single or partial exercise of the same preclude any further exercise thereof or the 
+exercise of any other right, power or remedy. Without limiting the foregoing, no waiver by a 
+Party of any breach by the other Party of any provision hereof shall be deemed to be a waiver of 
+any prior, concurrent or subsequent breach of that or any other provision hereof. 
+11.8 
+Violation of Terms 
+The Company shall be entitled to an injunction, restraining order, right for recovery, suit for 
+specific performance or such other equitable relief as a court of competent jurisdiction may deem 
+necessary or appropriate to restrain the Employee from committing any violation or enforce the 
+performance of the covenants, obligations and representations contained in this Agreement. 
+These injunctive remedies are cumulative and are in addition to any other rights and remedies 
+the Company may have at law or in equity, including without limitation a right for recovery of 
+the amounts due under this Agreement and related costs and a right for damages. 
+11.9 
+Assignment  
+The Employee acknowledges and agrees that the Company may assign any of its rights under 
+this Agreement to any person or entity. This Agreement is not assignable by the Employee. 
+11.10 Entire Agreement 
+The terms of this Agreement are the entire agreement and understanding with respect to the 
+subject matter hereof and supersedes all prior discussions or representations between the 
+Company and the Employee including, but not limited to, any representations made during the 
+Employee’s interview(s), whether written or oral. This Agreement shall constitute the complete 
+and exclusive statement of its terms and no extrinsic evidence whatsoever may be introduced in 
+any judicial, administrative, or other legal proceeding involving this Agreement. Any subsequent 
+change or changes in the Employee’s duties, salary or compensation will not affect the validity 
+or scope of this Agreement. These terms of Employment supersede any former terms or 
+arrangements between the Company and the Employee in relation to the Employee’s employment 
+with the Company. 
+11.11 Indebtedness 
+If, during the Employee’s employment under this Agreement, the Employee becomes indebted 
+to the Company for any reason, the Company may, if it so elects, set off any sum due to the 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 19]
+ 
+ 
+ 
+ 
+19 
+Company from the Employee against the compensation payable to the Employee and collect any 
+remaining balance from him. 
+11.12 Acknowledgement 
+The Employee agrees, recognises and acknowledges that the Employee has been provided with 
+a copy of this Agreement for review prior to signing it, and that the Employee has reviewed it 
+and that he understands the terms, purposes and effects of this Agreement, and that the Employee 
+has signed the same only after having had the opportunity to seek clarifications; that the 
+Employee has been given a signed copy of this Agreement for his own records. The Employee 
+has executed this Agreement at his own free will and without relying upon any statements made 
+by the Company or any of its representatives, agents or employees. This Agreement is in all 
+respects reasonable and necessary to protect the legitimate business interests of the Company. 
+11.13 Parties to act in good faith 
+The Company and the Employee hereto shall dutifully perform all covenants of this Agreement 
+in letter and spirit and shall otherwise act with due diligence and in good faith. 
+11.14 Counterparts  
+This Agreement may be signed in any number of counterparts, each of which is an original and 
+all of which, taken together, constitutes one and the same instrument. 
+Signature pages to follow
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 20]
+ 
+ 
+ 
+ 
+20 
+SIGNED AND DELIVERED by 
+) 
+SENSEFORTH AI RESEARCH PRIVATE LIMITED 
+) 
+Authorised Signatory 
+) 
+Name: 
+) 
+Designation: 
+) 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+Shridhar Marri
+CEO and Co-Founder
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 21]
+ 
+21 
+SIGNED AND DELIVERED by  
+) 
+Mr. Suryaprakash CV  
+ 
+ 
+ 
+ 
+) 
+ 
+ 
+ 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 22]
+ 
+22 
+Annexure 1 
+ 
+Compensation 
+Base + Variable pay details in INR 
+ 
+Base in 
+INR 
+VP % 
+Variable Pay 
+/ Committed 
+Pay in INR 
+Notes 
+Basic 
+HRA 
+LTA 
+Meal 
+Vouchers 
+Company's 
+Contribution 
+to PF 
+Special 
+Allowance 
+Fixed 
+Compensation 
+Variable 
+Pay 
+CTC 
+Date of 
+Joining 
+3,652,174  
+15% 
+547,826 Variable 
+Pay 
+1,815,287 907,643 15000 
+13200 
+21600 
+879,443 
+3,652,174 547,826 4,200,000 01/07/2017 
+ 
+ 
+ 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9
+
+[PAGE 23]
+ 
+23 
+Annexure 2 
+ 
+Retention Payment 
+S. No. 
+Retention Bonus Payment Date 
+Retention Bonus Amount 
+(USD) 
+1.  
+Year 1 
+57068 
+2.  
+Year 2 
+57068 
+3.  
+Year 3 
+57068 
+4.  
+Year 4 
+6105 
+5.  
+Year 5 
+6105 
+ 
+DocuSign Envelope ID: EC43734A-6447-46F6-B20C-1DF432D837DD
+DocuSign Envelope ID: 02810B00-696D-4C1D-ABF2-09DB96C090F9

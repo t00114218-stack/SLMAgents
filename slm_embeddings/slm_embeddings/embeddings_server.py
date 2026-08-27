@@ -84,30 +84,40 @@ class SLMEmbeddingsServer:
 
         if self.session and self.tokenizer:
             try:
-                results = []
-                for text in texts:
-                    encoded = self.tokenizer.encode(text)
-                    input_ids = np.array([encoded.ids[:512]], dtype=np.int64)
-                    attention_mask = np.array([encoded.attention_mask[:512]], dtype=np.int64)
-                    
-                    onnx_inputs = {"input_ids": input_ids, "attention_mask": attention_mask}
-                    if "token_type_ids" in [inp.name for inp in self.session.get_inputs()]:
-                        onnx_inputs["token_type_ids"] = np.array([encoded.type_ids[:512]], dtype=np.int64)
-                    
-                    outputs = self.session.run(None, onnx_inputs)
-                    last_hidden_state = outputs[0]  # shape: (1, seq_len, hidden_dim)
-                    
-                    # Mean pooling with attention mask
-                    input_mask_expanded = np.expand_dims(attention_mask, -1).astype(float)
-                    sum_embeddings = np.sum(last_hidden_state * input_mask_expanded, 1)
-                    sum_mask = np.clip(input_mask_expanded.sum(1), a_min=1e-9, a_max=None)
-                    embeddings = sum_embeddings / sum_mask
-                    
-                    # Normalize to unit sphere
-                    norm = np.linalg.norm(embeddings, axis=1, keepdims=True)
-                    normalized = (embeddings / np.maximum(norm, 1e-12))[0].tolist()
-                    results.append(normalized)
-                return results
+                # Batched tokenization
+                encodings = [self.tokenizer.encode(t) for t in texts]
+                batch_size = len(encodings)
+                max_len = min(512, max(len(e.ids) for e in encodings) if encodings else 1)
+                max_len = max(max_len, 1)
+
+                input_ids = np.zeros((batch_size, max_len), dtype=np.int64)
+                attention_mask = np.zeros((batch_size, max_len), dtype=np.int64)
+                token_type_ids = np.zeros((batch_size, max_len), dtype=np.int64)
+
+                for i, enc in enumerate(encodings):
+                    l = min(len(enc.ids), max_len)
+                    input_ids[i, :l] = enc.ids[:l]
+                    attention_mask[i, :l] = enc.attention_mask[:l]
+                    if hasattr(enc, "type_ids") and enc.type_ids:
+                        token_type_ids[i, :l] = enc.type_ids[:l]
+
+                onnx_inputs = {"input_ids": input_ids, "attention_mask": attention_mask}
+                if "token_type_ids" in [inp.name for inp in self.session.get_inputs()]:
+                    onnx_inputs["token_type_ids"] = token_type_ids
+
+                outputs = self.session.run(None, onnx_inputs)
+                last_hidden_state = outputs[0]  # shape: (batch_size, seq_len, hidden_dim)
+
+                # Vectorized mean pooling with attention mask
+                input_mask_expanded = np.expand_dims(attention_mask, -1).astype(float)
+                sum_embeddings = np.sum(last_hidden_state * input_mask_expanded, axis=1) # (batch_size, hidden_dim)
+                sum_mask = np.clip(input_mask_expanded.sum(axis=1), a_min=1e-9, a_max=None)
+                embeddings = sum_embeddings / sum_mask
+
+                # Normalize to unit sphere across batch
+                norm = np.linalg.norm(embeddings, axis=1, keepdims=True)
+                normalized = embeddings / np.maximum(norm, 1e-12)
+                return normalized.tolist()
             except Exception as e:
                 print(f"[SLMEmbeddingsServer] Neural inference note: {e}")
 

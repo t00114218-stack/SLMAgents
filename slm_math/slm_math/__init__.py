@@ -1,3 +1,4 @@
 from .math_agent import SLMMathAgent
 
-__all__ = ["SLMMathAgent"]
+SLMMathSolver = SLMMathAgent
+__all__ = ["SLMMathAgent", "SLMMathSolver"]
