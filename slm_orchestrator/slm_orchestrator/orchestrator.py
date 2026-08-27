@@ -761,6 +761,44 @@ class SLMOrchestrator:
                     return res["response"]
                 return str(res)
 
+            elif "webagent" in agent_lower or "web_agent" in agent_lower:
+                try:
+                    from slm_web_agent.web_agent import SLMWebAgent
+                    runner = SLMWebAgent()
+                    url_match = re.search(r'https?://[^\s<>"]+|www\.[^\s<>"]+', query_str)
+                    start_url = url_match.group(0) if url_match else "https://www.slmagents.ai/index.html"
+                    if not start_url.startswith("http"):
+                        start_url = "https://" + start_url
+                    res = runner.browse(goal=query_str, start_url=start_url)
+                    if isinstance(res, dict):
+                        history_str = "\n".join([f"- {h}" for h in res.get("history", [])])
+                        out_msg = f"### 🌐 Web Browser Automation Report\n\n**Goal**: {query_str}\n**Target URL**: {start_url}\n\n#### 📜 Navigation Steps\n{history_str}\n"
+                        if res.get("stdout"):
+                            out_msg += f"\n**Extracted Content**:\n{res['stdout']}\n"
+                        if token_cb:
+                            token_cb(out_msg)
+                        return out_msg
+                    return str(res)
+                except Exception as web_err:
+                    print(f"[SLMOrchestrator] WebAgent note: {web_err}")
+
+            elif "scraper" in agent_lower or "webscraper" in agent_lower:
+                try:
+                    from slm_web_scraper.web_scraper import SLMWebScraper
+                    runner = SLMWebScraper()
+                    url_match = re.search(r'https?://[^\s<>"]+|www\.[^\s<>"]+', query_str)
+                    target_url = url_match.group(0) if url_match else "https://www.slmagents.ai"
+                    if not target_url.startswith("http"):
+                        target_url = "https://" + target_url
+                    res = runner.scrape(url=target_url, schema={"summary": "Main content summary", "key_details": "Key details"})
+                    if isinstance(res, dict):
+                        out_msg = f"### 🕷️ Web Scraper Results\n\n**URL**: {target_url}\n\n```json\n{json.dumps(res, indent=2)}\n```"
+                        if token_cb:
+                            token_cb(out_msg)
+                        return out_msg
+                    return str(res)
+                except Exception as scrape_err:
+                    print(f"[SLMOrchestrator] WebScraper note: {scrape_err}")
 
             elif "search" in agent_lower:
                 try:

@@ -3,12 +3,32 @@ import sys
 import yaml
 import json
 import re
-from bs4 import BeautifulSoup
+
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    BeautifulSoup = None
 
 try:
     import onnxruntime_genai as og
 except ImportError:
     og = None
+
+def load_config():
+    config_paths = [
+        "./config.yaml",
+        "../config.yaml",
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml"),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.yaml")
+    ]
+    for path in config_paths:
+        if path and os.path.exists(path):
+            try:
+                with open(path, "r") as f:
+                    return yaml.safe_load(f) or {}, os.path.abspath(path)
+            except Exception:
+                pass
+    return {}, ""
 
 class SLMWebScraper:
     """
@@ -58,89 +78,78 @@ class SLMWebScraper:
     def _resolve_model_path(self, model_path=None, cache_dir=None) -> str:
         target_path = None
         if model_path:
-            if not os.path.exists(model_path):
-                raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
-            target_path = os.path.abspath(model_path)
+            target_path = model_path
+        elif cache_dir and os.path.exists(cache_dir):
+            target_path = cache_dir
         else:
-            # Config loading fallback
-            config_paths = [
-                "./config.yaml",
-                "../config.yaml",
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.yaml"),
-                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.yaml")
-            ]
-            config = {}
-            config_file_path = ""
-            for path in config_paths:
-                if path and os.path.exists(path):
-                    try:
-                        with open(path, "r") as f:
-                            config, config_file_path = yaml.safe_load(f) or {}, os.path.abspath(path)
-                            break
-                    except Exception:
-                        pass
-
+            shared_qwen = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "qwen3.5-0.8b-onnx")
+            if os.path.exists(shared_qwen):
+                return shared_qwen
+            shared_phi = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4")
+            if os.path.exists(shared_phi):
+                return shared_phi
+            config, config_file_path = load_config()
             model_config = config.get("models", {}).get("web_scraper", {})
-            config_path = model_config.get("path", "../../models/phi-3.5-mini-instruct-onnx")
+            config_path = model_config.get("path", "../../models/qwen3.5-0.8b-onnx")
             config_path = os.path.expanduser(config_path)
             
             if not os.path.isabs(config_path) and config_file_path:
                 config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
-            target_path = config_path
-
-        # Find directory containing genai_config.json
-        for root, dirs, files in os.walk(target_path):
-            if "genai_config.json" in files:
-                return root
                 
-        if model_path:
-            return target_path
+            for root, dirs, files in os.walk(config_path):
+                if "genai_config.json" in files:
+                    return root
+                    
+            target_path = shared_phi if os.path.exists(shared_phi) else config_path
             
-        repo_id = model_config.get("repo_id", "microsoft/Phi-3.5-mini-instruct-onnx")
-        print(f"[SLMWebScraper] ONNX Model not found at configured path. Auto-downloading...")
-        os.makedirs(target_path, exist_ok=True)
-        
-        from huggingface_hub import snapshot_download
-        snapshot_download(
-            repo_id=repo_id,
-            local_dir=target_path,
-            ignore_patterns=["*cuda*", "*directml*"]
-        )
-        
-        for root, dirs, files in os.walk(target_path):
-            if "genai_config.json" in files:
-                return root
-                
         return target_path
 
     def _make_soup(self, html_content: str):
+        if BeautifulSoup is None:
+            return None
         try:
             return BeautifulSoup(html_content, "lxml")
         except Exception:
-            return BeautifulSoup(html_content, "html.parser")
+            try:
+                return BeautifulSoup(html_content, "html.parser")
+            except Exception:
+                return None
 
     def clean_html(self, html_content: str) -> str:
         """Removes script, style, and navigation tags from HTML to optimize input context window."""
+        if not html_content:
+            return ""
+
         soup = self._make_soup(html_content)
-        
-        # Remove non-content tags
-        non_content_tags = ["script", "style", "nav", "footer", "header", "noscript", "aside", "iframe"]
-        for element in soup(non_content_tags):
-            element.extract()
-            
-        # Clean elements by classes or IDs matching navigation/advertising terms
-        for element in soup.find_all(True):
-            cls = element.get("class", [])
-            if isinstance(cls, list):
-                cls = " ".join(cls)
-            cls = str(cls).lower()
-            element_id = str(element.get("id", "")).lower()
-            
-            if any(term in cls or term in element_id for term in ["menu", "nav", "sidebar", "ad-", "banner", "footer"]):
-                element.extract()
+        if soup is not None:
+            # Remove non-content tags
+            non_content_tags = ["script", "style", "nav", "footer", "header", "noscript", "aside", "iframe"]
+            for element in soup(non_content_tags):
+                try:
+                    element.extract()
+                except Exception:
+                    pass
                 
-        # Get clean text representation
-        text = soup.get_text(separator="\n")
+            # Clean elements by classes or IDs matching navigation/advertising terms
+            for element in soup.find_all(True):
+                cls = element.get("class", [])
+                if isinstance(cls, list):
+                    cls = " ".join(cls)
+                cls = str(cls).lower()
+                element_id = str(element.get("id", "")).lower()
+                
+                if any(term in cls or term in element_id for term in ["menu", "nav", "sidebar", "ad-", "banner", "footer"]):
+                    try:
+                        element.extract()
+                    except Exception:
+                        pass
+                    
+            # Get clean text representation
+            text = soup.get_text(separator="\n")
+        else:
+            # High-speed regex HTML strip fallback if bs4 is not available
+            text = re.sub(r'<(script|style|nav|footer|header|noscript|aside|iframe)[^>]*>.*?</\1>', '', html_content, flags=re.DOTALL | re.IGNORECASE)
+            text = re.sub(r'<[^>]+>', ' ', text)
         
         # Strip redundant white lines
         lines = [line.strip() for line in text.splitlines() if line.strip()]
@@ -317,8 +326,17 @@ class SLMWebScraper:
             return brace_match.group(1).strip()
         return text.strip()
 
-    def scrape(self, html_content: str, schema_dict: dict, max_retries: int = 3) -> dict:
-        """Strips HTML content and parses the remainder into a schema compliant JSON structure."""
+    def scrape(self, html_or_url: str = "", schema_dict: dict = None, max_retries: int = 3, url: str = None, **kwargs) -> dict:
+        """Strips HTML content or fetches URL and parses the remainder into a schema compliant JSON structure."""
+        target_url = url or (html_or_url if html_or_url.startswith("http") else None)
+        if target_url:
+            cleaned_text = self.scrape_url(target_url, schema_dict=None)
+            html_content = cleaned_text
+        else:
+            html_content = html_or_url
+
+        if schema_dict is None:
+            schema_dict = {"summary": "Overview of page", "content": "Cleaned page content"}
         html_content = self.process_images_in_html(html_content)
         html_content = self.describe_tables_in_html(html_content)
         cleaned_text = self.clean_html(html_content)
