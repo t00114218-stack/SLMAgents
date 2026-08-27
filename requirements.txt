@@ -16,3 +16,6 @@ Pillow
 transformers
 torch
 beautifulsoup4
+pymupdf
+openpyxl
+pdfplumber

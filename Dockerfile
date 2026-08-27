@@ -21,6 +21,16 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy the rest of the monorepo codebase
 COPY . .
 
+# Set environment variables for 2 vCPU SIMD / AVX Dynamic Batching on Hugging Face Spaces
+ENV OMP_NUM_THREADS=2 \
+    MKL_NUM_THREADS=2 \
+    SLM_N_THREADS=2 \
+    OMP_WAIT_POLICY=PASSIVE \
+    KMP_BLOCKTIME=0 \
+    ORT_ENABLE_AVX2=1 \
+    SLM_MAX_BATCH_SIZE=16 \
+    SLM_BATCH_TIMEOUT_MS=3.0
+
 # Expose Hugging Face Space port
 EXPOSE 7860
 
