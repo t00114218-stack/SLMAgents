@@ -83,31 +83,29 @@ class SLMTaskPlanner:
         if "[Current Task]:" in clean_goal:
             clean_goal = clean_goal.split("[Current Task]:")[-1].strip()
 
-        if "pdf" in clean_goal.lower() and any(word in clean_goal.lower() for word in ("extract", "parse", "stats")):
-            tasks = [
-                {"step": 1, "task": "Extract layout & tabular data from document", "assigned_agent": "SLMPDFChat / SLMDocumentParser"}
-            ]
-        else:
-            tasks = [
-                {"step": 1, "task": f"Clarify requirements and acceptance criteria for: {clean_goal}", "assigned_agent": "SLMTaskPlanner"},
-                {"step": 2, "task": f"Implement the smallest working solution for: {clean_goal}", "assigned_agent": "SLMCodeInterpreter"},
-                {"step": 3, "task": "Run verification and correct implementation failures", "assigned_agent": "SLMCodeInterpreter"},
-            ]
+        # Re-verify model availability
+        if self.model is None or self.tokenizer is None:
+            self._init_model()
 
-        # Well-defined extraction goals do not need model generation.
-        if len(tasks) == 1:
-            return {"goal": clean_goal, "tasks": tasks, "total_steps": 1}
-
-        # If ONNX model is available, use it to generate a rich milestone breakdown
+        # 1. Primary: Use LLM Neural Engine to generate rich, tailored milestone roadmap
         if self.model is not None and self.tokenizer is not None:
             sys_prompt = (
-                "You are an expert Project Management & Technical Architecture Planner.\n"
-                "Break down the user's project goal into a clear, structured multi-phase milestone roadmap.\n"
-                "For each milestone phase, include:\n"
-                "- Phase Name & Objective\n"
-                "- Key Action Items & Technical Deliverables\n"
-                "- Assigned Agent (e.g. SLMCodeInterpreter, SLMTextToSQL, SLMDataAnalyst, SLMSecurityAudit, SLMTaskPlanner)\n"
-                "Provide a detailed, professional, and actionable plan."
+                "You are an expert Chief Technology Officer & Technical Project Architect.\n"
+                "Break down the user's project goal into a professional, highly structured 4-phase milestone roadmap.\n"
+                "Use the following clean markdown format:\n\n"
+                "### 📋 Strategic Roadmap: [Goal Name]\n\n"
+                "#### 🔹 Phase 1: Architecture & Technical Discovery\n"
+                "- Key Objectives & Deliverables\n"
+                "- **Assigned Agent**: `SLMTaskPlanner` / `SLMSecurityAudit`\n\n"
+                "#### 🔹 Phase 2: Core Engineering & Implementation\n"
+                "- Key Objectives & Deliverables\n"
+                "- **Assigned Agent**: `SLMCodeInterpreter` / `SLMTextToSQL`\n\n"
+                "#### 🔹 Phase 3: Verification, Testing & Compliance\n"
+                "- Security, Privacy & Performance validation\n"
+                "- **Assigned Agent**: `SLMSecurityAudit` / `SLMDataAnalyst`\n\n"
+                "#### 🔹 Phase 4: Production Deployment & Monitoring\n"
+                "- Release, CI/CD and telemetry milestones\n"
+                "- **Assigned Agent**: `SLMGitRepoManager` / `SLMCLIAgent`"
             )
             is_phi = "phi" in str(getattr(self, "model_path", "")).lower()
             if is_phi:
@@ -124,11 +122,10 @@ class SLMTaskPlanner:
                 )
             try:
                 input_tokens = self.tokenizer.encode(full_prompt)
-                max_tokens = int(os.environ.get("SLM_TASK_PLANNER_MAX_TOKENS", 3000))
+                max_tokens = int(os.environ.get("SLM_TASK_PLANNER_MAX_TOKENS", 400))
                 params = og.GeneratorParams(self.model)
-                params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.2, repetition_penalty=1.15)
+                params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.2, repetition_penalty=1.18)
                 generator = og.Generator(self.model, params)
-
                 generator.append_tokens(input_tokens)
                 
                 out_tokens = []
@@ -145,7 +142,6 @@ class SLMTaskPlanner:
                                 token_callback(self.tokenizer.decode([tok_id]))
                             except Exception:
                                 pass
-
                         
                 raw_plan = self.tokenizer.decode(out_tokens).strip()
                 if "</think>" in raw_plan:
@@ -155,23 +151,50 @@ class SLMTaskPlanner:
                     raw_plan = re.sub(r'<think>.*?</think>', '', raw_plan, flags=re.DOTALL).strip()
                     raw_plan = re.sub(r'<think>.*', '', raw_plan, flags=re.DOTALL).strip()
 
-                if not raw_plan or len(raw_plan) < 20:
-                    raise ValueError("The planner generated an empty or incomplete plan")
-                    
-                return {
-                    "goal": clean_goal,
-                    "tasks": tasks,
-                    "total_steps": len(tasks),
-                    "plan_markdown": raw_plan,
-                    "status": "success"
-                }
+                if raw_plan and len(raw_plan) >= 40:
+                    return {
+                        "goal": clean_goal,
+                        "plan_markdown": raw_plan,
+                        "status": "success"
+                    }
             except Exception as e:
-                print(f"[SLMTaskPlanner] Generation error: {e}")
+                print(f"[SLMTaskPlanner] Neural generation note: {e}")
 
-        fallback_plan = "\n".join(
-            [f"### 📋 Strategic Action Plan: {clean_goal}", ""]
-            + [f"{task['step']}. **{task['task']}** ➔ `{task['assigned_agent']}`" for task in tasks]
+        # 2. Dynamic Domain-Aware Milestone Decomposition Fallback
+        q_lower = clean_goal.lower()
+        if any(w in q_lower for w in ["app", "mobile", "ios", "android", "privacy"]):
+            tasks = [
+                {"step": 1, "task": "Define Privacy Architecture & Local Zero-Knowledge Data Models", "assigned_agent": "SLMSecurityAudit"},
+                {"step": 2, "task": "Develop Core Application Logic & Offline Storage Engine", "assigned_agent": "SLMCodeInterpreter"},
+                {"step": 3, "task": "Implement Secure Local Cryptography & Permission Handling", "assigned_agent": "SLMSecurityAudit"},
+                {"step": 4, "task": "Execute Automated Unit Testing, Privacy Auditing & App Store Compliance", "assigned_agent": "SLMDataAnalyst"},
+                {"step": 5, "task": "Automate Build Packaging, Release Tagging & Production Rollout", "assigned_agent": "SLMGitRepoManager"}
+            ]
+        elif any(w in q_lower for w in ["sql", "database", "data", "pipeline", "etl"]):
+            tasks = [
+                {"step": 1, "task": "Profile Data Schema, Relationships & Normalization Rules", "assigned_agent": "SLMTextToSQL"},
+                {"step": 2, "task": "Construct High-Throughput Transformation & Indexing Pipelines", "assigned_agent": "SLMCodeInterpreter"},
+                {"step": 3, "task": "Run Automated Data Integrity, Quality & Performance Benchmarks", "assigned_agent": "SLMDataAnalyst"},
+                {"step": 4, "task": "Deploy Migration Scripts with Zero-Downtime Verification", "assigned_agent": "SLMDBMigrator"}
+            ]
+        else:
+            tasks = [
+                {"step": 1, "task": f"Analyze Technical Scope & Define Architecture for: {clean_goal}", "assigned_agent": "SLMTaskPlanner"},
+                {"step": 2, "task": f"Implement Core Functional Modules & Business Logic for: {clean_goal}", "assigned_agent": "SLMCodeInterpreter"},
+                {"step": 3, "task": "Conduct Security Analysis, Edge-Case Verification & Quality Assurance", "assigned_agent": "SLMSecurityAudit"},
+                {"step": 4, "task": "Finalize Production Deployment, Documentation & Delivery", "assigned_agent": "SLMGitRepoManager"}
+            ]
+
+        fallback_plan = (
+            f"### 📋 Strategic Action Plan: {clean_goal}\n\n"
+            + "\n".join([f"{task['step']}. **{task['task']}** ➔ `{task['assigned_agent']}`" for task in tasks])
         )
+        if token_callback:
+            try:
+                token_callback(fallback_plan)
+            except Exception:
+                pass
+
         return {
             "goal": clean_goal,
             "tasks": tasks,
@@ -179,3 +202,4 @@ class SLMTaskPlanner:
             "plan_markdown": fallback_plan,
             "status": "success"
         }
+

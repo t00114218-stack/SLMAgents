@@ -2717,8 +2717,6 @@ website_path = os.path.join(BASE_DIR, "website")
 
 @app.get("/api/system/stats")
 async def get_system_stats():
-@app.get("/api/system/stats")
-async def get_system_stats():
     mem_mb = None
     total_gb = None
     used_gb = None
