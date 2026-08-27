@@ -118,14 +118,21 @@ class Qwen35ONNXModel:
         if ort is None:
             raise ImportError("onnxruntime is not installed. Please run: pip install onnxruntime")
             
+        available_providers = ort.get_available_providers()
+        preferred_providers = [p for p in ["OpenVINOExecutionProvider", "CPUExecutionProvider"] if p in available_providers] or ["CPUExecutionProvider"]
+
         opts = ort.SessionOptions()
         opts.intra_op_num_threads = int(os.environ.get("SLM_N_THREADS", _detected_threads))
         opts.inter_op_num_threads = 1
         opts.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
+        # Maximize ONNX graph optimizations (O4 level layer and attention fusion)
         opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         
-        # Prioritize INT4 / Q4 quantized weights across all agents
+        # Resolve BF16 / FP16 / Native / INT4 weights in priority order
         embed_candidates = [
+            os.path.join(self.model_dir, "onnx", "embed_tokens_bf16.onnx"),
+            os.path.join(self.model_dir, "onnx", "embed_tokens_fp16.onnx"),
+            os.path.join(self.model_dir, "onnx", "embed_tokens.onnx"),
             os.path.join(self.model_dir, "onnx", "embed_tokens_q4.onnx"),
             os.path.join(self.model_dir, "onnx", "embed_tokens_int4.onnx"),
             os.path.join(self.model_dir, "onnx", "embed_tokens_quantized.onnx"),
@@ -133,6 +140,12 @@ class Qwen35ONNXModel:
             os.path.join(self.model_dir, "model.onnx")
         ]
         dec_candidates = [
+            os.path.join(self.model_dir, "onnx", "model_bf16.onnx"),
+            os.path.join(self.model_dir, "onnx", "model_fp16.onnx"),
+            os.path.join(self.model_dir, "onnx", "model.onnx"),
+            os.path.join(self.model_dir, "onnx", "decoder_model_merged_bf16.onnx"),
+            os.path.join(self.model_dir, "onnx", "decoder_model_merged_fp16.onnx"),
+            os.path.join(self.model_dir, "onnx", "decoder_model_merged.onnx"),
             os.path.join(self.model_dir, "onnx", "model_q4.onnx"),
             os.path.join(self.model_dir, "onnx", "model_quantized.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_q4.onnx"),
@@ -145,10 +158,10 @@ class Qwen35ONNXModel:
         embed_path = next((p for p in embed_candidates if os.path.exists(p)), None)
         dec_path = next((p for p in dec_candidates if os.path.exists(p)), dec_candidates[0])
         
-        print(f"[System] Loading INT4 Quantized ONNX model weights: {dec_path}")
-        self.dec_sess = ort.InferenceSession(dec_path, opts, providers=["CPUExecutionProvider"])
+        print(f"[System] Loading ONNX model weights (Providers: {preferred_providers}): {dec_path}")
+        self.dec_sess = ort.InferenceSession(dec_path, opts, providers=preferred_providers)
         if embed_path and os.path.exists(embed_path):
-            self.embed_sess = ort.InferenceSession(embed_path, opts, providers=["CPUExecutionProvider"])
+            self.embed_sess = ort.InferenceSession(embed_path, opts, providers=preferred_providers)
         else:
             self.embed_sess = self.dec_sess
 

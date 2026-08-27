@@ -21,9 +21,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy the rest of the monorepo codebase
 COPY . .
 
-# Pre-download and bake all verified ONNX models into container image layer
-RUN python download_models.py
-
 # Expose Hugging Face Space port
 EXPOSE 7860
 
