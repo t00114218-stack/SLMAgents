@@ -42,7 +42,7 @@ class SLMMeetingSummarizer:
                 return match.group(0).strip().capitalize()
         return "TBD"
 
-    def summarize_transcript(self, transcript: str, format_spec: str = "markdown_table", system_prompt: str = None, user_input: str = None) -> dict:
+    def summarize_transcript(self, transcript: str, format_spec: str = "markdown_table", system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> dict:
         """
         Processes transcript text and extracts structured action items & decisions.
         """
@@ -112,6 +112,12 @@ class SLMMeetingSummarizer:
             f"{action_table}"
         )
 
+        if token_callback:
+            try:
+                token_callback(markdown_resp)
+            except Exception:
+                pass
+
         return {
             "speakers": speakers,
             "decisions": decisions,
@@ -119,3 +125,4 @@ class SLMMeetingSummarizer:
             "summary": summary_text,
             "response": markdown_resp
         }
+

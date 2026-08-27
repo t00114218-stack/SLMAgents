@@ -45,7 +45,7 @@ class SLMDataAnalyst:
             except Exception:
                 self.interpreter = None
 
-    def analyze_file(self, file_path: str, query: str, system_prompt: str = None, user_input: str = None) -> dict:
+    def analyze_file(self, file_path: str, query: str, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> dict:
         """
         Parses data schema and generates analysis script execution.
         """
@@ -76,7 +76,7 @@ class SLMDataAnalyst:
         execution_error = "The code interpreter is unavailable."
         if self.interpreter:
             try:
-                res = self.interpreter.run(f"Write a script loading '{file_path}' to answer: {query}", stream=False)
+                res = self.interpreter.run(f"Write a script loading '{file_path}' to answer: {query}", stream=False, token_callback=token_callback)
                 if isinstance(res, dict) and res.get("success"):
                     exec_stdout = res.get("stdout", "")
                     script = res.get("code", script)

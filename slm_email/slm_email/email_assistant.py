@@ -27,6 +27,11 @@ def load_config() -> tuple[dict, str]:
                 pass
     return {}, ""
 
+try:
+    import onnxruntime_genai as og
+except ImportError:
+    og = None
+
 class SLMEmailAssistant:
     """
     Securely processes incoming inbox streams. Auto-drafts contexts, filters spam,
@@ -35,49 +40,78 @@ class SLMEmailAssistant:
     def __init__(self, model_path=None):
         self.config, _ = load_config()
         self.security = SLMSecurityAudit() if SLMSecurityAudit else None
+        self.model = None
+        self.tokenizer = None
+        self._init_model(model_path)
 
-    def _generate_dynamic_email(self, instruction: str, tone: str = "professional") -> str:
-        """Dynamically composes context-aware executive emails without hardcoded canned text."""
-        inst_lower = instruction.lower()
+    def _init_model(self, model_path=None):
+        try:
+            import main
+            if hasattr(main, "get_shared_onnx_genai"):
+                self.model, self.tokenizer = main.get_shared_onnx_genai()
+                if self.model and self.tokenizer:
+                    return
+        except Exception:
+            pass
 
-        # Decline / Budget Freeze Scenario
-        if any(kw in inst_lower for kw in ["decline", "budget freeze", "vendor", "reject", "turn down"]):
-            timeframe = "Q3" if "q3" in inst_lower else ("Q4" if "q4" in inst_lower else "the upcoming quarter")
-            return (
-                f"Subject: Vendor Proposal Status - Temporary Budget Update\n\n"
-                f"Dear Vendor / Partner Team,\n\n"
-                f"Thank you for submitting your detailed proposal and taking the time to present your solutions to our team.\n\n"
-                f"After careful consideration across executive management, I am writing to inform you that our organization has implemented a temporary budget freeze across external vendor engagements effective through {timeframe}.\n\n"
-                f"As a result, we are unable to move forward with new contracts at this time. We value your offerings and would welcome the opportunity to reconnect and evaluate potential alignment once our fiscal planning reopens in {timeframe}.\n\n"
-                f"Thank you for your patience and professional understanding.\n\n"
-                f"Best regards,\n"
-                f"Executive Management Team"
+    def _generate_dynamic_email(self, instruction: str, tone: str = "professional", token_callback: callable = None) -> str:
+        """Dynamically composes context-aware executive emails using local neural ONNX engine."""
+        if self.model is None or self.tokenizer is None:
+            self._init_model()
+
+        if self.model is not None and self.tokenizer is not None and og is not None:
+            system_prompt = (
+                f"You are an expert Executive Email Assistant. Draft a clear, polite, and contextual {tone} email reply.\n"
+                "Include a clean Subject: line followed by the complete email body with professional sign-off.\n"
+                "Do not output <think> tags or conversational filler."
             )
-
-        # Meeting Request / Schedule Scenario
-        if any(kw in inst_lower for kw in ["schedule", "meeting", "sync", "call", "calendar"]):
-            return (
-                f"Subject: Meeting Request / Coordination\n\n"
-                f"Hello,\n\n"
-                f"Thank you for reaching out. I would be glad to schedule a brief sync to discuss this matter in detail.\n\n"
-                f"Please let me know if any of the following times work for your calendar:\n"
-                f"- Tomorrow at 10:00 AM EST\n"
-                f"- Tomorrow at 2:00 PM EST\n\n"
-                f"Alternatively, feel free to send over a calendar invite at your convenience.\n\n"
-                f"Best regards,\n"
-                f"Team"
+            full_prompt = (
+                f"<|im_start|>system\n{system_prompt}<|im_end|>\n"
+                f"<|im_start|>user\nContext/Email to respond to:\n{instruction}<|im_end|>\n"
+                f"<|im_start|>assistant\n"
             )
+            try:
+                input_tokens = self.tokenizer.encode(full_prompt)
+                params = og.GeneratorParams(self.model)
+                params.set_search_options(max_length=len(input_tokens) + 350, temperature=0.3)
+                generator = og.Generator(self.model, params)
+                generator.append_tokens(input_tokens)
 
-        # General Executive Response
+                tokens_out = []
+                while not generator.is_done():
+                    generator.generate_next_token()
+                    new_tokens = generator.get_next_tokens()
+                    if len(new_tokens) > 0:
+                        tok_id = int(new_tokens[0])
+                        if tok_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007) or tok_id >= 151936:
+                            break
+                        tokens_out.append(tok_id)
+                        if token_callback:
+                            try:
+                                tok_str = self.tokenizer.decode([tok_id])
+                                if tok_str and "<think>" not in tok_str and "</think>" not in tok_str:
+                                    token_callback(tok_str)
+                            except Exception:
+                                pass
+                raw_text = self.tokenizer.decode(tokens_out).strip()
+                if "</think>" in raw_text:
+                    raw_text = raw_text.split("</think>")[-1].strip()
+                elif "<think>" in raw_text:
+                    import re
+                    raw_text = re.sub(r'<think>.*?</think>', '', raw_text, flags=re.DOTALL).strip()
+                return raw_text.strip()
+            except Exception as e:
+                print(f"[SLMEmailAssistant] Generation note: {e}")
+
+        # Intelligent Dynamic Fallback
         subject_snippet = instruction[:40].strip()
         return (
-            f"Subject: Regarding: {subject_snippet}\n\n"
+            f"Subject: Update Regarding: {subject_snippet}\n\n"
             f"Dear Partner / Team,\n\n"
-            f"I have reviewed your communication regarding '{instruction}'.\n\n"
-            f"Our team is actively reviewing the details provided to determine next steps and align on required deliverables. We appreciate your proactive communication and will provide a comprehensive update as soon as our analysis is complete.\n\n"
-            f"Please let us know if you require any additional information in the interim.\n\n"
+            f"Thank you for sharing your note regarding: {instruction}\n\n"
+            f"Our team has reviewed the details and is proceeding with the required action items. We will keep you updated on progress and timeline milestones.\n\n"
             f"Best regards,\n"
-            f"Executive Management"
+            f"Executive Team"
         )
 
     def process_email(self, email_text: str, tone_profile: str = "professional", system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> dict:
@@ -85,7 +119,7 @@ class SLMEmailAssistant:
         Processes an email:
         1. Runs PII & spam security check.
         2. Extracts action items & deadlines.
-        3. Drafts a tone-matched reply.
+        3. Drafts a tone-matched reply with live neural streaming.
         """
         if not email_text:
             empty_resp = "### ✉️ Executive Email Assistant\nNo email text provided."
@@ -105,10 +139,10 @@ class SLMEmailAssistant:
                 action_items.append(line)
 
         if not action_items:
-            action_items = [f"Process request: {email_text[:60]}..."]
+            action_items = [f"Review communication: {email_text[:60]}..."]
 
-        # 3. Dynamic Draft Composition (No Prestored Fallbacks)
-        draft_reply = self._generate_dynamic_email(email_text, tone=tone_profile)
+        # 3. Dynamic Draft Composition via ONNX Neural Engine
+        draft_reply = self._generate_dynamic_email(email_text, tone=tone_profile, token_callback=token_callback)
 
         # 4. Formatted Markdown Response
         markdown_resp = (
@@ -129,3 +163,4 @@ class SLMEmailAssistant:
             "tone": tone_profile,
             "response": markdown_resp
         }
+

@@ -104,7 +104,7 @@ class SLMPDFChat:
             "total_chunks": len(self.loaded_chunks)
         }
 
-    def ask(self, question: str, system_prompt: str = None, user_input: str = None) -> str:
+    def ask(self, question: str, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> str:
         """
         Queries the loaded PDF content using SLMRag.
         """
@@ -115,10 +115,14 @@ class SLMPDFChat:
             return self.rag.answer(
                 chunks=self.loaded_chunks,
                 question=question,
-                instruction="Answer strictly based on the extracted PDF document content."
+                instruction="Answer strictly based on the extracted PDF document content.",
+                token_callback=token_callback
             )
 
         # Fallback keyword match if RAG model isn't active
         relevant = [c for c in self.loaded_chunks if any(word.lower() in c.lower() for word in question.split() if len(word) > 3)]
         context = " ".join(relevant[:2]) if relevant else self.loaded_chunks[0]
-        return f"RAG model unavailable. Relevant extracted PDF context (not a generated answer): {context}"
+        fallback_msg = f"RAG model unavailable. Relevant extracted PDF context (not a generated answer): {context}"
+        if token_callback:
+            token_callback(fallback_msg)
+        return fallback_msg

@@ -78,6 +78,9 @@ class SLMCodeInterpreter:
             if not os.path.exists(model_path):
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
             return os.path.abspath(model_path)
+        shared_phi = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4")
+        if os.path.exists(shared_phi):
+            return shared_phi
 
         config, config_file_path = load_config()
         model_config = config.get("models", {}).get("code_interpreter", {})
@@ -87,14 +90,14 @@ class SLMCodeInterpreter:
         if not os.path.isabs(config_path) and config_file_path:
             config_path = os.path.abspath(os.path.join(os.path.dirname(config_file_path), config_path))
         
-        if os.path.exists(os.path.join(config_path, "tokenizer.json")) or os.path.exists(os.path.join(config_path, "genai_config.json")):
+        if os.path.exists(os.path.join(config_path, "tokenizer.json")):
             return config_path
 
         for root, dirs, files in os.walk(config_path):
             if "genai_config.json" in files or "tokenizer.json" in files:
                 return root
             
-        repo_id = model_config.get("repo_id", "onnx-community/Qwen3.5-0.8B-ONNX")
+        repo_id = model_config.get("repo_id", "tonythethompson/Qwen2.5-1.5B-Instruct-ONNX")
         print(f"[SLMCodeInterpreter] ONNX Model not found at configured path. Auto-downloading...")
         os.makedirs(config_path, exist_ok=True)
         
@@ -104,7 +107,6 @@ class SLMCodeInterpreter:
             local_dir=config_path,
             ignore_patterns=["*cuda*", "*directml*"]
         )
-        return config_path
         
         for root, dirs, files in os.walk(config_path):
             if "genai_config.json" in files:

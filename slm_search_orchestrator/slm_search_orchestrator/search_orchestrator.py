@@ -347,7 +347,7 @@ class SLMSearchOrchestrator:
                     
         return all_results
 
-    def search_and_synthesize(self, query: str) -> dict:
+    def search_and_synthesize(self, query: str, token_callback: callable = None, **kwargs) -> dict:
         """Retrieves top 15 search results, selects sure-shot links, scrapes web pages via SLMWebScraper, and synthesizes a grounded answer."""
         chunks = self.retrieve(query)
         
@@ -422,6 +422,8 @@ class SLMSearchOrchestrator:
                         break
                     tok_str = self.tokenizer.decode(new_tokens)
                     gen_answer += tok_str
+                    if token_callback:
+                        token_callback(tok_str)
                     # Line repetition guardrail
                     lines = [l.strip() for l in gen_answer.splitlines() if l.strip()]
                     if len(lines) >= 3 and lines[-1] == lines[-2] == lines[-3]:
@@ -477,10 +479,13 @@ class SLMSearchOrchestrator:
                     break
                 tok_str = self.tokenizer.decode(new_tokens)
                 answer += tok_str
+                if token_callback:
+                    token_callback(tok_str)
                 # Line repetition guardrail check
                 lines = [l.strip() for l in answer.splitlines() if l.strip()]
                 if len(lines) >= 3 and lines[-1] == lines[-2] == lines[-3]:
                     break
+
                 
         cleaned_answer = answer.strip()
         if "</think>" in cleaned_answer:

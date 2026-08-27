@@ -35,26 +35,21 @@ class SLMTaskPlanner:
 
     def _init_model(self, model_path=None):
         try:
-            main_mod = sys.modules.get("main") or sys.modules.get("__main__")
-            if not main_mod or not hasattr(main_mod, "get_shared_onnx_genai"):
-                try:
-                    import importlib
-                    main_mod = importlib.import_module("main")
-                except Exception:
-                    main_mod = None
-            if main_mod and hasattr(main_mod, "get_shared_onnx_genai"):
-                self.model, self.tokenizer = main_mod.get_shared_onnx_genai()
+            import main
+            if hasattr(main, "get_shared_onnx_genai"):
+                self.model, self.tokenizer = main.get_shared_onnx_genai()
                 if self.model and self.tokenizer:
-                    self.model_path = "shared_onnx"
+                    self.model_path = getattr(main, "MODEL_PATH", "shared_onnx")
                     return
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[SLMTaskPlanner] Shared model note: {e}")
 
         if og is None:
             return
         base_models = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models")
         candidates = [
             model_path,
+            os.path.join(base_models, "qwen2.5-coder-3b-onnx"),
             os.path.join(base_models, "qwen3.5-0.8b-onnx"),
             os.path.join(base_models, "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4"),
             self.config.get("model", {}).get("path")
@@ -134,12 +129,14 @@ class SLMTaskPlanner:
                     new_toks = generator.get_next_tokens()
                     if len(new_toks) > 0:
                         tok_id = int(new_toks[0])
-                        if tok_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
+                        if tok_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007) or tok_id >= 151936:
                             break
                         out_tokens.append(tok_id)
                         if token_callback:
                             try:
-                                token_callback(self.tokenizer.decode([tok_id]))
+                                tok_str = self.tokenizer.decode([tok_id])
+                                if tok_str and "<think>" not in tok_str and "</think>" not in tok_str:
+                                    token_callback(tok_str)
                             except Exception:
                                 pass
                         

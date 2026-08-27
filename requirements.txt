@@ -15,4 +15,3 @@ python-docx
 Pillow
 transformers
 torch
-psutil

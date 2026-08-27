@@ -233,6 +233,12 @@ class SLMOrchestrator:
                 raise FileNotFoundError(f"Provided model_path does not exist: {model_path}")
             return os.path.abspath(model_path)
 
+        shared_phi = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "phi-3.5-mini-instruct-onnx", "cpu_and_mobile", "cpu-int4-awq-block-128-acc-level-4")
+        if os.path.exists(shared_phi):
+            return shared_phi
+
+
+
         # Check config.yaml
         config, config_file_path = load_config()
         model_config = config.get("models", {}).get("orchestrator")
@@ -288,10 +294,7 @@ class SLMOrchestrator:
         q_lower = (question or "").lower().strip()
         history = kwargs.get("history") or []
         
-        # Fast Intent Dispatchers (0ms instant routing for unambiguous intents)
-        if any(kw in q_lower for kw in ["summarize", "summary", "summarizer", "tldr", "tl;dr", "financial report", "key takeaways", "bullet point summary", "give me a summary"]):
-            if "SLMSummarizer" in agent_names:
-                return "SLMSummarizer"
+        # Contextual & Direct Action Follow-up Handler for App Building, Python & Coding
         if any(kw in q_lower for kw in ["python", "code", "script", "fibonacci", "algorithm", "function", "build", "build thos", "build this", "complete app", "code it", "implement", "create script", "write code", "develop"]):
             if "SLMCodeInterpreter" in agent_names:
                 return "SLMCodeInterpreter"
@@ -763,7 +766,7 @@ class SLMOrchestrator:
                 try:
                     from slm_search_orchestrator import SLMSearchOrchestrator
                     runner = SLMSearchOrchestrator()
-                    res = runner.search_and_synthesize(query_str)
+                    res = runner.search_and_synthesize(query_str, token_callback=token_cb)
                     if isinstance(res, dict) and res.get("answer"):
                         return res["answer"]
                     return str(res)
@@ -801,6 +804,11 @@ class SLMOrchestrator:
                             if tok_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
                                 break
                             tokens_out.append(tok_id)
+                            if token_cb:
+                                try:
+                                    token_cb(self.tokenizer.decode([tok_id]))
+                                except Exception:
+                                    pass
                     return self.tokenizer.decode(tokens_out).strip()
                 
             else:

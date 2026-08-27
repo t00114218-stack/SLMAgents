@@ -214,7 +214,7 @@ class SLMCLIAgent:
         Translates a natural language query into a command, executes it safely if appropriate,
         and returns a structured dict of the results.
         """
-        command, explanation = self.generate_command(query)
+        command, explanation = self.generate_command(query, system_prompt=system_prompt, user_input=user_input, token_callback=token_callback, **kwargs)
         ret_code = 0
         stdout = ""
         stderr = ""
