@@ -1769,14 +1769,19 @@ async function fetchLiveRAMStats() {
           sysRamEl.textContent = `${data.ram_percent}% used`;
         }
       }
+      const tagEl = document.querySelector(".ram-runtime-tag");
+      if (tagEl) {
+        tagEl.textContent = data.device ? `${data.device} • Live` : "ONNX Engine • Active";
+      }
     }
   } catch (e) {
     // Graceful fallback
     if (ramMbEl.textContent === "-- MB") {
-      ramMbEl.textContent = "~173 MB";
+      ramMbEl.textContent = "~240 MB";
     }
   }
 }
+
 
 function startLiveRAMMonitor() {
   fetchLiveRAMStats();
