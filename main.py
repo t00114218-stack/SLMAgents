@@ -2724,7 +2724,7 @@ def chat_endpoint(req: ChatRequest):
                     thought = thought_queue.get_nowait()
                     if thought is not None:
                         all_thoughts.append(thought)
-                        yield f"data: {json.dumps({'type': 'thought', 'thought': thought, 'thoughts': all_thoughts})}\n\n"
+                        yield f"data: {json.dumps({'type': 'thought', 'thought': thought, 'thoughts': all_thoughts, 'session_id': req.session_id})}\n\n"
                         has_emitted = True
             except queue.Empty:
                 pass
@@ -2733,7 +2733,7 @@ def chat_endpoint(req: ChatRequest):
                 while True:
                     token = token_queue.get_nowait()
                     if token is not None:
-                        yield f"data: {json.dumps({'type': 'token', 'token': token})}\n\n"
+                        yield f"data: {json.dumps({'type': 'token', 'token': token, 'session_id': req.session_id})}\n\n"
                         has_emitted = True
             except queue.Empty:
                 pass
@@ -2741,9 +2741,9 @@ def chat_endpoint(req: ChatRequest):
                 await asyncio.sleep(0.005)
             
         if result_container["error"]:
-            yield f"data: {json.dumps({'type': 'error', 'error': result_container['error'], 'thoughts': all_thoughts})}\n\n"
+            yield f"data: {json.dumps({'type': 'error', 'error': result_container['error'], 'thoughts': all_thoughts, 'session_id': req.session_id})}\n\n"
         else:
-            yield f"data: {json.dumps({'type': 'done', 'response': result_container['result'], 'routed_agent': result_container['routed_agent'], 'thoughts': all_thoughts})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'response': result_container['result'], 'routed_agent': result_container['routed_agent'], 'thoughts': all_thoughts, 'session_id': req.session_id})}\n\n"
 
     return StreamingResponse(sse_generator(), media_type="text/event-stream")
 

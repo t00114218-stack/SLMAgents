@@ -1883,6 +1883,14 @@ function renderChatSessionList() {
     titleSpan.className = "chat-session-title";
     titleSpan.textContent = session.title || "Conversation";
     
+    if (session.isGenerating) {
+      const pulseDot = document.createElement("span");
+      pulseDot.className = "session-pulse-dot";
+      pulseDot.style.cssText = "display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #38bdf8; margin-left: 6px; animation: pulseRec 1s infinite;";
+      pulseDot.title = "Generating response...";
+      titleSpan.appendChild(pulseDot);
+    }
+
     const delBtn = document.createElement("button");
     delBtn.className = "chat-session-delete";
     delBtn.innerHTML = "✕";
@@ -2108,6 +2116,65 @@ function renderCurrentSessionMessages() {
   session.messages.forEach(msg => {
     appendMessageElementToViewport(msg.role, msg.text, msg.attachments, msg.routedAgent, msg.thoughts, false);
   });
+
+  // If this session is actively generating, render the live in-progress streaming card
+  if (session.isGenerating) {
+    const typingRow = document.createElement("div");
+    typingRow.className = "chat-msg-row assistant";
+    typingRow.id = "chat-typing-indicator";
+    const thoughts = session._liveThoughts || ["Analyzing query & extracting execution constraints..."];
+    const activeThought = thoughts[thoughts.length - 1] || "Executing Reasoning Pipeline";
+    const tokens = session._liveTokens || "";
+    
+    let timelineHtml = "";
+    thoughts.forEach((th, idx) => {
+      const isLast = idx === thoughts.length - 1;
+      timelineHtml += `
+        <div class="live-step-row ${isLast ? 'active' : 'completed'}">
+          <div class="live-step-icon">
+            ${isLast ? '<div class="step-spinner"></div>' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>'}
+          </div>
+          <div class="live-step-text">${th}</div>
+        </div>
+      `;
+    });
+
+    typingRow.innerHTML = `
+      <div class="chat-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="chat-bubble-container" style="width: 100%;">
+        <div class="chat-msg-meta">
+          <span>Assistant</span>
+          <span class="agent-routed-ghost" id="chat-live-routed-pill" title="Reasoning & Routing...">
+            <span class="ghost-dot" style="animation: pulseRec 1s infinite;"></span>
+            <span class="ghost-text">${session._liveRoutedAgent || 'Reasoning &amp; Routing...'}</span>
+          </span>
+        </div>
+        <div class="live-engine-card" id="chat-live-engine-card">
+          <div class="live-engine-header">
+            <div class="live-engine-title-wrap">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span class="live-engine-title" id="chat-live-thought-title">${activeThought}</span>
+            </div>
+            <div class="live-engine-timer" id="chat-live-timer">Active</div>
+          </div>
+          <div class="live-engine-timeline" id="chat-live-timeline">
+            ${timelineHtml}
+          </div>
+        </div>
+        <div class="chat-bubble" id="chat-live-response-box" style="display: ${tokens ? 'block' : 'none'}; padding-top: 4px;">
+          <div id="chat-live-token-stream"></div>
+        </div>
+      </div>
+    `;
+    viewport.appendChild(typingRow);
+    const streamEl = document.getElementById("chat-live-token-stream");
+    if (streamEl && tokens) {
+      renderLiveStreamedContent(streamEl, tokens);
+    }
+  }
+
   viewport.scrollTop = viewport.scrollHeight;
 }
 
@@ -3073,14 +3140,14 @@ async function handleChatSubmit(event) {
   
   const session = getCurrentSession();
   if (!session) return;
+  const targetSessionId = session.id;
   
   // Set session title from first user query
   if (session.messages.length === 0) {
     session.title = message ? (message.length > 28 ? message.substring(0, 28) + "..." : message) : attachments[0].name;
-    renderChatSessionList();
   }
   
-  // 1. Record and append user message
+  // 1. Record user message
   const userMsg = {
     role: "user",
     text: message,
@@ -3088,230 +3155,249 @@ async function handleChatSubmit(event) {
     timestamp: new Date().toISOString()
   };
   session.messages.push(userMsg);
-  appendMessageElementToViewport("user", message, attachments);
+  session.isGenerating = true;
+  session._liveTokens = "";
+  session._liveThoughts = ["Analyzing query & extracting execution constraints..."];
+  session._liveRoutedAgent = "";
+  saveChatSessionsToStorage();
+  renderChatSessionList();
+
+  if (currentSessionId === targetSessionId) {
+    appendMessageElementToViewport("user", message, attachments);
+  }
       
-      // Clear input fields
-      inputEl.value = "";
-      autoResizeChatTextarea(inputEl);
-      chatAttachments = [];
-      renderAttachmentsTray();
-      
-      // Disable send button while processing
-      if (sendBtn) sendBtn.disabled = true;
-      
-      // 2. Append live thinking card with active thought stream
-      const viewport = document.getElementById("chat-messages-viewport");
-      const typingRow = document.createElement("div");
-      typingRow.className = "chat-msg-row assistant";
-      typingRow.id = "chat-typing-indicator";
-      typingRow.innerHTML = `
-        <div class="chat-avatar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+  // Clear input fields
+  inputEl.value = "";
+  autoResizeChatTextarea(inputEl);
+  chatAttachments = [];
+  renderAttachmentsTray();
+  
+  // 2. Append live thinking card if currently viewing this session
+  const viewport = document.getElementById("chat-messages-viewport");
+  let typingRow = null;
+  if (currentSessionId === targetSessionId) {
+    typingRow = document.createElement("div");
+    typingRow.className = "chat-msg-row assistant";
+    typingRow.id = "chat-typing-indicator";
+    typingRow.innerHTML = `
+      <div class="chat-avatar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="chat-bubble-container" style="width: 100%;">
+        <div class="chat-msg-meta">
+          <span>Assistant</span>
+          <span class="agent-routed-ghost" id="chat-live-routed-pill" title="Reasoning & Routing...">
+            <span class="ghost-dot" style="animation: pulseRec 1s infinite;"></span>
+            <span class="ghost-text">Reasoning &amp; Routing...</span>
+          </span>
         </div>
-        <div class="chat-bubble-container" style="width: 100%;">
-          <div class="chat-msg-meta">
-            <span>Assistant</span>
-            <span class="agent-routed-ghost" id="chat-live-routed-pill" title="Reasoning & Routing...">
-              <span class="ghost-dot" style="animation: pulseRec 1s infinite;"></span>
-              <span class="ghost-text">Reasoning &amp; Routing...</span>
-            </span>
-          </div>
-          <!-- Animated Live Engine Execution Card -->
-          <div class="live-engine-card" id="chat-live-engine-card">
-            <div class="live-engine-header">
-              <div class="live-engine-title-wrap">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                <span class="live-engine-title" id="chat-live-thought-title">Executing Reasoning Pipeline</span>
-              </div>
-              <div class="live-engine-timer" id="chat-live-timer">0.0s</div>
+        <div class="live-engine-card" id="chat-live-engine-card">
+          <div class="live-engine-header">
+            <div class="live-engine-title-wrap">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span class="live-engine-title" id="chat-live-thought-title">Executing Reasoning Pipeline</span>
             </div>
-            <div class="live-engine-timeline" id="chat-live-timeline">
-              <div class="live-step-row active" id="live-step-0">
-                <div class="live-step-icon">
-                  <div class="step-spinner"></div>
-                </div>
-                <div class="live-step-text">Analyzing query &amp; extracting execution constraints...</div>
-              </div>
-            </div>
+            <div class="live-engine-timer" id="chat-live-timer">0.0s</div>
           </div>
-          <!-- Beautiful styled streaming response box -->
-          <div class="chat-bubble" id="chat-live-response-box" style="display: none; padding-top: 4px;">
-            <div id="chat-live-token-stream"></div>
+          <div class="live-engine-timeline" id="chat-live-timeline">
+            <div class="live-step-row active" id="live-step-0">
+              <div class="live-step-icon">
+                <div class="step-spinner"></div>
+              </div>
+              <div class="live-step-text">Analyzing query &amp; extracting execution constraints...</div>
+            </div>
           </div>
         </div>
-      `;
-      viewport.appendChild(typingRow);
-      viewport.scrollTop = viewport.scrollHeight;
+        <div class="chat-bubble" id="chat-live-response-box" style="display: none; padding-top: 4px;">
+          <div id="chat-live-token-stream"></div>
+        </div>
+      </div>
+    `;
+    viewport.appendChild(typingRow);
+    viewport.scrollTop = viewport.scrollHeight;
+  }
+  
+  const targetAgent = selectMode ? selectMode.value : "auto";
+  const startTime = Date.now();
+  const timerInterval = setInterval(() => {
+    const liveTimer = document.getElementById("chat-live-timer");
+    if (liveTimer && currentSessionId === targetSessionId) {
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      liveTimer.textContent = `${elapsed}s`;
+    }
+  }, 100);
+  
+  (async () => {
+    try {
+      const payload = {
+        session_id: targetSessionId,
+        message: message,
+        target_agent: targetAgent,
+        attachments: attachments,
+        history: session.messages.slice(-6).map(m => ({ role: m.role, content: m.text }))
+      };
       
-      const targetAgent = selectMode ? selectMode.value : "auto";
-      const liveTitle = document.getElementById("chat-live-thought-title");
-      const liveTimeline = document.getElementById("chat-live-timeline");
-      const liveTimer = document.getElementById("chat-live-timer");
-      const liveBox = document.getElementById("chat-live-response-box");
-      const streamEl = document.getElementById("chat-live-token-stream");
-      const livePill = document.getElementById("chat-live-routed-pill");
+      const chatEndpoint = getApiEndpoint("/api/chat");
+      const response = await fetch(chatEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
       
-      // Start stopwatch timer
-      const startTime = Date.now();
-      const timerInterval = setInterval(() => {
-        if (liveTimer) {
-          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-          liveTimer.textContent = `${elapsed}s`;
-        }
-      }, 100);
+      if (!response.ok) {
+        throw new Error(`Server returned HTTP ${response.status}`);
+      }
       
-      try {
-        const payload = {
-          session_id: session.id || "default_session",
-          message: message,
-          target_agent: targetAgent,
-          attachments: attachments,
-          history: session.messages.slice(-6).map(m => ({ role: m.role, content: m.text }))
-        };
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let finalPayload = null;
+      let streamBuffer = "";
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
         
-        const chatEndpoint = getApiEndpoint("/api/chat");
+        streamBuffer += decoder.decode(value, { stream: true });
+        const lines = streamBuffer.split("\n\n");
+        streamBuffer = lines.pop();
         
-        const response = await fetch(chatEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        
-        if (!response.ok) {
-          throw new Error(`Server returned HTTP ${response.status}`);
-        }
-        
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let finalPayload = null;
-        let accumulatedThoughts = ["Analyzing query & extracting execution constraints..."];
-        let accumulatedTokens = "";
-        let streamBuffer = "";
-        
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          
-          streamBuffer += decoder.decode(value, { stream: true });
-          const lines = streamBuffer.split("\n\n");
-          streamBuffer = lines.pop();
-          
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              let data;
-              try {
-                data = JSON.parse(line.slice(6));
-              } catch (e) {
-                console.log("Error parsing stream line:", e);
-                continue;
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            let data;
+            try {
+              data = JSON.parse(line.slice(6));
+            } catch (e) {
+              continue;
+            }
+            const activeTargetSession = chatSessions.find(s => s.id === targetSessionId) || session;
+            
+            if (data.type === "thought") {
+              const cleanThought = data.thought.replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "").trim();
+              if (activeTargetSession) {
+                if (!activeTargetSession._liveThoughts) activeTargetSession._liveThoughts = [];
+                if (!activeTargetSession._liveThoughts.includes(cleanThought)) {
+                  activeTargetSession._liveThoughts.push(cleanThought);
+                }
               }
-              if (data.type === "thought") {
-                  const cleanThought = data.thought.replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "").trim();
-                  if (liveTitle) {
-                    liveTitle.textContent = cleanThought.length > 44 ? cleanThought.substring(0, 44) + "..." : cleanThought;
-                  }
-                  if (data.thought.includes("Routed to: ") && livePill) {
-                    const ag = data.thought.split("Routed to: ")[1].trim().replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "");
-                    const label = livePill.querySelector(".ghost-label");
-                    if (label) label.textContent = `Routed: ${ag}`;
-                  }
-                  if (liveTimeline && !accumulatedThoughts.includes(cleanThought)) {
-                    accumulatedThoughts.push(cleanThought);
-                    
-                    // Mark previous steps as completed
-                    liveTimeline.querySelectorAll(".live-step-row").forEach(row => {
-                      row.className = "live-step-row completed";
-                      const icon = row.querySelector(".live-step-icon");
-                      if (icon) icon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                    });
-                    
-                    // Add new active step
-                    const newStep = document.createElement("div");
-                    newStep.className = "live-step-row active";
-                    newStep.innerHTML = `
-                      <div class="live-step-icon">
-                        <div class="step-spinner"></div>
-                      </div>
-                      <div class="live-step-text">${cleanThought}</div>
-                    `;
-                    liveTimeline.appendChild(newStep);
+              if (data.thought.includes("Routed to: ")) {
+                const ag = data.thought.split("Routed to: ")[1].trim().replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "");
+                if (activeTargetSession) activeTargetSession._liveRoutedAgent = `Routed: ${ag}`;
+              }
+              if (currentSessionId === targetSessionId) {
+                const liveTitle = document.getElementById("chat-live-thought-title");
+                const liveTimeline = document.getElementById("chat-live-timeline");
+                const livePill = document.getElementById("chat-live-routed-pill");
+                if (liveTitle) liveTitle.textContent = cleanThought.length > 44 ? cleanThought.substring(0, 44) + "..." : cleanThought;
+                if (livePill && activeTargetSession._liveRoutedAgent) {
+                  const label = livePill.querySelector(".ghost-text");
+                  if (label) label.textContent = activeTargetSession._liveRoutedAgent;
+                }
+                if (liveTimeline) {
+                  liveTimeline.querySelectorAll(".live-step-row").forEach(row => {
+                    row.className = "live-step-row completed";
+                    const icon = row.querySelector(".live-step-icon");
+                    if (icon) icon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                  });
+                  const newStep = document.createElement("div");
+                  newStep.className = "live-step-row active";
+                  newStep.innerHTML = `
+                    <div class="live-step-icon"><div class="step-spinner"></div></div>
+                    <div class="live-step-text">${cleanThought}</div>
+                  `;
+                  liveTimeline.appendChild(newStep);
+                  viewport.scrollTop = viewport.scrollHeight;
+                }
+              }
+            } else if (data.type === "token") {
+              if (data.token && !data.token.includes("<think>") && !data.token.includes("</think>")) {
+                if (activeTargetSession) {
+                  activeTargetSession._liveTokens = (activeTargetSession._liveTokens || "") + data.token;
+                }
+                if (currentSessionId === targetSessionId) {
+                  const liveBox = document.getElementById("chat-live-response-box");
+                  const streamEl = document.getElementById("chat-live-token-stream");
+                  if (liveBox) liveBox.style.display = "block";
+                  if (streamEl) {
+                    renderLiveStreamedContent(streamEl, activeTargetSession._liveTokens);
                     viewport.scrollTop = viewport.scrollHeight;
                   }
-                } else if (data.type === "token") {
-                  if (data.token && !data.token.includes("<think>") && !data.token.includes("</think>")) {
-                    accumulatedTokens += data.token;
-                    if (liveBox) liveBox.style.display = "block";
-                    if (streamEl) {
-                      renderLiveStreamedContent(streamEl, accumulatedTokens);
-                      viewport.scrollTop = viewport.scrollHeight;
-                    }
-                  }
-                } else if (data.type === "done") {
-                  finalPayload = data;
-              } else if (data.type === "error") {
-                throw new Error(data.error);
+                }
               }
+            } else if (data.type === "done") {
+              finalPayload = data;
+            } else if (data.type === "error") {
+              throw new Error(data.error);
             }
           }
         }
-        
-        clearInterval(timerInterval);
-    typingRow.remove();
-    
-    if (!finalPayload) {
-      throw new Error("The response stream ended before a final result was received.");
-    }
-    let rawResp = finalPayload.response || "No response text generated.";
-    let extractedThoughts = (finalPayload && finalPayload.thoughts && finalPayload.thoughts.length > 0) ? [...finalPayload.thoughts] : [...accumulatedThoughts];
-    
-    if (typeof rawResp === "string" && rawResp.includes("</think>")) {
-      const parts = rawResp.split("</think>");
-      const thinkBlock = parts[0].replace("<think>", "").trim();
-      if (thinkBlock) {
-        extractedThoughts.push(`🧠 Step-by-Step CoT Reasoning:\n${thinkBlock}`);
       }
-      rawResp = parts.slice(1).join("</think>").trim();
-    }
-    if (typeof rawResp === "string") {
-      rawResp = rawResp.replace(/<think>[\s\S]*?<\/think>/g, "").replace(/<think>/g, "").replace(/<\/think>/g, "").trim();
-    }
+      
+      clearInterval(timerInterval);
+      const activeTargetSession = chatSessions.find(s => s.id === targetSessionId) || session;
+      activeTargetSession.isGenerating = false;
+      
+      if (!finalPayload) {
+        throw new Error("The response stream ended before a final result was received.");
+      }
+      
+      let rawResp = finalPayload.response || "No response text generated.";
+      let extractedThoughts = (finalPayload && finalPayload.thoughts && finalPayload.thoughts.length > 0) 
+        ? [...finalPayload.thoughts] 
+        : (activeTargetSession._liveThoughts || []);
+      
+      if (typeof rawResp === "string" && rawResp.includes("</think>")) {
+        const parts = rawResp.split("</think>");
+        const thinkBlock = parts[0].replace("<think>", "").trim();
+        if (thinkBlock) {
+          extractedThoughts.push(`🧠 Step-by-Step CoT Reasoning:\n${thinkBlock}`);
+        }
+        rawResp = parts.slice(1).join("</think>").trim();
+      }
+      if (typeof rawResp === "string") {
+        rawResp = rawResp.replace(/<think>[\s\S]*?<\/think>/g, "").replace(/<think>/g, "").replace(/<\/think>/g, "").trim();
+      }
 
-    const assistantMsg = {
-      role: "assistant",
-      text: rawResp,
-      routedAgent: finalPayload ? (finalPayload.routed_agent || "SLM Orchestrator") : "SLM Orchestrator",
-      thoughts: extractedThoughts,
-      timestamp: new Date().toISOString()
-    };
-    session.messages.push(assistantMsg);
-    saveChatSessionsToStorage();
-    
-    appendMessageElementToViewport("assistant", assistantMsg.text, [], assistantMsg.routedAgent, assistantMsg.thoughts);
-    
-    // Update live badge in header
-    const liveBadge = document.getElementById("chat-current-agent-text");
-    if (liveBadge) liveBadge.textContent = `Routed: ${assistantMsg.routedAgent}`;
-    
-    // Speech synthesis disabled
-    if (window.speechSynthesis && window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
+      const assistantMsg = {
+        role: "assistant",
+        text: rawResp,
+        routedAgent: finalPayload ? (finalPayload.routed_agent || "SLM Orchestrator") : "SLM Orchestrator",
+        thoughts: extractedThoughts,
+        timestamp: new Date().toISOString()
+      };
+      activeTargetSession.messages.push(assistantMsg);
+      delete activeTargetSession._liveTokens;
+      delete activeTargetSession._liveThoughts;
+      delete activeTargetSession._liveRoutedAgent;
+      saveChatSessionsToStorage();
+      renderChatSessionList();
+      
+      if (currentSessionId === targetSessionId) {
+        renderCurrentSessionMessages();
+        const liveBadge = document.getElementById("chat-current-agent-text");
+        if (liveBadge) liveBadge.textContent = `Routed: ${assistantMsg.routedAgent}`;
+      }
+    } catch (err) {
+      clearInterval(timerInterval);
+      const activeTargetSession = chatSessions.find(s => s.id === targetSessionId) || session;
+      activeTargetSession.isGenerating = false;
+      const errorMsg = {
+        role: "assistant",
+        text: `⚠️ **Execution Error**: Failed to process query through orchestrator.\n\n\`${err.message}\``,
+        routedAgent: "System Error Handler",
+        thoughts: ["Connection or inference execution error", err.message],
+        timestamp: new Date().toISOString()
+      };
+      activeTargetSession.messages.push(errorMsg);
+      delete activeTargetSession._liveTokens;
+      delete activeTargetSession._liveThoughts;
+      delete activeTargetSession._liveRoutedAgent;
+      saveChatSessionsToStorage();
+      renderChatSessionList();
+      if (currentSessionId === targetSessionId) {
+        renderCurrentSessionMessages();
+      }
     }
-  } catch (err) {
-    if (typingRow) typingRow.remove();
-    const errorMsg = {
-      role: "assistant",
-      text: `⚠️ **Execution Error**: Failed to process query through orchestrator.\n\n\`${err.message}\``,
-      routedAgent: "System Error Handler",
-      thoughts: ["Connection or inference execution error", err.message],
-      timestamp: new Date().toISOString()
-    };
-    session.messages.push(errorMsg);
-    saveChatSessionsToStorage();
-    appendMessageElementToViewport("assistant", errorMsg.text, [], errorMsg.routedAgent, errorMsg.thoughts);
-  } finally {
-    if (sendBtn) sendBtn.disabled = false;
-    inputEl.focus();
-  }
+  })();
 }
 
 function toggleChatSidebar() {
