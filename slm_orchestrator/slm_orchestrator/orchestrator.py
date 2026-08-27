@@ -769,14 +769,12 @@ class SLMOrchestrator:
                     start_url = url_match.group(0) if url_match else "https://www.slmagents.ai/index.html"
                     if not start_url.startswith("http"):
                         start_url = "https://" + start_url
-                    res = runner.browse(goal=query_str, start_url=start_url)
+                    res = runner.browse(goal=query_str, start_url=start_url, token_callback=token_cb)
                     if isinstance(res, dict):
                         history_str = "\n".join([f"- {h}" for h in res.get("history", [])])
                         out_msg = f"### 🌐 Web Browser Automation Report\n\n**Goal**: {query_str}\n**Target URL**: {start_url}\n\n#### 📜 Navigation Steps\n{history_str}\n"
                         if res.get("stdout"):
                             out_msg += f"\n**Extracted Content**:\n{res['stdout']}\n"
-                        if token_cb:
-                            token_cb(out_msg)
                         return out_msg
                     return str(res)
                 except Exception as web_err:
@@ -790,11 +788,9 @@ class SLMOrchestrator:
                     target_url = url_match.group(0) if url_match else "https://www.slmagents.ai"
                     if not target_url.startswith("http"):
                         target_url = "https://" + target_url
-                    res = runner.scrape(url=target_url, schema={"summary": "Main content summary", "key_details": "Key details"})
+                    res = runner.scrape(url=target_url, schema={"summary": "Main content summary", "key_details": "Key details"}, token_callback=token_cb)
                     if isinstance(res, dict):
                         out_msg = f"### 🕷️ Web Scraper Results\n\n**URL**: {target_url}\n\n```json\n{json.dumps(res, indent=2)}\n```"
-                        if token_cb:
-                            token_cb(out_msg)
                         return out_msg
                     return str(res)
                 except Exception as scrape_err:

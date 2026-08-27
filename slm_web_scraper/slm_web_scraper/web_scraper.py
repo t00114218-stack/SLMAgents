@@ -326,10 +326,15 @@ class SLMWebScraper:
             return brace_match.group(1).strip()
         return text.strip()
 
-    def scrape(self, html_or_url: str = "", schema_dict: dict = None, max_retries: int = 3, url: str = None, **kwargs) -> dict:
-        """Strips HTML content or fetches URL and parses the remainder into a schema compliant JSON structure."""
+    def scrape(self, html_or_url: str = "", schema_dict: dict = None, max_retries: int = 3, url: str = None, token_callback: callable = None, **kwargs) -> dict:
+        """Strips HTML content or fetches URL and parses the remainder into a schema compliant JSON structure with live token streaming."""
         target_url = url or (html_or_url if html_or_url.startswith("http") else None)
         if target_url:
+            if token_callback:
+                try:
+                    token_callback(f"🕷️ **Scraping URL**: `{target_url}`...\n\n")
+                except Exception:
+                    pass
             cleaned_text = self.scrape_url(target_url, schema_dict=None)
             html_content = cleaned_text
         else:
@@ -378,9 +383,15 @@ class SLMWebScraper:
                 new_tokens = generator.get_next_tokens()
                 if len(new_tokens) > 0:
                     token_id = int(new_tokens[0])
-                    if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
+                    if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007) or token_id >= 151936:
                         break
-                    response_text += self.tokenizer.decode(new_tokens)
+                    tok_str = self.tokenizer.decode(new_tokens)
+                    response_text += tok_str
+                    if token_callback:
+                        try:
+                            token_callback(tok_str)
+                        except Exception:
+                            pass
 
             json_block = self._extract_json(response_text)
             try:
@@ -394,3 +405,4 @@ class SLMWebScraper:
                 })
 
         return {"error": "Scraping failed to align with schema dict specifications"}
+

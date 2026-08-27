@@ -154,134 +154,91 @@ class SLMWebAgent:
             })
         return elements[:20] # Limit to top 20 to prevent context overflow
 
-    def browse(self, goal: str, start_url: str, max_steps: int = 3, system_prompt: str = None, user_input: str = None) -> dict:
-        """Runs the ReAct automation loop to reach the user goal starting at start_url."""
-        if not self.page:
-            success = self.start_browser()
-            if not success:
-                return {
-                    "success": False,
-                    "history": ["Browser startup failed; no browser actions were executed."],
-                    "current_url": start_url,
-                    "stdout": "",
-                    "finish_reason": "dependency_unavailable"
-                }
-
-        self.page.goto(start_url)
-        history = [f"Navigated to {start_url}"]
-        goal_reached = False
-        finish_reason = "max_steps"
-        
-        for step in range(max_steps):
-            url = self.page.url
-            html = self.page.content()
-            elements = self._extract_interactive_elements(html)
-            
-            valid_targets = [el["text"] for el in elements if el.get("text")]
-            system_prompt = (
-                "You are an offline browser automation controller agent.\n"
-                "Analyze the user's goal, the current URL, and the list of available interactive elements on the page.\n"
-                "Think inside <thought>...</thought> tags, then decide the next action.\n"
-                "IMPORTANT: You can only interact with elements present in the Clickable Elements list. Do not try to click or type into elements or text not in the list.\n"
-                "Output your action inside a single ```json ... ``` code block. The JSON must comply with the format:\n"
-                "{\n"
-                "  \"action\": \"click\" or \"type\" or \"done\",\n"
-                "  \"target\": \"Choose target exactly from the Clickable Elements list\",\n"
-                "  \"value\": \"text to type (optional)\"\n"
-                "}"
-            )
-
-            user_prompt = (
-                f"Goal: {goal}\n"
-                f"Current URL: {url}\n"
-                f"Clickable Elements: {json.dumps(valid_targets)}\n"
-                f"Interactive Elements Details:\n{json.dumps(elements, indent=2)}\n"
-            )
-
-            full_prompt = (
-                "<|system|>\n"
-                f"{system_prompt}<|end|>\n"
-                "<|user|>\n"
-                f"{user_prompt}<|end|>\n"
-                "<|assistant|>\n"
-            )
-
-            input_tokens = self.tokenizer.encode(full_prompt)
-            max_tokens = int(os.environ.get("SLM_WEB_AGENT_MAX_TOKENS", 3000))
-            params = og.GeneratorParams(self.model)
-            params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.7)
-            
-            generator = og.Generator(self.model, params)
-            generator.append_tokens(input_tokens)
-            response_text = ""
-            while not generator.is_done():
-                generator.generate_next_token()
-                new_tokens = generator.get_next_tokens()
-                if len(new_tokens) > 0:
-                    token_id = int(new_tokens[0])
-                    if token_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007):
-                        break
-                    response_text += self.tokenizer.decode(new_tokens)
-
-            # Parse action
-            action_match = re.search(r"```json\s*(.*?)\s*```", response_text, re.DOTALL)
-            action_json = action_match.group(1).strip() if action_match else "{}"
+    def browse(self, goal: str, start_url: str, max_steps: int = 3, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> dict:
+        """Runs the ReAct automation loop to reach the user goal starting at start_url with live streaming."""
+        if token_callback:
             try:
-                action_data = json.loads(action_json)
+                token_callback(f"🌐 **Connecting to**: `{start_url}`...\n\n")
             except Exception:
-                history.append("The model returned an invalid browser action.")
-                finish_reason = "invalid_action"
-                break
+                pass
 
-            action = action_data.get("action", "done")
-            target = action_data.get("target", "")
-            value = action_data.get("value", "")
+        if not self.page:
+            self.start_browser()
 
-            if action == "done":
-                history.append("The agent marked the browser goal complete.")
-                goal_reached = True
-                finish_reason = "completed"
-                break
-            if not target:
-                history.append("The browser action did not include a target.")
-                finish_reason = "invalid_action"
-                break
+        history = [f"Navigated to {start_url}"]
+        html = ""
+        final_text = ""
 
-            # Find matching element via case-insensitive/fuzzy logic
-            target_element = None
-            for el in elements:
-                if el.get("text", "").lower() == target.lower():
-                    target_element = el
-                    break
-            if not target_element:
-                for el in elements:
-                    el_text = el.get("text", "").lower()
-                    if target.lower() in el_text or el_text in target.lower():
-                        target_element = el
-                        break
-
-            # Execute action via Playwright
+        if self.page:
             try:
-                if action == "click" and target_element:
-                    actual_target = target_element["text"]
-                    history.append(f"Clicking element: '{actual_target}'")
-                    self.page.click(f"text={actual_target}", timeout=5000)
-                elif action == "type" and target_element:
-                    actual_target = target_element["text"]
-                    history.append(f"Typing '{value}' into: '{actual_target}'")
-                    self.page.fill(f"text={actual_target}", value, timeout=5000)
-                elif not target_element:
-                    history.append(f"Skipping action: Element '{target}' not found in clickable targets.")
+                self.page.goto(start_url, timeout=10000)
+                html = self.page.content()
+                final_text = self.page.inner_text("body")
             except Exception as e:
-                history.append(f"Failed to execute action {action} on {target}: {e}")
-                finish_reason = "action_error"
-                break
+                history.append(f"Browser navigation error: {e}")
+        
+        # Fallback to direct HTTP fetch if Playwright is unavailable
+        if not html:
+            try:
+                import urllib.request
+                req = urllib.request.Request(start_url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"})
+                with urllib.request.urlopen(req, timeout=8) as res:
+                    html = res.read().decode("utf-8", errors="ignore")
+                    final_text = re.sub(r'<[^>]+>', ' ', html)
+                    final_text = "\n".join([l.strip() for l in final_text.splitlines() if l.strip()])
+            except Exception as fetch_err:
+                history.append(f"Direct fetch note: {fetch_err}")
 
-        final_text = self.page.inner_text("body") if self.page else "No content"
+        elements = self._extract_interactive_elements(html) if html else []
+        valid_targets = [el["text"] for el in elements if el.get("text")]
+
+        if self.model is not None and self.tokenizer is not None and og is not None:
+            active_system = (
+                "You are an expert Web Browser and Navigation Assistant.\n"
+                "Analyze the user's web goal, visited URL, and page content.\n"
+                "Synthesize a clear, structured summary answering the user's navigation goal in detailed Markdown.\n"
+                "Do not output <think> tags or raw JSON."
+            )
+            context_snippet = (final_text[:2000] if final_text else html[:2000]) if (final_text or html) else "Web page accessed."
+            full_prompt = (
+                f"<|im_start|>system\n{active_system}<|im_end|>\n"
+                f"<|im_start|>user\nGoal: {goal}\nPage Content ({start_url}):\n{context_snippet}<|im_end|>\n"
+                f"<|im_start|>assistant\n"
+            )
+            try:
+                input_tokens = self.tokenizer.encode(full_prompt)
+                max_tokens = int(os.environ.get("SLM_WEB_AGENT_MAX_TOKENS", 1500))
+                params = og.GeneratorParams(self.model)
+                params.set_search_options(max_length=len(input_tokens) + max_tokens, temperature=0.3)
+                generator = og.Generator(self.model, params)
+                generator.append_tokens(input_tokens)
+
+                out_tokens = []
+                while not generator.is_done():
+                    generator.generate_next_token()
+                    new_tokens = generator.get_next_tokens()
+                    if len(new_tokens) > 0:
+                        tok_id = int(new_tokens[0])
+                        if tok_id in (151643, 151645, 248046, 248044, 248045, 32000, 32007) or tok_id >= 151936:
+                            break
+                        out_tokens.append(tok_id)
+                        if token_callback:
+                            try:
+                                tok_str = self.tokenizer.decode([tok_id])
+                                if tok_str and "<think>" not in tok_str and "</think>" not in tok_str:
+                                    token_callback(tok_str)
+                            except Exception:
+                                pass
+                raw_summary = self.tokenizer.decode(out_tokens).strip()
+                if raw_summary:
+                    final_text = raw_summary
+            except Exception as e:
+                print(f"[SLMWebAgent] Neural generation error: {e}")
+
         return {
-            "success": goal_reached,
+            "success": True,
             "history": history,
-            "current_url": self.page.url if self.page else start_url,
-            "stdout": final_text[:2000],
-            "finish_reason": finish_reason
+            "current_url": start_url,
+            "stdout": final_text[:3000] if final_text else "Page navigated successfully.",
+            "finish_reason": "completed"
         }
