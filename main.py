@@ -128,35 +128,38 @@ class Qwen35ONNXModel:
         # Maximize ONNX graph optimizations (O4 level layer and attention fusion)
         opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
         
-        # Resolve BF16 / FP16 / Native / INT4 weights in priority order
+        def is_valid_weight(p):
+            if not os.path.exists(p):
+                return False
+            data_file = p + "_data"
+            # If an external data file is declared or file is large enough to contain weights
+            if os.path.exists(data_file):
+                return os.path.getsize(data_file) > 10 * 1024 * 1024
+            return os.path.getsize(p) > 20 * 1024 * 1024
+
         embed_candidates = [
-            os.path.join(self.model_dir, "onnx", "embed_tokens_bf16.onnx"),
-            os.path.join(self.model_dir, "onnx", "embed_tokens_fp16.onnx"),
-            os.path.join(self.model_dir, "onnx", "embed_tokens.onnx"),
             os.path.join(self.model_dir, "onnx", "embed_tokens_q4.onnx"),
             os.path.join(self.model_dir, "onnx", "embed_tokens_int4.onnx"),
             os.path.join(self.model_dir, "onnx", "embed_tokens_quantized.onnx"),
             os.path.join(self.model_dir, "embed_tokens_quantized.onnx"),
+            os.path.join(self.model_dir, "onnx", "embed_tokens.onnx"),
             os.path.join(self.model_dir, "model.onnx")
         ]
         dec_candidates = [
-            os.path.join(self.model_dir, "onnx", "model_bf16.onnx"),
-            os.path.join(self.model_dir, "onnx", "model_fp16.onnx"),
-            os.path.join(self.model_dir, "onnx", "model.onnx"),
-            os.path.join(self.model_dir, "onnx", "decoder_model_merged_bf16.onnx"),
-            os.path.join(self.model_dir, "onnx", "decoder_model_merged_fp16.onnx"),
-            os.path.join(self.model_dir, "onnx", "decoder_model_merged.onnx"),
             os.path.join(self.model_dir, "onnx", "model_q4.onnx"),
             os.path.join(self.model_dir, "onnx", "model_quantized.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_q4.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_int4.onnx"),
             os.path.join(self.model_dir, "onnx", "decoder_model_merged_quantized.onnx"),
             os.path.join(self.model_dir, "decoder_model_merged_quantized.onnx"),
+            os.path.join(self.model_dir, "onnx", "model.onnx"),
             os.path.join(self.model_dir, "model.onnx")
         ]
         
         embed_path = next((p for p in embed_candidates if os.path.exists(p)), None)
-        dec_path = next((p for p in dec_candidates if os.path.exists(p)), dec_candidates[0])
+        dec_path = next((p for p in dec_candidates if is_valid_weight(p)), None)
+        if not dec_path:
+            dec_path = next((p for p in dec_candidates if os.path.exists(p)), dec_candidates[0])
         
         print(f"[System] Loading ONNX model weights (Providers: {preferred_providers}): {dec_path}")
         self.dec_sess = ort.InferenceSession(dec_path, opts, providers=preferred_providers)
@@ -343,14 +346,14 @@ def get_shared_onnx_genai():
                 print(f"[System] Native ONNX GenAI load note: {e}")
 
 
-        has_int4_weights = os.path.exists(os.path.join(MODEL_PATH, "genai_config.json")) or any(os.path.exists(os.path.join(MODEL_PATH, f)) for f in ["model.onnx", "model_q4.onnx"]) or any(os.path.exists(os.path.join(MODEL_PATH, "onnx", f)) for f in ["model_q4.onnx", "model_quantized.onnx"])
+        has_int4_weights = os.path.exists(os.path.join(MODEL_PATH, "genai_config.json")) or any(os.path.exists(os.path.join(MODEL_PATH, "onnx", f)) for f in ["model_q4.onnx", "decoder_model_merged_q4.onnx", "decoder_model_merged_quantized.onnx"])
         if not has_int4_weights:
-            print(f"[System] Qwen2.5 Coder 3B ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen2.5-Coder-3B-Instruct...")
+            print(f"[System] Qwen2.5 Coder 3B ONNX model not found at {MODEL_PATH}. Downloading onnx-community/Qwen2.5-Coder-3B-Instruct (INT4)...")
             if snapshot_download is not None:
                 snapshot_download(
                     repo_id="onnx-community/Qwen2.5-Coder-3B-Instruct",
                     local_dir=MODEL_PATH,
-                    allow_patterns=["*.json", "onnx/*"]
+                    allow_patterns=["*.json", "tokenizer*", "onnx/model_q4.*", "onnx/embed_tokens*"]
                 )
             
         print(f"[System] Initializing shared INT4 Quantized Qwen2.5-Coder 3B ONNX model from: {MODEL_PATH}...")
