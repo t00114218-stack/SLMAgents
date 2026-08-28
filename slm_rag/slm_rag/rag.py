@@ -183,24 +183,23 @@ class SLMRag:
                 
         return config_path
 
-    def query(self, question: str, chunks: list = None, system_prompt: str = None, token_callback: callable = None, **kwargs):
-        chunks = chunks or []
-        if not chunks:
+    def query(self, question: str, chunks: list = None, system_prompt: str = None, token_callback: callable = None, full_document: str = None, instruction: str = None, **kwargs):
+        chunks = chunks or ([full_document] if full_document else [])
+        if not chunks and not full_document:
             return "I couldn't find any uploaded documents to reference, so no document context is currently available. Could you please upload or attach the document you'd like me to analyze? I'd be happy to answer your questions once you provide it! 😊"
-        instruction = system_prompt or "Answer the question accurately based on context."
-        return self.answer(chunks=chunks, question=question, instruction=instruction, token_callback=token_callback, **kwargs)
+        inst = instruction or system_prompt or "Answer the question accurately based on context."
+        return self.answer(chunks=chunks, question=question, instruction=inst, token_callback=token_callback, full_document=full_document, **kwargs)
 
-    def answer(self, chunks: list, question: str, instruction: str, temperature: float = 0.0, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5, stream: bool = False, system_prompt: str = None, user_input: str = None, token_callback: callable = None):
-
-
+    def answer(self, chunks: list, question: str, instruction: str = None, temperature: float = 0.0, max_tokens: int = None, tools: list = None, tool_executor: callable = None, max_iterations: int = 5, stream: bool = False, system_prompt: str = None, user_input: str = None, token_callback: callable = None, full_document: str = None):
         """
-        Synthesizes an answer based on document chunks, user question, and user instruction.
-        Supports tool execution (e.g., Vector DB lookups) to gather more context.
+        Synthesizes an answer based on document context, user question, and user instruction.
+        For smaller documents, keeps the entire text in memory and passes it directly to answering for zero-loss reasoning.
 
         Args:
             chunks:         List of document text strings to use as context.
             question:       The user's question.
             instruction:    Style or constraint the model must follow.
+            full_document:  Optional full document text string to pass directly without vector chunking.
             temperature:    Generation randomness. 0.0 = deterministic (fastest, most consistent).
             max_tokens:     Max tokens to generate. Lower = faster. Env: SLM_RAG_MAX_TOKENS.
             tools:          Optional list of tool JSON schemas for agentic retrieval.
@@ -214,73 +213,72 @@ class SLMRag:
 
         max_iterations = max(1, min(int(max_iterations), 8))
         
-        # Rank and filter top relevant chunks via Okapi BM25 with fuzzy vocabulary expansion
-        selected_chunks = chunks
-        if len(chunks) > 4:
-            q_clean = question.strip()
-            q_tokens = [w.lower() for w in re.findall(r'\b\w+\b', q_clean) if len(w) > 2]
-            
-            # 1. Okapi BM25 Ranking across all document chunks
-            N = len(chunks)
-            doc_freqs = Counter()
-            doc_lens = []
-            tokenized_docs = []
-            all_vocab = set()
-            for c in chunks:
-                toks = [w.lower() for w in re.findall(r'\b\w+\b', c)]
-                tokenized_docs.append(toks)
-                doc_lens.append(len(toks))
-                for term in set(toks):
-                    doc_freqs[term] += 1
-                    all_vocab.add(term)
-            
-            # Expand misspelled / typo query tokens using document vocabulary
-            expanded_tokens = []
-            for q in q_tokens:
-                expanded_tokens.append(q)
-                if q not in doc_freqs:
-                    close_matches = difflib.get_close_matches(q, all_vocab, n=2, cutoff=0.75)
-                    for m in close_matches:
-                        expanded_tokens.append(m)
-
-            avgdl = sum(doc_lens) / N if N else 1.0
-            k1 = 1.5
-            b = 0.75
-            
-            bm25_scores = []
-            for idx, toks in enumerate(tokenized_docs):
-                score = 0.0
-                doc_len = doc_lens[idx]
-                counts = Counter(toks)
-                for q in expanded_tokens:
-                    if q in doc_freqs:
-                        df = doc_freqs[q]
-                        idf = math.log(1.0 + (N - df + 0.5) / (df + 0.5))
-                        tf = counts[q]
-                        score += idf * (tf * (k1 + 1.0)) / (tf + k1 * (1.0 - b + b * (doc_len / avgdl)))
-                bm25_scores.append(score)
-
-            # 2. Select top ranked chunks via Okapi BM25 (< 5ms retrieval)
-            scored = [(bm25_scores[i], i, chunks[i]) for i in range(len(chunks))]
-            scored.sort(key=lambda x: (x[0], -x[1]), reverse=True)
-            
-            # Select top 4 most informative passages
-            top_indices = [idx for _, idx, _ in scored[:4]]
-            
-            # Include immediate adjacent chunks for document continuity
-            expanded_indices = set(top_indices)
-            for idx in top_indices:
-                if idx + 1 < len(chunks):
-                    expanded_indices.add(idx + 1)
-                if len(expanded_indices) >= 6:
-                    break
-
-            selected_chunks = [chunks[i] for i in sorted(expanded_indices)]
+        # In-Memory Direct Context Strategy:
+        # If document is smaller (<= 35,000 chars / ~7,000 words), pass the full text directly
+        # to the answering prompt without vector embedding, chunk loss, or index truncation.
+        if full_document:
+            formatted_chunks = full_document.strip()
         else:
-            selected_chunks = chunks[:6]
+            chunks = chunks or []
+            total_chars = sum(len(c) for c in chunks)
+            if total_chars <= 35000 or len(chunks) <= 4:
+                formatted_chunks = "\n\n".join([chunk.strip() for chunk in chunks if chunk.strip()])
+            else:
+                # Rank and filter top relevant chunks via Okapi BM25 for very large multi-page corpora
+                q_clean = question.strip()
+                q_tokens = [w.lower() for w in re.findall(r'\b\w+\b', q_clean) if len(w) > 2]
+                
+                N = len(chunks)
+                doc_freqs = Counter()
+                doc_lens = []
+                tokenized_docs = []
+                all_vocab = set()
+                for c in chunks:
+                    toks = [w.lower() for w in re.findall(r'\b\w+\b', c)]
+                    tokenized_docs.append(toks)
+                    doc_lens.append(len(toks))
+                    for term in set(toks):
+                        doc_freqs[term] += 1
+                        all_vocab.add(term)
+                
+                expanded_tokens = []
+                for q in q_tokens:
+                    expanded_tokens.append(q)
+                    if q not in doc_freqs:
+                        close_matches = difflib.get_close_matches(q, all_vocab, n=2, cutoff=0.75)
+                        for m in close_matches:
+                            expanded_tokens.append(m)
 
-        # Format text chunks for context
-        formatted_chunks = "\n\n".join([chunk.strip() for chunk in selected_chunks if chunk.strip()])
+                avgdl = sum(doc_lens) / N if N else 1.0
+                k1 = 1.5
+                b = 0.75
+                
+                bm25_scores = []
+                for idx, toks in enumerate(tokenized_docs):
+                    score = 0.0
+                    doc_len = doc_lens[idx]
+                    counts = Counter(toks)
+                    for q in expanded_tokens:
+                        if q in doc_freqs:
+                            df = doc_freqs[q]
+                            idf = math.log(1.0 + (N - df + 0.5) / (df + 0.5))
+                            tf = counts[q]
+                            score += idf * (tf * (k1 + 1.0)) / (tf + k1 * (1.0 - b + b * (doc_len / avgdl)))
+                    bm25_scores.append(score)
+
+                scored = [(bm25_scores[i], i, chunks[i]) for i in range(len(chunks))]
+                scored.sort(key=lambda x: (x[0], -x[1]), reverse=True)
+                
+                top_indices = [idx for _, idx, _ in scored[:6]]
+                expanded_indices = set(top_indices)
+                for idx in top_indices:
+                    if idx + 1 < len(chunks):
+                        expanded_indices.add(idx + 1)
+                    if len(expanded_indices) >= 8:
+                        break
+
+                selected_chunks = [chunks[i] for i in sorted(expanded_indices)]
+                formatted_chunks = "\n\n".join([chunk.strip() for chunk in selected_chunks if chunk.strip()])
             
         # Build thorough, detailed ChatML template prompt
         system_prompt = (

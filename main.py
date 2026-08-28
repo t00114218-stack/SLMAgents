@@ -442,6 +442,9 @@ class ChatRequest(BaseModel):
     history: list[dict] = []
     system_prompt: str = ""
 
+from slm_memory import SLMMemoryManager
+memory_mgr = SLMMemoryManager()
+
 # Define executors mapping 26 agent keys to real library calls
 # Define helper functions for file handling and base64 conversions
 def get_file_suffix_from_bytes(data: bytes) -> str:
@@ -770,28 +773,65 @@ def run_voice(inputs):
 def run_rag(inputs):
     chunks_str = inputs.get("chunks", "").strip()
     question = inputs.get("question") or inputs.get("query") or inputs.get("message", "")
-    has_file = False
+    session_id = inputs.get("session_id", "default_session")
+    token_cb = inputs.get("token_callback")
+
+    doc_content = ""
+    doc_name = "Document"
+
+    # Check for attachments in direct RAG invocation
     if inputs.get("attachments"):
         for att in inputs.get("attachments", []):
             if att.get("data"):
-                has_file = True
+                doc_name = att.get("name", "Document")
+                doc_content = parse_document_attachment(doc_name, att.get("data"))
                 break
-                
-    if not chunks_str and not has_file:
-        return (
+
+    # If no new attachment, check if session memory has an active document
+    if not doc_content:
+        active_doc = memory_mgr.get_active_document(session_id)
+        if active_doc:
+            doc_content = active_doc.get("full_text") or "\n\n".join(active_doc.get("chunks", []))
+            doc_name = active_doc.get("name", "Document")
+
+    # If chunks_str was provided directly
+    if chunks_str and not doc_content:
+        doc_content = chunks_str
+
+    if not doc_content and not question:
+        msg = (
             "📎 **Knowledge Base Document Required**:\n\n"
-            "Please upload your knowledge base document, contract, or text file using the attachment button **(📎)** below so I can index it and answer questions based on your custom content!"
+            "Please upload your knowledge base document, contract, or text file using the attachment button **(📎)** below so I can analyze it and answer questions based on your custom content!"
         )
-        
+        if token_cb:
+            token_cb(msg)
+        return msg
+
     get_shared_onnx_genai()
     from slm_rag import SLMRag
-    agent = SLMRag()
-    chunks = [c.strip() for c in chunks_str.split(",") if c.strip()] if chunks_str else [question]
-    return agent.answer(
-        chunks=chunks,
-        question=question,
+    rag = SLMRag()
+
+    total_chars = len(doc_content)
+    is_small_doc = total_chars <= 35000
+
+    if doc_content:
+        # Store in session memory for zero-loss direct context answering and follow-ups
+        memory_mgr.store_document_memory(
+            session_id=session_id,
+            doc_name=doc_name,
+            chunks=[doc_content] if is_small_doc else [p.strip() for p in doc_content.split("\n\n") if p.strip()],
+            full_text=doc_content,
+            is_in_memory_direct=is_small_doc
+        )
+
+    q = question if question else "Summarize the key information in this document."
+    return rag.query(
+        question=q,
+        chunks=[doc_content] if is_small_doc else [p.strip() for p in doc_content.split("\n\n") if p.strip()],
+        full_document=doc_content if is_small_doc else None,
         system_prompt=inputs.get("system_prompt"),
-        instruction=inputs.get("instruction")
+        instruction=inputs.get("instruction"),
+        token_callback=token_cb
     )
 
 def run_orchestrator(inputs):
@@ -2597,38 +2637,67 @@ def chat_endpoint(req: ChatRequest):
                 from slm_rag import SLMRag
                 rag = SLMRag()
                 
-                raw_paragraphs = [p.strip() for p in doc_content.split("\n\n") if p.strip()]
-                chunks = []
-                curr_c = []
-                curr_w = 0
-                for p in raw_paragraphs:
-                    pw = len(p.split())
-                    if curr_w + pw <= 250:
-                        curr_c.append(p)
-                        curr_w += pw
-                    else:
-                        if curr_c:
-                            chunks.append("\n\n".join(curr_c))
-                        curr_c = [p]
-                        curr_w = pw
-                if curr_c:
-                    chunks.append("\n\n".join(curr_c))
-                chunks = chunks or [doc_content]
+                total_chars = len(doc_content)
+                total_words = len(doc_content.split())
+                is_small_doc = total_chars <= 35000
 
-                total_words = sum(len(c.split()) for c in chunks)
-                memory_mgr.store_document_memory(req.session_id, doc_att.name, chunks)
-                thought_queue.put(f"Indexed {len(chunks)} document sections (~{total_words} words) into vector memory")
-                thought_queue.put(f"SLMMemoryManager: Saved working context for active session")
-                thought_queue.put(f"Scanning & scoring clauses for query: '{query_text}'...")
-                thought_queue.put("Executing grounded RAG synthesis via Qwen2.5-Coder-3B-Instruct (3.1B) ONNX on CPU...")
-                
-                q = query_text if query_text else "Summarize the key information in this document."
-                rag_res = rag.query(
-                    question=q,
-                    chunks=chunks,
-                    system_prompt=req.system_prompt,
-                    token_callback=on_token
-                )
+                if is_small_doc:
+                    # In-Memory Direct Context Strategy: Keep smaller document in session memory for zero-loss direct answering
+                    memory_mgr.store_document_memory(
+                        session_id=req.session_id,
+                        doc_name=doc_att.name,
+                        chunks=[doc_content],
+                        full_text=doc_content,
+                        is_in_memory_direct=True
+                    )
+                    thought_queue.put(f"Document size is optimal (~{total_words} words, {total_chars} chars). Keeping entire document in active session memory.")
+                    thought_queue.put("Zero-loss in-memory neural reasoning active (vector embedding bypassed for speed & complete recall).")
+                    thought_queue.put("Executing direct grounded document answering on local CPU...")
+                    
+                    q = query_text if query_text else "Summarize the key information in this document."
+                    rag_res = rag.query(
+                        question=q,
+                        full_document=doc_content,
+                        system_prompt=req.system_prompt,
+                        token_callback=on_token
+                    )
+                else:
+                    # Large document chunking fallback
+                    raw_paragraphs = [p.strip() for p in doc_content.split("\n\n") if p.strip()]
+                    chunks = []
+                    curr_c = []
+                    curr_w = 0
+                    for p in raw_paragraphs:
+                        pw = len(p.split())
+                        if curr_w + pw <= 250:
+                            curr_c.append(p)
+                            curr_w += pw
+                        else:
+                            if curr_c:
+                                chunks.append("\n\n".join(curr_c))
+                            curr_c = [p]
+                            curr_w = pw
+                    if curr_c:
+                        chunks.append("\n\n".join(curr_c))
+                    chunks = chunks or [doc_content]
+
+                    memory_mgr.store_document_memory(
+                        session_id=req.session_id,
+                        doc_name=doc_att.name,
+                        chunks=chunks,
+                        full_text=doc_content,
+                        is_in_memory_direct=False
+                    )
+                    thought_queue.put(f"Large document detected (~{total_words} words). Indexed {len(chunks)} sections into working context.")
+                    thought_queue.put("Executing grounded RAG synthesis via local neural engine on CPU...")
+                    
+                    q = query_text if query_text else "Summarize the key information in this document."
+                    rag_res = rag.query(
+                        question=q,
+                        chunks=chunks,
+                        system_prompt=req.system_prompt,
+                        token_callback=on_token
+                    )
 
                 if rag_res and not getattr(thread_local_data, "output_streamed", False):
                     res_str = rag_res if isinstance(rag_res, str) else json.dumps(rag_res, indent=2)
@@ -2645,15 +2714,22 @@ def chat_endpoint(req: ChatRequest):
             context_meta = memory_mgr.resolve_context(req.session_id, query_text, req.history)
             if context_meta.get("is_doc_followup") and context_meta.get("active_document"):
                 active_doc = context_meta["active_document"]
-                thought_queue.put(f"SLMMemoryManager: Context detected ➔ Active document '{active_doc['name']}' ({len(active_doc['chunks'])} sections)")
-                thought_queue.put(f"Matching relevant clauses for follow-up: '{query_text}'...")
-                thought_queue.put("Executing grounded RAG synthesis via Qwen2.5-Coder-3B-Instruct (3.1B) ONNX on CPU...")
+                full_doc_text = active_doc.get("full_text") or ("\n\n".join(active_doc.get("chunks", [])))
+                is_small_doc = active_doc.get("is_in_memory_direct", True) or len(full_doc_text) <= 35000
+
+                if is_small_doc:
+                    thought_queue.put(f"SLMMemoryManager: Retrieved in-memory document '{active_doc['name']}' from active session")
+                    thought_queue.put(f"Passing complete in-memory document directly to answering for follow-up: '{query_text}'...")
+                else:
+                    thought_queue.put(f"SLMMemoryManager: Context detected ➔ Active document '{active_doc['name']}' ({len(active_doc.get('chunks', []))} sections)")
+                    thought_queue.put(f"Matching relevant clauses for follow-up: '{query_text}'...")
 
                 from slm_rag import SLMRag
                 rag = SLMRag()
                 rag_res = rag.query(
                     question=query_text,
-                    chunks=active_doc["chunks"],
+                    chunks=active_doc.get("chunks", [full_doc_text]),
+                    full_document=full_doc_text if is_small_doc else None,
                     system_prompt=req.system_prompt,
                     token_callback=on_token
                 )

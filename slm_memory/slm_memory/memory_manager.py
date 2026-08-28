@@ -233,20 +233,25 @@ class SLMMemoryManager:
         return relevant or all_facts[:3]
 
     # --- Session Working Memory, Document & Asset State Graph ---
-    def store_document_memory(self, session_id: str, doc_name: str, chunks: list[str], summary: str = None, file_path: str = None, vector_db_path: str = None):
-        """Stores document metadata, vector DB path, and text chunks into session state graph and SQLite."""
+    def store_document_memory(self, session_id: str, doc_name: str, chunks: list[str] = None, summary: str = None, file_path: str = None, vector_db_path: str = None, full_text: str = None, is_in_memory_direct: bool = True):
+        """Stores document metadata, in-memory full text, vector DB path, and text chunks into session state graph and SQLite."""
         session = self.get_or_create_session(session_id)
         
         v_path = vector_db_path or session.vector_db_path
         session.vector_db_path = v_path
 
+        chunks = chunks or ([full_text] if full_text else [])
+        total_chars = len(full_text) if full_text else sum(len(c) for c in chunks)
+
         doc_info = {
             "name": doc_name,
             "path": file_path,
             "vector_db_path": v_path,
+            "full_text": full_text or ("\n\n".join(chunks) if chunks else ""),
             "chunks": chunks,
             "summary": summary,
-            "character_count": sum(len(c) for c in chunks) if chunks else 0,
+            "is_in_memory_direct": is_in_memory_direct,
+            "character_count": total_chars,
             "timestamp": time.time()
         }
 

@@ -1,0 +1,5 @@
+# ninja log v5
+0	277	1787854955465213933	CMakeFiles/slm_llama_bridge.dir/llama-android-bridge.cpp.o	10cfe53ff8f8c3a4
+278	328	1787854955515220793	/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/build/intermediates/cxx/Debug/1w4w433f/obj/x86_64/libslm_llama_bridge.so	98f846ce26fe901a
+1	562	1787856925912403675	CMakeFiles/slm_llama_bridge.dir/llama-android-bridge.cpp.o	10cfe53ff8f8c3a4
+562	626	1787856925974847453	/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/build/intermediates/cxx/Debug/1w4w433f/obj/x86_64/libslm_llama_bridge.so	98f846ce26fe901a

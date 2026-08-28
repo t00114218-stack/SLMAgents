@@ -1,0 +1,3 @@
+/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/.cxx/Debug/1w4w433f/arm64-v8a/CMakeFiles/slm_llama_bridge.dir
+/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/.cxx/Debug/1w4w433f/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/.cxx/Debug/1w4w433f/arm64-v8a/CMakeFiles/rebuild_cache.dir

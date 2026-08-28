@@ -1,0 +1,27 @@
+{
+  "buildFiles": [
+    "/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/revathysuryaprakash/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/.cxx/Debug/1w4w433f/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/revathysuryaprakash/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/.cxx/Debug/1w4w433f/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "slm_llama_bridge::@6890427a1f51a3e7e1df": {
+      "artifactName": "slm_llama_bridge",
+      "abi": "x86_64",
+      "output": "/Users/revathysuryaprakash/Documents/SLMAgents/android_app/app/build/intermediates/cxx/Debug/1w4w433f/obj/x86_64/libslm_llama_bridge.so",
+      "runtimeFiles": []
+    }
+  }
+}

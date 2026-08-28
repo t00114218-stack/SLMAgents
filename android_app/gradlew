@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Setup Java home from Android Studio if not set
+if [ -z "$JAVA_HOME" ] && [ -d "/Applications/Android Studio.app/Contents/jbr/Contents/Home" ]; then
+    export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+fi
+
+if [ -n "$JAVA_HOME" ] ; then
+    JAVACMD="$JAVA_HOME/bin/java"
+else
+    JAVACMD="java"
+fi
+
+if [ ! -x "$JAVACMD" ] ; then
+    echo "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH." >&2
+    exit 1
+fi
+
+# Locate gradle wrapper jar
+APP_BASE_NAME=`basename "$0"`
+APP_HOME=`cd "\`dirname \"$0\"\`" >/dev/null 2>&1 && pwd`
+CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
+
+exec "$JAVACMD" "-Dorg.gradle.appname=$APP_BASE_NAME" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
