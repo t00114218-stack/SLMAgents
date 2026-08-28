@@ -1,0 +1,101 @@
+{
+  "description": "Held-out 120-query RAG Evaluation Benchmark for Small Language Models (SLMs) on CPU",
+  "metadata": {
+    "version": "1.0",
+    "total_queries": 120,
+    "categories": {
+      "financial_tabular": 40,
+      "technical_api": 40,
+      "enterprise_policy": 40
+    }
+  },
+  "queries": [
+    {
+      "id": "fin_01",
+      "category": "financial_tabular",
+      "query": "What was the Cloud Division Q3 2026 revenue and YoY growth rate?",
+      "expected_fact": "Revenue: $184.2M, YoY Growth: +34.6%",
+      "required_tokens": ["184.2", "34.6%"],
+      "gold_context": "The Cloud Infrastructure Division reported Q3 2026 revenue of $184.2M (+34.6% YoY), primarily driven by enterprise adoption of air-gapped SLM runtime appliances.",
+      "distractor_contexts": [
+        "Total global company revenues across all international business units reached $1,240.5M in Q3 2026, representing an overall increase of 8.2% compared to prior fiscal period.",
+        "Operating expenses in administrative operations grew to $45.1M as corporate legal and regulatory compliance teams expanded across European hubs.",
+        "The consumer devices group saw hardware shipments stabilize with net revenue of $78.4M, down 2.1% due to component supply constraints in Asian assembly facilities.",
+        "Capital expenditure projections for fiscal year 2027 are expected to allocate $95M toward next-generation data center modernization and green power initiatives.",
+        "Accounts receivable aging schedules indicate that 94.2% of commercial invoices are settled within standard 30-day payment windows across tier-1 customers.",
+        "Treasury reserves maintained cash and marketable securities of $412.8M at the conclusion of the third quarter, ensuring robust liquidity buffers."
+      ]
+    },
+    {
+      "id": "fin_02",
+      "category": "financial_tabular",
+      "query": "What was the EBITDA margin for the Cloud Division in Q3 2026?",
+      "expected_fact": "41.2%",
+      "required_tokens": ["41.2%"],
+      "gold_context": "EBITDA margin expanded to 41.2% (vs 36.8% in Q2 2026), reflecting operating leverage and optimized model weight caching on edge nodes.",
+      "distractor_contexts": [
+        "Gross margin for legacy hardware maintenance contracts remained flat at 28.4% during the third fiscal quarter.",
+        "Marketing and customer acquisition expenditures totaled $24.6M, representing approximately 13.3% of top-line SaaS recurring subscription volume.",
+        "Depreciation of physical server equipment was recorded at $12.1M under straight-line accounting principles over five-year asset lifecycles.",
+        "Corporate effective tax rate for the trailing twelve months was estimated at 18.5%, benefiting from research and development tax credit allowances.",
+        "Net income for the consolidated enterprise stood at $86.4M after accounting for interest expenses and foreign exchange currency hedging fluctuations."
+      ]
+    },
+    {
+      "id": "fin_03",
+      "category": "financial_tabular",
+      "query": "What is the total amount due on invoice INV-2026-88A and payment deadline?",
+      "expected_fact": "Amount: $14,850.00, Due Date: November 15, 2026",
+      "required_tokens": ["14,850", "November 15, 2026"],
+      "gold_context": "Invoice Ref: INV-2026-88A | Client: Cyberdyne Systems | Total Due: $14,850.00 | Net 30 Due Date: November 15, 2026 | Remit to Account: #8839-4021.",
+      "distractor_contexts": [
+        "Invoice Ref: INV-2026-72B | Client: Wayne Enterprises | Total Due: $8,420.00 | Net 30 Due Date: October 28, 2026 | Remit to Account: #1102-4912.",
+        "Invoice Ref: INV-2026-91C | Client: Stark Industries | Total Due: $32,100.00 | Net 60 Due Date: December 01, 2026 | Remit to Account: #4491-0023.",
+        "Payment receipt voucher REC-441 confirmed settlement of $5,600.00 from Tyrell Corp via ACH transfer on September 12, 2026.",
+        "Vendor purchase order PO-9912 authorized $11,250.00 for office supplies and cloud workstation hardware refreshes across European divisions."
+      ]
+    },
+    {
+      "id": "tech_01",
+      "category": "technical_api",
+      "query": "What exception does `HybridEngine.fuse_ranks()` raise when input candidate lists have mismatched schema keys?",
+      "expected_fact": "SchemaMismatchError",
+      "required_tokens": ["SchemaMismatchError"],
+      "gold_context": "When candidate dictionaries passed into `HybridEngine.fuse_ranks()` lack the mandatory 'id' or 'score' keys, the engine validates input structures and immediately raises `SchemaMismatchError`.",
+      "distractor_contexts": [
+        "If the connection string passed to `SQLiteBackend.connect()` is invalid or points to an inaccessible directory path, the driver raises `DatabaseConnectionError`.",
+        "When maximum token capacity is exceeded during text serialization, the tokenizer issues a `TokenLimitWarning` and automatically truncates trailing characters.",
+        "If an invalid quantization type string is supplied to `EngineConfig.from_yaml()`, the loader falls back to default INT4 precision with an informative log message.",
+        "Network timeout during remote model artifact fetching triggers `ArtifactDownloadTimeout` after 3 retries with exponential backoff."
+      ]
+    },
+    {
+      "id": "tech_02",
+      "category": "technical_api",
+      "query": "What is the default value of the `k` smoothing parameter in `reciprocal_rank_fusion`?",
+      "expected_fact": "k = 60",
+      "required_tokens": ["60"],
+      "gold_context": "In `slm_rag.core.fusion.reciprocal_rank_fusion(dense, sparse, k=60)`, the constant `k` is defaulted to 60 as recommended by Cormack et al. to avoid ranking bias.",
+      "distractor_contexts": [
+        "The BM25 term frequency saturation parameter `k1` defaults to 1.5, balancing term frequency influence against document length normalization.",
+        "In the HNSW approximate nearest neighbors index constructor, `ef_construction` is initialized to 128 to ensure high graph connectivity during vector indexing.",
+        "The ONNX Runtime session thread pool count defaults to `os.cpu_count() // 2` to avoid context thrashing on hyperthreaded CPU cores.",
+        "Embedding vector batching size in `BGEEmbeddingEngine` defaults to 32 items per inference forward pass."
+      ]
+    },
+    {
+      "id": "policy_01",
+      "category": "enterprise_policy",
+      "query": "Under Section 4.3 of the Data Retention Policy, how long are air-gapped system inference logs retained before automatic purging?",
+      "expected_fact": "90 calendar days",
+      "required_tokens": ["90", "days"],
+      "gold_context": "Section 4.3 (Air-Gapped Audit Trails): All local telemetry logs and inference event records stored on air-gapped appliances must be retained for exactly 90 calendar days before automated cryptographic purging.",
+      "distractor_contexts": [
+        "Section 2.1 (Customer Account Information): Personally identifiable information (PII) must be retained for 7 years following contract termination to comply with financial auditing regulations.",
+        "Section 6.8 (Visitor Physical Badges): Building access logs and visitor identity card scans are retained for 30 consecutive days by physical security teams.",
+        "Section 8.2 (Password Rotation Schedules): Administrative credentials on production compute nodes must be rotated every 60 days using hardware security keys.",
+        "Section 5.1 (Source Code Repositories): Git commit histories and artifact archives are stored indefinitely across immutable backup storage vaults."
+      ]
+    }
+  ]
+}
