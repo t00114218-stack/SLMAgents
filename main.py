@@ -875,35 +875,53 @@ def extract_spreadsheet_analytics(filename: str, b64_data: str, query: str = "")
         if df is None or df.empty:
             return None
 
+        # Detect and separate summary/footer rows (e.g. rows containing 'TOTAL', 'GRAND TOTAL', 'SUBTOTAL')
+        is_summary_row = df.apply(
+            lambda row: any(
+                str(val).strip().lower() in ['total', 'grand total', 'subtotal', 'totals', 'summary', 'average'] or
+                ('total' in str(val).strip().lower() and len(str(val).strip()) <= 15)
+                for val in row if val is not None
+            ),
+            axis=1
+        )
+        data_df = df[~is_summary_row] if (is_summary_row.any() and not is_summary_row.all()) else df
+        num_records = len(data_df)
+
         report = [f"### 📊 Executive Summary: `{filename}`\n"]
-        report.append(f"- **Total Rows / Records**: `{len(df):,}`")
+        report.append(f"- **Total Item Records**: `{num_records:,}`" + (f" *(excluding {int(is_summary_row.sum())} summary/footer row)*" if is_summary_row.any() else ""))
         report.append(f"- **Total Columns**: `{len(df.columns)}` ({', '.join([f'`{c}`' for c in df.columns[:8]])})")
         
-        num_cols = df.select_dtypes(include=["number"]).columns.tolist()
+        num_cols = data_df.select_dtypes(include=["number"]).columns.tolist()
         if num_cols:
             report.append("\n#### 💰 Financial & Column Aggregations:")
             for col in num_cols:
-                col_sum = df[col].sum()
-                col_avg = df[col].mean()
-                col_min = df[col].min()
-                col_max = df[col].max()
+                col_sum = data_df[col].sum()
+                col_avg = data_df[col].mean()
+                col_min = data_df[col].min()
+                col_max = data_df[col].max()
                 report.append(f"- **Total `{col}`**: **`{col_sum:,.2f}`** (Average: `{col_avg:,.2f}`, Min: `{col_min:,.2f}`, Max: `{col_max:,.2f}`)")
 
-        date_cols = [c for c in df.columns if any(d in str(c).lower() for d in ["date", "time", "dt", "period", "month", "year"])]
+        date_cols = [c for c in data_df.columns if any(d in str(c).lower() for d in ["date", "time", "dt", "period", "month", "year"])]
         if date_cols:
             for c in date_cols:
                 try:
-                    d_min = str(df[c].min()).split(" ")[0]
-                    d_max = str(df[c].max()).split(" ")[0]
-                    report.append(f"- **Date Range (`{c}`)**: `{d_min}` to `{d_max}`")
+                    parsed_dates = pd.to_datetime(data_df[c], errors="coerce").dropna()
+                    if not parsed_dates.empty:
+                        d_min = parsed_dates.min().strftime('%d-%b-%Y')
+                        d_max = parsed_dates.max().strftime('%d-%b-%Y')
+                        report.append(f"- **Date Range (`{c}`)**: `{d_min}` to `{d_max}`")
+                    else:
+                        clean_str_dates = [str(x).strip() for x in data_df[c].dropna() if str(x).strip() and str(x).strip().lower() not in ['total', 'totals', 'nan']]
+                        if clean_str_dates:
+                            report.append(f"- **Date Range (`{c}`)**: `{clean_str_dates[0]}` to `{clean_str_dates[-1]}`")
                 except Exception:
                     pass
 
         report.append("\n#### 📋 Data Sample (Top 5 Records):")
-        headers = [str(c) for c in df.columns]
+        headers = [str(c) for c in data_df.columns]
         report.append("| " + " | ".join(headers) + " |")
         report.append("| " + " | ".join(["---"] * len(headers)) + " |")
-        for _, row in df.head(5).iterrows():
+        for _, row in data_df.head(5).iterrows():
             report.append("| " + " | ".join([str(val).replace("\n", " ").strip() for val in row]) + " |")
 
         return "\n".join(report)
