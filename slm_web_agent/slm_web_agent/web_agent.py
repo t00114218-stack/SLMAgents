@@ -162,8 +162,16 @@ class SLMWebAgent:
             except Exception:
                 pass
 
-        if not self.page:
-            self.start_browser()
+        if not getattr(self, "page", None):
+            started = self.start_browser()
+            if not started and not getattr(self, "page", None):
+                return {
+                    "success": False,
+                    "history": [f"Browser startup failed for {start_url}"],
+                    "current_url": start_url,
+                    "stdout": "Browser dependency unavailable.",
+                    "finish_reason": "dependency_unavailable"
+                }
 
         history = [f"Navigated to {start_url}"]
         html = ""
@@ -192,7 +200,7 @@ class SLMWebAgent:
         elements = self._extract_interactive_elements(html) if html else []
         valid_targets = [el["text"] for el in elements if el.get("text")]
 
-        if self.model is not None and self.tokenizer is not None and og is not None:
+        if getattr(self, "model", None) is not None and getattr(self, "tokenizer", None) is not None and og is not None:
             active_system = (
                 "You are an expert Web Browser and Navigation Assistant.\n"
                 "Analyze the user's web goal, visited URL, and page content.\n"

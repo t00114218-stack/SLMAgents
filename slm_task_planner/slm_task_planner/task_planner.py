@@ -1,12 +1,13 @@
 import os
 import json
 import yaml
+from typing import Tuple, Dict, Any, List
 try:
     import onnxruntime_genai as og
 except ImportError:
     og = None
 
-def load_config() -> tuple[dict, str]:
+def load_config() -> Tuple[dict, str]:
     config_paths = [
         os.environ.get("SLM_TASK_PLANNER_CONFIG"),
         "./config.yaml",
@@ -67,26 +68,95 @@ class SLMTaskPlanner:
             except Exception as e:
                 print(f"[SLMTaskPlanner] ONNX init note: {e}")
 
-    def build_plan(self, goal: str, system_prompt: str = None, user_input: str = None, token_callback: callable = None) -> dict:
+    def fetch_context_from_memory(self, session_id: str = None, query: str = None, history: list = None, memory_manager = None) -> dict:
         """
-        Decomposes a user goal into detailed milestones with target agent assignments.
+        Retrieves relevant contextual assets, active documents, user facts, and turn history from SLMMemoryManager.
+        """
+        context_data = {
+            "has_context": False,
+            "context_summary": "",
+            "active_document": None,
+            "facts": [],
+            "recent_turns": []
+        }
+        if not session_id and not history and not query:
+            return context_data
+
+        try:
+            mem_mgr = memory_manager
+            if mem_mgr is None:
+                try:
+                    from slm_memory import SLMMemoryManager
+                    mem_mgr = SLMMemoryManager()
+                except Exception:
+                    mem_mgr = None
+
+            if mem_mgr:
+                sid = session_id or "default_session"
+                resolved = mem_mgr.resolve_context(sid, query or "", history or [])
+                if resolved:
+                    context_data["active_document"] = resolved.get("active_document")
+                    context_data["recent_turns"] = resolved.get("recent_turns", [])
+                    
+                    ctx_parts = []
+                    if resolved.get("has_active_document") and resolved.get("active_document"):
+                        doc = resolved["active_document"]
+                        doc_name = doc.get("name", "document")
+                        ctx_parts.append(f"- Active Document in Memory: '{doc_name}'")
+
+                    if hasattr(mem_mgr, "get_relevant_facts") and query:
+                        facts = mem_mgr.get_relevant_facts(query)
+                        if facts:
+                            context_data["facts"] = facts
+                            ctx_parts.append("- Relevant User Facts / Directives:\n  " + "\n  ".join([f"• {f}" for f in facts[:3]]))
+
+                    if context_data["recent_turns"]:
+                        turn_lines = []
+                        for t in context_data["recent_turns"][-3:]:
+                            u = str(t.get("user", ""))[:80]
+                            a = str(t.get("assistant", ""))[:80]
+                            turn_lines.append(f"User: {u} -> Assistant: {a}")
+                        if turn_lines:
+                            ctx_parts.append("- Recent Conversational History:\n  " + "\n  ".join(turn_lines))
+
+                    if ctx_parts:
+                        context_data["has_context"] = True
+                        context_data["context_summary"] = "\n".join(ctx_parts)
+        except Exception as e:
+            print(f"[SLMTaskPlanner] Memory context retrieval note: {e}")
+
+        return context_data
+
+    def build_plan(self, goal: str, system_prompt: str = None, user_input: str = None, token_callback: callable = None, session_id: str = None, history: list = None, memory_manager = None, **kwargs) -> dict:
+        """
+        Decomposes a user goal into detailed milestones with target agent assignments,
+        incorporating context retrieved from SLMMemoryManager.
         """
         if not goal or not str(goal).strip():
-            return {"goal": "", "tasks": [], "total_steps": 0, "plan_markdown": ""}
+            return {"goal": "", "tasks": [], "total_steps": 0, "plan_markdown": "", "status": "error"}
 
         clean_goal = str(goal).strip()
         if "[Current Task]:" in clean_goal:
             clean_goal = clean_goal.split("[Current Task]:")[-1].strip()
 
+        # Retrieve relevant memory context from SLMMemoryManager
+        mem_ctx = self.fetch_context_from_memory(
+            session_id=session_id or kwargs.get("session_id"),
+            query=clean_goal,
+            history=history or kwargs.get("history"),
+            memory_manager=memory_manager or kwargs.get("memory_manager")
+        )
+
         # Re-verify model availability
-        if self.model is None or self.tokenizer is None:
+        if getattr(self, "model", None) is None or getattr(self, "tokenizer", None) is None:
             self._init_model()
 
         # 1. Primary: Use LLM Neural Engine to generate rich, tailored milestone roadmap
-        if self.model is not None and self.tokenizer is not None:
+        if getattr(self, "model", None) is not None and getattr(self, "tokenizer", None) is not None and og is not None:
             sys_prompt = (
                 "You are an expert Chief Technology Officer & Technical Project Architect.\n"
-                "Break down the user's project goal into a professional, highly structured 4-phase milestone roadmap.\n"
+                "Understand the user's objective and any active memory context, then formulate a comprehensive, highly structured 4-phase milestone roadmap.\n"
+                "Assign specialized SLM agents (e.g. SLMCodeInterpreter, SLMTextToSQL, SLMRag, SLMDataAnalyst, SLMSecurityAudit, SLMGitRepoManager, SLMCLIAgent).\n\n"
                 "Use the following clean markdown format:\n\n"
                 "### 📋 Strategic Roadmap: [Goal Name]\n\n"
                 "#### 🔹 Phase 1: Architecture & Technical Discovery\n"
@@ -102,6 +172,9 @@ class SLMTaskPlanner:
                 "- Release, CI/CD and telemetry milestones\n"
                 "- **Assigned Agent**: `SLMGitRepoManager` / `SLMCLIAgent`"
             )
+            if mem_ctx["has_context"]:
+                sys_prompt += f"\n\n[Active Session Memory Context]:\n{mem_ctx['context_summary']}"
+
             is_phi = "phi" in str(getattr(self, "model_path", "")).lower()
             if is_phi:
                 full_prompt = (
@@ -152,6 +225,7 @@ class SLMTaskPlanner:
                     return {
                         "goal": clean_goal,
                         "plan_markdown": raw_plan,
+                        "retrieved_context": mem_ctx,
                         "status": "success"
                     }
             except Exception as e:
@@ -159,7 +233,11 @@ class SLMTaskPlanner:
 
         # 2. Dynamic Domain-Aware Milestone Decomposition Fallback
         q_lower = clean_goal.lower()
-        if any(w in q_lower for w in ["app", "mobile", "ios", "android", "privacy"]):
+        if "pdf" in q_lower:
+            tasks = [
+                {"step": 1, "task": f"Extract and parse document structure for: {clean_goal}", "assigned_agent": "SLMPDFChat"}
+            ]
+        elif any(w in q_lower for w in ["app", "mobile", "ios", "android", "privacy"]):
             tasks = [
                 {"step": 1, "task": "Define Privacy Architecture & Local Zero-Knowledge Data Models", "assigned_agent": "SLMSecurityAudit"},
                 {"step": 2, "task": "Develop Core Application Logic & Offline Storage Engine", "assigned_agent": "SLMCodeInterpreter"},
@@ -178,8 +256,7 @@ class SLMTaskPlanner:
             tasks = [
                 {"step": 1, "task": f"Analyze Technical Scope & Define Architecture for: {clean_goal}", "assigned_agent": "SLMTaskPlanner"},
                 {"step": 2, "task": f"Implement Core Functional Modules & Business Logic for: {clean_goal}", "assigned_agent": "SLMCodeInterpreter"},
-                {"step": 3, "task": "Conduct Security Analysis, Edge-Case Verification & Quality Assurance", "assigned_agent": "SLMSecurityAudit"},
-                {"step": 4, "task": "Finalize Production Deployment, Documentation & Delivery", "assigned_agent": "SLMGitRepoManager"}
+                {"step": 3, "task": "Conduct Verification, Quality Assurance & Delivery", "assigned_agent": "SLMSecurityAudit"}
             ]
 
         fallback_plan = (

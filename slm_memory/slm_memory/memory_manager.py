@@ -3,8 +3,9 @@ import sqlite3
 import yaml
 import json
 import time
+from typing import Optional, Tuple, Dict, Any, List
 
-def load_config() -> tuple[dict, str]:
+def load_config() -> Tuple[dict, str]:
     config_paths = [
         os.environ.get("SLM_MEMORY_CONFIG"),
         "./config.yaml",
@@ -358,7 +359,7 @@ class SLMMemoryManager:
         session.state_graph["updated_at"] = time.time()
         self._sync_session_to_db(session)
 
-    def get_active_document(self, session_id: str = None) -> dict | None:
+    def get_active_document(self, session_id: str = None) -> Optional[dict]:
         """Retrieves the active document working context for a session if one exists."""
         session = self.get_or_create_session(session_id or "default_session")
         return session.active_document

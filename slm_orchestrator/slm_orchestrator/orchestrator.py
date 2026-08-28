@@ -591,15 +591,29 @@ class SLMOrchestrator:
         return agent_names[0]
 
     def _detect_agent_pipeline(self, query_str: str, primary_agent: str) -> list:
-        q_lower = query_str.lower()
-        pipeline = [primary_agent]
-        if primary_agent == "SLMTaskPlanner" and any(w in q_lower for w in ["execute", "implement", "build"]):
-            pipeline.append("SLMCodeInterpreter")
-        elif any(w in q_lower for w in ["pipeline", "multi-agent", "multi agent", "chain agents"]):
-            if "sql" in q_lower and "SLMCodeInterpreter" not in pipeline:
+        q_lower = query_str.lower().strip()
+        
+        # Social greetings / single-word queries don't need a multi-agent plan
+        is_simple_greeting = any(q_lower == g for g in ["hi", "hello", "hey", "good morning", "good evening", "thanks", "thank you", "bye"])
+        if is_simple_greeting or primary_agent == "SLMGeneralAssistant":
+            return [primary_agent]
+
+        # Step 1: SLMTaskPlanner retrieves memory context, understands intent, and prepares detailed plan
+        # Step 2: Orchestrator gives the plan to the primary specialized agent
+        pipeline = ["SLMTaskPlanner"]
+        if primary_agent == "SLMTaskPlanner":
+            if any(w in q_lower for w in ["execute", "implement", "build", "run", "code", "develop", "create"]):
                 pipeline.append("SLMCodeInterpreter")
+        else:
+            pipeline.append(primary_agent)
+            
+        # Additional specialized chains
+        if any(w in q_lower for w in ["pipeline", "multi-agent", "multi agent", "chain agents"]):
+            if "sql" in q_lower and "SLMTextToSQL" not in pipeline:
+                pipeline.append("SLMTextToSQL")
             if "email" in q_lower and "SLMEmail" not in pipeline:
                 pipeline.append("SLMEmail")
+                
         return pipeline
 
     def _dispatch_single_agent(self, agent_name: str, query_str: str, agent_registry: dict = None, system_prompt: str = None, user_input: str = None, token_callback: callable = None, **kwargs) -> str:
@@ -696,7 +710,14 @@ class SLMOrchestrator:
             elif "task" in agent_lower or "planner" in agent_lower:
                 from slm_task_planner import SLMTaskPlanner
                 runner = SLMTaskPlanner()
-                res = runner.build_plan(goal=query_str, token_callback=token_cb)
+                res = runner.build_plan(
+                    goal=query_str,
+                    system_prompt=system_prompt,
+                    user_input=user_input,
+                    token_callback=token_cb,
+                    session_id=kwargs.get("session_id"),
+                    history=kwargs.get("history")
+                )
                 if isinstance(res, dict):
                     if "plan_markdown" in res and res["plan_markdown"]:
                         return res["plan_markdown"]
@@ -1100,13 +1121,17 @@ class SLMOrchestrator:
             history=history
         )
 
-        if thought_queue:
-            thought_queue.put(f"🎯 Routed to: {primary_agent}")
-            thought_queue.put(f"Executing {primary_agent} agent pipeline on CPU...")
-
-        # 2. Determine agent collaboration pipeline
+        # 2. Determine agent collaboration pipeline (SLMTaskPlanner as Step 1)
         agent_pipeline = self._detect_agent_pipeline(query_str, primary_agent)
-        
+
+        if thought_queue:
+            if agent_pipeline[0] == "SLMTaskPlanner" and len(agent_pipeline) > 1:
+                thought_queue.put("Step 1 (SLMTaskPlanner): Retrieving context from SLMMemoryManager & understanding intent...")
+                thought_queue.put("Step 1 (SLMTaskPlanner): Formulating structured milestone plan...")
+            else:
+                thought_queue.put(f"🎯 Routed to: {primary_agent}")
+                thought_queue.put(f"Executing {primary_agent} agent pipeline on CPU...")
+
         trajectory = []
         accumulated_context = ""
         
@@ -1114,9 +1139,8 @@ class SLMOrchestrator:
         for idx, agent_name in enumerate(agent_pipeline[:max_steps]):
             if idx > 0 and thought_queue:
                 prev_agent = agent_pipeline[idx-1]
-                thought_queue.put(f"🔄 Inter-Agent Handoff: Passing context from {prev_agent} to {agent_name}...")
-                thought_queue.put(f"🎯 Agent {idx+1}: {agent_name}")
-                thought_queue.put(f"Executing {agent_name} agent pipeline on CPU...")
+                thought_queue.put(f"🔄 Inter-Agent Handoff: SLMOrchestrator passing plan & context from {prev_agent} to {agent_name}...")
+                thought_queue.put(f"🎯 Step {idx+1}: Executing {agent_name} on local CPU...")
 
             current_prompt = query_str
             if history and len(history) > 0:
