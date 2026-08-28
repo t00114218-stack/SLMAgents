@@ -1,5 +1,7 @@
 # Stop Stuffing 10 Chunks into a 2B Model: How We Built Fast, Zero-Cloud Agentic RAG on CPU
 
+*A pragmatic guide to building sub-second, highly accurate, zero-cloud RAG pipelines with sub-3B models on standard Intel, AMD, and Apple Silicon CPUs.*
+
 Most local RAG tutorials are broken by design.
 
 They tell you to pull an embedding model, chunk your PDFs into 500-token blocks, query ChromaDB for the top 5 chunks, stuff all 2,500 tokens into a local LLM, and expect magic.
@@ -133,6 +135,27 @@ Do not attempt to extrapolate or bring in outside knowledge.
 ```
 
 Because the context was already filtered down to 1–2 relevant paragraphs, the model doesn't have to search through pages of text—it simply reformulates the verified facts into a direct answer.
+
+### Putting It All Together: The 20-Line Pipeline
+
+Here is what the actual execution flow looks like in Python:
+
+```python
+def answer_query_cpu(user_query: str, dense_retriever, bm25_retriever, slm_engine) -> str:
+    # 1. Retrieve candidates in parallel (<30ms on CPU)
+    dense_candidates = dense_retriever.search(user_query, top_k=5)
+    bm25_candidates = bm25_retriever.search(user_query, top_k=5)
+
+    # 2. Fuse ranks with RRF
+    fused_results = reciprocal_rank_fusion(dense_candidates, bm25_candidates)
+
+    # 3. Aggressively prune to top 350 tokens (<2 paragraphs)
+    clean_context = prune_context(fused_results, max_tokens=350)
+
+    # 4. Generate grounded answer with INT4 ONNX SLM (~1.4s on CPU)
+    prompt = RAG_PROMPT_TEMPLATE.format(context=clean_context, question=user_query)
+    return slm_engine.generate(prompt, max_new_tokens=150)
+```
 
 ---
 
