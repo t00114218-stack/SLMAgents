@@ -192,8 +192,8 @@ class SLMDocumentParser:
         if ext == ".ppt":
             return self._extract_ole_text(file_path, "PowerPoint Document")
 
-        # 4. Excel & CSV Spreadsheets (.xlsx, .xls, .csv, .tsv)
-        if ext in [".xlsx", ".xls"]:
+        # 4. Excel OpenXML Spreadsheets (.xlsx, .xlsm, .xltx, .xltm)
+        if ext in [".xlsx", ".xlsm", ".xltx", ".xltm"]:
             try:
                 import openpyxl
                 wb = openpyxl.load_workbook(file_path, data_only=True)
@@ -206,18 +206,75 @@ class SLMDocumentParser:
                         if row_vals:
                             rows.append(" | ".join(row_vals))
                     if rows:
-                        sheet_texts.append(f"--- Sheet: {sheet_name} ---\n" + "\n".join(rows[:200]))
+                        sheet_texts.append(f"--- Sheet: {sheet_name} ---\n" + "\n".join(rows[:250]))
                 if sheet_texts:
                     return "\n\n".join(sheet_texts)
             except Exception as e:
-                print(f"[SLMDocumentParser] Excel extraction failed: {e}")
+                print(f"[SLMDocumentParser] Excel XLSX extraction failed: {e}")
+
+        # 4b. Older Excel .xls format (BIFF8 / HTML table / TSV bank statement)
+        if ext == ".xls":
+            # Tier 1: xlrd library for genuine binary Excel 97-2004 .xls files
+            try:
+                import xlrd
+                wb = xlrd.open_workbook(file_path)
+                sheet_texts = []
+                for sheet in wb.sheets():
+                    rows = []
+                    for r in range(min(sheet.nrows, 300)):
+                        row_vals = [str(sheet.cell_value(r, c)).replace("\n", " ").strip() for c in range(sheet.ncols) if str(sheet.cell_value(r, c)).strip()]
+                        if row_vals:
+                            rows.append(" | ".join(row_vals))
+                    if rows:
+                        sheet_texts.append(f"--- Sheet: {sheet.name} ---\n" + "\n".join(rows))
+                if sheet_texts:
+                    return "\n\n".join(sheet_texts)
+            except Exception as xlrd_err:
+                print(f"[SLMDocumentParser] Excel XLS xlrd note: {xlrd_err}")
+
+            # Tier 2: Check if HTML table exported with .xls extension
+            try:
+                import pandas as pd
+                with open(file_path, "rb") as f:
+                    header = f.read(500)
+                if b"<html" in header.lower() or b"<table" in header.lower():
+                    dfs = pd.read_html(file_path)
+                    if dfs:
+                        tables = []
+                        for i, df in enumerate(dfs):
+                            tables.append(f"--- Table {i+1} ---\n" + df.to_string(index=False))
+                        return "\n\n".join(tables)
+                else:
+                    df = pd.read_excel(file_path)
+                    return f"--- Spreadsheet ({os.path.basename(file_path)}) ---\n" + df.to_string(index=False)
+            except Exception as pd_err:
+                print(f"[SLMDocumentParser] Excel XLS pandas note: {pd_err}")
+
+            # Tier 3: openpyxl fallback
+            try:
+                import openpyxl
+                wb = openpyxl.load_workbook(file_path, data_only=True)
+                sheet_texts = []
+                for sheet_name in wb.sheetnames:
+                    sheet = wb[sheet_name]
+                    rows = []
+                    for row in sheet.iter_rows(values_only=True):
+                        row_vals = [str(val).strip() for val in row if val is not None and str(val).strip()]
+                        if row_vals:
+                            rows.append(" | ".join(row_vals))
+                    if rows:
+                        sheet_texts.append(f"--- Sheet: {sheet_name} ---\n" + "\n".join(rows[:250]))
+                if sheet_texts:
+                    return "\n\n".join(sheet_texts)
+            except Exception:
+                pass
 
         if ext in [".csv", ".tsv"]:
             try:
                 import csv
                 with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                     reader = csv.reader(f, delimiter="\t" if ext == ".tsv" else ",")
-                    rows = [" | ".join(r) for r in reader if r]
+                    rows = [" | ".join([c.strip() for c in r if c.strip()]) for r in reader if r]
                     if rows:
                         return f"--- CSV Data ({os.path.basename(file_path)}) ---\n" + "\n".join(rows[:250])
             except Exception as e:

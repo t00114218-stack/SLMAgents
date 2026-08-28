@@ -18,4 +18,6 @@ torch
 beautifulsoup4
 pymupdf
 openpyxl
+xlrd
 pdfplumber
+python-pptx

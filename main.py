@@ -477,6 +477,34 @@ def get_ocr_engine():
             print(f"[OCR Engine Init] RapidOCR failed: {e}")
     return _shared_ocr_engine
 
+def get_document_parser_description(filename: str) -> str:
+    """Returns an accurate, professional thought description matching the exact file format."""
+    name_lower = (filename or "").lower()
+    if name_lower.endswith(".pdf"):
+        return f"Parsing '{filename}' via PyMuPDF / PDF Engine..."
+    elif name_lower.endswith((".xlsx", ".xlsm", ".xltx", ".xltm")):
+        return f"Parsing '{filename}' via OpenPyXL Tabular Engine..."
+    elif name_lower.endswith(".xls"):
+        return f"Parsing '{filename}' via Excel XLS / xlrd Tabular Engine..."
+    elif name_lower.endswith((".csv", ".tsv")):
+        return f"Parsing '{filename}' via CSV / Delimited Table Parser..."
+    elif name_lower.endswith((".docx", ".doc")):
+        return f"Parsing '{filename}' via Word Document Engine..."
+    elif name_lower.endswith((".pptx", ".ppt")):
+        return f"Parsing '{filename}' via PowerPoint Slide Engine..."
+    elif name_lower.endswith((".html", ".htm")):
+        return f"Parsing '{filename}' via HTML / DOM Parser..."
+    elif name_lower.endswith((".json", ".jsonl")):
+        return f"Parsing '{filename}' via JSON Structure Parser..."
+    elif name_lower.endswith((".xml", ".yaml", ".yml", ".toml")):
+        return f"Parsing '{filename}' via Config / Data Parser..."
+    elif name_lower.endswith((".png", ".jpg", ".jpeg", ".webp", ".tiff", ".bmp")):
+        return f"Parsing '{filename}' via RapidOCR / Vision Parser..."
+    elif name_lower.endswith((".py", ".js", ".ts", ".css", ".sql", ".sh", ".bash", ".c", ".cpp", ".java", ".go", ".rs", ".md", ".txt", ".log")):
+        return f"Parsing '{filename}' via Code / Plain Text Parser..."
+    else:
+        return f"Parsing '{filename}' via Universal Document Parser..."
+
 def parse_document_attachment(filename: str, b64_data: str) -> str:
     """
     Universal Multi-Format Document Parsing Engine.
@@ -484,24 +512,35 @@ def parse_document_attachment(filename: str, b64_data: str) -> str:
     - PDF (.pdf) with PyMuPDF, pdfplumber, pypdf, and ONNX RapidOCR fallback for scanned receipts/images.
     - Word (.docx, .doc) with python-docx paragraph & table extraction.
     - PowerPoint (.pptx, .ppt) with python-pptx slide text & shape extraction.
-    - Excel & CSV (.xlsx, .xls, .csv, .tsv) with openpyxl & CSV tabular parsing.
+    - Excel OpenXML (.xlsx, .xlsm) with openpyxl spreadsheet extraction.
+    - Excel Legacy / Billed Statements (.xls) with xlrd, pandas, openpyxl, and HTML table extraction.
+    - CSV & TSV (.csv, .tsv) with csv reader & tabular formatting.
+    - HTML & XML (.html, .htm, .xml) with BeautifulSoup clean text extraction.
+    - JSON & JSONL (.json, .jsonl) with json formatting.
     - Image Documents (.png, .jpg, .jpeg, .webp, .tiff) with RapidOCR ONNX & PIL.
-    - Plain Text & Code (.txt, .md, .json, .html, .py, .yaml, .xml, .log).
+    - Plain Text & Code (.txt, .md, .py, .yaml, .xml, .log).
     """
     if not b64_data:
         return ""
         
     raw_bytes = None
-    if "base64," in b64_data:
-        try:
-            raw_bytes = base64.b64decode(b64_data.split("base64,")[1])
-        except Exception:
-            raw_bytes = None
+    if isinstance(b64_data, bytes):
+        raw_bytes = b64_data
+    elif isinstance(b64_data, str):
+        if "base64," in b64_data:
+            try:
+                raw_bytes = base64.b64decode(b64_data.split("base64,")[1])
+            except Exception:
+                pass
+        if raw_bytes is None:
+            try:
+                raw_bytes = base64.b64decode(b64_data)
+            except Exception:
+                pass
+        if raw_bytes is None:
+            raw_bytes = b64_data.encode("utf-8", errors="ignore")
 
-    if raw_bytes is None:
-        raw_bytes = b64_data.encode("utf-8", errors="ignore")
-
-    name_lower = filename.lower()
+    name_lower = (filename or "").lower()
 
     # 1. PDF Documents (.pdf)
     if name_lower.endswith(".pdf") or raw_bytes.startswith(b"%PDF"):
@@ -530,7 +569,7 @@ def parse_document_attachment(filename: str, b64_data: str) -> str:
                                     table_rows.append(row_str)
                             if table_rows:
                                 page_parts.append("--- [Table Data] ---\n" + "\n".join(table_rows))
-                except Exception as tab_err:
+                except Exception:
                     pass
 
                 # 2. Extract block text (reading-order blocks)
@@ -564,7 +603,6 @@ def parse_document_attachment(filename: str, b64_data: str) -> str:
                     
                     if ocr_text:
                         pages_text.append(f"--- Page {page_num+1} ---\n{ocr_text}")
-
 
         except Exception as e:
             print(f"[PDF Extraction] PyMuPDF failed: {e}")
@@ -600,7 +638,94 @@ def parse_document_attachment(filename: str, b64_data: str) -> str:
         else:
             return f"[PDF Document: {filename}] (Scanned image document uploaded - content indexed for AI analysis)"
 
-    # 2. Word Documents (.docx, .doc)
+    # 2. Excel OpenXML (.xlsx, .xlsm, .xltx, .xltm)
+    if any(name_lower.endswith(ext) for ext in [".xlsx", ".xlsm", ".xltx", ".xltm"]):
+        try:
+            import openpyxl
+            import io
+            wb = openpyxl.load_workbook(io.BytesIO(raw_bytes), data_only=True)
+            sheet_texts = []
+            for sheet_name in wb.sheetnames:
+                sheet = wb[sheet_name]
+                rows = []
+                for row in sheet.iter_rows(values_only=True):
+                    row_vals = [str(val).strip() for val in row if val is not None and str(val).strip()]
+                    if row_vals:
+                        rows.append(" | ".join(row_vals))
+                if rows:
+                    sheet_texts.append(f"--- Sheet: {sheet_name} ---\n" + "\n".join(rows[:250]))
+            if sheet_texts:
+                return "\n\n".join(sheet_texts)
+        except Exception as e:
+            print(f"[Excel XLSX Extraction] openpyxl failed: {e}")
+
+    # 2b. Older Excel .xls format (BIFF8 / HTML table / TSV bank statement)
+    if name_lower.endswith(".xls"):
+        # Tier 1: xlrd library for genuine binary Excel 97-2004 .xls files
+        try:
+            import xlrd
+            wb = xlrd.open_workbook(file_contents=raw_bytes)
+            sheet_texts = []
+            for sheet in wb.sheets():
+                rows = []
+                for r in range(min(sheet.nrows, 300)):
+                    row_vals = [str(sheet.cell_value(r, c)).replace("\n", " ").strip() for c in range(sheet.ncols) if str(sheet.cell_value(r, c)).strip()]
+                    if row_vals:
+                        rows.append(" | ".join(row_vals))
+                if rows:
+                    sheet_texts.append(f"--- Sheet: {sheet.name} ---\n" + "\n".join(rows))
+            if sheet_texts:
+                return "\n\n".join(sheet_texts)
+        except Exception as xlrd_err:
+            print(f"[Excel XLS Extraction] xlrd note: {xlrd_err}")
+
+        # Tier 2: Check if HTML table exported with .xls extension (standard bank statements)
+        if b"<html" in raw_bytes[:400].lower() or b"<table" in raw_bytes[:600].lower():
+            try:
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(raw_bytes, "html.parser")
+                tables_out = []
+                for idx, table in enumerate(soup.find_all("table")):
+                    rows = []
+                    for tr in table.find_all("tr"):
+                        cells = [td.get_text().strip() for td in tr.find_all(["th", "td"]) if td.get_text().strip()]
+                        if cells:
+                            rows.append(" | ".join(cells))
+                    if rows:
+                        tables_out.append(f"--- Table {idx+1} ---\n" + "\n".join(rows))
+                if tables_out:
+                    return "\n\n".join(tables_out)
+            except Exception as bs_err:
+                print(f"[Excel XLS Extraction] BeautifulSoup note: {bs_err}")
+        else:
+            try:
+                import pandas as pd
+                df = pd.read_excel(io.BytesIO(raw_bytes))
+                return f"--- Spreadsheet ({filename}) ---\n" + df.to_string(index=False)
+            except Exception as pd_err:
+                print(f"[Excel XLS Extraction] pandas note: {pd_err}")
+
+        # Tier 3: openpyxl fallback in case file is actually xlsx renamed to .xls
+        try:
+            import openpyxl
+            import io
+            wb = openpyxl.load_workbook(io.BytesIO(raw_bytes), data_only=True)
+            sheet_texts = []
+            for sheet_name in wb.sheetnames:
+                sheet = wb[sheet_name]
+                rows = []
+                for row in sheet.iter_rows(values_only=True):
+                    row_vals = [str(val).strip() for val in row if val is not None and str(val).strip()]
+                    if row_vals:
+                        rows.append(" | ".join(row_vals))
+                if rows:
+                    sheet_texts.append(f"--- Sheet: {sheet_name} ---\n" + "\n".join(rows[:250]))
+            if sheet_texts:
+                return "\n\n".join(sheet_texts)
+        except Exception:
+            pass
+
+    # 3. Word Documents (.docx, .doc)
     if name_lower.endswith(".docx") or name_lower.endswith(".doc"):
         try:
             import docx
@@ -620,7 +745,7 @@ def parse_document_attachment(filename: str, b64_data: str) -> str:
         except Exception as e:
             print(f"[Docx Extraction] Failed: {e}")
 
-    # 3. PowerPoint Presentations (.pptx, .ppt)
+    # 4. PowerPoint Presentations (.pptx, .ppt)
     if name_lower.endswith(".pptx") or name_lower.endswith(".ppt"):
         try:
             import pptx
@@ -639,40 +764,43 @@ def parse_document_attachment(filename: str, b64_data: str) -> str:
         except Exception as e:
             print(f"[Pptx Extraction] Failed: {e}")
 
-    # 4. Excel & CSV Spreadsheets (.xlsx, .xls, .csv, .tsv)
-    if any(name_lower.endswith(ext) for ext in [".xlsx", ".xls"]):
-        try:
-            import openpyxl
-            import io
-            wb = openpyxl.load_workbook(io.BytesIO(raw_bytes), data_only=True)
-            sheet_texts = []
-            for sheet_name in wb.sheetnames:
-                sheet = wb[sheet_name]
-                rows = []
-                for row in sheet.iter_rows(values_only=True):
-                    row_vals = [str(val).strip() for val in row if val is not None and str(val).strip()]
-                    if row_vals:
-                        rows.append(" | ".join(row_vals))
-                if rows:
-                    sheet_texts.append(f"--- Sheet: {sheet_name} ---\n" + "\n".join(rows[:100]))
-            if sheet_texts:
-                return "\n\n".join(sheet_texts)
-        except Exception as e:
-            print(f"[Excel Extraction] Failed: {e}")
-
+    # 5. CSV & TSV Spreadsheets (.csv, .tsv)
     if any(name_lower.endswith(ext) for ext in [".csv", ".tsv"]):
         try:
             import csv
             import io
             text_str = raw_bytes.decode("utf-8", errors="ignore")
             reader = csv.reader(io.StringIO(text_str), delimiter="\t" if name_lower.endswith(".tsv") else ",")
-            rows = [" | ".join(r) for r in reader if r]
+            rows = [" | ".join([c.strip() for c in r if c.strip()]) for r in reader if r]
             if rows:
-                return f"--- CSV File: {filename} ---\n" + "\n".join(rows[:150])
+                return f"--- CSV File: {filename} ---\n" + "\n".join(rows[:250])
         except Exception as e:
             print(f"[CSV Extraction] Failed: {e}")
 
-    # 5. Image Documents (.png, .jpg, .jpeg, .webp, .tiff) - RapidOCR Extraction
+    # 6. HTML & XML Documents (.html, .htm, .xml)
+    if any(name_lower.endswith(ext) for ext in [".html", ".htm", ".xml"]):
+        try:
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(raw_bytes, "html.parser")
+            for s in soup(["script", "style", "meta", "noscript"]):
+                s.decompose()
+            clean_text = soup.get_text(separator="\n").strip()
+            clean_lines = [l.strip() for l in clean_text.splitlines() if l.strip()]
+            if clean_lines:
+                return f"--- HTML/XML Content: {filename} ---\n" + "\n".join(clean_lines[:400])
+        except Exception as e:
+            print(f"[HTML/XML Extraction] Failed: {e}")
+
+    # 7. JSON & JSONL Data (.json, .jsonl)
+    if any(name_lower.endswith(ext) for ext in [".json", ".jsonl"]):
+        try:
+            text_str = raw_bytes.decode("utf-8", errors="ignore")
+            parsed = json.loads(text_str)
+            return f"--- JSON Content ({filename}) ---\n" + json.dumps(parsed, indent=2)[:35000]
+        except Exception:
+            pass
+
+    # 8. Image Documents (.png, .jpg, .jpeg, .webp, .tiff) - RapidOCR Extraction
     if any(name_lower.endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".webp", ".tiff", ".bmp"]):
         try:
             ocr = get_ocr_engine()
@@ -686,7 +814,7 @@ def parse_document_attachment(filename: str, b64_data: str) -> str:
         except Exception as e:
             print(f"[Image OCR Extraction] RapidOCR failed: {e}")
 
-    # 6. Plain Text / Code / JSON / Markdown / HTML / Log Files
+    # 9. Plain Text / Code / Markdown / Log Files Fallback
     try:
         return raw_bytes.decode("utf-8", errors="ignore").strip()
     except Exception:
@@ -2763,7 +2891,7 @@ def chat_endpoint(req: ChatRequest):
             doc_att = next((a for a in req.attachments if not a.type.startswith("image")), None)
             if doc_att and doc_att.data:
                 thought_queue.put(f"Received document attachment: '{doc_att.name}'")
-                thought_queue.put(f"Parsing '{doc_att.name}' via PyMuPDF...")
+                thought_queue.put(get_document_parser_description(doc_att.name))
                 doc_content = parse_document_attachment(doc_att.name, doc_att.data)
                 
                 from slm_rag import SLMRag
