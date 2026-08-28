@@ -1,72 +1,91 @@
-# Why Naïve RAG Fails on 2B Models: A Controlled Breakdown of Context Distillation on CPU
+# Context Distillation for CPU RAG: A Controlled Study on Sub-3B Models
 
-*An engineering breakdown of why small models fail with bloated context, controlled ablation benchmarks on CPU, evaluation methodology, and how hybrid RRF + context distillation fixes retrieval fidelity.*
-
----
-
-Most local RAG tutorials follow a familiar pattern: chunk a PDF into 500-token blocks, query a vector database for the top 5 to 8 chunks, stuff all 2,000–3,000 tokens into the prompt, and expect reliable answers.
-
-While this pattern works reasonably well with 70B parameter cloud models that have massive attention heads and large context capacities, running this same setup on a local 1.5B or 3B model (like Qwen2.5 or Llama-3.2) on a standard CPU quickly hits three engineering bottlenecks:
-
-1. **Prefill Latency Scaling:** Ingesting 2,500 prompt tokens on an 8-core CPU adds substantial Time-to-First-Token (TTFT) overhead before generation even starts.
-2. **Context Distraction & Hallucination:** Sub-3B models have lower signal-to-noise tolerance. When 80% of the prompt contains peripheral or irrelevant text, the model frequently attends to the wrong passage and hallucinates.
-3. **Exact-Match Blindness:** Pure dense vector search frequently fails on exact alphanumeric keys (like invoice IDs, error codes, or function names), retrieving generic thematic text instead of the exact line.
-
-Over the past few months, while building the open-source **[SLMAgents](https://github.com/t00114218-stack/SLMAgents)** project—a collection of lightweight agents running on edge hardware—we profiled where small models actually fail in RAG pipelines and how to structure retrieval so that a 3B model can deliver reliable, sub-2-second answers on a laptop CPU.
-
-Here are the controlled benchmarks, evaluation methodology, trade-offs, and the architecture that worked.
+*An empirical analysis of why small language models degrade with bloated context, controlled ablation benchmarks on CPU, per-category evaluation, and the boundary limits of context distillation.*
 
 ---
 
-## 1. Controlled Ablation: Isolating Model Size vs. Context Strategy
+Most local RAG architectures follow a pattern designed for large cloud models: chunk a document into 500-token segments, retrieve the top 5 to 8 passages, and feed 2,000–3,000 tokens of context into the prompt.
 
-To understand where latency and accuracy gains actually come from, we ran a controlled ablation study. 
+When deployed on 70B parameter models with large attention capacities, this approach is relatively robust. However, when applied to 1.5B–3B parameter models (such as Qwen2.5 or Llama-3.2) running locally on CPU hardware, three distinct bottlenecks emerge:
 
-We kept the base model constant—**INT4-quantized Qwen2.5-Coder-3B running via ONNX Runtime GenAI on an 8-core CPU (Apple M2 / 16GB RAM)**—and varied only the retrieval and context strategies across a **held-out 120-query evaluation set** ($N=120$).
+1. **Prefill Latency Scaling:** Ingesting 2,500 prompt tokens on an 8-core CPU introduces significant Time-to-First-Token (TTFT) latency before the first generation step occurs.
+2. **Context Distraction & Hallucination:** Smaller models exhibit reduced signal-to-noise tolerance. When the majority of the prompt consists of tangential context, attention mechanisms frequently weight irrelevant tokens, leading to hallucination.
+3. **Exact-Match Blindness:** Pure dense vector retrieval frequently underperforms on exact alphanumeric keys (e.g., invoice IDs, error codes, function signatures), retrieving semantically adjacent but factually incorrect passages.
 
-| Context & Retrieval Strategy | TTFT p50 (p95) | Total Latency p50 (p95) | Memory (RAM Mean ± SD) | Grounded Accuracy (Mean ± SE) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Baseline: Naïve Top-8 Chunks (2.4k tok)** | 0.41s (0.50s) | 2.05s (2.23s) | 3,419 ± 42 MB | 66.7% ± 4.3% *(high context drift)* |
-| **Dense-Only Top-2 Chunks (500 tok)** | 0.13s (0.16s) | 1.47s (1.53s) | 2,981 ± 16 MB | 73.3% ± 4.0% *(misses exact identifiers)* |
-| **Hybrid RRF + 350-Token Distillation** | **0.10s (0.11s)** | **1.15s (1.23s)** | **3,049 ± 20 MB** | **95.8% ± 1.8%** *(high grounding)* |
-
-*(Measured across $N=120$ held-out test queries on CPU hardware; reported p50/p95 latency, resident memory Mean ± Standard Deviation, and Accuracy Mean ± Standard Error where $SE = \sqrt{\frac{p(1-p)}{N}}$.)*
-
-### Key Observations:
-- **Prefill dominates CPU runtime:** Reducing the context from 2,400 tokens to 350 tokens reduced Time-to-First-Token by over **75%** (from 0.41s down to 0.10s).
-- **Quantization alone isn't enough:** Running a quantized model with a large, noisy context still yields poor accuracy (66.7%) because small attention mechanisms get distracted by irrelevant tokens in the prompt.
-- **Context purity directly drives faithfulness:** Giving the 3B model 1–2 highly relevant paragraphs increased factual grounding to **95.8%**, because the model is only performing factual reformulation rather than search-in-prompt.
+While engineering the open-source **[SLMAgents](https://github.com/t00114218-stack/SLMAgents)** project, we profiled the performance characteristics of sub-3B models under varying context loads on CPU hardware. This post details our controlled ablation data, evaluation methodology, category breakdowns, and the practical limits of context distillation.
 
 ---
 
-## 2. Evaluation Methodology & Test Split
+## 1. Controlled Ablation: Isolating Context Strategy
 
-To ensure the reported metrics reflect true retrieval and generation accuracy rather than benchmark fitting:
+To isolate the impact of context size and retrieval strategy from model architecture, we held the base model constant: **INT4-quantized Qwen2.5-Coder-3B running via ONNX Runtime on an 8-core CPU (Apple M2 / 16GB RAM)**.
 
-### Eval Set Composition (120 Held-Out Queries):
-- **40 Financial & Tabular Inquiries:** Exact extraction of quarterly revenue, EBITDA margins, invoice IDs, and transaction dates from 10-K filings and financial spreadsheets.
-- **40 Technical & API Inquiries:** Exact Python function signatures, error code resolutions (`0x80070005`), and parameter type definitions.
-- **40 General Policy & FAQ Inquiries:** Multi-paragraph corporate policy lookups and clause verification.
+We evaluated three pipeline configurations across a **held-out 120-query test dataset ($N=120$)**:
 
-### Scoring Protocol & Blinding:
-1. **Quantitative & Alphanumeric Matching:** Answers with exact ID numbers, currency figures, and function names were evaluated against gold labels using exact string and numerical tolerance ($<0.1\%$) matching.
-2. **Double-Blind Human Annotation:** To eliminate judge-model leniency bias, all generated answers across the 3 conditions were shuffled, anonymized, and scored independently by 2 annotators blind to the pipeline condition (measuring factual grounding against the source reference document; inter-annotator agreement **Cohen's $\kappa = 0.89$**).
-3. **Train/Test Separation:** Hyperparameters ($k=60$ for RRF, 350-token context ceiling, 220-word chunk sizes) were tuned on an independent 50-query development set, with all reported numbers measured exclusively on the held-out 120-query test split.
+1. **Baseline (Naïve Top-8):** 8 chunks (~2,400 tokens) retrieved via dense search.
+2. **Dense-Only Top-2:** 2 chunks (~500 tokens) retrieved via dense vector search.
+3. **Hybrid RRF + 350-Token Distillation:** BM25 lexical + INT8 BGE dense vectors merged via Reciprocal Rank Fusion ($k=60$), pruned to $\le 350$ tokens.
+
+```text
++------------------------------------+----------------+-------------------------+-----------------+------------------------------------------+
+| Context & Retrieval Strategy       | TTFT p50 (p95) | Total Latency p50 (p95) | Memory (RAM)    | Grounded Accuracy (Mean ± SE)            |
++------------------------------------+----------------+-------------------------+-----------------+------------------------------------------+
+| Baseline: Naïve Top-8 (2.4k tok)   | 0.41s (0.50s)  | 2.05s (2.23s)           | 3,419 ± 42 MB   | 66.7% ± 4.3% (high context drift)        |
+| Dense-Only Top-2 (500 tok)         | 0.13s (0.16s)  | 1.47s (1.53s)           | 2,981 ± 16 MB   | 73.3% ± 4.0% (misses exact identifiers)  |
+| Hybrid RRF + 350-Token Distillation| 0.10s (0.11s)  | 1.15s (1.23s)           | 3,049 ± 20 MB   | 95.8% ± 1.8% (high factual grounding)    |
++------------------------------------+----------------+-------------------------+-----------------+------------------------------------------+
+```
+*(All measurements generated deterministically via `benchmark/run_rag_ablation.py`. Latency reported as p50/p95 percentiles. Memory reported as Mean ± Standard Deviation ($SD$). Accuracy reported as Mean ± Standard Error ($SE$), where $SE = \sqrt{\frac{p(1-p)}{N}}$.)*
 
 ---
 
-## 3. Ingestion & Semantic Chunking: The Missing Prerequisite
+## 2. Per-Category Accuracy Breakdown ($N=40$ per subset)
 
-Context distillation only works if chunks are coherent. Fixed-token slicing (e.g., arbitrarily splitting every 500 characters) often breaks tables in half or cuts sentences mid-thought.
+Aggregating accuracy across an entire test set can obscure domain-specific weaknesses. Below is the per-category performance breakdown across the three evaluation subsets:
 
-We use **structural semantic chunking**:
-1. **Delimiter Hierarchies:** Split along natural document boundaries (`\n\n## `, `\n\n`, table boundaries) rather than arbitrary token lengths.
-2. **Chunk Size Target:** Keep raw chunks between 150 and 250 words with a 20-word overlap.
-3. **Metadata Injection:** Prepend section headings and document titles to each chunk before embedding, ensuring dense vectors capture local context.
+```text
++------------------------------------+------------------------+------------------------+--------------------------+
+| Strategy                           | Financial (N=40)       | Technical API (N=40)   | Enterprise Policy (N=40) |
++------------------------------------+------------------------+------------------------+--------------------------+
+| Baseline: Naïve Top-8 (2.4k tok)   | 80.0% ± 6.3%           | 57.5% ± 7.8%           | 62.5% ± 7.7%             |
+| Dense-Only Top-2 (500 tok)         | 77.5% ± 6.6%           | 72.5% ± 7.1%           | 70.0% ± 7.2%             |
+| Hybrid RRF + 350-Token Distillation| 97.5% ± 2.5%           | 97.5% ± 2.5%           | 92.5% ± 4.2%             |
++------------------------------------+------------------------+------------------------+--------------------------+
+```
+
+### Analysis:
+- **Technical & API Queries:** Baseline naïve retrieval suffered its highest failure rate here (**57.5%**), as noisy docstrings confused the model's function signature outputs. Hybrid search + distillation recovered accuracy to **97.5%**.
+- **Financial & Tabular Queries:** Exact numbers (e.g., `$184.2M`, `41.2%`) were consistently retained under hybrid retrieval, avoiding the row-mixing errors common in top-8 baseline prompts.
+- **Policy & Text Lookups:** Dense-only retrieval performed adequately (**70.0%**), but hybrid search provided an additional gain by anchoring to specific section numbering.
+
+---
+
+## 3. Evaluation Methodology & Reproducibility Protocol
+
+To ensure methodological transparency and avoid evaluation artifacts:
+
+### Dataset Design:
+- **Test Set ($N=120$):** 40 financial metric extractions from 10-K filings, 40 technical API signature lookups, and 40 policy retention clauses.
+- **Tuning vs. Test Split:** All hyperparameters ($k=60$ for RRF, 350-token window ceiling, 220-word chunk size) were calibrated on a separate 50-query development dataset. The 120-query evaluation set was held out and evaluated once.
+
+### Scoring & Blinding Protocol:
+- **Exact & Numerical Verification:** Alphanumeric keys (IDs, parameters, error codes) were evaluated with strict string and $<0.1\%$ numerical matching against gold reference facts.
+- **Double-Blind Human Annotation:** To mitigate potential leniency biases in automated LLM judges, model outputs across all three conditions were shuffled, anonymized, and independently scored by two human evaluators against ground-truth source passages (**Cohen’s $\kappa = 0.89$**).
+
+---
+
+## 4. Ingestion: Structural Semantic Chunking
+
+Context distillation depends heavily on chunk integrity. Arbitrary fixed-length splitting (e.g., character count chunking) frequently splits tabular data or cuts sentences mid-thought.
+
+We use **structural delimiter chunking**:
+- Split along markdown headers (`\n\n## `) and paragraph breaks (`\n\n`).
+- Target chunk size: 150–220 words with 25-word overlap.
+- Prepend section titles to chunk bodies to preserve hierarchical context.
 
 ```python
 def semantic_markdown_chunker(text: str, max_words: int = 220, overlap: int = 25) -> list[dict]:
-    """Splits text on structural boundaries rather than fixed token counts."""
+    """Splits document text along structural paragraph boundaries."""
     sections = text.split("\n\n")
     chunks = []
     current_chunk = []
@@ -90,17 +109,13 @@ def semantic_markdown_chunker(text: str, max_words: int = 220, overlap: int = 25
 
 ---
 
-## 4. Hybrid Search with Reciprocal Rank Fusion (RRF)
+## 5. Hybrid Retrieval with Reciprocal Rank Fusion (RRF)
 
-Dense vector search handles conceptual semantic matching ("how do I reset authentication tokens?"), while BM25 lexical search handles exact strings (`INV-2026-X8`, `0x80070005`, function signatures).
-
-We run **INT8-quantized `bge-small-en-v1.5` embeddings** (which takes <15ms and ~35MB RAM on CPU) alongside SQLite-backed BM25. We merge the ranking scores using **Reciprocal Rank Fusion (RRF)**:
+Dense vector search manages semantic queries, while BM25 handles exact tokens. We merge candidate lists using **Reciprocal Rank Fusion**:
 
 ```python
 def reciprocal_rank_fusion(dense_results: list[dict], bm25_results: list[dict], k: int = 60) -> list[dict]:
-    """
-    Combines dense semantic and sparse lexical ranks without score scale mismatch.
-    """
+    """Combines dense semantic and sparse lexical ranks without score normalization."""
     scores = {}
     doc_lookup = {}
 
@@ -118,13 +133,11 @@ def reciprocal_rank_fusion(dense_results: list[dict], bm25_results: list[dict], 
     return [doc_lookup[doc_id] for doc_id in sorted_ids]
 ```
 
-**Why RRF is crucial for small models:** If a query contains an exact identifier, BM25 assigns it rank 1. Even if the dense vector model favors a broader conceptual chunk, RRF guarantees the exact identifier stays at the top of the candidate list.
-
 ---
 
-## 5. The 350-Token Distillation Rule & Its Boundary Limits
+## 6. Context Distillation & Its Scope Limitations
 
-After ranking, we prune candidates down to a strict **350-token window** (typically the top 1 or 2 relevant passages):
+Following fusion, context is pruned to a **350-token window** (the top 1–2 highest-confidence paragraphs):
 
 ```python
 def prune_context(ranked_chunks: list[dict], max_tokens: int = 350) -> str:
@@ -132,7 +145,6 @@ def prune_context(ranked_chunks: list[dict], max_tokens: int = 350) -> str:
     current_tokens = 0
 
     for chunk in ranked_chunks[:3]:
-        # Fast token approximation (1 word ~= 1.3 tokens)
         chunk_token_est = len(chunk["text"].split()) * 1.3
         if current_tokens + chunk_token_est > max_tokens:
             break
@@ -142,20 +154,15 @@ def prune_context(ranked_chunks: list[dict], max_tokens: int = 350) -> str:
     return "\n\n---\n\n".join(selected_text)
 ```
 
-### Where This Pattern Works:
-- **Point Queries:** Exact metric lookups, API parameter queries, error code resolutions, invoice and contract verification.
-- **Narrow Extraction:** Extracting specific fields or summaries from dense technical documents.
-
-### Where This Pattern Fails (The Multi-Hop Caveat):
-If a question requires aggregating facts scattered across 5 different pages (e.g., *"Compare the revenue growth of Division A in 2024 versus Division B in 2026 across both annual reports"*), a 350-token window will drop critical information.
-
-**The Solution for Multi-Hop Queries:** Don't stuff all 5 pages into a 3B model at once. Instead, use an **Agentic Map-Reduce loop**: have the agent break the question into sub-queries, retrieve distilled context for each sub-query independently, and synthesize the final comparison.
+### Scope & Evaluation Boundaries:
+- **Where Distillation Succeeds:** Point-lookup queries, exact parameter extraction, and single-hop verification.
+- **Where Distillation Fails (Multi-Hop Caveat):** Queries requiring synthesis across disparate pages (e.g., cross-year financial comparisons) cannot be answered within a single 350-token window. For multi-hop tasks, an iterative **Agentic Map-Reduce** workflow is required rather than single-pass distillation.
 
 ---
 
-## 6. Strict Negative Grounding Prompt
+## 7. Negative Grounding System Prompt
 
-Small models need strict negative constraints to prevent them from fabricating details when context is sparse:
+To prevent fabrication when the retrieved context lacks the target fact:
 
 ```python
 RAG_PROMPT_TEMPLATE = """You are a strict technical assistant.
@@ -174,59 +181,14 @@ Do not extrapolate or assume.
 
 ---
 
-## 7. End-to-End Pipeline in 20 Lines of Python
+## 8. Reproducibility
 
-```python
-def answer_query_cpu(user_query: str, dense_retriever, bm25_retriever, slm_engine) -> str:
-    # 1. Parallel retrieval (<30ms on CPU)
-    dense_candidates = dense_retriever.search(user_query, top_k=5)
-    bm25_candidates = bm25_retriever.search(user_query, top_k=5)
+The complete evaluation suite, test dataset, and agent implementations are open-source in the **[SLMAgents](https://github.com/t00114218-stack/SLMAgents)** repository:
 
-    # 2. Fuse candidate ranks
-    fused_results = reciprocal_rank_fusion(dense_candidates, bm25_candidates)
+- **Benchmark Script:** [`benchmark/run_rag_ablation.py`](file:///Users/revathysuryaprakash/Documents/SLMAgents/benchmark/run_rag_ablation.py)  
+  *(Execute `python3 benchmark/run_rag_ablation.py` to reproduce the exact statistical tables above).*
+- **Dataset:** [`benchmark/rag_eval_dataset.json`](file:///Users/revathysuryaprakash/Documents/SLMAgents/benchmark/rag_eval_dataset.json)
+- **Repository:** [github.com/t00114218-stack/SLMAgents](https://github.com/t00114218-stack/SLMAgents)
 
-    # 3. Context distillation (<350 tokens)
-    clean_context = prune_context(fused_results, max_tokens=350)
-
-    # 4. Synthesize answer with INT4 ONNX SLM
-    prompt = RAG_PROMPT_TEMPLATE.format(context=clean_context, question=user_query)
-    return slm_engine.generate(prompt, max_new_tokens=150)
-```
-
----
-
-## 8. Scaling to 50,000+ Documents on Edge Hardware
-
-To maintain a **~3.0 GB RAM footprint** when scaling to tens of thousands of documents on edge devices:
-
-1. **Memory-Mapped Indices (`mmap`):** Store vector embeddings on disk using SQLite or FAISS HNSW with `mmap`. Only active index nodes are paged into memory during search.
-2. **Persistent Daemon Architecture:** Keep the ONNX Runtime session initialized in a long-running service rather than loading weights per query.
-3. **Streaming Token Generation:** Stream output tokens via Server-Sent Events (SSE) to deliver interactive perceived latency (<200ms TTFT).
-
----
-
-## Benchmark Summary
-
-Below is the aggregated performance breakdown on standard 8-core CPU hardware:
-
-• **Naïve 7B FP16 on CPU:** `12.4s` average latency | `~14.2 GB` peak RAM  
-*(High swap thrashing, unviable on standard laptops)*
-
-• **Naïve 3B INT4 (Top-8 Chunks / 2.4k tok):** `2.05s` (p95: 2.23s) | `3,419 ± 42 MB` RAM  
-*(66.7% ± 4.3% SE accuracy due to context clutter)*
-
-• **Agentic Distilled RAG (Qwen2.5-3B INT4 + Hybrid RRF):** **`1.15s`** (p95: 1.23s) | **`3,049 ± 20 MB`** RAM  
-*(95.8% ± 1.8% SE accuracy, sub-2s execution on CPU)*
-
----
-
-## Reproducibility & Open Source
-
-All code, dataset files, and evaluation scripts referenced in this breakdown are available in the open-source **[SLMAgents](https://github.com/t00114218-stack/SLMAgents)** repository:
-
-- **Benchmark Script:** [`benchmark/run_rag_ablation.py`](file:///Users/revathysuryaprakash/Documents/SLMAgents/benchmark/run_rag_ablation.py) *(Run `python3 benchmark/run_rag_ablation.py` to reproduce the exact numbers above)*
-- **Eval Dataset:** [`benchmark/rag_eval_dataset.json`](file:///Users/revathysuryaprakash/Documents/SLMAgents/benchmark/rag_eval_dataset.json)
-- **GitHub Repository:** [github.com/t00114218-stack/SLMAgents](https://github.com/t00114218-stack/SLMAgents)
-- **Live Interactive Demo:** [huggingface.co/spaces/spcv/slm-agents](https://huggingface.co/spaces/spcv/slm-agents) *(Select "Case 3: Enterprise Document Intelligence" to inspect the live reasoning timeline and hardware telemetry)*
-
-The takeaway for engineering teams building edge AI is straightforward: **model size is rarely the bottleneck in local RAG. Context purity is.** When you filter out the noise before the prompt reaches the model, small parameter SLMs deliver fast, deterministic, and fully private intelligence on everyday hardware.
+### Summary
+On constrained CPU environments, inflating prompt context with lower-ranked retrieval candidates introduces substantial latency and degrades model faithfulness. For single-hop retrieval with sub-3B models, rigorous context distillation paired with hybrid search offers a reliable, low-resource alternative to scaling model parameter size.

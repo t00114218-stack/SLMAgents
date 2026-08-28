@@ -204,8 +204,9 @@ def run_ablation():
         print(f"[*] Running Evaluation Condition: {label}...")
         ttft_list = []
         total_lat_list = []
-        ram_list = []
         acc_list = []
+        ram_list = []
+        cat_acc = {"financial_tabular": [], "technical_api": [], "enterprise_policy": []}
 
         start_t = time.time()
         for item in dataset:
@@ -213,7 +214,9 @@ def run_ablation():
             ttft_list.append(ttft)
             total_lat_list.append(tot_lat)
             ram_list.append(ram)
-            acc_list.append(1 if acc else 0)
+            val = 1 if acc else 0
+            acc_list.append(val)
+            cat_acc[item["category"]].append(val)
 
         elapsed = time.time() - start_t
         N = len(dataset)
@@ -234,6 +237,15 @@ def run_ablation():
         p = acc_rate / 100.0
         se_acc = math.sqrt((p * (1.0 - p)) / N) * 100.0
 
+        # Per category metrics
+        cat_breakdown = {}
+        for cat_name, vals in cat_acc.items():
+            c_N = len(vals)
+            c_rate = (sum(vals) / c_N) * 100.0
+            c_p = c_rate / 100.0
+            c_se = math.sqrt((c_p * (1.0 - c_p)) / c_N) * 100.0 if c_p not in (0, 1) else 0.0
+            cat_breakdown[cat_name] = (c_rate, c_se)
+
         results_table.append({
             "strategy": label,
             "ttft_p50": p50_ttft,
@@ -243,7 +255,8 @@ def run_ablation():
             "ram_mean": mean_ram,
             "ram_std": std_ram,
             "acc_rate": acc_rate,
-            "acc_se": se_acc
+            "acc_se": se_acc,
+            "cat_breakdown": cat_breakdown
         })
         print(f"    Completed {N} queries in {elapsed:.2f}s | Accuracy: {acc_rate:.1f}% ± {se_acc:.1f}% SE | Total p50: {p50_tot:.2f}s")
 
@@ -258,6 +271,17 @@ def run_ablation():
         ram_str = f"{r['ram_mean']:.0f} ± {r['ram_std']:.0f} MB"
         acc_str = f"{r['acc_rate']:.1f}% ± {r['acc_se']:.1f}% (SE)"
         print(f"{r['strategy']:<38} | {ttft_str:<14} | {tot_str:<15} | {ram_str:<17} | {acc_str:<18}")
+
+    print("\n" + "-" * 110)
+    print("PER-CATEGORY ACCURACY BREAKDOWN (N=40 per category, Mean ± SE)")
+    print("-" * 110)
+    print(f"{'Strategy':<38} | {'Financial (N=40)':<22} | {'Technical API (N=40)':<22} | {'Enterprise Policy (N=40)':<22}")
+    print("-" * 110)
+    for r in results_table:
+        fin_str = f"{r['cat_breakdown']['financial_tabular'][0]:.1f}% ± {r['cat_breakdown']['financial_tabular'][1]:.1f}%"
+        tech_str = f"{r['cat_breakdown']['technical_api'][0]:.1f}% ± {r['cat_breakdown']['technical_api'][1]:.1f}%"
+        pol_str = f"{r['cat_breakdown']['enterprise_policy'][0]:.1f}% ± {r['cat_breakdown']['enterprise_policy'][1]:.1f}%"
+        print(f"{r['strategy']:<38} | {fin_str:<22} | {tech_str:<22} | {pol_str:<22}")
     print("=" * 80)
     print("Reproducibility check passed. Dataset and evaluation loop verified.")
 
