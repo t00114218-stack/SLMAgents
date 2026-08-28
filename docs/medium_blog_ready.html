@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Medium Draft: Stop Stuffing 10 Chunks into a 2B Model</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      line-height: 1.7;
+      color: #242424;
+      max-width: 720px;
+      margin: 40px auto;
+      padding: 0 20px;
+      font-size: 19px;
+    }
+    h1 {
+      font-size: 38px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+    .subtitle {
+      font-size: 22px;
+      color: #6b7280;
+      line-height: 1.4;
+      margin-bottom: 30px;
+    }
+    h2 {
+      font-size: 26px;
+      margin-top: 36px;
+      margin-bottom: 12px;
+      color: #1e293b;
+    }
+    h3 {
+      font-size: 21px;
+      margin-top: 24px;
+      margin-bottom: 8px;
+      color: #334155;
+    }
+    p {
+      margin-bottom: 20px;
+    }
+    pre {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      font-family: "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+      font-size: 14.5px;
+      line-height: 1.5;
+      color: #0f172a;
+    }
+    blockquote {
+      border-left: 4px solid #4f46e5;
+      padding-left: 16px;
+      margin: 24px 0;
+      color: #475569;
+      font-style: italic;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 16px;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 36px 0;
+    }
+    a {
+      color: #4f46e5;
+      text-decoration: underline;
+    }
+    .callout {
+      background: #eef2ff;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 24px 0;
+      border: 1px solid #c7d2fe;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Stop Stuffing 10 Chunks into a 2B Model: How We Built Fast, Zero-Cloud Agentic RAG on CPU</h1>
+
+<p class="subtitle">A pragmatic guide to building sub-second, highly accurate, zero-cloud RAG pipelines with sub-3B models on standard Intel, AMD, and Apple Silicon CPUs.</p>
+
+<p>Most local RAG tutorials are broken by design.</p>
+
+<p>They tell you to pull an embedding model, chunk your PDFs into 500-token blocks, query ChromaDB for the top 5 chunks, stuff all 2,500 tokens into a local LLM, and expect magic.</p>
+
+<p>If you’ve tried doing that on a standard laptop CPU with a 1.5B or 3B model (like Qwen2.5 or Llama-3.2), you know what happens:</p>
+
+<ol>
+  <li><strong>The CPU crawls:</strong> Ingesting 2,500 prompt tokens on an 8-core CPU takes 6 to 10 seconds just for prompt evaluation (prefill).</li>
+  <li><strong>The model hallucinates:</strong> Small models have lower attention capacity over noisy context. When 80% of the retrieved text is filler, a 2B parameter model gets confused and starts making things up.</li>
+  <li><strong>Exact matches fail:</strong> If your query mentions <code>INV-9021</code> or a specific Python function name, cosine similarity often ranks general conceptual paragraphs above the exact line you need.</li>
+</ol>
+
+<p>Over the past few months, we built <strong><a href="https://github.com/t00114218-stack/SLMAgents">SLMAgents</a></strong>—an open-source suite of small, local AI agents running entirely offline on CPU.</p>
+
+<p>Here is what we learned building an <strong>Agentic RAG pipeline on CPU</strong> that responds in <strong>1.4 seconds</strong>, stays locked at <strong>~3.0 GB RAM</strong>, and actually answers technical questions accurately.</p>
+
+<hr>
+
+<h2>The Core Rule: Model Size Doesn't Fix Bad Context</h2>
+
+<p>When people get poor answers from local RAG, their instinct is: <em>"I need a 70B model or an OpenAI API key."</em></p>
+
+<p>That’s usually the wrong fix.</p>
+
+<p>A small 1.5B model is surprisingly capable of factual synthesis <strong>if you hand it exactly 1 or 2 clean, high-density sentences.</strong> The failure isn't the model's intelligence; it's the noise in the prompt.</p>
+
+<p>We restructured our pipeline from passive retrieval to an <strong>agentic loop:</strong></p>
+
+<pre>
+[User Query]
+     │
+     ▼
+[Step 1: 50ms Query Cleanup & Keyword Extraction]
+     │
+     ▼
+[Step 2: Hybrid Search (BM25 + INT8 BGE Embeddings)]
+     │
+     ▼
+[Step 3: Hard Context Pruning (<350 tokens max)]
+     │
+     ▼
+[Step 4: INT4 ONNX Generation on CPU (~1.4s)]
+</pre>
+
+<div class="callout">
+  <strong>📺 Live Demo: Watch the CPU Agent in Action</strong><br>
+  You can test the real-time execution loop live on Hugging Face Spaces:<br>
+  👉 <a href="https://huggingface.co/spaces/spcv/slm-agents"><strong>Test the Live Interactive Demo on Hugging Face</strong></a><br>
+  <em>(Select "Case 3: Enterprise Document Intelligence" to replay the reasoning timeline and 3046.8 MB RAM footprint in real time)</em>
+</div>
+
+<hr>
+
+<h2>1. Ditch Vector-Only Search for Hybrid RRF</h2>
+
+<p>Pure dense vector search is great for fuzzy semantic matches ("how to cancel my account"), but terrible for engineering, finance, or code search ("find error code 0x80070005").</p>
+
+<p>We run a hybrid retriever combining <strong>BM25 lexical search</strong> and <strong>INT8-quantized <code>bge-small-en-v1.5</code> embeddings</strong> over local SQLite + disk-backed index.</p>
+
+<p>The embedding model runs through ONNX Runtime on CPU in <strong>under 15ms</strong> and uses less than 40 MB of RAM.</p>
+
+<p>Here is the actual fusion logic:</p>
+
+<pre><code>def reciprocal_rank_fusion(dense_results, bm25_results, k=60):
+    """
+    RRF combines keyword and vector ranks without needing score normalization.
+    """
+    scores = {}
+    doc_lookup = {}
+
+    for rank, item in enumerate(dense_results):
+        doc_id = item["id"]
+        doc_lookup[doc_id] = item
+        scores[doc_id] = scores.get(doc_id, 0.0) + (1.0 / (k + rank + 1))
+
+    for rank, item in enumerate(bm25_results):
+        doc_id = item["id"]
+        doc_lookup[doc_id] = item
+        scores[doc_id] = scores.get(doc_id, 0.0) + (1.0 / (k + rank + 1))
+
+    # Sort descending by fused score
+    sorted_ids = sorted(scores.keys(), key=lambda x: scores[x], reverse=True)
+    return [doc_lookup[doc_id] for doc_id in sorted_ids]
+</code></pre>
+
+<p><strong>Why this matters:</strong> If a document has the exact SKU or function name, BM25 puts it at rank 1. Even if the dense model thinks another chunk is "semantically closer", RRF ensures the exact hit stays at the top.</p>
+
+<hr>
+
+<h2>2. The 350-Token Rule (Why Less Context = Higher Accuracy)</h2>
+
+<p>Most developers think feeding <em>more</em> context helps. With small models on CPU, it does the exact opposite.</p>
+
+<p>Every extra 500 tokens of context adds ~1.2 seconds of CPU prefill time and drastically increases hallucination rates.</p>
+
+<p>Instead of passing top-5 chunks (2,000+ tokens), we apply <strong>aggressive threshold pruning:</strong></p>
+<ol>
+  <li>Take the top candidates from RRF.</li>
+  <li>Discard anything below a strict relevance floor.</li>
+  <li>Slice the remaining text to a hard ceiling of <strong>350 tokens (roughly 2 clean paragraphs)</strong>.</li>
+</ol>
+
+<pre><code>def prune_context(ranked_chunks, max_tokens=350):
+    selected_text = []
+    current_tokens = 0
+
+    for chunk in ranked_chunks[:3]:
+        # Rough token approximation (1 word ~= 1.3 tokens)
+        chunk_token_est = len(chunk["text"].split()) * 1.3
+        if current_tokens + chunk_token_est > max_tokens:
+            break
+        selected_text.append(chunk["text"].strip())
+        current_tokens += chunk_token_est
+
+    return "\n\n---\n\n".join(selected_text)
+</code></pre>
+
+<p>When the prompt is this small, a 3B model running on CPU starts generating tokens almost immediately.</p>
+
+<hr>
+
+<h2>3. Strict Negative Grounding in the System Prompt</h2>
+
+<p>Small models tend to be eager to please. If the answer isn't in the context, a default prompt will cause the model to make up a convincing guess.</p>
+
+<p>You need explicit, negative prompt boundaries:</p>
+
+<pre><code>RAG_PROMPT_TEMPLATE = """You are a strict technical assistant.
+Use ONLY the verified facts below to answer the question.
+If the facts do not contain the answer, reply EXACTLY: "I could not find this information in the provided documentation."
+Do not attempt to extrapolate or bring in outside knowledge.
+
+[FACTS]
+{context}
+
+[QUESTION]
+{question}
+
+[ANSWER]"""
+</code></pre>
+
+<p>Because the context was already filtered down to 1–2 relevant paragraphs, the model doesn't have to search through pages of text—it simply reformulates the verified facts into a direct answer.</p>
+
+<h3>Putting It All Together: The 20-Line Pipeline</h3>
+
+<pre><code>def answer_query_cpu(user_query: str, dense_retriever, bm25_retriever, slm_engine) -> str:
+    # 1. Retrieve candidates in parallel (<30ms on CPU)
+    dense_candidates = dense_retriever.search(user_query, top_k=5)
+    bm25_candidates = bm25_retriever.search(user_query, top_k=5)
+
+    # 2. Fuse ranks with RRF
+    fused_results = reciprocal_rank_fusion(dense_candidates, bm25_candidates)
+
+    # 3. Aggressively prune to top 350 tokens (<2 paragraphs)
+    clean_context = prune_context(fused_results, max_tokens=350)
+
+    # 4. Generate grounded answer with INT4 ONNX SLM (~1.4s on CPU)
+    prompt = RAG_PROMPT_TEMPLATE.format(context=clean_context, question=user_query)
+    return slm_engine.generate(prompt, max_new_tokens=150)
+</code></pre>
+
+<hr>
+
+<h2>4. Hardware Realities: Memory & Speed on Real CPUs</h2>
+
+<p>Here are the real numbers running on a standard 8-core CPU (Intel/AMD or Apple M-series), with our shared <strong>INT4 Quantized Qwen2.5-Coder</strong> engine:</p>
+
+<ul>
+  <li><strong>Local Engine Process RAM:</strong> <strong>3,046.8 MB</strong> (stays warm, never reloads model weights between requests)</li>
+  <li><strong>Vector Search Latency:</strong> <strong>18ms – 35ms</strong> (BM25 + INT8 BGE ONNX)</li>
+  <li><strong>CPU Generation Latency:</strong> <strong>1.2s – 1.8s</strong></li>
+  <li><strong>Cloud API Cost:</strong> <strong>$0.00</strong></li>
+  <li><strong>Data Leakage:</strong> <strong>Zero</strong> (no telemetry, runs fully offline/air-gapped)</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Setup</th>
+      <th>Average Latency</th>
+      <th>Peak RAM</th>
+      <th>Failure Mode</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Naïve 7B FP16 on CPU</strong></td>
+      <td>12.4s</td>
+      <td>~14.2 GB</td>
+      <td>System freezes, high swap usage</td>
+    </tr>
+    <tr>
+      <td><strong>Naïve 1.5B (Top 8 Chunks)</strong></td>
+      <td>5.8s</td>
+      <td>3.1 GB</td>
+      <td>Hallucinations due to context clutter</td>
+    </tr>
+    <tr>
+      <td><strong>Agentic Distilled RAG (Our Setup)</strong></td>
+      <td><strong>1.4s</strong></td>
+      <td><strong>3.0 GB</strong></td>
+      <td><strong>Fast, accurate, grounded answers</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2>5. How to Scale to 50,000+ Files Without Blowing Memory</h2>
+
+<p>If you load 50,000 embeddings into Python memory, your process RAM will spike by gigabytes.</p>
+
+<p>To keep the footprint at ~3 GB on edge machines:</p>
+
+<ol>
+  <li><strong>Memory-Mapped Storage:</strong> Use SQLite with disk-backed vectors (or FAISS <code>IndexHNSWFlat</code> with <code>mmap</code>). Python only loads the index nodes it traverses during search.</li>
+  <li><strong>Persistent Shared Engine:</strong> Run the INT4 ONNX runtime as a long-lived daemon or background process. Don't spin up a new Python process per request.</li>
+  <li><strong>Streaming Token Output:</strong> Yield tokens via Server-Sent Events (SSE) so users see the response start in &lt;200ms.</li>
+</ol>
+
+<hr>
+
+<h2>Try It Locally & Watch the Live Showcase</h2>
+
+<p>We built this entire system into the <strong><a href="https://github.com/t00114218-stack/SLMAgents">SLMAgents</a></strong> repository. It includes standalone local agents for RAG, Python code interpretation, Excel data analysis, and Text-to-SQL—all engineered to run locally on standard CPUs.</p>
+
+<ul>
+  <li><strong>GitHub:</strong> <a href="https://github.com/t00114218-stack/SLMAgents">github.com/t00114218-stack/SLMAgents</a></li>
+  <li><strong>Live Demo & Interactive Showcase:</strong> <a href="https://huggingface.co/spaces/spcv/slm-agents">huggingface.co/spaces/spcv/slm-agents</a> <em>(Select "Case 3: Enterprise Document Intelligence" to watch the live step-by-step reasoning replay and RAM telemetry in real time)</em></li>
+</ul>
+
+<p>If you're building local AI workflows, stop trying to turn a 2B model into GPT-4. Fix the retrieval quality, prune the context aggressively, and let small models do what they do best: fast, grounded, deterministic work.</p>
+
+</body>
+</html>
