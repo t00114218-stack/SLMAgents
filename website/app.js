@@ -2539,7 +2539,7 @@ const AGENT_SAMPLE_PROMPTS = {
   "SLMEmbeddingsServer": "Generate dense vector embeddings for: 'Zero-latency neural intelligence on edge CPUs.'"
 };
 
-const ALL_AGENTS_METADATA = [
+var ALL_AGENTS_METADATA = window.ALL_AGENTS_METADATA = [
   {
     key: "auto",
     name: "Auto-Orchestrator (All 26)",
