@@ -1142,17 +1142,27 @@ def run_code_interpreter(inputs):
     get_shared_onnx_genai()
     from slm_code_interpreter import SLMCodeInterpreter
     agent = SLMCodeInterpreter()
-    instruction = inputs.get("code") or inputs.get("instruction") or inputs.get("message") or inputs.get("query", "")
-    return agent.run(
+    session_id = inputs.get("session_id", "default_session")
+    instruction = (inputs.get("code") or inputs.get("instruction") or inputs.get("message") or inputs.get("query") or "").strip()
+    
+    res = agent.run(
         instruction=instruction,
         system_prompt=inputs.get("system_prompt"),
         user_input=inputs.get("user_input"),
         token_callback=inputs.get("token_callback")
     )
+    
+    memory_mgr.update_agent_state(session_id, "code_interpreter", {
+        "last_instruction": instruction,
+        "last_execution": str(res)[:1000] if res else "",
+        "timestamp": time.time()
+    })
+    return res
 
 def run_git_repo_manager(inputs):
     from slm_git_repo_manager import SLMGitRepoManager
     agent = SLMGitRepoManager()
+    session_id = inputs.get("session_id", "default_session")
     query = (
         inputs.get("query") or
         inputs.get("message") or
@@ -1161,12 +1171,21 @@ def run_git_repo_manager(inputs):
         ""
     ).strip()
     diff = inputs.get("diff", "")
-    return agent.process_repo_request(
+    
+    res = agent.process_repo_request(
         query=query,
         diff_text=diff,
         system_prompt=inputs.get("system_prompt"),
         token_callback=inputs.get("token_callback")
     )
+    
+    memory_mgr.update_agent_state(session_id, "git_repo_manager", {
+        "last_query": query,
+        "last_diff": diff[:500] if diff else "",
+        "timestamp": time.time()
+    })
+    return res
+
 
 def run_json_cleaner(inputs):
     model, tokenizer = get_shared_onnx_genai()
@@ -1638,6 +1657,7 @@ def run_search_orchestrator(inputs):
 def run_database_migrator(inputs):
     from slm_db_migration import SLMDBMigrator
     agent = SLMDBMigrator()
+    session_id = inputs.get("session_id", "default_session")
     query = (
         inputs.get("query") or
         inputs.get("instruction") or
@@ -1647,14 +1667,30 @@ def run_database_migrator(inputs):
         inputs.get("user_input") or
         ""
     ).strip()
-    return agent.generate_migration(
-        from_schema=inputs.get("from_schema", ""),
-        to_schema=inputs.get("to_schema", ""),
+    from_schema = inputs.get("from_schema", "")
+    to_schema = inputs.get("to_schema", "")
+    
+    if not from_schema:
+        saved_state = memory_mgr.get_agent_state(session_id, "database_migrator")
+        if saved_state.get("from_schema"):
+            from_schema = saved_state.get("from_schema")
+            
+    res = agent.generate_migration(
+        from_schema=from_schema,
+        to_schema=to_schema,
         query=query,
         dialect=inputs.get("dialect", "postgresql"),
         system_prompt=inputs.get("system_prompt"),
         token_callback=inputs.get("token_callback")
     )
+    
+    memory_mgr.update_agent_state(session_id, "database_migrator", {
+        "from_schema": from_schema,
+        "to_schema": to_schema,
+        "last_migration": str(res)[:1000] if res else "",
+        "timestamp": time.time()
+    })
+    return res
 
 def evaluate_and_correct_response(text: str) -> str:
     """Evaluation & Correction Guardrail Step to sanitize trailing corpus hallucinations."""
@@ -1670,7 +1706,10 @@ def evaluate_and_correct_response(text: str) -> str:
         r"(Warm regards,?\n.*?)(?:The \d{4}–\d{4} season|Scottish Premier League|Scottish League|Wikipedia|http|\n\n[A-Z][a-z]+ \d{4} season).*"
     ]
     for pattern in signature_patterns:
-        text = re.sub(pattern, r"\1", text, flags=re.DOTALL | re.IGNORECASE)
+        match = re.search(pattern, text, flags=re.DOTALL | re.IGNORECASE)
+        if match:
+            text = text[:match.end(1)].strip()
+            break
 
     # 2. Hard cutoff for unwanted sports/historical/math corpus spillover
     unwanted_triggers = [
@@ -1692,10 +1731,15 @@ def evaluate_and_correct_response(text: str) -> str:
     return text.strip()
 
 def run_email(inputs):
+    session_id = inputs.get("session_id", "default_session")
     email_text = inputs.get("email_text") or inputs.get("text") or inputs.get("message") or ""
     prompt = (
         "<|im_start|>system\n"
-        "You are an expert executive email assistant. Write a clear, polite, concise, professional executive email response addressing the user's exact request.<|im_end|>\n"
+        "You are an expert professional email assistant. Formulate a structured and clean email response with:\n"
+        "1. Key Takeaways\n"
+        "2. Action Items\n"
+        "3. Polished Reply Draft\n"
+        "Do NOT include any external sports facts, unrelated trivia, or Wikipedia content.<|im_end|>\n"
         "<|im_start|>user\n"
         f"{email_text}<|im_end|>\n"
         "<|im_start|>assistant\n"
@@ -1704,7 +1748,7 @@ def run_email(inputs):
         model, tokenizer = get_shared_onnx_genai()
         input_tokens = tokenizer.encode(prompt)
         params = og.GeneratorParams(model)
-        params.set_search_options(max_length=len(input_tokens) + 3000, temperature=0.3, repetition_penalty=1.15)
+        params.set_search_options(max_length=len(input_tokens) + 1024, temperature=0.2, repetition_penalty=1.15)
         generator = og.Generator(model, params)
         generator.append_tokens(input_tokens)
         
@@ -1724,17 +1768,34 @@ def run_email(inputs):
         
         full_resp = evaluate_and_correct_response("".join(tokens))
         if full_resp:
+            memory_mgr.update_agent_state(session_id, "email", {
+                "last_email": email_text[:1000],
+                "last_reply": full_resp[:1000],
+                "timestamp": time.time()
+            })
             return {"response": full_resp}
     except Exception as e:
         print(f"[SLMEmail] ONNX generation note: {e}")
 
     from slm_email import SLMEmailAssistant
     agent = SLMEmailAssistant()
-    return agent.process_email(email_text=email_text)
+    res = agent.process_email(email_text=email_text)
+    memory_mgr.update_agent_state(session_id, "email", {
+        "last_email": email_text[:1000],
+        "timestamp": time.time()
+    })
+    return res
 
 
 def run_meeting(inputs):
+    session_id = inputs.get("session_id", "default_session")
     transcript = inputs.get("transcript") or inputs.get("text") or inputs.get("message") or ""
+    
+    if not transcript:
+        saved_meeting = memory_mgr.get_agent_state(session_id, "meeting")
+        if saved_meeting.get("transcript"):
+            transcript = saved_meeting.get("transcript")
+
     prompt = (
         "<|im_start|>system\n"
         "You are an expert meeting assistant. Distill the meeting transcript into:\n"
@@ -1769,13 +1830,23 @@ def run_meeting(inputs):
         
         full_resp = evaluate_and_correct_response("".join(tokens))
         if full_resp:
+            memory_mgr.update_agent_state(session_id, "meeting", {
+                "transcript": transcript[:10000],
+                "summary": full_resp[:1000],
+                "timestamp": time.time()
+            })
             return {"response": full_resp}
     except Exception as e:
         print(f"[SLMMeeting] ONNX generation note: {e}")
 
     from slm_meeting import SLMMeetingSummarizer
     agent = SLMMeetingSummarizer()
-    return agent.summarize_transcript(transcript=transcript)
+    res = agent.summarize_transcript(transcript=transcript)
+    memory_mgr.update_agent_state(session_id, "meeting", {
+        "transcript": transcript[:10000],
+        "timestamp": time.time()
+    })
+    return res
 
 def run_memory(inputs):
     from slm_memory import SLMMemoryManager
@@ -1842,6 +1913,7 @@ def run_task_planner(inputs):
 
 
 def run_pdf_chat(inputs):
+    session_id = inputs.get("session_id", "default_session")
     pdf_data = inputs.get("pdf_file", "") or inputs.get("file", "")
     if not pdf_data and inputs.get("attachments"):
         for att in inputs.get("attachments", []):
@@ -1849,6 +1921,11 @@ def run_pdf_chat(inputs):
                 pdf_data = att.get("data")
                 break
                 
+    if not pdf_data:
+        saved_pdf = memory_mgr.get_agent_state(session_id, "pdf_chat")
+        if saved_pdf.get("pdf_data"):
+            pdf_data = saved_pdf.get("pdf_data")
+
     if not pdf_data:
         return (
             "📎 **PDF Document Required**:\n\n"
@@ -1872,6 +1949,11 @@ def run_pdf_chat(inputs):
             system_prompt=inputs.get("system_prompt"),
             user_input=inputs.get("user_input")
         )
+        memory_mgr.update_agent_state(session_id, "pdf_chat", {
+            "pdf_data": pdf_data[:50000],
+            "last_answer": str(answer)[:1000] if answer else "",
+            "timestamp": time.time()
+        })
         return {
             "status": "200 OK",
             "answer": answer
@@ -1893,6 +1975,7 @@ def run_data_analyst(inputs):
     import pandas as pd
     import numpy as np
     token_cb = inputs.get("token_callback")
+    session_id = inputs.get("session_id", "default_session")
     
     file_data = inputs.get("file", "") or inputs.get("csv", "")
     filename = "dataset.csv"
@@ -1903,6 +1986,12 @@ def run_data_analyst(inputs):
                 file_data = att.get("data")
                 filename = att.get("name", "dataset.csv")
                 break
+
+    if not file_data:
+        saved_data = memory_mgr.get_agent_state(session_id, "data_analyst")
+        if saved_data.get("file_data"):
+            file_data = saved_data.get("file_data")
+            filename = saved_data.get("filename", "dataset.csv")
 
     query = (
         inputs.get("query") or

@@ -24,22 +24,25 @@ class SessionState:
     """
     State Graph & Context Object for an active SLMAgents session.
     Maintains vector DB paths, document references, session assets, turn history,
-    and dynamic graph state passed across agents.
+    agent-specific working contexts, and dynamic graph state passed across agents.
     """
     def __init__(self, session_id: str, vector_db_path: str = None):
         self.session_id = session_id or "default_session"
         cache_dir = os.path.expanduser("~/.cache/slm_memory/vector_stores")
         os.makedirs(cache_dir, exist_ok=True)
         self.vector_db_path = vector_db_path or os.path.join(cache_dir, f"{self.session_id}_vector.db")
-        self.documents = []  # list of doc dicts
+        self.documents = []        # list of doc dicts
         self.active_document = None
-        self.assets = []     # list of asset dicts (images, code files, audio)
-        self.turns = []      # conversational history
+        self.assets = []           # list of asset dicts (images, code files, CSVs, audio)
+        self.turns = []            # conversational history
+        self.agent_states = {}     # per-agent isolated state dicts {"code_interpreter": {}, "db_migration": {}, ...}
+        self.variables = {}        # environment and session variables
         self.active_topic = None
         self.last_agent = None
         self.state_graph = {
             "session_id": self.session_id,
             "vector_db_path": self.vector_db_path,
+            "agent_states": self.agent_states,
             "created_at": time.time(),
             "updated_at": time.time()
         }
@@ -52,6 +55,8 @@ class SessionState:
             "active_document": self.active_document,
             "assets": self.assets,
             "turns": self.turns,
+            "agent_states": self.agent_states,
+            "variables": self.variables,
             "active_topic": self.active_topic,
             "last_agent": self.last_agent,
             "state_graph": self.state_graph
@@ -87,6 +92,10 @@ class SLMMemoryManager:
             "active_doc_name TEXT, "
             "active_doc_data TEXT, "
             "vector_db_path TEXT, "
+            "agent_states TEXT, "
+            "assets_data TEXT, "
+            "turns_data TEXT, "
+            "variables_data TEXT, "
             "last_agent TEXT, "
             "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)"
         )
@@ -95,6 +104,10 @@ class SLMMemoryManager:
             ("active_doc_name", "TEXT"),
             ("active_doc_data", "TEXT"),
             ("vector_db_path", "TEXT"),
+            ("agent_states", "TEXT"),
+            ("assets_data", "TEXT"),
+            ("turns_data", "TEXT"),
+            ("variables_data", "TEXT"),
             ("last_agent", "TEXT"),
             ("updated_at", "DATETIME DEFAULT CURRENT_TIMESTAMP")
         ]:
@@ -111,27 +124,36 @@ class SLMMemoryManager:
             session_id = "default_session"
         if session_id not in self._session_store:
             session = SessionState(session_id)
-            # Restore active document for this specific session from SQLite database if available
+            # Restore state for this specific session from SQLite database if available
             try:
                 conn = sqlite3.connect(self.db_path)
                 cursor = conn.cursor()
-                cursor.execute("SELECT active_doc_data, vector_db_path, last_agent FROM session_metadata WHERE session_id = ?", (session_id,))
+                cursor.execute("SELECT active_doc_data, vector_db_path, agent_states, assets_data, turns_data, variables_data, last_agent FROM session_metadata WHERE session_id = ?", (session_id,))
                 row = cursor.fetchone()
                 conn.close()
                 if row:
-                    active_doc_data, v_path, l_agent = row
+                    active_doc_data, v_path, a_states, a_assets, t_turns, v_vars, l_agent = row
                     if active_doc_data:
                         doc_info = json.loads(active_doc_data)
                         session.active_document = doc_info
                         session.documents.append(doc_info)
                     if v_path:
                         session.vector_db_path = v_path
+                    if a_states:
+                        session.agent_states = json.loads(a_states)
+                    if a_assets:
+                        session.assets = json.loads(a_assets)
+                    if t_turns:
+                        session.turns = json.loads(t_turns)
+                    if v_vars:
+                        session.variables = json.loads(v_vars)
                     if l_agent:
                         session.last_agent = l_agent
             except Exception:
                 pass
             self._session_store[session_id] = session
         return self._session_store[session_id]
+
 
     def clear_session(self, session_id: str) -> bool:
         """Completely clears and resets all memory, documents, and context for a specific session."""
@@ -277,6 +299,38 @@ class SLMMemoryManager:
         except Exception as e:
             print(f"[SLMMemoryManager] SQLite store note: {e}")
 
+    def set_agent_state(self, session_id: str, agent_name: str, state_data: dict):
+        """Sets and persists agent-specific isolated working state for this session."""
+        session = self.get_or_create_session(session_id)
+        session.agent_states[agent_name] = state_data or {}
+        session.state_graph["agent_states"] = session.agent_states
+        session.state_graph["updated_at"] = time.time()
+        self._sync_session_to_db(session)
+
+    def get_agent_state(self, session_id: str, agent_name: str) -> dict:
+        """Retrieves agent-specific isolated working state for this session."""
+        session = self.get_or_create_session(session_id)
+        return session.agent_states.get(agent_name, {})
+
+    def update_agent_state(self, session_id: str, agent_name: str, updates: dict) -> dict:
+        """Updates agent-specific isolated state variables for this session."""
+        session = self.get_or_create_session(session_id)
+        if agent_name not in session.agent_states:
+            session.agent_states[agent_name] = {}
+        session.agent_states[agent_name].update(updates or {})
+        session.state_graph["agent_states"] = session.agent_states
+        session.state_graph["updated_at"] = time.time()
+        self._sync_session_to_db(session)
+        return session.agent_states[agent_name]
+
+    def clear_agent_state(self, session_id: str, agent_name: str):
+        """Clears agent-specific isolated state for this session."""
+        session = self.get_or_create_session(session_id)
+        if agent_name in session.agent_states:
+            del session.agent_states[agent_name]
+            session.state_graph["agent_states"] = session.agent_states
+            self._sync_session_to_db(session)
+
     def add_asset(self, session_id: str, asset_type: str, file_path: str, metadata: dict = None):
         """Registers a session asset (image, code output, PDF, audio) into session state graph."""
         session = self.get_or_create_session(session_id)
@@ -288,17 +342,64 @@ class SLMMemoryManager:
         }
         session.assets.append(asset_info)
         session.state_graph["assets"] = session.assets
+        self._sync_session_to_db(session)
+
+    def get_assets(self, session_id: str, asset_type: str = None) -> list[dict]:
+        """Retrieves all assets registered in this session, optionally filtered by type."""
+        session = self.get_or_create_session(session_id)
+        if asset_type:
+            return [a for a in session.assets if a.get("type") == asset_type]
+        return list(session.assets)
 
     def update_state_graph(self, session_id: str, updates: dict):
         """Updates arbitrary state variables on the session's state graph."""
         session = self.get_or_create_session(session_id)
         session.state_graph.update(updates)
         session.state_graph["updated_at"] = time.time()
+        self._sync_session_to_db(session)
 
     def get_active_document(self, session_id: str = None) -> dict | None:
         """Retrieves the active document working context for a session if one exists."""
         session = self.get_or_create_session(session_id or "default_session")
         return session.active_document
+
+    def _sync_session_to_db(self, session: SessionState):
+        """Persists full session state graph to SQLite."""
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO session_metadata (session_id, active_topic, active_doc_name, active_doc_data, vector_db_path, agent_states, assets_data, turns_data, variables_data, last_agent, updated_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP) "
+                "ON CONFLICT(session_id) DO UPDATE SET "
+                "active_topic=excluded.active_topic, "
+                "active_doc_name=excluded.active_doc_name, "
+                "active_doc_data=excluded.active_doc_data, "
+                "vector_db_path=excluded.vector_db_path, "
+                "agent_states=excluded.agent_states, "
+                "assets_data=excluded.assets_data, "
+                "turns_data=excluded.turns_data, "
+                "variables_data=excluded.variables_data, "
+                "last_agent=excluded.last_agent, "
+                "updated_at=CURRENT_TIMESTAMP",
+                (
+                    session.session_id,
+                    session.active_topic,
+                    session.active_document.get("name") if session.active_document else None,
+                    json.dumps(session.active_document) if session.active_document else None,
+                    session.vector_db_path,
+                    json.dumps(session.agent_states),
+                    json.dumps(session.assets),
+                    json.dumps(session.turns),
+                    json.dumps(session.variables),
+                    session.last_agent
+                )
+            )
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            pass
+
 
     def extract_memory_facts_with_phi(self, user_text: str) -> list[str]:
         """Uses the Phi 4B ONNX engine to extract structured long-term facts/preferences from user input."""
