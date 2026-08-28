@@ -1962,6 +1962,19 @@ window.clearAllChatSessions = clearAllChatSessions;
 window.createNewChatSession = createNewChatSession;
 window.deleteChatSession = deleteChatSession;
 window.switchChatSession = switchChatSession;
+window.getCurrentSession = getCurrentSession;
+window.getOrCreateCurrentSession = getCurrentSession;
+window.toggleChatSidebar = toggleChatSidebar;
+window.setQuickAgentChip = setQuickAgentChip;
+window.handleChatSubmit = handleChatSubmit;
+window.handleChatKeyDown = handleChatKeyDown;
+window.autoResizeChatTextarea = autoResizeChatTextarea;
+window.applyQuickPrompt = applyQuickPrompt;
+window.handleFileSelected = handleFileSelected;
+window.toggleVoiceRecording = toggleVoiceRecording;
+window.toggleAgentDropdown = toggleAgentDropdown;
+window.openCreateIssueModal = openCreateIssueModal;
+window.closeGitHubIssueModal = closeGitHubIssueModal;
 
 function getCurrentSession() {
   if (!currentSessionId || chatSessions.length === 0) {
