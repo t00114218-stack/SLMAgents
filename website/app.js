@@ -1,3 +1,38 @@
+// Top-level Navigation & Sidebar Drawer Controllers
+window.toggleChatSidebar = function toggleChatSidebar() {
+  const sidebar = document.getElementById("chat-sidebar");
+  const backdrop = document.getElementById("chat-sidebar-backdrop");
+  if (!sidebar) return;
+  if (window.innerWidth <= 860) {
+    sidebar.classList.toggle("open");
+    if (backdrop) {
+      backdrop.classList.toggle("active", sidebar.classList.contains("open"));
+    }
+  } else {
+    sidebar.classList.toggle("collapsed");
+  }
+};
+
+window.setQuickAgentChip = function setQuickAgentChip(agentKey, btn) {
+  const hiddenOverride = document.getElementById("chat-agent-override");
+  if (hiddenOverride) {
+    hiddenOverride.value = agentKey;
+  }
+  document.querySelectorAll(".quick-agent-chip").forEach(chip => {
+    chip.classList.remove("active");
+  });
+  if (btn) {
+    btn.classList.add("active");
+  }
+  const agentNameEl = document.getElementById("selected-agent-name");
+  if (agentNameEl && typeof AGENT_METADATA !== "undefined") {
+    const meta = AGENT_METADATA[agentKey] || AGENT_METADATA["auto"];
+    if (meta) {
+      agentNameEl.textContent = meta.name;
+    }
+  }
+};
+
 // Universal API Endpoint Resolver (Works on Localhost, Hugging Face Spaces, and Custom Domains)
 function getApiEndpoint(path) {
   if (window.location.protocol === "file:") {
