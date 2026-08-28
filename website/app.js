@@ -3642,10 +3642,10 @@ var SHOWCASE_CASES = {
     `
   },
   rag: {
-    title: "SLMRAGAgent • Hybrid Dense + BM25 Offline Search",
+    title: "SLMRAGAgent • Hybrid Semantic Document Intelligence",
     prompt: "What were the key Q3 2026 revenue growth drivers and EBITDA margin figures for the cloud division?",
     attachment: "Q3_2026_Enterprise_Report.pdf (48 pages, 320 paragraphs indexed)",
-    routedAgent: "SLMRAGAgent (Agentic RAG Engine)",
+    routedAgent: "SLMRAGAgent (Document Intelligence Agent)",
     duration: "1.4s CPU",
     ram: "3046.8 MB Local Engine RAM",
     thoughts: [
