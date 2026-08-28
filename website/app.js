@@ -3640,13 +3640,54 @@ var SHOWCASE_CASES = {
         </div>
       </div>
     `
+  },
+  rag: {
+    title: "SLMRAGAgent • Hybrid Dense + BM25 Offline Search",
+    prompt: "What were the key Q3 2026 revenue growth drivers and EBITDA margin figures for the cloud division?",
+    attachment: "Q3_2026_Enterprise_Report.pdf (48 pages, 320 paragraphs indexed)",
+    routedAgent: "SLMRAGAgent (Agentic RAG Engine)",
+    duration: "1.4s CPU",
+    ram: "3046.8 MB Local Engine RAM",
+    thoughts: [
+      "Received query & indexed document: 'Q3_2026_Enterprise_Report.pdf'",
+      "Agentic Query Decomposition: [Entity: 'Cloud Division', Metrics: 'Revenue Growth', 'EBITDA']",
+      "Executing Hybrid Search: BM25 Lexical + INT8 BGE-Small Dense Embeddings in 24ms...",
+      "Applying Reciprocal Rank Fusion (RRF) & Relevance Filtering (threshold > 0.75)...",
+      "Context Distilled to top 2 paragraphs (248 tokens) — Zero context distraction",
+      "Synthesizing grounded answer on CPU with INT4 Qwen2.5 Engine in 1.4s..."
+    ],
+    summaryMarkdown: `
+      <div style="color: #1e293b; line-height: 1.6;">
+        <h3 style="color: #4f46e5; margin-bottom: 10px; font-size: 1.15rem;">📄 Verified Grounded Fact Sheet: <code>Q3_2026_Enterprise_Report.pdf</code></h3>
+        
+        <div style="background: #f8fafc; border-left: 4px solid #4f46e5; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 14px;">
+          <strong style="color: #0f172a;">Source Excerpt (Section 3.2, Page 14):</strong>
+          <p style="margin: 6px 0 0 0; font-size: 0.88rem; color: #475569; font-style: italic;">
+            "The Cloud Infrastructure Division reported Q3 2026 revenue of $184.2M (+34.6% YoY), primarily driven by enterprise adoption of air-gapped SLM runtime appliances. EBITDA margin expanded to 41.2% (vs 36.8% in Q2 2026)."
+          </p>
+        </div>
+
+        <h4 style="color: #059669; margin-top: 14px; margin-bottom: 8px;">📊 Key Extracted Metrics:</h4>
+        <ul style="margin-left: 20px; margin-bottom: 14px; color: #334155;">
+          <li><strong>Cloud Revenue</strong>: <strong style="color: #4f46e5;"><code>$184.2M</code></strong> (<strong>+34.6% YoY</strong>)</li>
+          <li><strong>Primary Growth Driver</strong>: Enterprise adoption of air-gapped SLM runtime appliances</li>
+          <li><strong>EBITDA Margin</strong>: <strong style="color: #059669;"><code>41.2%</code></strong> (expanded by <strong>+440 bps</strong> from 36.8% in Q2)</li>
+        </ul>
+
+        <div style="display: flex; gap: 8px; align-items: center; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; color: #065f46;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span><strong>100% Grounded:</strong> Extracted directly from 2 distilled chunks with 0 hallucination on CPU.</span>
+        </div>
+      </div>
+    `
   }
 };
 
 function switchShowcase(mode) {
   currentShowcaseMode = mode;
   document.querySelectorAll(".showcase-tab-btn").forEach(btn => btn.classList.remove("active"));
-  const activeBtn = document.getElementById(mode === "code" ? "tab-code" : "tab-data");
+  const tabId = mode === "code" ? "tab-code" : (mode === "data" ? "tab-data" : "tab-rag");
+  const activeBtn = document.getElementById(tabId);
   if (activeBtn) activeBtn.classList.add("active");
   animateShowcaseReplay(mode);
 }
