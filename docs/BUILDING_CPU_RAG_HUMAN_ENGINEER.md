@@ -43,6 +43,15 @@ We restructured our pipeline from passive retrieval to an **agentic loop**:
 [Step 4: INT4 ONNX Generation on CPU (~1.4s)]
 ```
 
+### 📺 Live Demo: Watch the CPU Agent in Action
+
+Here is what the real-time execution loop looks like when querying a 48-page enterprise PDF on CPU:
+
+> **[▶ Test the Live Interactive Demo on Hugging Face](https://huggingface.co/spaces/spcv/slm-agents)**  
+> *(Click **"Case 3: Enterprise Document Intelligence"** to replay the step-by-step reasoning timeline, stopwatch, and 3046.8 MB RAM footprint)*
+
+*(Tip for Medium/Ghost: Record a 10-second screen clip of the live showcase replay and paste your YouTube, Loom, or GIF link directly into this slot)*
+
 ---
 
 ## 1. Ditch Vector-Only Search for Hybrid RRF
