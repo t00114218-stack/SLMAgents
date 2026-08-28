@@ -274,36 +274,16 @@ Do not attempt to extrapolate or bring in outside knowledge.
   <li><strong>Data Leakage:</strong> <strong>Zero</strong> (no telemetry, runs fully offline/air-gapped)</li>
 </ul>
 
-<table>
-  <thead>
-    <tr>
-      <th>Setup</th>
-      <th>Average Latency</th>
-      <th>Peak RAM</th>
-      <th>Failure Mode</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Naïve 7B FP16 on CPU</strong></td>
-      <td>12.4s</td>
-      <td>~14.2 GB</td>
-      <td>System freezes, high swap usage</td>
-    </tr>
-    <tr>
-      <td><strong>Naïve 1.5B (Top 8 Chunks)</strong></td>
-      <td>5.8s</td>
-      <td>3.1 GB</td>
-      <td>Hallucinations due to context clutter</td>
-    </tr>
-    <tr>
-      <td><strong>Agentic Distilled RAG (Our Setup)</strong></td>
-      <td><strong>1.4s</strong></td>
-      <td><strong>3.0 GB</strong></td>
-      <td><strong>Fast, accurate, grounded answers</strong></td>
-    </tr>
-  </tbody>
-</table>
+<h3>Benchmark Breakdown:</h3>
+
+<ul>
+  <li><strong>Naïve 7B FP16 on CPU:</strong> <code>12.4s</code> average latency | <code>~14.2 GB</code> peak RAM<br>
+  <em>(Failure mode: System freezes, heavy swap memory thrashing)</em></li>
+  <li style="margin-top: 12px;"><strong>Naïve 1.5B (Top 8 Chunks):</strong> <code>5.8s</code> average latency | <code>3.1 GB</code> peak RAM<br>
+  <em>(Failure mode: Severe hallucinations due to context clutter)</em></li>
+  <li style="margin-top: 12px;"><strong>Agentic Distilled RAG (Our Setup):</strong> <strong><code>1.4s</code></strong> average latency | <strong><code>3.0 GB</code></strong> peak RAM<br>
+  <em>(Outcome: Fast, accurate, 100% grounded answers)</em></li>
+</ul>
 
 <hr>
 

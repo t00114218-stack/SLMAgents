@@ -178,11 +178,16 @@ Here are the real numbers running on a standard 8-core CPU (Intel/AMD or Apple M
 - **Cloud API Cost**: **$0.00**
 - **Data Leakage**: **Zero** (no telemetry, runs fully offline/air-gapped)
 
-| Setup | Average Latency | Peak RAM | Failure Mode |
-| :--- | :--- | :--- | :--- |
-| **Naïve 7B FP16 on CPU** | 12.4s | ~14.2 GB | System freezes, high swap usage |
-| **Naïve 1.5B (Top 8 Chunks)** | 5.8s | 3.1 GB | Hallucinations due to context clutter |
-| **Agentic Distilled RAG (Our Setup)** | **1.4s** | **3.0 GB** | **Fast, accurate, grounded answers** |
+### Benchmark Breakdown:
+
+• **Naïve 7B FP16 on CPU:** `12.4s` average latency | `~14.2 GB` peak RAM  
+*(Failure mode: System freezes, heavy swap memory thrashing)*
+
+• **Naïve 1.5B (Top 8 Chunks):** `5.8s` average latency | `3.1 GB` peak RAM  
+*(Failure mode: Severe hallucinations due to context clutter)*
+
+• **Agentic Distilled RAG (Our Setup):** **`1.4s`** average latency | **`3.0 GB`** peak RAM  
+*(Outcome: Fast, accurate, 100% grounded answers)*
 
 ---
 
