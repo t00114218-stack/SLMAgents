@@ -207,9 +207,18 @@ class SLMRag:
             max_iterations: Max ReAct tool-calling loops (prevents infinite loops).
             stream:         If True, streams token strings in real-time.
         """
-        # Resolve max_tokens: arg > env var > default (1024 tokens for high-speed detailed responses)
+        q_lower = (question or "").lower()
+        is_summary_query = any(w in q_lower for w in ["summary", "summarize", "overview", "brief", "key points", "outline", "highlights"])
+        is_direct_fact_query = any(w in q_lower for w in ["what is the total", "how many", "who is", "when did", "amount", "date", "status", "calculate"])
+
+        # Resolve max_tokens: dynamic intent scaling to maximize response speed
         if max_tokens is None:
-            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 1024))
+            if is_direct_fact_query:
+                max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 220))
+            elif is_summary_query:
+                max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 350))
+            else:
+                max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 500))
 
         max_iterations = max(1, min(int(max_iterations), 8))
         
@@ -280,13 +289,20 @@ class SLMRag:
                 selected_chunks = [chunks[i] for i in sorted(expanded_indices)]
                 formatted_chunks = "\n\n".join([chunk.strip() for chunk in selected_chunks if chunk.strip()])
             
-        # Build thorough, detailed ChatML template prompt
-        system_prompt = (
-            "You are an expert document analysis assistant.\n"
-            "Provide a detailed, complete, and thorough answer to the user's question based strictly on the provided Document Text.\n"
-            "Include all specific figures, amounts, financial breakdown tables, payment schedules, and explicit conditions mentioned in the context.\n"
-            "Do not summarize vaguely or omit details when specific data is present in the text."
-        )
+        # Build high-density, fast ChatML template prompt
+        if is_summary_query:
+            system_prompt = (
+                "You are an expert document analysis assistant.\n"
+                "Provide a high-density, concise executive summary in clear Markdown bullet points.\n"
+                "Highlight key totals, date ranges, record counts, and critical findings accurately.\n"
+                "Be direct, crisp, and avoid generating repetitive filler text."
+            )
+        else:
+            system_prompt = (
+                "You are an expert document analysis assistant.\n"
+                "Answer the user's question accurately and concisely based strictly on the provided Document Text.\n"
+                "Include specific figures, amounts, and facts directly without unnecessary verbose padding."
+            )
 
         
         if tools and tool_executor:
