@@ -1285,10 +1285,6 @@ html, body {
     width: 34px !important;
     height: 34px !important;
   }
-
-  .btn-top-github-issue span {
-    display: none !important;
-  }
 }
 
 /* ==========================================================================
