@@ -105,13 +105,13 @@ MODEL_PATH = os.path.join(BASE_DIR, "models", "qwen2.5-coder-3b-onnx")
 
 # Global instances for ONNX runtime model sharing
 shared_model = None
-# Hardware thread allocation: 2 threads on 2 vCPU cloud instances, max 4 locally to eliminate context switching
-_detected_threads = str(min(4, max(2, os.cpu_count() or 2)))
+# Hardware thread allocation: dynamically scale up to 8 threads for maximum CPU throughput
+_detected_threads = str(min(8, max(4, os.cpu_count() or 4)))
 os.environ.setdefault("SLM_N_THREADS", _detected_threads)
 os.environ["OMP_NUM_THREADS"] = os.environ.get("SLM_N_THREADS", _detected_threads)
 os.environ["MKL_NUM_THREADS"] = os.environ.get("SLM_N_THREADS", _detected_threads)
-os.environ["OMP_WAIT_POLICY"] = "PASSIVE"
-os.environ["KMP_BLOCKTIME"] = "0"
+os.environ["OMP_WAIT_POLICY"] = "ACTIVE"
+os.environ["KMP_BLOCKTIME"] = "1"
 os.environ["ORT_ENABLE_AVX2"] = "1"
 
 try:
@@ -233,7 +233,7 @@ class Qwen35ONNXGenerator:
         self.next_tokens = []
         self.dec_inputs = None
         self.last_outputs = None
-        self.max_tokens = 3000
+        self.max_tokens = 1024
         self.finish_reason = None
 
     def append_tokens(self, tokens):
@@ -247,8 +247,8 @@ class Qwen35ONNXGenerator:
             target_max = int(self.params.search_options["max_length"])
             self.max_tokens = max(1, target_max - seq_len)
         else:
-            self.max_tokens = 3000
-        global_token_cap = max(16, int(os.environ.get("SLM_MAX_GENERATED_TOKENS", 3000)))
+            self.max_tokens = 1024
+        global_token_cap = max(16, int(os.environ.get("SLM_MAX_GENERATED_TOKENS", 1200)))
         self.max_tokens = min(self.max_tokens, global_token_cap)
         
         with self.model.inference_lock:
@@ -312,8 +312,8 @@ class Qwen35ONNXGenerator:
                 dec_inputs[past_name] = last_outputs[idx]
                     
         with self.model.inference_lock:
-            raw_outs = self.model.dec_sess.run(None, self.dec_inputs)
-            self.last_outputs = [np.copy(o) for o in raw_outs]
+            # Zero-allocation pointer reuse without 56x np.copy per token
+            self.last_outputs = self.model.dec_sess.run(None, self.dec_inputs)
         logits = self.last_outputs[0]
 
         tok = int(np.argmax(logits[0, -1, :]))
@@ -330,7 +330,7 @@ class Qwen35ONNXGenerator:
             except Exception:
                 tok_text = ""
                 
-        if tok in EOS_SET or "<|im_end|>" in tok_text or "<|endoftext|>" in tok_text or "</s>" in tok_text:
+        if tok in EOS_SET or "<|im_end|>" in tok_text or "<|endoftext|>" in tok_text or "</s>" in tok_text or "<|im_start|>" in tok_text:
             self.done = True
             self.finish_reason = "eos"
             self.next_tokens = []

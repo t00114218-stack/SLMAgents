@@ -207,9 +207,9 @@ class SLMRag:
             max_iterations: Max ReAct tool-calling loops (prevents infinite loops).
             stream:         If True, streams token strings in real-time.
         """
-        # Resolve max_tokens: arg > env var > default (3000 tokens for long-form detailed responses)
+        # Resolve max_tokens: arg > env var > default (1024 tokens for high-speed detailed responses)
         if max_tokens is None:
-            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 3000))
+            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 1024))
 
         max_iterations = max(1, min(int(max_iterations), 8))
         
@@ -393,9 +393,10 @@ class SLMRag:
                 total_max_length = len(input_tokens) + max_tokens
                 search_options = {
                     "max_length": total_max_length,
-                    "temperature": temperature,
-                    "repetition_penalty": 1.15
+                    "temperature": temperature
                 }
+                if temperature > 0.0:
+                    search_options["repetition_penalty"] = 1.15
                 params.set_search_options(**search_options)
                 
                 generator = og.Generator(self.model, params)
