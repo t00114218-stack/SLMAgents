@@ -3245,6 +3245,24 @@ async def handle_seo_redirects(request, call_next):
         return RedirectResponse(url=PAGE_REDIRECTS[path], status_code=301)
     return await call_next(request)
 
+@app.get("/sitemap.xml")
+async def get_sitemap_xml():
+    sitemap_path = os.path.join(website_path, "sitemap.xml")
+    if os.path.exists(sitemap_path):
+        return FileResponse(sitemap_path, media_type="application/xml", headers={"Content-Type": "application/xml; charset=utf-8"})
+    return Response(content='<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>', media_type="application/xml")
+
+@app.get("/sitemap")
+async def get_sitemap_redirect():
+    return RedirectResponse(url="/sitemap.xml", status_code=301)
+
+@app.get("/robots.txt")
+async def get_robots_txt():
+    robots_path = os.path.join(website_path, "robots.txt")
+    if os.path.exists(robots_path):
+        return FileResponse(robots_path, media_type="text/plain", headers={"Content-Type": "text/plain; charset=utf-8"})
+    return Response(content="User-agent: *\nAllow: /\nSitemap: https://www.slmagents.ai/sitemap.xml\n", media_type="text/plain")
+
 @app.get("/")
 async def root():
     return FileResponse(os.path.join(website_path, "chat.html"))
