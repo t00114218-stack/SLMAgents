@@ -1780,19 +1780,54 @@ def run_meeting(inputs):
 def run_memory(inputs):
     from slm_memory import SLMMemoryManager
     agent = SLMMemoryManager()
-    fact = inputs.get("user_fact", "")
-    if fact:
-        agent.store_fact(fact)
-    results = agent.get_relevant_facts(
-        query=fact or "USD",
-        system_prompt=inputs.get("system_prompt"),
-        user_input=inputs.get("user_input")
+    session_id = inputs.get("session_id", "default_session")
+    token_cb = inputs.get("token_callback")
+    
+    raw_fact = (
+        inputs.get("user_fact")
+        or inputs.get("fact")
+        or inputs.get("message")
+        or inputs.get("query")
+        or inputs.get("text")
+        or inputs.get("user_input")
+        or ""
+    ).strip()
+    
+    clean_fact = raw_fact
+    for prefix in ["remember preference:", "remember that", "remember:", "please remember:", "note preference:", "preference:", "note:", "store fact:", "fact:"]:
+        if clean_fact.lower().startswith(prefix):
+            clean_fact = clean_fact[len(prefix):].strip()
+            break
+            
+    if clean_fact:
+        agent.store_fact(clean_fact)
+        agent.record_turn(session_id, raw_fact, f"Remembered: {clean_fact}", "SLMMemoryManager")
+        
+    all_facts = agent.get_relevant_facts("")
+    session = agent.get_or_create_session(session_id)
+    
+    active_doc_str = session.active_document.get("name") if session.active_document else "None"
+    total_turns = len(session.turns)
+    total_assets = len(session.assets)
+    
+    fact_bullets = "\n".join([f"- 📌 {f}" for f in all_facts]) if all_facts else "- *(No long-term facts stored yet)*"
+    
+    msg = (
+        f"🧠 **Memory State Synced & Updated**\n\n"
+        f"### 📋 Stored Memory Record\n"
+        f"- **New Fact / Preference**: {clean_fact if clean_fact else '*(State Graph Queried)*'}\n"
+        f"- **Active Session ID**: `{session_id}`\n"
+        f"- **Active Working Document**: `{active_doc_str}`\n"
+        f"- **Recorded Session Turns**: {total_turns} turn(s)\n"
+        f"- **Attached Session Assets**: {total_assets} asset(s)\n\n"
+        f"### 🗄️ All Long-Term User Memories ({len(all_facts)})\n"
+        f"{fact_bullets}\n\n"
+        f"*(All conversational states, session graphs, documents, and preferences are continuously persisted across sessions in SQLite database `~/.cache/slm_memory/user_state.db`)*"
     )
-    return {
-        "status": "200 OK",
-        "stored_fact": fact,
-        "retrieved_memories": results
-    }
+    
+    if token_cb:
+        token_cb(msg)
+    return msg
 
 def run_task_planner(inputs):
     from slm_task_planner import SLMTaskPlanner

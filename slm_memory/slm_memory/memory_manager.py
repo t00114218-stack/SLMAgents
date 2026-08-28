@@ -228,9 +228,9 @@ class SLMMemoryManager:
         if not query:
             return all_facts
 
-        keywords = [w.lower() for w in query.split() if len(w) > 3]
+        keywords = [w.lower() for w in query.split() if len(w) > 2]
         relevant = [f for f in all_facts if any(kw in f.lower() for kw in keywords)]
-        return relevant or all_facts[:3]
+        return relevant if relevant else all_facts
 
     # --- Session Working Memory, Document & Asset State Graph ---
     def store_document_memory(self, session_id: str, doc_name: str, chunks: list[str] = None, summary: str = None, file_path: str = None, vector_db_path: str = None, full_text: str = None, is_in_memory_direct: bool = True):
