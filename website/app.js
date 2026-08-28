@@ -1,8 +1,8 @@
-// All 26 SLM Agent Module Metadata (Global Constant)
+// SLM Agent Module Metadata (Global Constant)
 var ALL_AGENTS_METADATA = window.ALL_AGENTS_METADATA = [
   {
     key: "auto",
-    name: "Auto-Orchestrator (All 26)",
+    name: "Auto-Orchestrator",
     category: "General",
     svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`
   },
