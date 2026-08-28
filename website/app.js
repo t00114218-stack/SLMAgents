@@ -3130,28 +3130,8 @@ async function handleChatSubmit(event) {
   
   const inputEl = document.getElementById("chat-text-input");
   const sendBtn = document.getElementById("chat-send-btn");
-  const selectMode = document.getElementById("chat-agent-override");
-  
-  if (!inputEl) return;
-  const message = inputEl.value.trim();
-  const attachments = [...chatAttachments];
-  
-  if (!message && attachments.length === 0) return;
-  
-  const session = getCurrentSession();
-  if (!session) return;
-
-  if (session.isGenerating) {
-    inputEl.style.transition = "transform 0.1s";
-    inputEl.style.transform = "translateX(6px)";
-    setTimeout(() => {
-      inputEl.style.transform = "translateX(-6px)";
-      setTimeout(() => { inputEl.style.transform = "translateX(0)"; }, 100);
-    }, 100);
-    return;
-  }
-
-  const targetSessionId = session.id;
+  const selectMode = document.getElementById("chat-agent-overr  const targetSessionId = session.id;
+  const reqId = "req_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
   
   // Set session title from first user query
   if (session.messages.length === 0) {
@@ -3167,12 +3147,10 @@ async function handleChatSubmit(event) {
   };
   session.messages.push(userMsg);
   session.isGenerating = true;
-  session._liveTokens = "";
-  session._liveThoughts = ["Analyzing query & extracting execution constraints..."];
-  session._liveRoutedAgent = "";
   saveChatSessionsToStorage();
   renderChatSessionList();
 
+  const viewport = document.getElementById("chat-messages-viewport");
   if (currentSessionId === targetSessionId) {
     appendMessageElementToViewport("user", message, attachments);
   }
@@ -3183,9 +3161,7 @@ async function handleChatSubmit(event) {
   chatAttachments = [];
   renderAttachmentsTray();
   
-  // 2. Append live thinking card scoped strictly to targetSessionId
-  const viewport = document.getElementById("chat-messages-viewport");
-  const reqId = "req_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6);
+  // 2. Append live thinking card scoped strictly to reqId
   if (currentSessionId === targetSessionId && viewport) {
     const typingRow = document.createElement("div");
     typingRow.className = "chat-msg-row assistant typing-indicator-row";
@@ -3226,28 +3202,30 @@ async function handleChatSubmit(event) {
       </div>
     `;
     viewport.appendChild(typingRow);
-    viewport.scrollTop = viewport.scrollHeight;
+    autoScrollChatViewport(viewport, true);
   }
   
   const targetAgent = selectMode ? selectMode.value : "auto";
   const startTime = Date.now();
   const timerInterval = setInterval(() => {
-    if (currentSessionId === targetSessionId) {
-      const activeRow = document.querySelector(`.typing-indicator-row[data-session-id="${targetSessionId}"]`);
-      if (activeRow) {
-        const liveTimer = activeRow.querySelector(".live-stopwatch-timer");
-        if (liveTimer) {
-          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-          liveTimer.textContent = `${elapsed}s`;
-        }
+    const activeRow = document.querySelector(`.typing-indicator-row[data-req-id="${reqId}"]`);
+    if (activeRow) {
+      const liveTimer = activeRow.querySelector(".live-stopwatch-timer");
+      if (liveTimer) {
+        const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+        liveTimer.textContent = `${elapsed}s`;
       }
     }
   }, 100);
   
   (async () => {
+    let accumulatedThoughts = ["Analyzing query & extracting execution constraints..."];
+    let accumulatedTokens = "";
+    let accumulatedRoutedAgent = "";
     try {
       const payload = {
         session_id: targetSessionId,
+        req_id: reqId,
         message: message,
         target_agent: targetAgent,
         attachments: attachments,
@@ -3286,30 +3264,26 @@ async function handleChatSubmit(event) {
             } catch (e) {
               continue;
             }
-            const activeTargetSession = chatSessions.find(s => s.id === targetSessionId) || session;
             
             if (data.type === "thought") {
               const cleanThought = data.thought.replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "").trim();
-              if (activeTargetSession) {
-                if (!activeTargetSession._liveThoughts) activeTargetSession._liveThoughts = [];
-                if (!activeTargetSession._liveThoughts.includes(cleanThought)) {
-                  activeTargetSession._liveThoughts.push(cleanThought);
-                }
+              if (!accumulatedThoughts.includes(cleanThought)) {
+                accumulatedThoughts.push(cleanThought);
               }
               if (data.thought.includes("Routed to: ")) {
                 const ag = data.thought.split("Routed to: ")[1].trim().replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "");
-                if (activeTargetSession) activeTargetSession._liveRoutedAgent = `Routed: ${ag}`;
+                accumulatedRoutedAgent = `Routed: ${ag}`;
               }
               if (currentSessionId === targetSessionId) {
-                const activeRow = document.querySelector(`.typing-indicator-row[data-session-id="${targetSessionId}"]`);
+                const activeRow = document.querySelector(`.typing-indicator-row[data-req-id="${reqId}"]`);
                 if (activeRow) {
                   const liveTitle = activeRow.querySelector(".live-thought-title");
                   const liveTimeline = activeRow.querySelector(".live-step-timeline");
                   const livePill = activeRow.querySelector(".live-routed-pill");
                   if (liveTitle) liveTitle.textContent = cleanThought.length > 44 ? cleanThought.substring(0, 44) + "..." : cleanThought;
-                  if (livePill && activeTargetSession._liveRoutedAgent) {
+                  if (livePill && accumulatedRoutedAgent) {
                     const label = livePill.querySelector(".ghost-text");
-                    if (label) label.textContent = activeTargetSession._liveRoutedAgent;
+                    if (label) label.textContent = accumulatedRoutedAgent;
                   }
                   if (liveTimeline) {
                     liveTimeline.querySelectorAll(".live-step-row").forEach(row => {
@@ -3325,25 +3299,23 @@ async function handleChatSubmit(event) {
                     `;
                     liveTimeline.appendChild(newStep);
                     const vp = document.getElementById("chat-messages-viewport");
-                    if (vp) vp.scrollTop = vp.scrollHeight;
+                    autoScrollChatViewport(vp, false);
                   }
                 }
               }
             } else if (data.type === "token") {
               if (data.token && !data.token.includes("<think>") && !data.token.includes("</think>")) {
-                if (activeTargetSession) {
-                  activeTargetSession._liveTokens = (activeTargetSession._liveTokens || "") + data.token;
-                }
+                accumulatedTokens += data.token;
                 if (currentSessionId === targetSessionId) {
-                  const activeRow = document.querySelector(`.typing-indicator-row[data-session-id="${targetSessionId}"]`);
+                  const activeRow = document.querySelector(`.typing-indicator-row[data-req-id="${reqId}"]`);
                   if (activeRow) {
                     const liveBox = activeRow.querySelector(".live-response-bubble");
                     const streamEl = activeRow.querySelector(".chat-live-token-stream");
                     if (liveBox) liveBox.style.display = "block";
                     if (streamEl) {
-                      renderLiveStreamedContent(streamEl, activeTargetSession._liveTokens);
+                      renderLiveStreamedContent(streamEl, accumulatedTokens);
                       const vp = document.getElementById("chat-messages-viewport");
-                      if (vp) vp.scrollTop = vp.scrollHeight;
+                      autoScrollChatViewport(vp, false);
                     }
                   }
                 }
@@ -3359,7 +3331,6 @@ async function handleChatSubmit(event) {
       
       clearInterval(timerInterval);
       const activeTargetSession = chatSessions.find(s => s.id === targetSessionId) || session;
-      activeTargetSession.isGenerating = false;
       
       if (!finalPayload) {
         throw new Error("The response stream ended before a final result was received.");
@@ -3368,7 +3339,7 @@ async function handleChatSubmit(event) {
       let rawResp = finalPayload.response || "No response text generated.";
       let extractedThoughts = (finalPayload && finalPayload.thoughts && finalPayload.thoughts.length > 0) 
         ? [...finalPayload.thoughts] 
-        : (activeTargetSession._liveThoughts || []);
+        : accumulatedThoughts;
       
       if (typeof rawResp === "string" && rawResp.includes("</think>")) {
         const parts = rawResp.split("</think>");
@@ -3390,21 +3361,34 @@ async function handleChatSubmit(event) {
         timestamp: new Date().toISOString()
       };
       activeTargetSession.messages.push(assistantMsg);
-      delete activeTargetSession._liveTokens;
-      delete activeTargetSession._liveThoughts;
-      delete activeTargetSession._liveRoutedAgent;
+      
+      // Check if any other request is still generating in this session
+      const remainingInFlight = document.querySelectorAll(`.typing-indicator-row[data-session-id="${targetSessionId}"]`);
+      if (remainingInFlight.length <= 1) {
+        activeTargetSession.isGenerating = false;
+      }
+
       saveChatSessionsToStorage();
       renderChatSessionList();
       
       if (currentSessionId === targetSessionId) {
-        renderCurrentSessionMessages();
+        const activeRow = document.querySelector(`.typing-indicator-row[data-req-id="${reqId}"]`);
+        if (activeRow) {
+          activeRow.remove();
+        }
+        appendMessageElementToViewport("assistant", assistantMsg.text, [], assistantMsg.routedAgent, assistantMsg.thoughts);
         const liveBadge = document.getElementById("chat-current-agent-text");
         if (liveBadge) liveBadge.textContent = `Routed: ${assistantMsg.routedAgent}`;
+        const vp = document.getElementById("chat-messages-viewport");
+        autoScrollChatViewport(vp, false);
       }
     } catch (err) {
       clearInterval(timerInterval);
       const activeTargetSession = chatSessions.find(s => s.id === targetSessionId) || session;
-      activeTargetSession.isGenerating = false;
+      const remainingInFlight = document.querySelectorAll(`.typing-indicator-row[data-session-id="${targetSessionId}"]`);
+      if (remainingInFlight.length <= 1) {
+        activeTargetSession.isGenerating = false;
+      }
       const errorMsg = {
         role: "assistant",
         text: `⚠️ **Execution Error**: Failed to process query through orchestrator.\n\n\`${err.message}\``,
@@ -3413,17 +3397,26 @@ async function handleChatSubmit(event) {
         timestamp: new Date().toISOString()
       };
       activeTargetSession.messages.push(errorMsg);
-      delete activeTargetSession._liveTokens;
-      delete activeTargetSession._liveThoughts;
-      delete activeTargetSession._liveRoutedAgent;
       saveChatSessionsToStorage();
       renderChatSessionList();
       if (currentSessionId === targetSessionId) {
-        renderCurrentSessionMessages();
+        const activeRow = document.querySelector(`.typing-indicator-row[data-req-id="${reqId}"]`);
+        if (activeRow) {
+          activeRow.remove();
+        }
+        appendMessageElementToViewport("assistant", errorMsg.text, [], errorMsg.routedAgent, errorMsg.thoughts);
       }
     }
   })();
+}
 
+function autoScrollChatViewport(vp, force = false) {
+  if (!vp) return;
+  const threshold = 140;
+  const isNearBottom = (vp.scrollHeight - vp.scrollTop - vp.clientHeight) <= threshold;
+  if (force || isNearBottom) {
+    vp.scrollTop = vp.scrollHeight;
+  }
 }
 
 function toggleChatSidebar() {

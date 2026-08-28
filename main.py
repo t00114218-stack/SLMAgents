@@ -311,7 +311,8 @@ class Qwen35ONNXGenerator:
                 dec_inputs[past_name] = last_outputs[idx]
                     
         with self.model.inference_lock:
-            self.last_outputs = self.model.dec_sess.run(None, self.dec_inputs)
+            raw_outs = self.model.dec_sess.run(None, self.dec_inputs)
+            self.last_outputs = [np.copy(o) for o in raw_outs]
         logits = self.last_outputs[0]
 
         tok = int(np.argmax(logits[0, -1, :]))
@@ -441,6 +442,7 @@ class ChatAttachment(BaseModel):
 
 class ChatRequest(BaseModel):
     session_id: str = "default_session"
+    req_id: str = ""
     message: str = ""
     target_agent: str = "auto"
     attachments: list[ChatAttachment] = []
@@ -2805,7 +2807,7 @@ def chat_endpoint(req: ChatRequest):
                     thought = thought_queue.get_nowait()
                     if thought is not None:
                         all_thoughts.append(thought)
-                        yield f"data: {json.dumps({'type': 'thought', 'thought': thought, 'thoughts': all_thoughts, 'session_id': req.session_id})}\n\n"
+                        yield f"data: {json.dumps({'type': 'thought', 'thought': thought, 'thoughts': all_thoughts, 'session_id': req.session_id, 'req_id': req.req_id})}\n\n"
                         has_emitted = True
             except queue.Empty:
                 pass
@@ -2814,7 +2816,7 @@ def chat_endpoint(req: ChatRequest):
                 while True:
                     token = token_queue.get_nowait()
                     if token is not None:
-                        yield f"data: {json.dumps({'type': 'token', 'token': token, 'session_id': req.session_id})}\n\n"
+                        yield f"data: {json.dumps({'type': 'token', 'token': token, 'session_id': req.session_id, 'req_id': req.req_id})}\n\n"
                         has_emitted = True
             except queue.Empty:
                 pass
@@ -2822,9 +2824,9 @@ def chat_endpoint(req: ChatRequest):
                 await asyncio.sleep(0.005)
             
         if result_container["error"]:
-            yield f"data: {json.dumps({'type': 'error', 'error': result_container['error'], 'thoughts': all_thoughts, 'session_id': req.session_id})}\n\n"
+            yield f"data: {json.dumps({'type': 'error', 'error': result_container['error'], 'thoughts': all_thoughts, 'session_id': req.session_id, 'req_id': req.req_id})}\n\n"
         else:
-            yield f"data: {json.dumps({'type': 'done', 'response': result_container['result'], 'routed_agent': result_container['routed_agent'], 'thoughts': all_thoughts, 'session_id': req.session_id})}\n\n"
+            yield f"data: {json.dumps({'type': 'done', 'response': result_container['result'], 'routed_agent': result_container['routed_agent'], 'thoughts': all_thoughts, 'session_id': req.session_id, 'req_id': req.req_id})}\n\n"
 
     return StreamingResponse(sse_generator(), media_type="text/event-stream")
 
