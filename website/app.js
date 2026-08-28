@@ -3705,9 +3705,19 @@ function animateShowcaseReplay(mode) {
   if (!container) return;
 
   const data = SHOWCASE_CASES[mode] || SHOWCASE_CASES.code;
+  const timeText = document.getElementById("telemetry-time-text");
+  const ramText = document.getElementById("telemetry-ram-text");
   if (titleEl) titleEl.textContent = data.title;
-  if (timeBadge) timeBadge.textContent = `⏱️ ${data.duration}`;
-  if (ramBadge) ramBadge.textContent = `🧠 ${data.ram}`;
+  if (timeText) {
+    timeText.textContent = data.duration;
+  } else if (timeBadge) {
+    timeBadge.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <span id="telemetry-time-text">${data.duration}</span>`;
+  }
+  if (ramText) {
+    ramText.textContent = data.ram;
+  } else if (ramBadge) {
+    ramBadge.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 18v2M10 18v2M14 18v2M18 18v2M6 4v2M10 4v2M14 4v2M18 4v2M9 10h6"></path></svg> <span id="telemetry-ram-text">${data.ram}</span>`;
+  }
 
   let attachmentHtml = "";
   if (data.attachment) {

@@ -427,8 +427,14 @@
               <span id="showcase-title">SLMCodeInterpreter • Live CPU Python Sandbox</span>
             </div>
             <div class="showcase-telemetry-group">
-              <div class="showcase-telemetry-badge cpu" id="telemetry-time-badge">⏱️ 1.8s CPU</div>
-              <div class="showcase-telemetry-badge" id="telemetry-ram-badge">🧠 2746.8 MB Local Engine RAM</div>
+              <div class="showcase-telemetry-badge cpu" id="telemetry-time-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span id="telemetry-time-text">1.8s CPU</span>
+              </div>
+              <div class="showcase-telemetry-badge" id="telemetry-ram-badge">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"></rect><path d="M6 18v2M10 18v2M14 18v2M18 18v2M6 4v2M10 4v2M14 4v2M18 4v2M9 10h6"></path></svg>
+                <span id="telemetry-ram-text">2746.8 MB Local Engine RAM</span>
+              </div>
               <button class="showcase-replay-btn" onclick="replayCurrentShowcase()">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                 Replay Live
@@ -1046,6 +1052,6 @@ for idx, num in enumerate(fib, 1):
     </div>
   </div>
 
-  <script src="app.js?v=50.0"></script>
+  <script src="app.js?v=51.0"></script>
 </body>
 </html>
