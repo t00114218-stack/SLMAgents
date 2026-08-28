@@ -3140,6 +3140,17 @@ async function handleChatSubmit(event) {
   
   const session = getCurrentSession();
   if (!session) return;
+
+  if (session.isGenerating) {
+    inputEl.style.transition = "transform 0.1s";
+    inputEl.style.transform = "translateX(6px)";
+    setTimeout(() => {
+      inputEl.style.transform = "translateX(-6px)";
+      setTimeout(() => { inputEl.style.transform = "translateX(0)"; }, 100);
+    }, 100);
+    return;
+  }
+
   const targetSessionId = session.id;
   
   // Set session title from first user query
@@ -3172,13 +3183,14 @@ async function handleChatSubmit(event) {
   chatAttachments = [];
   renderAttachmentsTray();
   
-  // 2. Append live thinking card if currently viewing this session
+  // 2. Append live thinking card scoped strictly to targetSessionId
   const viewport = document.getElementById("chat-messages-viewport");
-  let typingRow = null;
-  if (currentSessionId === targetSessionId) {
-    typingRow = document.createElement("div");
-    typingRow.className = "chat-msg-row assistant";
-    typingRow.id = "chat-typing-indicator";
+  const reqId = "req_" + Date.now() + "_" + Math.random().toString(36).substring(2, 6);
+  if (currentSessionId === targetSessionId && viewport) {
+    const typingRow = document.createElement("div");
+    typingRow.className = "chat-msg-row assistant typing-indicator-row";
+    typingRow.dataset.reqId = reqId;
+    typingRow.dataset.sessionId = targetSessionId;
     typingRow.innerHTML = `
       <div class="chat-avatar">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
@@ -3186,21 +3198,21 @@ async function handleChatSubmit(event) {
       <div class="chat-bubble-container" style="width: 100%;">
         <div class="chat-msg-meta">
           <span>Assistant</span>
-          <span class="agent-routed-ghost" id="chat-live-routed-pill" title="Reasoning & Routing...">
+          <span class="agent-routed-ghost live-routed-pill" title="Reasoning & Routing...">
             <span class="ghost-dot" style="animation: pulseRec 1s infinite;"></span>
             <span class="ghost-text">Reasoning &amp; Routing...</span>
           </span>
         </div>
-        <div class="live-engine-card" id="chat-live-engine-card">
+        <div class="live-engine-card">
           <div class="live-engine-header">
             <div class="live-engine-title-wrap">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              <span class="live-engine-title" id="chat-live-thought-title">Executing Reasoning Pipeline</span>
+              <span class="live-engine-title live-thought-title">Executing Reasoning Pipeline</span>
             </div>
-            <div class="live-engine-timer" id="chat-live-timer">0.0s</div>
+            <div class="live-engine-timer live-stopwatch-timer">0.0s</div>
           </div>
-          <div class="live-engine-timeline" id="chat-live-timeline">
-            <div class="live-step-row active" id="live-step-0">
+          <div class="live-engine-timeline live-step-timeline">
+            <div class="live-step-row active">
               <div class="live-step-icon">
                 <div class="step-spinner"></div>
               </div>
@@ -3208,8 +3220,8 @@ async function handleChatSubmit(event) {
             </div>
           </div>
         </div>
-        <div class="chat-bubble" id="chat-live-response-box" style="display: none; padding-top: 4px;">
-          <div id="chat-live-token-stream"></div>
+        <div class="chat-bubble live-response-bubble" style="display: none; padding-top: 4px;">
+          <div class="chat-live-token-stream"></div>
         </div>
       </div>
     `;
@@ -3220,10 +3232,15 @@ async function handleChatSubmit(event) {
   const targetAgent = selectMode ? selectMode.value : "auto";
   const startTime = Date.now();
   const timerInterval = setInterval(() => {
-    const liveTimer = document.getElementById("chat-live-timer");
-    if (liveTimer && currentSessionId === targetSessionId) {
-      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-      liveTimer.textContent = `${elapsed}s`;
+    if (currentSessionId === targetSessionId) {
+      const activeRow = document.querySelector(`.typing-indicator-row[data-session-id="${targetSessionId}"]`);
+      if (activeRow) {
+        const liveTimer = activeRow.querySelector(".live-stopwatch-timer");
+        if (liveTimer) {
+          const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+          liveTimer.textContent = `${elapsed}s`;
+        }
+      }
     }
   }, 100);
   
@@ -3284,28 +3301,32 @@ async function handleChatSubmit(event) {
                 if (activeTargetSession) activeTargetSession._liveRoutedAgent = `Routed: ${ag}`;
               }
               if (currentSessionId === targetSessionId) {
-                const liveTitle = document.getElementById("chat-live-thought-title");
-                const liveTimeline = document.getElementById("chat-live-timeline");
-                const livePill = document.getElementById("chat-live-routed-pill");
-                if (liveTitle) liveTitle.textContent = cleanThought.length > 44 ? cleanThought.substring(0, 44) + "..." : cleanThought;
-                if (livePill && activeTargetSession._liveRoutedAgent) {
-                  const label = livePill.querySelector(".ghost-text");
-                  if (label) label.textContent = activeTargetSession._liveRoutedAgent;
-                }
-                if (liveTimeline) {
-                  liveTimeline.querySelectorAll(".live-step-row").forEach(row => {
-                    row.className = "live-step-row completed";
-                    const icon = row.querySelector(".live-step-icon");
-                    if (icon) icon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-                  });
-                  const newStep = document.createElement("div");
-                  newStep.className = "live-step-row active";
-                  newStep.innerHTML = `
-                    <div class="live-step-icon"><div class="step-spinner"></div></div>
-                    <div class="live-step-text">${cleanThought}</div>
-                  `;
-                  liveTimeline.appendChild(newStep);
-                  viewport.scrollTop = viewport.scrollHeight;
+                const activeRow = document.querySelector(`.typing-indicator-row[data-session-id="${targetSessionId}"]`);
+                if (activeRow) {
+                  const liveTitle = activeRow.querySelector(".live-thought-title");
+                  const liveTimeline = activeRow.querySelector(".live-step-timeline");
+                  const livePill = activeRow.querySelector(".live-routed-pill");
+                  if (liveTitle) liveTitle.textContent = cleanThought.length > 44 ? cleanThought.substring(0, 44) + "..." : cleanThought;
+                  if (livePill && activeTargetSession._liveRoutedAgent) {
+                    const label = livePill.querySelector(".ghost-text");
+                    if (label) label.textContent = activeTargetSession._liveRoutedAgent;
+                  }
+                  if (liveTimeline) {
+                    liveTimeline.querySelectorAll(".live-step-row").forEach(row => {
+                      row.className = "live-step-row completed";
+                      const icon = row.querySelector(".live-step-icon");
+                      if (icon) icon.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+                    });
+                    const newStep = document.createElement("div");
+                    newStep.className = "live-step-row active";
+                    newStep.innerHTML = `
+                      <div class="live-step-icon"><div class="step-spinner"></div></div>
+                      <div class="live-step-text">${cleanThought}</div>
+                    `;
+                    liveTimeline.appendChild(newStep);
+                    const vp = document.getElementById("chat-messages-viewport");
+                    if (vp) vp.scrollTop = vp.scrollHeight;
+                  }
                 }
               }
             } else if (data.type === "token") {
@@ -3314,12 +3335,16 @@ async function handleChatSubmit(event) {
                   activeTargetSession._liveTokens = (activeTargetSession._liveTokens || "") + data.token;
                 }
                 if (currentSessionId === targetSessionId) {
-                  const liveBox = document.getElementById("chat-live-response-box");
-                  const streamEl = document.getElementById("chat-live-token-stream");
-                  if (liveBox) liveBox.style.display = "block";
-                  if (streamEl) {
-                    renderLiveStreamedContent(streamEl, activeTargetSession._liveTokens);
-                    viewport.scrollTop = viewport.scrollHeight;
+                  const activeRow = document.querySelector(`.typing-indicator-row[data-session-id="${targetSessionId}"]`);
+                  if (activeRow) {
+                    const liveBox = activeRow.querySelector(".live-response-bubble");
+                    const streamEl = activeRow.querySelector(".chat-live-token-stream");
+                    if (liveBox) liveBox.style.display = "block";
+                    if (streamEl) {
+                      renderLiveStreamedContent(streamEl, activeTargetSession._liveTokens);
+                      const vp = document.getElementById("chat-messages-viewport");
+                      if (vp) vp.scrollTop = vp.scrollHeight;
+                    }
                   }
                 }
               }
@@ -3398,6 +3423,7 @@ async function handleChatSubmit(event) {
       }
     }
   })();
+
 }
 
 function toggleChatSidebar() {

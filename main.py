@@ -188,6 +188,7 @@ class Qwen35ONNXModel:
                 past_name = out_name.replace("present_", "past_")
             if past_name in self.dec_input_names:
                 self.kv_mappings.append((idx, past_name))
+        self.inference_lock = threading.Lock()
 
 class Qwen35ONNXTokenizer:
     def __init__(self, model_or_dir):
@@ -249,17 +250,18 @@ class Qwen35ONNXGenerator:
         global_token_cap = max(16, int(os.environ.get("SLM_MAX_GENERATED_TOKENS", 3000)))
         self.max_tokens = min(self.max_tokens, global_token_cap)
         
-        if "inputs_embeds" in self.model.dec_input_names:
-            embed_out = self.model.embed_sess.run(None, {"input_ids": input_ids})[0]
-            self.dec_inputs = {
-                "inputs_embeds": embed_out,
-                "attention_mask": np.ones((1, seq_len), dtype=np.int64)
-            }
-        else:
-            self.dec_inputs = {
-                "input_ids": input_ids,
-                "attention_mask": np.ones((1, seq_len), dtype=np.int64)
-            }
+        with self.model.inference_lock:
+            if "inputs_embeds" in self.model.dec_input_names:
+                embed_out = self.model.embed_sess.run(None, {"input_ids": input_ids})[0]
+                self.dec_inputs = {
+                    "inputs_embeds": embed_out,
+                    "attention_mask": np.ones((1, seq_len), dtype=np.int64)
+                }
+            else:
+                self.dec_inputs = {
+                    "input_ids": input_ids,
+                    "attention_mask": np.ones((1, seq_len), dtype=np.int64)
+                }
         pos_ids = np.repeat(np.arange(seq_len, dtype=np.int64).reshape(1, 1, seq_len), 3, axis=0)
         if "position_ids" in self.model.dec_input_names:
             self.dec_inputs["position_ids"] = pos_ids
@@ -291,11 +293,12 @@ class Qwen35ONNXGenerator:
             cur_pos = len(self.tokens_history)
             self.tokens_history.append(next_token)
             
-            if "inputs_embeds" in self.model.dec_input_names:
-                next_embed = self.model.embed_sess.run(None, {"input_ids": np.array([[next_token]], dtype=np.int64)})[0]
-                self.dec_inputs["inputs_embeds"] = next_embed
-            else:
-                self.dec_inputs["input_ids"] = np.array([[next_token]], dtype=np.int64)
+            with self.model.inference_lock:
+                if "inputs_embeds" in self.model.dec_input_names:
+                    next_embed = self.model.embed_sess.run(None, {"input_ids": np.array([[next_token]], dtype=np.int64)})[0]
+                    self.dec_inputs["inputs_embeds"] = next_embed
+                else:
+                    self.dec_inputs["input_ids"] = np.array([[next_token]], dtype=np.int64)
                 
             self.dec_inputs["attention_mask"] = np.ones((1, cur_pos + 1), dtype=np.int64)
             if "position_ids" in self.model.dec_input_names:
@@ -307,8 +310,10 @@ class Qwen35ONNXGenerator:
             for idx, past_name in self.model.kv_mappings:
                 dec_inputs[past_name] = last_outputs[idx]
                     
-        self.last_outputs = self.model.dec_sess.run(None, self.dec_inputs)
+        with self.model.inference_lock:
+            self.last_outputs = self.model.dec_sess.run(None, self.dec_inputs)
         logits = self.last_outputs[0]
+
         tok = int(np.argmax(logits[0, -1, :]))
         
         EOS_SET = {
