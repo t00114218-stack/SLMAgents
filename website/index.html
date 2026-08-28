@@ -27,9 +27,10 @@
 
   <!-- Embedded High-Priority Showcase Styles -->
   <style>
+    /* Chat Studio Window Replay Styles */
     .showcase-section {
-      padding: 3rem 0;
-      max-width: 900px;
+      padding: 2.5rem 0;
+      max-width: 960px;
       margin: 0 auto 3rem auto;
     }
     .showcase-tabs {
@@ -65,186 +66,186 @@
       color: #ffffff !important;
       box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25) !important;
     }
-    .showcase-terminal-box {
-      background: #0b0f19 !important;
-      border: 1px solid #1e293b !important;
-      border-radius: 16px !important;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28) !important;
+    .showcase-chat-window {
+      background: #0b0f19;
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
       overflow: hidden;
       text-align: left;
     }
-    .showcase-terminal-header {
-      background: #111827 !important;
-      padding: 12px 18px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: space-between !important;
-      border-bottom: 1px solid #1f2937 !important;
-    }
-    .showcase-terminal-dots {
+    .showcase-chat-header {
+      background: #111827;
+      padding: 12px 20px;
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1f2937;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .showcase-agent-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: #f8fafc;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .showcase-telemetry-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .showcase-telemetry-badge {
+      display: inline-flex;
+      align-items: center;
       gap: 6px;
+      background: #022c22;
+      border: 1px solid #059669;
+      color: #34d399;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
     }
-    .showcase-terminal-dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-    }
-    .showcase-terminal-dot:nth-child(1) { background: #ef4444; }
-    .showcase-terminal-dot:nth-child(2) { background: #f59e0b; }
-    .showcase-terminal-dot:nth-child(3) { background: #10b981; }
-    .showcase-terminal-title {
-      color: #94a3b8 !important;
-      font-size: 0.82rem !important;
-      font-family: 'JetBrains Mono', monospace !important;
-      font-weight: 600 !important;
+    .showcase-telemetry-badge.cpu {
+      background: #0f172a;
+      border-color: #38bdf8;
+      color: #38bdf8;
     }
     .showcase-replay-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #1e293b !important;
-      border: 1px solid #334155 !important;
-      color: #38bdf8 !important;
-      padding: 5px 12px !important;
-      border-radius: 6px !important;
-      font-size: 0.78rem !important;
-      font-weight: 600 !important;
+      background: #4f46e5 !important;
+      border: 1px solid #6366f1 !important;
+      color: #ffffff !important;
+      padding: 6px 14px !important;
+      border-radius: 8px !important;
+      font-size: 0.8rem !important;
+      font-weight: 700 !important;
       cursor: pointer;
       transition: all 0.15s ease;
     }
     .showcase-replay-btn:hover {
-      background: #334155 !important;
-      color: #ffffff !important;
+      background: #4338ca !important;
+      transform: translateY(-1px);
     }
-    .showcase-terminal-body {
-      padding: 1.5rem !important;
-      font-size: 0.92rem !important;
-      color: #e2e8f0 !important;
+    .showcase-chat-feed {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      background: #070b14;
+    }
+    .showcase-user-row {
+      display: flex;
+      justify-content: flex-end;
     }
     .showcase-user-bubble {
-      background: #1e293b !important;
-      border: 1px solid #334155 !important;
-      border-radius: 12px !important;
-      padding: 12px 16px !important;
-      color: #f8fafc !important;
-      margin-bottom: 1.25rem !important;
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 8px !important;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: #ffffff;
+      border-radius: 18px 18px 4px 18px;
+      padding: 12px 18px;
+      max-width: 82%;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
     }
-    .showcase-user-header {
+    .showcase-assistant-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .showcase-bot-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: #1e293b;
+      border: 1px solid #334155;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.78rem;
-      color: #94a3b8;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .showcase-attachment-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #0f172a;
-      border: 1px solid #38bdf8;
+      justify-content: center;
       color: #38bdf8;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-family: 'JetBrains Mono', monospace;
-      width: fit-content;
+      flex-shrink: 0;
     }
-    .showcase-thought-card {
-      background: #111827 !important;
-      border: 1px solid #1f2937 !important;
-      border-radius: 10px !important;
-      padding: 12px 16px !important;
-      margin-bottom: 1.25rem !important;
+    .showcase-assistant-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    .showcase-thought-header {
+    .showcase-thought-accordion {
+      background: #0d1322;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .showcase-thought-acc-header {
+      padding: 8px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
+      background: #111827;
+      border-bottom: 1px solid #1f2937;
     }
-    .showcase-thought-title {
+    .showcase-thought-steps {
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .showcase-step-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #a855f7 !important;
-      font-weight: 700 !important;
-      font-size: 0.84rem !important;
     }
-    .showcase-thought-timer {
-      background: #0f172a;
-      color: #38bdf8;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
+    .showcase-code-container {
+      background: #050811;
       border: 1px solid #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
     }
-    .showcase-ram-badge {
-      background: #022c22 !important;
-      color: #34d399 !important;
-      font-family: 'JetBrains Mono', monospace !important;
-      font-size: 0.8rem !important;
-      font-weight: 700 !important;
-      padding: 2px 8px !important;
-      border-radius: 4px !important;
-      border: 1px solid #059669 !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 4px !important;
-    }
-    .showcase-step-row {
+    .showcase-code-top {
+      background: #0f172a;
+      padding: 8px 14px;
       display: flex;
-      align-items: flex-start;
-      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1e293b;
+      font-size: 0.76rem;
+      font-family: 'JetBrains Mono', monospace;
       color: #94a3b8;
-      font-size: 0.82rem;
-      line-height: 1.5;
-      margin-bottom: 4px;
     }
-    .showcase-step-bullet {
-      color: #10b981;
-      font-weight: bold;
-    }
-    .showcase-assistant-bubble {
-      background: #0d1322 !important;
-      border: 1px solid #1e293b !important;
-      border-radius: 12px !important;
-      padding: 16px !important;
-      color: #e2e8f0 !important;
-      line-height: 1.6 !important;
-    }
-    .showcase-code-block {
-      background: #050811 !important;
-      border: 1px solid #1e293b !important;
-      border-radius: 8px !important;
-      padding: 12px 14px !important;
-      font-family: 'JetBrains Mono', monospace !important;
-      font-size: 0.85rem !important;
-      color: #38bdf8 !important;
-      margin: 10px 0 !important;
-      overflow-x: auto !important;
+    .showcase-code-body {
+      margin: 0;
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #38bdf8;
       white-space: pre !important;
-      display: block !important;
+      overflow-x: auto;
     }
-    .showcase-stdout-block {
-      background: #022c22 !important;
-      border: 1px solid #059669 !important;
-      border-radius: 8px !important;
-      padding: 10px 14px !important;
-      font-family: 'JetBrains Mono', monospace !important;
-      font-size: 0.84rem !important;
-      color: #34d399 !important;
-      margin: 8px 0 12px 0 !important;
+    .showcase-stdout-container {
+      background: #022c22;
+      border: 1px solid #059669;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      color: #34d399;
       white-space: pre !important;
-      display: block !important;
+      margin-top: 10px;
     }
     @keyframes pulseRec {
       0%, 100% { opacity: 1; transform: scale(1); }
@@ -420,52 +421,63 @@
           </button>
         </div>
 
-        <div class="showcase-terminal-box">
-          <div class="showcase-terminal-header">
-            <div class="showcase-terminal-dots">
-              <div class="showcase-terminal-dot"></div>
-              <div class="showcase-terminal-dot"></div>
-              <div class="showcase-terminal-dot"></div>
+        <div class="showcase-chat-window">
+          <!-- Top Chat Actions Bar -->
+          <div class="showcase-chat-header">
+            <div class="showcase-agent-pill">
+              <span style="display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; box-shadow:0 0 8px #10b981;"></span>
+              <span id="showcase-title">SLMCodeInterpreter • Live CPU Python Sandbox</span>
             </div>
-            <div class="showcase-terminal-title" id="showcase-title">SLMCodeInterpreter • Live CPU Sandbox</div>
-            <button class="showcase-replay-btn" onclick="replayCurrentShowcase()">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-              Replay Live
-            </button>
+            <div class="showcase-telemetry-group">
+              <div class="showcase-telemetry-badge cpu" id="telemetry-time-badge">⏱️ 1.8s CPU</div>
+              <div class="showcase-telemetry-badge" id="telemetry-ram-badge">🧠 1.2 GB RAM (Peak)</div>
+              <button class="showcase-replay-btn" onclick="replayCurrentShowcase()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                Replay Live
+              </button>
+            </div>
           </div>
 
-          <div class="showcase-terminal-body" id="showcase-content">
-            <div class="showcase-user-bubble">
-              <div class="showcase-user-header">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                <span>User Query</span>
-              </div>
-              <div>Write and execute a Python script to compute the first 10 Fibonacci numbers, check which ones are prime, and return the execution output.</div>
-            </div>
-
-            <div class="showcase-thought-card">
-              <div class="showcase-thought-header">
-                <div class="showcase-thought-title">
-                  <span style="display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; box-shadow:0 0 8px #10b981;"></span>
-                  <span>SLMCodeInterpreter (Code Interpreter) • Reasoning Timeline</span>
-                </div>
-                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                  <div class="showcase-thought-timer">⏱️ 1.8s CPU</div>
-                  <div class="showcase-ram-badge">🧠 1.2 GB RAM</div>
-                </div>
-              </div>
-              <div class="showcase-thought-steps">
-                <div class="showcase-step-row"><span class="showcase-step-bullet">✓</span><span>Analyzing query &amp; extracting execution constraints...</span></div>
-                <div class="showcase-step-row"><span class="showcase-step-bullet">✓</span><span>Direct code interpretation &amp; algorithmic generation requested</span></div>
-                <div class="showcase-step-row"><span class="showcase-step-bullet">✓</span><span>Generating Python execution script with primality tests...</span></div>
-                <div class="showcase-step-row"><span class="showcase-step-bullet">✓</span><span>Executing script in local isolated Python subprocess on CPU...</span></div>
-                <div class="showcase-step-row"><span class="showcase-step-bullet">✓</span><span>Execution output captured (returncode: 0) &amp; verified</span></div>
+          <!-- Chat Studio Live Feed Canvas -->
+          <div class="showcase-chat-feed" id="showcase-content">
+            <!-- User Prompt Message Row -->
+            <div class="showcase-user-row">
+              <div class="showcase-user-bubble">
+                Write and execute a Python script to compute the first 10 Fibonacci numbers, check which ones are prime, and return the execution output.
               </div>
             </div>
 
-            <div class="showcase-assistant-bubble">
-              <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px;">Generated Python Script:</div>
-              <pre class="showcase-code-block"><code>def is_prime(n):
+            <!-- Assistant Response Message Row -->
+            <div class="showcase-assistant-row">
+              <div class="showcase-bot-avatar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              </div>
+              <div class="showcase-assistant-body">
+                <!-- Collapsible Reasoning & Routing Accordion -->
+                <div class="showcase-thought-accordion">
+                  <div class="showcase-thought-acc-header">
+                    <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #a78bfa; font-size: 0.82rem;">
+                      <span style="display:inline-block; width:6px; height:6px; background:#10b981; border-radius:50%; box-shadow:0 0 6px #10b981;"></span>
+                      <span>Reasoning &amp; Routing...</span>
+                    </div>
+                    <div style="font-size: 0.76rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-weight: 700;">1.8s</div>
+                  </div>
+                  <div class="showcase-thought-steps">
+                    <div class="showcase-step-item"><span style="color:#10b981; font-weight:bold;">✓</span><span>Analyzing query &amp; extracting execution constraints...</span></div>
+                    <div class="showcase-step-item"><span style="color:#10b981; font-weight:bold;">✓</span><span>Direct code interpretation &amp; algorithmic generation requested</span></div>
+                    <div class="showcase-step-item"><span style="color:#10b981; font-weight:bold;">✓</span><span>Generating Python execution script with primality tests...</span></div>
+                    <div class="showcase-step-item"><span style="color:#10b981; font-weight:bold;">✓</span><span>Executing script in local isolated Python subprocess on CPU...</span></div>
+                    <div class="showcase-step-item"><span style="color:#10b981; font-weight:bold;">✓</span><span>Execution output captured (returncode: 0) &amp; verified</span></div>
+                  </div>
+                </div>
+
+                <!-- Generated Python Code Block with Header -->
+                <div class="showcase-code-container">
+                  <div class="showcase-code-top">
+                    <span>Python 3.9 • CPU Subprocess</span>
+                    <span style="color: #34d399; font-weight: 700;">Zero Sandbox Escape</span>
+                  </div>
+                  <pre class="showcase-code-body"><code>def is_prime(n):
     if n &lt; 2:
         return False
     for i in range(2, int(n**0.5) + 1):
@@ -481,8 +493,12 @@ print("First 10 Fibonacci Numbers &amp; Primality:")
 for idx, num in enumerate(fib, 1):
     status = "PRIME" if is_prime(num) else "Not prime"
     print(f"#{idx:02d}: {num:3d} -&gt; {status}")</code></pre>
-              <div style="font-weight: 700; color: #34d399; margin: 12px 0 6px 0;">⚡ Sandboxed CPU Execution Output (Return Code: 0):</div>
-              <pre class="showcase-stdout-block"><code>First 10 Fibonacci Numbers &amp; Primality:
+                </div>
+
+                <!-- Sandboxed CPU Stdout Output Box -->
+                <div class="showcase-stdout-container">
+                  <div style="font-weight: 700; margin-bottom: 6px;">⚡ Execution Output (Return Code: 0):</div>
+                  <div>First 10 Fibonacci Numbers &amp; Primality:
 #01:   0 -&gt; Not prime
 #02:   1 -&gt; Not prime
 #03:   1 -&gt; Not prime
@@ -492,8 +508,13 @@ for idx, num in enumerate(fib, 1):
 #07:   8 -&gt; Not prime
 #08:  13 -&gt; PRIME
 #09:  21 -&gt; Not prime
-#10:  34 -&gt; Not prime</code></pre>
-              <p style="margin-top: 12px; color: #e2e8f0;">The Python script computed the first 10 Fibonacci numbers and evaluated their primality. The prime Fibonacci numbers identified are <strong>2, 3, 5, and 13</strong>.</p>
+#10:  34 -&gt; Not prime</div>
+                </div>
+
+                <p style="margin-top: 6px; color: #cbd5e1; font-size: 0.9rem; line-height: 1.55;">
+                  The Python script computed the first 10 Fibonacci numbers and evaluated their primality. The prime Fibonacci numbers identified are <strong style="color: #38bdf8;">2, 3, 5, and 13</strong>.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -1027,6 +1048,6 @@ for idx, num in enumerate(fib, 1):
     </div>
   </div>
 
-  <script src="app.js?v=39.0"></script>
+  <script src="app.js?v=40.0"></script>
 </body>
 </html>

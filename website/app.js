@@ -3656,127 +3656,118 @@ function animateShowcaseReplay(mode) {
   clearShowcaseTimers();
   const container = document.getElementById("showcase-content");
   const titleEl = document.getElementById("showcase-title");
+  const timeBadge = document.getElementById("telemetry-time-badge");
+  const ramBadge = document.getElementById("telemetry-ram-badge");
   if (!container) return;
 
   const data = SHOWCASE_CASES[mode] || SHOWCASE_CASES.code;
   if (titleEl) titleEl.textContent = data.title;
+  if (timeBadge) timeBadge.textContent = `⏱️ ${data.duration}`;
+  if (ramBadge) ramBadge.textContent = `🧠 ${data.ram} (Peak)`;
 
   let attachmentHtml = "";
   if (data.attachment) {
     attachmentHtml = `
-      <div class="showcase-attachment-pill">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+      <div style="display:inline-flex; align-items:center; gap:6px; margin-top:6px; padding:3px 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.2); border-radius:6px; font-size:0.78rem; font-family:'JetBrains Mono', monospace;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
         <span>${data.attachment}</span>
       </div>
     `;
   }
 
-  // Base Skeleton
+  // Render initial User Message and Skeleton Assistant Message
   container.innerHTML = `
-    <div class="showcase-user-bubble">
-      <div class="showcase-user-header">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        <span>User Query</span>
+    <!-- User Prompt Message Row -->
+    <div class="showcase-user-row">
+      <div class="showcase-user-bubble">
+        <div>${data.prompt}</div>
+        ${attachmentHtml}
       </div>
-      <div id="showcase-live-prompt"></div>
-      ${attachmentHtml}
     </div>
 
-    <div class="showcase-thought-card" id="showcase-thought-card" style="display: none;">
-      <div class="showcase-thought-header">
-        <div class="showcase-thought-title">
-          <span style="display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; box-shadow:0 0 8px #10b981; animation: pulseRec 1s infinite;"></span>
-          <span>${data.routedAgent} • Reasoning Timeline</span>
-        </div>
-        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-          <div class="showcase-thought-timer" id="showcase-live-timer">⏱️ 0.0s CPU</div>
-          <div class="showcase-ram-badge">🧠 ${data.ram}</div>
-        </div>
+    <!-- Assistant Response Message Row -->
+    <div class="showcase-assistant-row" id="showcase-assistant-row">
+      <div class="showcase-bot-avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
       </div>
-      <div class="showcase-thought-steps" id="showcase-thought-steps"></div>
-    </div>
+      <div class="showcase-assistant-body">
+        <!-- Collapsible Reasoning & Routing Accordion -->
+        <div class="showcase-thought-accordion">
+          <div class="showcase-thought-acc-header">
+            <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #a78bfa; font-size: 0.82rem;">
+              <span style="display:inline-block; width:6px; height:6px; background:#10b981; border-radius:50%; box-shadow:0 0 6px #10b981; animation: pulseRec 1s infinite;"></span>
+              <span>Reasoning &amp; Routing...</span>
+            </div>
+            <div style="font-size: 0.76rem; color: #38bdf8; font-family: 'JetBrains Mono', monospace; font-weight: 700;" id="showcase-live-timer">0.0s</div>
+          </div>
+          <div class="showcase-thought-steps" id="showcase-thought-steps"></div>
+        </div>
 
-    <div class="showcase-assistant-bubble" id="showcase-assistant-bubble" style="display: none;">
-      <div id="showcase-assistant-dynamic-body"></div>
+        <!-- Assistant Dynamic Output Area -->
+        <div id="showcase-assistant-dynamic-body" style="display: none;"></div>
+      </div>
     </div>
   `;
 
-  // Step 1: Type the prompt
-  const promptEl = document.getElementById("showcase-live-prompt");
-  const fullPrompt = data.prompt;
-  let charIdx = 0;
+  // Start reasoning timeline instantly (0s wait)
+  const stepsContainer = document.getElementById("showcase-thought-steps");
+  const timerEl = document.getElementById("showcase-live-timer");
+  let stepIdx = 0;
+  const startTime = Date.now();
+  const stopwatchInterval = setInterval(() => {
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    if (timerEl) timerEl.textContent = `${elapsed}s`;
+  }, 80);
 
-  function typePrompt() {
-    if (charIdx < fullPrompt.length) {
-      charIdx += 4;
-      promptEl.textContent = fullPrompt.slice(0, charIdx) + "▋";
-      const t = setTimeout(typePrompt, 18);
+  function revealStep() {
+    if (stepIdx < data.thoughts.length) {
+      const stepRow = document.createElement("div");
+      stepRow.className = "showcase-step-item";
+      stepRow.style.opacity = "0";
+      stepRow.style.transform = "translateY(4px)";
+      stepRow.style.transition = "all 0.15s ease";
+      stepRow.innerHTML = `<span style="color:#10b981; font-weight:bold;">✓</span><span>${data.thoughts[stepIdx]}</span>`;
+      if (stepsContainer) stepsContainer.appendChild(stepRow);
+      requestAnimationFrame(() => {
+        stepRow.style.opacity = "1";
+        stepRow.style.transform = "translateY(0)";
+      });
+      stepIdx++;
+      const t = setTimeout(revealStep, 160);
       showcaseTimers.push(t);
     } else {
-      promptEl.textContent = fullPrompt;
-      const t = setTimeout(startThinkingPhase, 200);
+      clearInterval(stopwatchInterval);
+      if (timerEl) timerEl.textContent = data.duration.replace(" CPU", "");
+      const t = setTimeout(revealAssistantOutput, 120);
       showcaseTimers.push(t);
     }
   }
-  typePrompt();
+  revealStep();
 
-  // Step 2: Show thought steps with timer
-  function startThinkingPhase() {
-    const thoughtCard = document.getElementById("showcase-thought-card");
-    const stepsContainer = document.getElementById("showcase-thought-steps");
-    const timerEl = document.getElementById("showcase-live-timer");
-    if (!thoughtCard || !stepsContainer) return;
-    thoughtCard.style.display = "block";
-
-    let stepIdx = 0;
-    const startTime = Date.now();
-    const stopwatchInterval = setInterval(() => {
-      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-      if (timerEl) timerEl.textContent = `⏱️ ${elapsed}s CPU`;
-    }, 100);
-
-    function revealStep() {
-      if (stepIdx < data.thoughts.length) {
-        const stepRow = document.createElement("div");
-        stepRow.className = "showcase-step-row";
-        stepRow.style.opacity = "0";
-        stepRow.style.transform = "translateY(4px)";
-        stepRow.style.transition = "all 0.2s ease";
-        stepRow.innerHTML = `<span class="showcase-step-bullet">✓</span><span>${data.thoughts[stepIdx]}</span>`;
-        stepsContainer.appendChild(stepRow);
-        requestAnimationFrame(() => {
-          stepRow.style.opacity = "1";
-          stepRow.style.transform = "translateY(0)";
-        });
-        stepIdx++;
-        const t = setTimeout(revealStep, 250);
-        showcaseTimers.push(t);
-      } else {
-        clearInterval(stopwatchInterval);
-        if (timerEl) timerEl.textContent = `⏱️ ${data.duration}`;
-        const t = setTimeout(revealAssistantOutput, 200);
-        showcaseTimers.push(t);
-      }
-    }
-    revealStep();
-  }
-
-  // Step 3: Stream assistant content
+  // Reveal Assistant Output (Streaming Code or Tabular Summary)
   function revealAssistantOutput() {
-    const bubble = document.getElementById("showcase-assistant-bubble");
     const bodyEl = document.getElementById("showcase-assistant-dynamic-body");
-    if (!bubble || !bodyEl) return;
-    bubble.style.display = "block";
+    if (!bodyEl) return;
+    bodyEl.style.display = "block";
 
     if (mode === "code") {
       bodyEl.innerHTML = `
-        <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px;">Generated Python Script:</div>
-        <pre class="showcase-code-block"><code id="showcase-streaming-code"></code></pre>
-        <div id="showcase-streaming-stdout-wrap" style="display: none;">
-          <div style="font-weight: 700; color: #34d399; margin: 12px 0 6px 0;">⚡ Sandboxed CPU Execution Output (Return Code: 0):</div>
-          <pre class="showcase-stdout-block"><code>${data.stdout}</code></pre>
-          <p style="margin-top: 12px; color: #e2e8f0;">${data.summaryText}</p>
+        <div class="showcase-code-container">
+          <div class="showcase-code-top">
+            <span>Python 3.9 • CPU Subprocess</span>
+            <span style="color: #34d399; font-weight: 700;">Zero Sandbox Escape</span>
+          </div>
+          <pre class="showcase-code-body"><code id="showcase-streaming-code"></code></pre>
         </div>
+
+        <div class="showcase-stdout-container" id="showcase-streaming-stdout-wrap" style="display: none;">
+          <div style="font-weight: 700; margin-bottom: 6px;">⚡ Execution Output (Return Code: 0):</div>
+          <div>${data.stdout}</div>
+        </div>
+
+        <p id="showcase-final-summary" style="display: none; margin-top: 8px; color: #cbd5e1; font-size: 0.9rem; line-height: 1.55;">
+          ${data.summaryText}
+        </p>
       `;
 
       const codeEl = document.getElementById("showcase-streaming-code");
@@ -3785,24 +3776,30 @@ function animateShowcaseReplay(mode) {
         if (lineIdx < data.codeLines.length) {
           codeEl.textContent = data.codeLines.slice(0, lineIdx + 1).join("\n") + "\n▋";
           lineIdx++;
-          const t = setTimeout(streamCodeLines, 70);
+          const t = setTimeout(streamCodeLines, 50);
           showcaseTimers.push(t);
         } else {
           codeEl.textContent = data.codeLines.join("\n");
           const wrap = document.getElementById("showcase-streaming-stdout-wrap");
+          const summaryEl = document.getElementById("showcase-final-summary");
           if (wrap) {
             wrap.style.display = "block";
-            wrap.style.animation = "slideUp 0.3s ease";
+            wrap.style.animation = "slideUp 0.25s ease";
+          }
+          if (summaryEl) {
+            summaryEl.style.display = "block";
+            summaryEl.style.animation = "slideUp 0.25s ease";
           }
         }
       }
       streamCodeLines();
     } else {
       bodyEl.innerHTML = data.summaryMarkdown;
-      bodyEl.style.animation = "slideUp 0.3s ease";
+      bodyEl.style.animation = "slideUp 0.25s ease";
     }
   }
 }
+
 
 
 
