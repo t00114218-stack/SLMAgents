@@ -648,12 +648,19 @@ def parse_document_attachment(filename: str, b64_data: str) -> str:
             for sheet_name in wb.sheetnames:
                 sheet = wb[sheet_name]
                 rows = []
+                num_rows = 0
+                headers = []
                 for row in sheet.iter_rows(values_only=True):
                     row_vals = [str(val).strip() for val in row if val is not None and str(val).strip()]
                     if row_vals:
+                        if not headers:
+                            headers = row_vals
+                        else:
+                            num_rows += 1
                         rows.append(" | ".join(row_vals))
                 if rows:
-                    sheet_texts.append(f"--- Sheet: {sheet_name} ---\n" + "\n".join(rows[:250]))
+                    summary_hdr = f"--- Sheet: {sheet_name} (Total Records/Rows: {num_rows}, Columns: {len(headers)}) ---"
+                    sheet_texts.append(summary_hdr + "\n" + "\n".join(rows[:300]))
             if sheet_texts:
                 return "\n\n".join(sheet_texts)
         except Exception as e:
