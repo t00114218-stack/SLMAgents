@@ -3094,14 +3094,16 @@ body.chat-page-body,
     height: 100vh;
     width: 280px;
     z-index: 100;
+    margin-left: 0 !important;
     transform: translateX(-100%);
     box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .chat-light-theme .chat-sidebar.open {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
+
 
   .chat-light-theme .chat-main-pane {
     width: 100vw;

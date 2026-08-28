@@ -3132,9 +3132,12 @@ async function handleChatSubmit(event) {
   const sendBtn = document.getElementById("chat-send-btn");
   const selectMode = document.getElementById("chat-agent-override");
   const message = inputEl ? inputEl.value.trim() : "";
-  const attachments = Array.from(chatUploadedFiles);
+  const attachments = Array.from(chatAttachments);
   
   if (!message && attachments.length === 0) return;
+  
+  chatAttachments = [];
+  renderAttachmentsTray();
   
   const session = getOrCreateCurrentSession();
   const targetSessionId = session.id;
