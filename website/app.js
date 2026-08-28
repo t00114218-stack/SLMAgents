@@ -3130,7 +3130,14 @@ async function handleChatSubmit(event) {
   
   const inputEl = document.getElementById("chat-text-input");
   const sendBtn = document.getElementById("chat-send-btn");
-  const selectMode = document.getElementById("chat-agent-overr  const targetSessionId = session.id;
+  const selectMode = document.getElementById("chat-agent-override");
+  const message = inputEl ? inputEl.value.trim() : "";
+  const attachments = Array.from(chatUploadedFiles);
+  
+  if (!message && attachments.length === 0) return;
+  
+  const session = getOrCreateCurrentSession();
+  const targetSessionId = session.id;
   const reqId = "req_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
   
   // Set session title from first user query
