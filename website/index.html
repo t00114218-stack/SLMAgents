@@ -23,7 +23,217 @@
   <link rel="canonical" href="https://www.slmagents.ai/">
 
   <title>SLMAgents: Privacy-First Small Language Model Ecosystem for Standard CPUs</title>
-  <link rel="stylesheet" href="style.css?v=17.0">
+  <link rel="stylesheet" href="style.css?v=18.0">
+
+  <!-- Embedded High-Priority Showcase Styles -->
+  <style>
+    .showcase-section {
+      padding: 3rem 0;
+      max-width: 900px;
+      margin: 0 auto 3rem auto;
+    }
+    .showcase-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .showcase-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 30px;
+      color: #334155;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .showcase-tab-btn:hover {
+      border-color: #4f46e5;
+      color: #4f46e5;
+      transform: translateY(-1px);
+    }
+    .showcase-tab-btn.active {
+      background: #0f172a !important;
+      border-color: #0f172a !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25) !important;
+    }
+    .showcase-terminal-box {
+      background: #0b0f19 !important;
+      border: 1px solid #1e293b !important;
+      border-radius: 16px !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28) !important;
+      overflow: hidden;
+      text-align: left;
+    }
+    .showcase-terminal-header {
+      background: #111827 !important;
+      padding: 12px 18px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      border-bottom: 1px solid #1f2937 !important;
+    }
+    .showcase-terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .showcase-terminal-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .showcase-terminal-dot:nth-child(1) { background: #ef4444; }
+    .showcase-terminal-dot:nth-child(2) { background: #f59e0b; }
+    .showcase-terminal-dot:nth-child(3) { background: #10b981; }
+    .showcase-terminal-title {
+      color: #94a3b8 !important;
+      font-size: 0.82rem !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-weight: 600 !important;
+    }
+    .showcase-replay-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      color: #38bdf8 !important;
+      padding: 5px 12px !important;
+      border-radius: 6px !important;
+      font-size: 0.78rem !important;
+      font-weight: 600 !important;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .showcase-replay-btn:hover {
+      background: #334155 !important;
+      color: #ffffff !important;
+    }
+    .showcase-terminal-body {
+      padding: 1.5rem !important;
+      font-size: 0.92rem !important;
+      color: #e2e8f0 !important;
+    }
+    .showcase-user-bubble {
+      background: #1e293b !important;
+      border: 1px solid #334155 !important;
+      border-radius: 12px !important;
+      padding: 12px 16px !important;
+      color: #f8fafc !important;
+      margin-bottom: 1.25rem !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+    }
+    .showcase-user-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .showcase-attachment-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: 'JetBrains Mono', monospace;
+      width: fit-content;
+    }
+    .showcase-thought-card {
+      background: #111827 !important;
+      border: 1px solid #1f2937 !important;
+      border-radius: 10px !important;
+      padding: 12px 16px !important;
+      margin-bottom: 1.25rem !important;
+    }
+    .showcase-thought-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .showcase-thought-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #a855f7 !important;
+      font-weight: 700 !important;
+      font-size: 0.84rem !important;
+    }
+    .showcase-thought-timer {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #1e293b;
+    }
+    .showcase-step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      color: #94a3b8;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+    .showcase-step-bullet {
+      color: #10b981;
+      font-weight: bold;
+    }
+    .showcase-assistant-bubble {
+      background: #0d1322 !important;
+      border: 1px solid #1e293b !important;
+      border-radius: 12px !important;
+      padding: 16px !important;
+      color: #e2e8f0 !important;
+      line-height: 1.6 !important;
+    }
+    .showcase-code-block {
+      background: #050811 !important;
+      border: 1px solid #1e293b !important;
+      border-radius: 8px !important;
+      padding: 12px 14px !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.85rem !important;
+      color: #38bdf8 !important;
+      margin: 10px 0 !important;
+      overflow-x: auto !important;
+      white-space: pre !important;
+      display: block !important;
+    }
+    .showcase-stdout-block {
+      background: #022c22 !important;
+      border: 1px solid #059669 !important;
+      border-radius: 8px !important;
+      padding: 10px 14px !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.84rem !important;
+      color: #34d399 !important;
+      margin: 8px 0 12px 0 !important;
+      white-space: pre !important;
+      display: block !important;
+    }
+  </style>
 
   <!-- Structured Data / Schema Markup -->
   <script type="application/ld+json">
@@ -123,18 +333,6 @@
           <p>
             Sub-billion parameter local agents engineered for speed, privacy, and zero network latency. Run offline multi-agent routing, RAG retrieval, SQL generation, and voice synthesis on Apple Silicon, Intel, or AMD CPUs.
           </p>
-
-          <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-            <a href="https://github.com/t00114218-stack/SLMAgents" target="_blank" style="text-decoration: none;">
-              <img src="https://img.shields.io/github/stars/t00114218-stack/SLMAgents?style=for-the-badge&color=e2e8f0&labelColor=0f172a&logo=github&label=Star" alt="GitHub Stars">
-            </a>
-            <a href="https://github.com/t00114218-stack/SLMAgents/fork" target="_blank" style="text-decoration: none;">
-              <img src="https://img.shields.io/github/forks/t00114218-stack/SLMAgents?style=for-the-badge&color=e2e8f0&labelColor=0f172a&logo=github&label=Fork" alt="GitHub Forks">
-            </a>
-            <a href="https://github.com/t00114218-stack/SLMAgents/issues" target="_blank" style="text-decoration: none;">
-              <img src="https://img.shields.io/github/issues/t00114218-stack/SLMAgents?style=for-the-badge&color=e2e8f0&labelColor=0f172a&logo=github&label=Issues" alt="GitHub Issues">
-            </a>
-          </div>
 
       </section>
 
@@ -244,7 +442,7 @@
 
             <div class="showcase-assistant-bubble">
               <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px;">Generated Python Script:</div>
-              <div class="showcase-code-block">def is_prime(n):
+              <pre class="showcase-code-block"><code>def is_prime(n):
     if n &lt; 2:
         return False
     for i in range(2, int(n**0.5) + 1):
@@ -259,9 +457,9 @@ while len(fib) &lt; 10:
 print("First 10 Fibonacci Numbers &amp; Primality:")
 for idx, num in enumerate(fib, 1):
     status = "PRIME" if is_prime(num) else "Not prime"
-    print(f"#{idx:02d}: {num:3d} -&gt; {status}")</div>
+    print(f"#{idx:02d}: {num:3d} -&gt; {status}")</code></pre>
               <div style="font-weight: 700; color: #34d399; margin: 12px 0 6px 0;">⚡ Sandboxed CPU Execution Output (Return Code: 0):</div>
-              <div class="showcase-stdout-block">First 10 Fibonacci Numbers &amp; Primality:
+              <pre class="showcase-stdout-block"><code>First 10 Fibonacci Numbers &amp; Primality:
 #01:   0 -&gt; Not prime
 #02:   1 -&gt; Not prime
 #03:   1 -&gt; Not prime
@@ -271,7 +469,7 @@ for idx, num in enumerate(fib, 1):
 #07:   8 -&gt; Not prime
 #08:  13 -&gt; PRIME
 #09:  21 -&gt; Not prime
-#10:  34 -&gt; Not prime</div>
+#10:  34 -&gt; Not prime</code></pre>
               <p style="margin-top: 12px; color: #e2e8f0;">The Python script computed the first 10 Fibonacci numbers and evaluated their primality. The prime Fibonacci numbers identified are <strong>2, 3, 5, and 13</strong>.</p>
             </div>
           </div>

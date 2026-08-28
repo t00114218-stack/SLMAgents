@@ -3636,9 +3636,9 @@ function renderShowcase(mode) {
   if (mode === "code") {
     assistantContent = `
       <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px;">Generated Python Script:</div>
-      <div class="showcase-code-block">${data.code}</div>
+      <pre class="showcase-code-block"><code>${data.code}</code></pre>
       <div style="font-weight: 700; color: #34d399; margin: 12px 0 6px 0;">⚡ Sandboxed CPU Execution Output (Return Code: 0):</div>
-      <div class="showcase-stdout-block">${data.stdout}</div>
+      <pre class="showcase-stdout-block"><code>${data.stdout}</code></pre>
       <p style="margin-top: 12px; color: #e2e8f0;">${data.summaryText}</p>
     `;
   } else {
