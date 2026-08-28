@@ -188,11 +188,11 @@ To keep the footprint at ~3 GB on edge machines:
 
 ---
 
-## Try It Locally
+## Try It Locally & Watch the Live Showcase
 
 We built this entire system into the **[SLMAgents](https://github.com/t00114218-stack/SLMAgents)** repository. It includes standalone local agents for RAG, Python code interpretation, Excel data analysis, and Text-to-SQL—all engineered to run locally on standard CPUs.
 
 - **GitHub**: [github.com/t00114218-stack/SLMAgents](https://github.com/t00114218-stack/SLMAgents)
-- **Live Demo**: [huggingface.co/spaces/spcv/slm-agents](https://huggingface.co/spaces/spcv/slm-agents)
+- **Live Demo & Interactive Showcase**: [huggingface.co/spaces/spcv/slm-agents](https://huggingface.co/spaces/spcv/slm-agents) *(Select "Case 3: Offline Agentic RAG" to watch the live step-by-step reasoning replay and RAM telemetry in real time)*
 
 If you're building local AI workflows, stop trying to turn a 2B model into GPT-4. Fix the retrieval quality, prune the context aggressively, and let small models do what they do best: fast, grounded, deterministic work.
