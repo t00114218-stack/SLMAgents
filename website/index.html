@@ -187,6 +187,19 @@
       border-radius: 4px;
       border: 1px solid #1e293b;
     }
+    .showcase-ram-badge {
+      background: #022c22 !important;
+      color: #34d399 !important;
+      font-family: 'JetBrains Mono', monospace !important;
+      font-size: 0.8rem !important;
+      font-weight: 700 !important;
+      padding: 2px 8px !important;
+      border-radius: 4px !important;
+      border: 1px solid #059669 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 4px !important;
+    }
     .showcase-step-row {
       display: flex;
       align-items: flex-start;
@@ -232,6 +245,14 @@
       margin: 8px 0 12px 0 !important;
       white-space: pre !important;
       display: block !important;
+    }
+    @keyframes pulseRec {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 
@@ -428,7 +449,10 @@
                   <span style="display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; box-shadow:0 0 8px #10b981;"></span>
                   <span>SLMCodeInterpreter (Code Interpreter) • Reasoning Timeline</span>
                 </div>
-                <div class="showcase-thought-timer">1.8s CPU</div>
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                  <div class="showcase-thought-timer">⏱️ 1.8s CPU</div>
+                  <div class="showcase-ram-badge">🧠 1.2 GB RAM</div>
+                </div>
               </div>
               <div class="showcase-thought-steps">
                 <div class="showcase-step-row"><span class="showcase-step-bullet">✓</span><span>Analyzing query &amp; extracting execution constraints...</span></div>
@@ -1003,6 +1027,6 @@ for idx, num in enumerate(fib, 1):
     </div>
   </div>
 
-  <script src="app.js?v=37.0"></script>
+  <script src="app.js?v=39.0"></script>
 </body>
 </html>
