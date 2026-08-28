@@ -124,11 +124,11 @@
     <!-- Right-Side Full Page Main Chat Canvas -->
     <main class="chat-main-pane">
       
-      <!-- Minimalist Controls in Corner -->
+      <!-- Top Actions Bar with Glassmorphic Blur -->
       <div class="chat-top-actions">
         <div class="top-actions-left">
           <button class="btn-sidebar-toggle-clean" id="chat-sidebar-toggle" onclick="toggleChatSidebar()" title="Toggle Sidebar">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
           </button>
@@ -152,18 +152,28 @@
         </div>
 
         <div class="top-actions-right">
+          <button type="button" class="btn-top-mobile-new" onclick="createNewChatSession()" title="Start New Conversation">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>New Chat</span>
+          </button>
           <button class="btn-top-github-issue" onclick="openCreateIssueModal()" title="Create Issue on GitHub">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>Create Issue</span>
+            <span>GitHub</span>
           </button>
         </div>
       </div>
 
+      <!-- Backdrop Overlay for Mobile Sidebar Drawer -->
+      <div class="chat-sidebar-backdrop" id="chat-sidebar-backdrop" onclick="toggleChatSidebar()"></div>
 
       <!-- Message Stream Viewport (Full Height Centered Container) -->
       <div class="chat-messages-viewport" id="chat-messages-viewport">
         <!-- Welcome Hero State (visible when conversation is empty) -->
         <div class="chat-welcome-hero" id="chat-welcome-hero">
+          <div class="welcome-hero-badge">
+            <span class="hero-pulse-dot"></span>
+            <span>26 Local SLM Agents • Offline CPU Engine</span>
+          </div>
           <h2>What would you like to build?</h2>
           <p>Execute code, query SQL databases, analyze documents, or solve equations. Everything runs 100% locally on your CPU with zero cloud costs.</p>
 
@@ -171,46 +181,46 @@
           <div class="welcome-suggestions-grid">
             <div class="suggestion-card" onclick="applyQuickPrompt('Write a Python script to compute the Fibonacci sequence with caching.')">
               <div class="card-top">
-                <div class="card-icon">
+                <div class="card-icon code-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                 </div>
-                <span class="card-tag">Code</span>
+                <span class="card-tag">Python Run</span>
               </div>
               <strong>Fibonacci Generator</strong>
-              <p>Generates recursive & cached Python functions</p>
+              <p>Generates recursive & cached Python functions with unit tests</p>
             </div>
 
             <div class="suggestion-card" onclick="applyQuickPrompt('Generate SQL to find top 5 customers with total orders > $1000 in 2024')">
               <div class="card-top">
-                <div class="card-icon">
+                <div class="card-icon sql-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
                 </div>
                 <span class="card-tag">Text-to-SQL</span>
               </div>
               <strong>SQL Aggregation</strong>
-              <p>Translate natural language into optimized SQL</p>
+              <p>Translate natural language into optimized SQL queries</p>
             </div>
 
             <div class="suggestion-card" onclick="applyQuickPrompt('Break down the milestone plan to launch a privacy-first mobile app.')">
               <div class="card-top">
-                <div class="card-icon">
+                <div class="card-icon planner-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
                 </div>
-                <span class="card-tag">Planner</span>
+                <span class="card-tag">Milestone Plan</span>
               </div>
-              <strong>Milestone Roadmap</strong>
-              <p>Decomposes complex projects into actionable steps</p>
+              <strong>Roadmap Decomposer</strong>
+              <p>Decomposes complex goals into actionable dependency steps</p>
             </div>
 
             <div class="suggestion-card" onclick="applyQuickPrompt('Solve this math equation step-by-step: 3x^2 + 6x - 24 = 0')">
               <div class="card-top">
-                <div class="card-icon">
+                <div class="card-icon math-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
                 </div>
-                <span class="card-tag">Math</span>
+                <span class="card-tag">Math Solver</span>
               </div>
-              <strong>Math Solver</strong>
-              <p>Step-by-step symbolic algebra & calculus</p>
+              <strong>Symbolic Math</strong>
+              <p>Step-by-step symbolic algebra, calculus, and proof solver</p>
             </div>
           </div>
         </div>
@@ -229,9 +239,41 @@
         </div>
       </div>
 
-      <!-- Floating Bottom Command Center / Input Bar -->
+      <!-- Floating Bottom Command Center / Dynamic Island Input Dock -->
       <div class="chat-floating-dock-container">
         
+        <!-- Mobile-Friendly Quick Agent Action Chips (Horizontal Scroll) -->
+        <div class="chat-quick-chips-scroll" id="chat-quick-chips">
+          <button type="button" class="quick-agent-chip active" data-agent="auto" onclick="setQuickAgentChip('auto', this)">
+            <span class="chip-status-dot"></span>
+            <span>Auto Orchestrator</span>
+          </button>
+          <button type="button" class="quick-agent-chip" data-agent="code_interpreter" onclick="setQuickAgentChip('code_interpreter', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            <span>Python Run</span>
+          </button>
+          <button type="button" class="quick-agent-chip" data-agent="rag" onclick="setQuickAgentChip('rag', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span>Doc RAG</span>
+          </button>
+          <button type="button" class="quick-agent-chip" data-agent="sql" onclick="setQuickAgentChip('sql', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+            <span>Text-to-SQL</span>
+          </button>
+          <button type="button" class="quick-agent-chip" data-agent="data_analyst" onclick="setQuickAgentChip('data_analyst', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            <span>Analyze CSV</span>
+          </button>
+          <button type="button" class="quick-agent-chip" data-agent="memory" onclick="setQuickAgentChip('memory', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a8 8 0 0 0-8 8c0 3.36 2.08 6.23 5 7.42V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.58c2.92-1.19 5-4.06 5-7.42a8 8 0 0 0-8-8z"></path></svg>
+            <span>Memory Graph</span>
+          </button>
+          <button type="button" class="quick-agent-chip" data-agent="math" onclick="setQuickAgentChip('math', this)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
+            <span>Math Solver</span>
+          </button>
+        </div>
+
         <!-- Active Attachments Tray -->
         <div class="chat-attachments-tray" id="chat-attachments-tray" style="display: none;"></div>
 
@@ -239,6 +281,9 @@
         <div class="chat-voice-recording-bar" id="chat-voice-bar" style="display: none;">
           <div class="recording-pulse-dot"></div>
           <span class="recording-text">Listening... Speak your command clearly</span>
+          <div class="voice-soundwaves">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
           <button type="button" class="btn-voice-cancel" onclick="cancelVoiceRecording()">Cancel</button>
           <button type="button" class="btn-voice-done" onclick="stopVoiceRecording()">Done</button>
         </div>
@@ -249,14 +294,14 @@
           <!-- Attach File Button -->
           <input type="file" id="chat-file-input" style="display: none;" onchange="handleFileSelected(event)" multiple>
           <button type="button" class="btn-dock-icon" title="Attach Document, Image, or Code (In-Memory Only)" onclick="document.getElementById('chat-file-input').click()">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
             </svg>
           </button>
 
           <!-- Voice Dictation Button -->
           <button type="button" class="btn-dock-icon" id="chat-mic-btn" onclick="toggleVoiceRecording()" title="Speak Voice Command">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
             </svg>
           </button>
@@ -274,9 +319,10 @@
 
         <!-- Discreet Privacy Footer -->
         <div class="chat-dock-footer">
-          <span>⚡ Local ONNX CPU Engine • 🔒 100% Private (Zero Data Leaves Machine) • Free &amp; Offline</span>
+          <span>⚡ Local ONNX CPU Engine • 🔒 100% Private (Zero Cloud Data) • Free &amp; Offline</span>
         </div>
       </div>
+
 
     </main>
   </div>
