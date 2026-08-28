@@ -207,9 +207,9 @@ class SLMRag:
             max_iterations: Max ReAct tool-calling loops (prevents infinite loops).
             stream:         If True, streams token strings in real-time.
         """
-        # Universal default token budget for general document and data reasoning
+        # Universal default token budget for fast, concise, and dense CPU reasoning
         if max_tokens is None:
-            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 450))
+            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 256))
 
         max_iterations = max(1, min(int(max_iterations), 8))
         
