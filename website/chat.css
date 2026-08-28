@@ -517,17 +517,21 @@ html, body {
 .btn-top-mobile-new {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 6px 12px;
+  height: 34px;
+  padding: 0 12px;
   border-radius: 8px;
   background: var(--primary-gradient);
   color: #ffffff;
   border: none;
   font-size: 0.78rem;
   font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
   box-shadow: 0 2px 6px var(--primary-glow);
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .btn-top-mobile-new:hover {
@@ -538,22 +542,26 @@ html, body {
 .btn-top-github-issue {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 6px 12px;
+  height: 34px;
+  padding: 0 12px;
   border-radius: 8px;
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   font-size: 0.78rem;
   font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .btn-top-github-issue:hover {
-  background: #f8fafc;
-  color: var(--text-primary);
-  border-color: #cbd5e1;
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #fca5a5;
 }
 
 /* ==========================================================================
@@ -1245,17 +1253,51 @@ html, body {
   }
 
   .chat-top-actions {
-    padding: 0 12px !important;
+    padding: 0 10px !important;
+    gap: 6px !important;
+    height: 52px !important;
+  }
+
+  .top-actions-left {
+    gap: 6px !important;
+    min-width: 0 !important;
+    flex: 1 !important;
   }
 
   .custom-agent-btn {
-    max-width: 165px !important;
+    max-width: 160px !important;
     padding: 4px 8px !important;
+    height: 34px !important;
+    white-space: nowrap !important;
   }
 
   .agent-btn-text {
-    max-width: 105px !important;
-    font-size: 0.76rem !important;
+    max-width: 95px !important;
+    font-size: 0.74rem !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .top-actions-right {
+    gap: 6px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .btn-top-mobile-new {
+    height: 34px !important;
+    padding: 0 8px !important;
+    gap: 4px !important;
+    font-size: 0.74rem !important;
+    white-space: nowrap !important;
+  }
+
+  .btn-top-github-issue {
+    height: 34px !important;
+    padding: 0 8px !important;
+    gap: 4px !important;
+    font-size: 0.74rem !important;
+    white-space: nowrap !important;
   }
 
   .chat-messages-viewport {
@@ -1284,6 +1326,51 @@ html, body {
   .btn-dock-send {
     width: 34px !important;
     height: 34px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-top-actions {
+    padding: 0 8px !important;
+    gap: 4px !important;
+  }
+
+  .top-actions-left {
+    gap: 4px !important;
+  }
+
+  .custom-agent-btn {
+    max-width: 145px !important;
+    padding: 3px 6px !important;
+  }
+
+  .agent-btn-text {
+    max-width: 80px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .top-actions-right {
+    gap: 4px !important;
+  }
+
+  .btn-top-mobile-new {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+  }
+  .btn-top-mobile-new .btn-text {
+    display: none !important;
+  }
+
+  .btn-top-github-issue {
+    width: 34px !important;
+    height: 34px !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+  }
+  .btn-top-github-issue .btn-text {
+    display: none !important;
   }
 }
 
