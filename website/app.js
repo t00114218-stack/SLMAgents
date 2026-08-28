@@ -1,3 +1,249 @@
+// All 26 SLM Agent Module Metadata (Global Constant)
+var ALL_AGENTS_METADATA = window.ALL_AGENTS_METADATA = [
+  {
+    key: "auto",
+    name: "Auto-Orchestrator (All 26)",
+    category: "General",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`
+  },
+  // Productivity
+  {
+    key: "SLMSummarizer",
+    name: "SLM Summarizer",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`
+  },
+  {
+    key: "SLMRag",
+    name: "SLM RAG",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-2.239 10-5V5c0-2.761-4.477-5-10-5S2 2.239 2 5v12c0 2.761 4.477 5 10 5z"></path><path d="M2 5c0 2.761 4.477 5 10 5s10-2.239 10-5"></path><path d="M2 11c0 2.761 4.477 5 10 5s10-2.239 10-5"></path></svg>`
+  },
+  {
+    key: "SLMCliAgent",
+    name: "SLM CLI Agent",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>`
+  },
+  {
+    key: "SLMEmailAssistant",
+    name: "SLM Email Assistant",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`
+  },
+  {
+    key: "SLMMeetingSummarizer",
+    name: "SLM Meeting Summarizer",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`
+  },
+  {
+    key: "SLMMemoryManager",
+    name: "SLM Memory Manager",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="18" cy="18" r="3"></circle><line x1="6" y1="9" x2="9" y2="12"></line><line x1="6" y1="15" x2="9" y2="12"></line><line x1="18" y1="9" x2="15" y2="12"></line><line x1="18" y1="15" x2="15" y2="12"></line></svg>`
+  },
+  {
+    key: "SLMTaskPlanner",
+    name: "SLM Task Planner",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`
+  },
+  {
+    key: "SLMPDFChat",
+    name: "SLM PDF Chat",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`
+  },
+  {
+    key: "SLMPKBAgent",
+    name: "SLM PKB Agent",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>`
+  },
+  {
+    key: "SLMVoiceAgent",
+    name: "SLM Voice Agent",
+    category: "Productivity",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`
+  },
+  // Developer Tools
+  {
+    key: "SLMOrchestrator",
+    name: "SLM Orchestrator",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`
+  },
+  {
+    key: "SLMTextToSQL",
+    name: "SLM Text-to-SQL",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>`
+  },
+  {
+    key: "SLMCodeInterpreter",
+    name: "SLM Code Interpreter",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`
+  },
+  {
+    key: "SLMGitRepoManager",
+    name: "SLM Git Repo Manager",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 15V9a4 4 0 0 0-4-4H9"></path><line x1="6" y1="9" x2="6" y2="15"></line></svg>`
+  },
+  {
+    key: "SLMDatabaseMigrator",
+    name: "SLM Database Migrator",
+    category: "Developer Tools",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>`
+  },
+  // Web & Scraping
+  {
+    key: "SLMWebAgent",
+    name: "SLM Web Agent",
+    category: "Web & Scraping",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect><line x1="2" y1="8" x2="22" y2="8"></line><line x1="6" y1="6" x2="6" y2="6"></line><line x1="10" y1="6" x2="10" y2="6"></line></svg>`
+  },
+  {
+    key: "SLMWebScraper",
+    name: "SLM Web Scraper",
+    category: "Web & Scraping",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>`
+  },
+  {
+    key: "SLMSearchOrchestrator",
+    name: "SLM Search Orchestrator",
+    category: "Web & Scraping",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`
+  },
+  // Data & Utilities
+  {
+    key: "SLMJsonCleaner",
+    name: "SLM JSON Cleaner",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>`
+  },
+  {
+    key: "SLMDocumentParser",
+    name: "SLM Document Parser",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`
+  },
+  {
+    key: "SLMVisionParser",
+    name: "SLM Vision Parser",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`
+  },
+  {
+    key: "SLMDataAnalyst",
+    name: "SLM Data Analyst",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`
+  },
+  {
+    key: "SLMTranslationHub",
+    name: "SLM Translation Hub",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>`
+  },
+  {
+    key: "SLMMathAgent",
+    name: "SLM Math Agent",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>`
+  },
+  {
+    key: "SLMSecurityAudit",
+    name: "SLM Security Audit",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
+  },
+  {
+    key: "SLMEmbeddingsServer",
+    name: "SLM Embeddings Server",
+    category: "Data & Utilities",
+    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>`
+  }
+];
+
+function initCustomAgentDropdown() {
+  const menu = document.getElementById("custom-agent-menu");
+  if (!menu) return;
+  
+  let currentCat = "";
+  let html = "";
+  const currentKey = document.getElementById("chat-agent-override")?.value || "auto";
+  
+  ALL_AGENTS_METADATA.forEach(agent => {
+    if (agent.category !== currentCat && agent.category !== "General") {
+      currentCat = agent.category;
+      html += `<div class="dropdown-cat-label">${currentCat}</div>`;
+    }
+    const isSelected = agent.key === currentKey;
+    html += `
+      <div class="dropdown-agent-item ${isSelected ? 'selected' : ''}" data-key="${agent.key}" onclick="selectCustomAgent('${agent.key}')">
+        <div class="dropdown-item-left">
+          <span class="agent-svg">${agent.svg}</span>
+          <span>${agent.name}</span>
+        </div>
+        ${isSelected ? '<span class="dropdown-check-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>' : ''}
+      </div>
+    `;
+  });
+  
+  menu.innerHTML = html;
+}
+
+window.toggleAgentDropdown = function(event) {
+  if (event) event.stopPropagation();
+  const btn = document.getElementById("custom-agent-btn");
+  const menu = document.getElementById("custom-agent-menu");
+  if (!btn || !menu) return;
+  
+  const isOpen = menu.style.display === "flex";
+  if (isOpen) {
+    menu.style.display = "none";
+    btn.classList.remove("open");
+  } else {
+    initCustomAgentDropdown();
+    menu.style.display = "flex";
+    btn.classList.add("open");
+  }
+};
+
+window.selectCustomAgent = function(key) {
+  const agent = ALL_AGENTS_METADATA.find(a => a.key === key) || ALL_AGENTS_METADATA[0];
+  const hiddenInput = document.getElementById("chat-agent-override");
+  const iconSpan = document.getElementById("selected-agent-icon");
+  const nameSpan = document.getElementById("selected-agent-name");
+  const btn = document.getElementById("custom-agent-btn");
+  const menu = document.getElementById("custom-agent-menu");
+  
+  if (hiddenInput) hiddenInput.value = agent.key;
+  if (iconSpan) iconSpan.innerHTML = agent.svg;
+  if (nameSpan) nameSpan.textContent = agent.name;
+  
+  if (menu) menu.style.display = "none";
+  if (btn) btn.classList.remove("open");
+  
+  if (typeof onAgentModeChange === "function") {
+    onAgentModeChange();
+  }
+};
+
+// Close dropdown on outside click
+document.addEventListener("click", (e) => {
+  const dropdown = document.getElementById("custom-agent-dropdown");
+  const menu = document.getElementById("custom-agent-menu");
+  const btn = document.getElementById("custom-agent-btn");
+  if (dropdown && !dropdown.contains(e.target)) {
+    if (menu) menu.style.display = "none";
+    if (btn) btn.classList.remove("open");
+  }
+});
+
 // Top-level Navigation & Sidebar Drawer Controllers
 window.toggleChatSidebar = function toggleChatSidebar() {
   const sidebar = document.getElementById("chat-sidebar");
@@ -1928,7 +2174,7 @@ function renderChatSessionList() {
 
     const delBtn = document.createElement("button");
     delBtn.className = "chat-session-delete";
-    delBtn.innerHTML = "✕";
+    delBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
     delBtn.title = "Delete conversation";
     delBtn.onclick = (e) => deleteChatSession(session.id, e);
     
@@ -2005,11 +2251,6 @@ window.handleChatSubmit = handleChatSubmit;
 window.handleChatKeyDown = handleChatKeyDown;
 window.autoResizeChatTextarea = autoResizeChatTextarea;
 window.applyQuickPrompt = applyQuickPrompt;
-window.handleFileSelected = handleFileSelected;
-window.toggleVoiceRecording = toggleVoiceRecording;
-window.toggleAgentDropdown = toggleAgentDropdown;
-window.openCreateIssueModal = openCreateIssueModal;
-window.closeGitHubIssueModal = closeGitHubIssueModal;
 
 function getCurrentSession() {
   if (!currentSessionId || chatSessions.length === 0) {
@@ -2129,7 +2370,9 @@ function renderCurrentSessionMessages() {
   if (!session || !session.messages || session.messages.length === 0) {
     const currentAgent = document.getElementById("chat-agent-override")?.value || "auto";
     const cards = getAgentWelcomeCards(currentAgent);
-    const agentMeta = ALL_AGENTS_METADATA.find(a => a.key === currentAgent);
+    const agentMeta = (typeof ALL_AGENTS_METADATA !== "undefined" && Array.isArray(ALL_AGENTS_METADATA)) 
+      ? ALL_AGENTS_METADATA.find(a => a.key === currentAgent) 
+      : null;
     const heroTitle = currentAgent === "auto" ? "What would you like to build?" : `Ready with ${agentMeta ? agentMeta.name : currentAgent}`;
     const heroDesc = currentAgent === "auto" 
       ? "Execute code, query SQL databases, analyze documents, or solve equations. Everything runs 100% locally on your CPU with zero cloud costs."
@@ -2234,75 +2477,78 @@ function appendMessageElementToViewport(role, text, attachments = [], routedAgen
   if (hero) hero.remove();
   
   const row = document.createElement("div");
-  row.className = `chat-msg-row ${role}`;
   
-  const avatar = document.createElement("div");
-  avatar.className = "chat-avatar";
-  avatar.innerHTML = role === "user" 
-    ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`
-    : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
-  
-  const container = document.createElement("div");
-  container.className = "chat-bubble-container";
-  
-  // Meta header
-  const meta = document.createElement("div");
-  meta.className = "chat-msg-meta";
   if (role === "user") {
-    meta.innerHTML = `<span>You</span>`;
+    row.className = "chat-msg-row user";
+    if (attachments && attachments.length > 0) {
+      const attWrap = document.createElement("div");
+      attWrap.className = "chat-msg-attachments";
+      attachments.forEach(att => {
+        if (att.type && (att.type.startsWith("image") || att.name.match(/\.(png|jpe?g|webp|gif)$/i))) {
+          const img = document.createElement("img");
+          img.src = att.data;
+          img.alt = att.name;
+          img.className = "msg-att-img";
+          attWrap.appendChild(img);
+        } else {
+          const fileChip = document.createElement("div");
+          fileChip.className = "msg-att-file";
+          fileChip.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>${att.name}</span>`;
+          attWrap.appendChild(fileChip);
+        }
+      });
+      row.appendChild(attWrap);
+    }
+    const bubble = document.createElement("div");
+    bubble.className = "chat-msg-user-bubble";
+    bubble.textContent = text;
+    row.appendChild(bubble);
   } else {
+    row.className = "chat-msg-row assistant";
+    
+    const avatar = document.createElement("div");
+    avatar.className = "chat-assistant-avatar";
+    avatar.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`;
+    row.appendChild(avatar);
+
+    const body = document.createElement("div");
+    body.className = "chat-assistant-body";
+
     const rawAgent = routedAgent || "SLM Orchestrator";
     const agentLabel = rawAgent.replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "").trim();
     
-    let thoughtIconHtml = "";
+    const header = document.createElement("div");
+    header.className = "chat-assistant-header";
+    header.innerHTML = `
+      <span class="assistant-agent-tag">
+        <span class="tag-status-dot"></span>
+        <span>${agentLabel}</span>
+      </span>
+    `;
+    body.appendChild(header);
+
     if (thoughts && thoughts.length > 0) {
       const cleanThoughts = thoughts.map(t => typeof t === "string" ? t.replace(/[🎯🧠🤖👤⚡📊📝🧮📄🖼️]/g, "").trim() : t);
-      thoughtIconHtml = `
-        <span class="trace-hover-wrapper">
-          <svg class="trace-icon-btn" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          <div class="trace-popover-card">
-            <div class="trace-popover-header">Thought Process</div>
-            <div class="trace-popover-list">
-              ${cleanThoughts.map(t => `<div class="trace-popover-item">${t}</div>`).join("")}
-            </div>
+      const reasoning = document.createElement("div");
+      reasoning.className = "thought-accordion";
+      reasoning.innerHTML = `
+        <div class="thought-header" onclick="this.parentElement.classList.toggle('open')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <span>Reasoning Pipeline (${cleanThoughts.length} steps)</span>
+          <svg class="thought-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="thought-content">
+          <div class="thought-timeline">
+            ${cleanThoughts.map(t => `<div class="thought-step">${t}</div>`).join("")}
           </div>
-        </span>
+        </div>
       `;
+      body.appendChild(reasoning);
     }
-    
-    meta.innerHTML = `<span>Assistant</span> <span class="agent-routed-ghost" title="${agentLabel}"><span class="ghost-dot"></span><span class="ghost-text">${agentLabel}</span></span> ${thoughtIconHtml}`;
-  }
-  container.appendChild(meta);
-  
-  // Attachments preview
-  if (attachments && attachments.length > 0) {
-    const attContainer = document.createElement("div");
-    attContainer.className = "chat-msg-attachments";
-    attachments.forEach(att => {
-      if (att.type && (att.type.startsWith("image") || att.name.match(/\.(png|jpe?g|webp|gif)$/i))) {
-        const img = document.createElement("img");
-        img.src = att.data;
-        img.alt = att.name;
-        img.className = "msg-att-img";
-        attContainer.appendChild(img);
-      } else {
-        const fileChip = document.createElement("div");
-        fileChip.className = "msg-att-file";
-        fileChip.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg><span>${att.name}</span>`;
-        attContainer.appendChild(fileChip);
-      }
-    });
-    container.appendChild(attContainer);
-  }
-  
-  // Bubble text
-  const bubble = document.createElement("div");
-  bubble.className = "chat-bubble";
-  
-  if (role === "user") {
-    bubble.textContent = text;
-    container.appendChild(bubble);
-  } else {
+
+    const contentEl = document.createElement("div");
+    contentEl.className = "chat-assistant-content";
+
     let cleanedText = text || "";
     if (cleanedText.includes("</think>")) {
       cleanedText = cleanedText.split("</think>").pop().trim();
@@ -2316,19 +2562,17 @@ function appendMessageElementToViewport(role, text, attachments = [], routedAgen
       }
     }
 
-    // Parse Markdown and Highlight Code Blocks
     try {
       if (typeof marked !== "undefined") {
-        bubble.innerHTML = marked.parse(cleanedText);
+        contentEl.innerHTML = marked.parse(cleanedText);
       } else {
-        bubble.innerHTML = cleanedText.replace(/\n/g, "<br>");
+        contentEl.innerHTML = cleanedText.replace(/\n/g, "<br>");
       }
     } catch (e) {
-      bubble.textContent = cleanedText;
+      contentEl.textContent = cleanedText;
     }
-    
-    // Wrap code blocks with headers & copy buttons
-    bubble.querySelectorAll("pre").forEach((pre) => {
+
+    contentEl.querySelectorAll("pre").forEach((pre) => {
       const codeBlock = pre.querySelector("code") || pre;
       if (typeof hljs !== "undefined") {
         hljs.highlightElement(codeBlock);
@@ -2348,10 +2592,10 @@ function appendMessageElementToViewport(role, text, attachments = [], routedAgen
       wrapper.appendChild(header);
       wrapper.appendChild(pre);
     });
-    
-    container.appendChild(bubble);
 
-    // Assistant Ghost Action Row (Copy Message, Speak Audio, Create GitHub Issue)
+    body.appendChild(contentEl);
+
+    // Ghost Actions
     const actionRow = document.createElement("div");
     actionRow.className = "chat-msg-actions";
     const encoded = encodeURIComponent(cleanedText);
@@ -2370,10 +2614,10 @@ function appendMessageElementToViewport(role, text, attachments = [], routedAgen
         <span>Create Issue</span>
       </button>
     `;
-    container.appendChild(actionRow);
+    body.appendChild(actionRow);
+    row.appendChild(body);
   }
-  row.appendChild(avatar);
-  row.appendChild(container);
+  
   viewport.appendChild(row);
   
   if (animateScroll) {
@@ -2539,248 +2783,6 @@ const AGENT_SAMPLE_PROMPTS = {
   "SLMEmbeddingsServer": "Generate dense vector embeddings for: 'Zero-latency neural intelligence on edge CPUs.'"
 };
 
-var ALL_AGENTS_METADATA = window.ALL_AGENTS_METADATA = [
-  {
-    key: "auto",
-    name: "Auto-Orchestrator (All 26)",
-    category: "General",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`
-  },
-  // Productivity
-  {
-    key: "SLMSummarizer",
-    name: "SLM Summarizer",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`
-  },
-  {
-    key: "SLMRag",
-    name: "SLM RAG",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-2.239 10-5V5c0-2.761-4.477-5-10-5S2 2.239 2 5v12c0 2.761 4.477 5 10 5z"></path><path d="M2 5c0 2.761 4.477 5 10 5s10-2.239 10-5"></path><path d="M2 11c0 2.761 4.477 5 10 5s10-2.239 10-5"></path></svg>`
-  },
-  {
-    key: "SLMCliAgent",
-    name: "SLM CLI Agent",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>`
-  },
-  {
-    key: "SLMEmailAssistant",
-    name: "SLM Email Assistant",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`
-  },
-  {
-    key: "SLMMeetingSummarizer",
-    name: "SLM Meeting Summarizer",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`
-  },
-  {
-    key: "SLMMemoryManager",
-    name: "SLM Memory Manager",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="18" cy="18" r="3"></circle><line x1="6" y1="9" x2="9" y2="12"></line><line x1="6" y1="15" x2="9" y2="12"></line><line x1="18" y1="9" x2="15" y2="12"></line><line x1="18" y1="15" x2="15" y2="12"></line></svg>`
-  },
-  {
-    key: "SLMTaskPlanner",
-    name: "SLM Task Planner",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`
-  },
-  {
-    key: "SLMPDFChat",
-    name: "SLM PDF Chat",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>`
-  },
-  {
-    key: "SLMPKBAgent",
-    name: "SLM PKB Agent",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>`
-  },
-  {
-    key: "SLMVoiceAgent",
-    name: "SLM Voice Agent",
-    category: "Productivity",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`
-  },
-  // Developer Tools
-  {
-    key: "SLMOrchestrator",
-    name: "SLM Orchestrator",
-    category: "Developer Tools",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`
-  },
-  {
-    key: "SLMTextToSQL",
-    name: "SLM Text-to-SQL",
-    category: "Developer Tools",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>`
-  },
-  {
-    key: "SLMCodeInterpreter",
-    name: "SLM Code Interpreter",
-    category: "Developer Tools",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`
-  },
-  {
-    key: "SLMGitRepoManager",
-    name: "SLM Git Repo Manager",
-    category: "Developer Tools",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 15V9a4 4 0 0 0-4-4H9"></path><line x1="6" y1="9" x2="6" y2="15"></line></svg>`
-  },
-  {
-    key: "SLMDatabaseMigrator",
-    name: "SLM Database Migrator",
-    category: "Developer Tools",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>`
-  },
-  // Web & Scraping
-  {
-    key: "SLMWebAgent",
-    name: "SLM Web Agent",
-    category: "Web & Scraping",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2" ry="2"></rect><line x1="2" y1="8" x2="22" y2="8"></line><line x1="6" y1="6" x2="6" y2="6"></line><line x1="10" y1="6" x2="10" y2="6"></line></svg>`
-  },
-  {
-    key: "SLMWebScraper",
-    name: "SLM Web Scraper",
-    category: "Web & Scraping",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>`
-  },
-  {
-    key: "SLMSearchOrchestrator",
-    name: "SLM Search Orchestrator",
-    category: "Web & Scraping",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`
-  },
-  // Data & Utilities
-  {
-    key: "SLMJsonCleaner",
-    name: "SLM JSON Cleaner",
-    category: "Data & Utilities",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>`
-  },
-  {
-    key: "SLMDocumentParser",
-    name: "SLM Document Parser",
-    category: "Data & Utilities",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`
-  },
-  {
-    key: "SLMVisionParser",
-    name: "SLM Vision Parser",
-    category: "Data & Utilities",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`
-  },
-  {
-    key: "SLMDataAnalyst",
-    name: "SLM Data Analyst",
-    category: "Data & Utilities",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>`
-  },
-  {
-    key: "SLMTranslationHub",
-    name: "SLM Translation Hub",
-    category: "Data & Utilities",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>`
-  },
-  {
-    key: "SLMMathAgent",
-    name: "SLM Math Agent",
-    category: "Data & Utilities",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>`
-  },
-  {
-    key: "SLMSecurityAudit",
-    name: "SLM Security Audit",
-    category: "Data & Utilities",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`
-  },
-  {
-    key: "SLMEmbeddingsServer",
-    name: "SLM Embeddings Server",
-    category: "Data & Utilities",
-    svg: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>`
-  }
-];
-
-function initCustomAgentDropdown() {
-  const menu = document.getElementById("custom-agent-menu");
-  if (!menu) return;
-  
-  let currentCat = "";
-  let html = "";
-  const currentKey = document.getElementById("chat-agent-override")?.value || "auto";
-  
-  ALL_AGENTS_METADATA.forEach(agent => {
-    if (agent.category !== currentCat && agent.category !== "General") {
-      currentCat = agent.category;
-      html += `<div class="dropdown-cat-label">${currentCat}</div>`;
-    }
-    const isSelected = agent.key === currentKey;
-    html += `
-      <div class="dropdown-agent-item ${isSelected ? 'selected' : ''}" data-key="${agent.key}" onclick="selectCustomAgent('${agent.key}')">
-        <div class="dropdown-item-left">
-          <span class="agent-svg">${agent.svg}</span>
-          <span>${agent.name}</span>
-        </div>
-        ${isSelected ? '<span class="dropdown-check-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>' : ''}
-      </div>
-    `;
-  });
-  
-  menu.innerHTML = html;
-}
-
-window.toggleAgentDropdown = function(event) {
-  if (event) event.stopPropagation();
-  const btn = document.getElementById("custom-agent-btn");
-  const menu = document.getElementById("custom-agent-menu");
-  if (!btn || !menu) return;
-  
-  const isOpen = menu.style.display === "flex";
-  if (isOpen) {
-    menu.style.display = "none";
-    btn.classList.remove("open");
-  } else {
-    initCustomAgentDropdown();
-    menu.style.display = "flex";
-    btn.classList.add("open");
-  }
-};
-
-window.selectCustomAgent = function(key) {
-  const agent = ALL_AGENTS_METADATA.find(a => a.key === key) || ALL_AGENTS_METADATA[0];
-  const hiddenInput = document.getElementById("chat-agent-override");
-  const iconSpan = document.getElementById("selected-agent-icon");
-  const nameSpan = document.getElementById("selected-agent-name");
-  const btn = document.getElementById("custom-agent-btn");
-  const menu = document.getElementById("custom-agent-menu");
-  
-  if (hiddenInput) hiddenInput.value = agent.key;
-  if (iconSpan) iconSpan.innerHTML = agent.svg;
-  if (nameSpan) nameSpan.textContent = agent.name;
-  
-  if (menu) menu.style.display = "none";
-  if (btn) btn.classList.remove("open");
-  
-  onAgentModeChange();
-};
-
-// Close dropdown on outside click
-document.addEventListener("click", (e) => {
-  const dropdown = document.getElementById("custom-agent-dropdown");
-  const menu = document.getElementById("custom-agent-menu");
-  const btn = document.getElementById("custom-agent-btn");
-  if (dropdown && !dropdown.contains(e.target)) {
-    if (menu) menu.style.display = "none";
-    if (btn) btn.classList.remove("open");
-  }
-});
 
 window.onAgentModeChange = function() {
   const select = document.getElementById("chat-agent-override");
@@ -3226,15 +3228,14 @@ async function handleChatSubmit(event) {
     typingRow.dataset.reqId = reqId;
     typingRow.dataset.sessionId = targetSessionId;
     typingRow.innerHTML = `
-      <div class="chat-avatar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <div class="chat-assistant-avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
       </div>
-      <div class="chat-bubble-container" style="width: 100%;">
-        <div class="chat-msg-meta">
-          <span>Assistant</span>
-          <span class="agent-routed-ghost live-routed-pill" title="Reasoning & Routing...">
-            <span class="ghost-dot" style="animation: pulseRec 1s infinite;"></span>
-            <span class="ghost-text">Reasoning &amp; Routing...</span>
+      <div class="chat-assistant-body">
+        <div class="chat-assistant-header">
+          <span class="assistant-agent-tag live-routed-pill" title="Reasoning & Routing...">
+            <span class="tag-status-dot" style="animation: pulseRec 1s infinite;"></span>
+            <span>Reasoning &amp; Routing...</span>
           </span>
         </div>
         <div class="live-engine-card">
@@ -3254,7 +3255,7 @@ async function handleChatSubmit(event) {
             </div>
           </div>
         </div>
-        <div class="chat-bubble live-response-bubble" style="display: none; padding-top: 4px;">
+        <div class="chat-assistant-content live-response-bubble" style="display: none; padding-top: 4px;">
           <div class="chat-live-token-stream"></div>
         </div>
       </div>

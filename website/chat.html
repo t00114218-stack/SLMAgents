@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Chat Studio: Local Multi-Agent SLM Orchestrator | SLMAgents</title>
   <meta name="description" content="Full-page private AI Chat Studio powered by 26 local SLM agents. Run code interpretation, Text-to-SQL, document RAG, and multi-agent workflows offline on CPU.">
-  <link rel="stylesheet" href="style.css?v=80.0">
+  <link rel="stylesheet" href="chat.css?v=2.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -241,39 +241,6 @@
 
       <!-- Floating Bottom Command Center / Dynamic Island Input Dock -->
       <div class="chat-floating-dock-container">
-        
-        <!-- Mobile-Friendly Quick Agent Action Chips (Horizontal Scroll) -->
-        <div class="chat-quick-chips-scroll" id="chat-quick-chips">
-          <button type="button" class="quick-agent-chip active" data-agent="auto" onclick="setQuickAgentChip('auto', this)">
-            <span class="chip-status-dot"></span>
-            <span>Auto Orchestrator</span>
-          </button>
-          <button type="button" class="quick-agent-chip" data-agent="code_interpreter" onclick="setQuickAgentChip('code_interpreter', this)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-            <span>Python Run</span>
-          </button>
-          <button type="button" class="quick-agent-chip" data-agent="rag" onclick="setQuickAgentChip('rag', this)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-            <span>Doc RAG</span>
-          </button>
-          <button type="button" class="quick-agent-chip" data-agent="sql" onclick="setQuickAgentChip('sql', this)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
-            <span>Text-to-SQL</span>
-          </button>
-          <button type="button" class="quick-agent-chip" data-agent="data_analyst" onclick="setQuickAgentChip('data_analyst', this)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            <span>Analyze CSV</span>
-          </button>
-          <button type="button" class="quick-agent-chip" data-agent="memory" onclick="setQuickAgentChip('memory', this)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a8 8 0 0 0-8 8c0 3.36 2.08 6.23 5 7.42V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.58c2.92-1.19 5-4.06 5-7.42a8 8 0 0 0-8-8z"></path></svg>
-            <span>Memory Graph</span>
-          </button>
-          <button type="button" class="quick-agent-chip" data-agent="math" onclick="setQuickAgentChip('math', this)">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
-            <span>Math Solver</span>
-          </button>
-        </div>
-
         <!-- Active Attachments Tray -->
         <div class="chat-attachments-tray" id="chat-attachments-tray" style="display: none;"></div>
 
@@ -307,7 +274,7 @@
           </button>
 
           <!-- Auto-Resizing Textarea -->
-          <textarea id="chat-text-input" class="chat-command-textarea" placeholder="Ask anything, request code, attach files, or speak..." rows="1" onkeydown="handleChatKeyDown(event)" oninput="autoResizeChatTextarea(this)"></textarea>
+          <textarea id="chat-text-input" class="chat-command-textarea" placeholder="Ask anything, request code, or speak..." rows="1" onkeydown="handleChatKeyDown(event)" oninput="autoResizeChatTextarea(this)"></textarea>
 
           <!-- Submit / Send Button -->
           <button type="submit" class="btn-dock-send" id="chat-send-btn" title="Send Message (Enter)" onclick="handleChatSubmit(event)">
