@@ -207,18 +207,9 @@ class SLMRag:
             max_iterations: Max ReAct tool-calling loops (prevents infinite loops).
             stream:         If True, streams token strings in real-time.
         """
-        q_lower = (question or "").lower()
-        is_summary_query = any(w in q_lower for w in ["summary", "summarize", "overview", "brief", "key points", "outline", "highlights"])
-        is_direct_fact_query = any(w in q_lower for w in ["what is the total", "how many", "who is", "when did", "amount", "date", "status", "calculate"])
-
-        # Resolve max_tokens: dynamic intent scaling to maximize response speed
+        # Universal default token budget for general document and data reasoning
         if max_tokens is None:
-            if is_direct_fact_query:
-                max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 220))
-            elif is_summary_query:
-                max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 350))
-            else:
-                max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 500))
+            max_tokens = int(os.environ.get("SLM_RAG_MAX_TOKENS", 450))
 
         max_iterations = max(1, min(int(max_iterations), 8))
         
@@ -289,20 +280,12 @@ class SLMRag:
                 selected_chunks = [chunks[i] for i in sorted(expanded_indices)]
                 formatted_chunks = "\n\n".join([chunk.strip() for chunk in selected_chunks if chunk.strip()])
             
-        # Build high-density, fast ChatML template prompt
-        if is_summary_query:
-            system_prompt = (
-                "You are an expert document analysis assistant.\n"
-                "Provide a high-density, concise executive summary in clear Markdown bullet points.\n"
-                "Highlight key totals, date ranges, record counts, and critical findings accurately.\n"
-                "Be direct, crisp, and avoid generating repetitive filler text."
-            )
-        else:
-            system_prompt = (
-                "You are an expert document analysis assistant.\n"
-                "Answer the user's question accurately and concisely based strictly on the provided Document Text.\n"
-                "Include specific figures, amounts, and facts directly without unnecessary verbose padding."
-            )
+        # Universal context-grounded reasoning prompt
+        system_prompt = (
+            "You are an expert AI assistant specialized in document and data analysis.\n"
+            "Answer the user's question accurately, concisely, and completely based strictly on the provided context.\n"
+            "Include specific figures, amounts, facts, dates, and direct conclusions without repetitive boilerplate."
+        )
 
         
         if tools and tool_executor:
