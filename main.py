@@ -2996,15 +2996,22 @@ def chat_endpoint(req: ChatRequest):
                     if os.path.exists(tmp_img_path):
                         os.remove(tmp_img_path)
 
-            # 3. Check if a document/file attachment exists in Auto mode -> Store in SLMMemoryManager & Route to SLMRag
+            # 3. Check if a document/file attachment exists in Auto mode -> Route to SLMDataAnalyst for spreadsheets or SLMRag for docs
             doc_att = next((a for a in req.attachments if not a.type.startswith("image")), None)
             if doc_att and doc_att.data:
+                is_sheet_file = any(doc_att.name.lower().endswith(ext) for ext in [".xlsx", ".xls", ".csv", ".tsv"])
+                target_agent_label = "SLMDataAnalyst (Data Analyst Agent)" if is_sheet_file else "SLMRag (Document Grounding)"
+
                 thought_queue.put(f"Received document attachment: '{doc_att.name}'")
                 thought_queue.put(get_document_parser_description(doc_att.name))
+                if is_sheet_file:
+                    thought_queue.put(f"Routing to SLMDataAnalyst (Data Analyst Agent) for structured tabular analytics: '{doc_att.name}'...")
+                else:
+                    thought_queue.put(f"Routing to SLMRag (Document Grounding Agent) for document retrieval & answering: '{doc_att.name}'...")
+                
                 doc_content = parse_document_attachment(doc_att.name, doc_att.data)
 
                 # Pre-calculate high-precision tabular facts for spreadsheets to enrich RAG context
-                is_sheet_file = any(doc_att.name.lower().endswith(ext) for ext in [".xlsx", ".xls", ".csv", ".tsv"])
                 if is_sheet_file:
                     fast_analytics = extract_spreadsheet_analytics(doc_att.name, doc_att.data, query_text)
                     if fast_analytics:
@@ -3028,7 +3035,7 @@ def chat_endpoint(req: ChatRequest):
                     )
                     thought_queue.put(f"Document size is optimal (~{total_words} words, {total_chars} chars). Keeping entire document in active session memory.")
                     thought_queue.put("Zero-loss in-memory neural reasoning active (vector embedding bypassed for speed & complete recall).")
-                    thought_queue.put("Executing grounded RAG document reasoning on local CPU...")
+                    thought_queue.put(f"Executing {target_agent_label} on local CPU...")
                     
                     q = query_text if query_text else "Summarize the key information in this document."
                     rag_res = rag.query(
@@ -3065,7 +3072,7 @@ def chat_endpoint(req: ChatRequest):
                         is_in_memory_direct=False
                     )
                     thought_queue.put(f"Large document detected (~{total_words} words). Indexed {len(chunks)} sections into working context.")
-                    thought_queue.put("Executing grounded RAG synthesis via local neural engine on CPU...")
+                    thought_queue.put(f"Executing grounded {target_agent_label} synthesis via local neural engine on CPU...")
                     
                     q = query_text if query_text else "Summarize the key information in this document."
                     rag_res = rag.query(
@@ -3080,10 +3087,10 @@ def chat_endpoint(req: ChatRequest):
                     words = res_str.split(" ")
                     for w in words:
                         token_queue.put(w + " ")
-                thought_queue.put("Document grounding verified & final analysis synthesized")
+                thought_queue.put(f"{target_agent_label} analysis verified & synthesized")
                 result_container["result"] = rag_res
-                result_container["routed_agent"] = "SLMRag (Document Grounding)"
-                memory_mgr.record_turn(req.session_id, query_text, str(rag_res), "SLMRag")
+                result_container["routed_agent"] = target_agent_label
+                memory_mgr.record_turn(req.session_id, query_text, str(rag_res), target_agent_label)
                 return
 
             # 4. Check for multi-turn document context follow-up via SLMMemoryManager (Auto mode)
