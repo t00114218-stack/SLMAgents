@@ -3514,3 +3514,222 @@ function toggleChatSidebar() {
   }
 }
 
+/* ========================================================
+   Interactive Showcase Simulation Controller
+   ======================================================== */
+var currentShowcaseMode = "code";
+var showcaseAnimationTimer = null;
+
+var SHOWCASE_CASES = {
+  code: {
+    title: "SLMCodeInterpreter • Live CPU Python Sandbox",
+    prompt: "Write and execute a Python script to compute the first 10 Fibonacci numbers, check which ones are prime, and return the execution output.",
+    attachment: null,
+    routedAgent: "SLMCodeInterpreter (Code Interpreter)",
+    thoughts: [
+      "Analyzing query & extracting execution constraints...",
+      "Direct code interpretation & algorithmic generation requested",
+      "Generating Python execution script with primality tests...",
+      "Executing script in local isolated Python subprocess on CPU...",
+      "Execution output captured (returncode: 0) & verified"
+    ],
+    code: `def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+fib = [0, 1]
+while len(fib) < 10:
+    fib.append(fib[-1] + fib[-2])
+
+print("First 10 Fibonacci Numbers & Primality:")
+for idx, num in enumerate(fib, 1):
+    status = "PRIME" if is_prime(num) else "Not prime"
+    print(f"#{idx:02d}: {num:3d} -> {status}")`,
+    stdout: `First 10 Fibonacci Numbers & Primality:
+#01:   0 -> Not prime
+#02:   1 -> Not prime
+#03:   1 -> Not prime
+#04:   2 -> PRIME
+#05:   3 -> PRIME
+#06:   5 -> PRIME
+#07:   8 -> Not prime
+#08:  13 -> PRIME
+#09:  21 -> Not prime
+#10:  34 -> Not prime`,
+    summaryText: "The Python script computed the first 10 Fibonacci numbers and evaluated their primality. The prime Fibonacci numbers identified are **2, 3, 5, and 13**."
+  },
+  data: {
+    title: "SLMDataAnalyst • High-Precision Tabular Analytics",
+    prompt: "Summarize the invoice expenses, compute total amounts, and list the highest vendor.",
+    attachment: "All_Invoices_With_Dates.xlsx (22 rows, 5 columns)",
+    routedAgent: "SLMDataAnalyst (Data Analyst Agent)",
+    thoughts: [
+      "Received document attachment: 'All_Invoices_With_Dates.xlsx'",
+      "Parsing 'All_Invoices_With_Dates.xlsx' via OpenPyXL Tabular Engine...",
+      "Excluding footer 'TOTAL' row to prevent double-counting...",
+      "Executing high-precision tabular aggregations in 0.02s...",
+      "Exact column totals, date range, and record metrics verified"
+    ],
+    code: null,
+    stdout: null,
+    summaryMarkdown: `### 📊 Executive Summary: \`All_Invoices_With_Dates.xlsx\`
+
+- **Total Item Records**: \`21\` *(excluding 1 summary footer row)*
+- **Total Columns**: \`5\` (\`Date\`, \`Invoice Number\`, \`Vendor Name\`, \`Amount\`, \`Filename\`)
+- **Period / Date Range**: \`01-Apr-2026\` to \`28-Apr-2026\`
+
+#### 💰 Financial & Column Aggregations:
+- **Total Amount**: **\`$464.65\`** (Average: \`$22.13\`, Min: \`$5.00\`, Max: \`$114.65\`)
+- **Top Vendor by Spend**: **\`Acme Corporation\`** (\`$185.00\` across 4 invoices)
+
+#### 📋 Top Records Preview:
+| Date | Invoice Number | Vendor Name | Amount | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| 01-Apr-2026 | INV-101 | Acme Corporation | $100.00 | Paid |
+| 05-Apr-2026 | INV-102 | Beta Cloud Ltd | $250.00 | Paid |
+| 12-Apr-2026 | INV-103 | Omega Services | $114.65 | Paid |`
+  }
+};
+
+function switchShowcase(mode) {
+  currentShowcaseMode = mode;
+  document.querySelectorAll(".showcase-tab-btn").forEach(btn => btn.classList.remove("active"));
+  const activeBtn = document.getElementById(mode === "code" ? "tab-code" : "tab-data");
+  if (activeBtn) activeBtn.classList.add("active");
+  renderShowcase(mode);
+}
+
+function replayCurrentShowcase() {
+  renderShowcase(currentShowcaseMode);
+}
+
+function renderShowcase(mode) {
+  const container = document.getElementById("showcase-content");
+  const titleEl = document.getElementById("showcase-title");
+  if (!container) return;
+
+  const data = SHOWCASE_CASES[mode] || SHOWCASE_CASES.code;
+  if (titleEl) titleEl.textContent = data.title;
+
+  let attachmentHtml = "";
+  if (data.attachment) {
+    attachmentHtml = `
+      <div class="showcase-attachment-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+        <span>${data.attachment}</span>
+      </div>
+    `;
+  }
+
+  const thoughtsHtml = data.thoughts.map(t => `
+    <div class="showcase-step-row">
+      <span class="showcase-step-bullet">✓</span>
+      <span>${t}</span>
+    </div>
+  `).join("");
+
+  let assistantContent = "";
+  if (mode === "code") {
+    assistantContent = `
+      <div style="font-weight: 700; color: #38bdf8; margin-bottom: 8px;">Generated Python Script:</div>
+      <div class="showcase-code-block">${data.code}</div>
+      <div style="font-weight: 700; color: #34d399; margin: 12px 0 6px 0;">⚡ Sandboxed CPU Execution Output (Return Code: 0):</div>
+      <div class="showcase-stdout-block">${data.stdout}</div>
+      <p style="margin-top: 12px; color: #e2e8f0;">${data.summaryText}</p>
+    `;
+  } else {
+    assistantContent = `
+      <div style="color: #e2e8f0; line-height: 1.6;">
+        <h3 style="color: #38bdf8; margin-bottom: 10px; font-size: 1.15rem;">📊 Executive Summary: <code>All_Invoices_With_Dates.xlsx</code></h3>
+        <ul style="margin-left: 20px; margin-bottom: 12px;">
+          <li><strong>Total Item Records</strong>: <code>21</code> <em>(excluding 1 summary footer row)</em></li>
+          <li><strong>Total Columns</strong>: <code>5</code> (<code>Date</code>, <code>Invoice Number</code>, <code>Vendor Name</code>, <code>Amount</code>, <code>Filename</code>)</li>
+          <li><strong>Period / Date Range</strong>: <code>01-Apr-2026</code> to <code>28-Apr-2026</code></li>
+        </ul>
+        <h4 style="color: #34d399; margin-top: 14px; margin-bottom: 8px;">💰 Financial &amp; Column Aggregations:</h4>
+        <ul style="margin-left: 20px; margin-bottom: 14px;">
+          <li><strong>Total Amount</strong>: <strong style="color: #38bdf8;"><code>$464.65</code></strong> (Average: <code>$22.13</code>, Min: <code>$5.00</code>, Max: <code>$114.65</code>)</li>
+          <li><strong>Top Vendor by Spend</strong>: <strong><code>Acme Corporation</code></strong> (<code>$185.00</code> across 4 invoices)</li>
+        </ul>
+        <h4 style="color: #94a3b8; margin-bottom: 8px;">📋 Top Records Preview:</h4>
+        <div style="overflow-x: auto; background: #050811; border: 1px solid #1e293b; border-radius: 8px; padding: 8px;">
+          <table style="width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.82rem; color: #cbd5e1;">
+            <thead>
+              <tr style="border-bottom: 1px solid #334155; color: #38bdf8; text-align: left;">
+                <th style="padding: 8px;">Date</th>
+                <th style="padding: 8px;">Invoice</th>
+                <th style="padding: 8px;">Vendor</th>
+                <th style="padding: 8px;">Amount</th>
+                <th style="padding: 8px;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid #1e293b;">
+                <td style="padding: 8px;">01-Apr-2026</td>
+                <td style="padding: 8px;">INV-101</td>
+                <td style="padding: 8px;">Acme Corporation</td>
+                <td style="padding: 8px; color: #34d399;">$100.00</td>
+                <td style="padding: 8px;">Paid</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #1e293b;">
+                <td style="padding: 8px;">05-Apr-2026</td>
+                <td style="padding: 8px;">INV-102</td>
+                <td style="padding: 8px;">Beta Cloud Ltd</td>
+                <td style="padding: 8px; color: #34d399;">$250.00</td>
+                <td style="padding: 8px;">Paid</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px;">12-Apr-2026</td>
+                <td style="padding: 8px;">INV-103</td>
+                <td style="padding: 8px;">Omega Services</td>
+                <td style="padding: 8px; color: #34d399;">$114.65</td>
+                <td style="padding: 8px;">Paid</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  container.innerHTML = `
+    <div class="showcase-user-bubble">
+      <div class="showcase-user-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>User Query</span>
+      </div>
+      <div>${data.prompt}</div>
+      ${attachmentHtml}
+    </div>
+
+    <div class="showcase-thought-card">
+      <div class="showcase-thought-header">
+        <div class="showcase-thought-title">
+          <span style="display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; box-shadow:0 0 8px #10b981;"></span>
+          <span>${data.routedAgent} • Reasoning Timeline</span>
+        </div>
+        <div class="showcase-thought-timer">${mode === "code" ? "1.8s" : "0.02s"} CPU</div>
+      </div>
+      <div class="showcase-thought-steps">
+        ${thoughtsHtml}
+      </div>
+    </div>
+
+    <div class="showcase-assistant-bubble">
+      ${assistantContent}
+    </div>
+  `;
+}
+
+// Auto-initialize showcase on DOM load if container exists
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById("showcase-content")) {
+    renderShowcase("code");
+  }
+});
+
+

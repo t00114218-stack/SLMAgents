@@ -194,6 +194,44 @@
         </div>
       </div>
 
+      <!-- Live Interactive Execution Showcases -->
+      <section class="showcase-section" id="showcases">
+        <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+          <h2 class="section-title">⚡ Live Agent Execution Showcases</h2>
+          <p class="section-subtitle">Real-time CPU neural reasoning, sandboxed code execution, and high-precision tabular intelligence.</p>
+        </div>
+
+        <div class="showcase-tabs">
+          <button class="showcase-tab-btn active" id="tab-code" onclick="switchShowcase('code')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            Case 1: Python Algorithm Execution
+          </button>
+          <button class="showcase-tab-btn" id="tab-data" onclick="switchShowcase('data')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            Case 2: Spreadsheet Tabular Analytics
+          </button>
+        </div>
+
+        <div class="showcase-terminal-box">
+          <div class="showcase-terminal-header">
+            <div class="showcase-terminal-dots">
+              <div class="showcase-terminal-dot"></div>
+              <div class="showcase-terminal-dot"></div>
+              <div class="showcase-terminal-dot"></div>
+            </div>
+            <div class="showcase-terminal-title" id="showcase-title">SLMCodeInterpreter • Live CPU Sandbox</div>
+            <button class="showcase-replay-btn" onclick="replayCurrentShowcase()">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Replay Live
+            </button>
+          </div>
+
+          <div class="showcase-terminal-body" id="showcase-content">
+            <!-- Dynamically rendered via JS -->
+          </div>
+        </div>
+      </section>
+
   <section class="frameworks-section" id="frameworks">
     <div class="section-header">
         <h2 class="section-title">Open Source Local AI Frameworks for Python</h2>
