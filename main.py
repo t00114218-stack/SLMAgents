@@ -2983,35 +2983,15 @@ def chat_endpoint(req: ChatRequest):
             if doc_att and doc_att.data:
                 thought_queue.put(f"Received document attachment: '{doc_att.name}'")
                 thought_queue.put(get_document_parser_description(doc_att.name))
+                doc_content = parse_document_attachment(doc_att.name, doc_att.data)
 
-                # Check if instant spreadsheet analytics can satisfy summary/expense queries in 0.02s
-                q_lower = (query_text or "").lower()
+                # Pre-calculate high-precision tabular facts for spreadsheets to enrich RAG context
                 is_sheet_file = any(doc_att.name.lower().endswith(ext) for ext in [".xlsx", ".xls", ".csv", ".tsv"])
-                is_sheet_summary_query = not query_text or any(w in q_lower for w in ["summary", "summarize", "expenses", "expense", "calculate", "total", "overview", "sheet", "invoices"])
-
-                if is_sheet_file and is_sheet_summary_query:
-                    thought_queue.put("Executing instant high-precision tabular analytics engine (100% mathematical accuracy)...")
+                if is_sheet_file:
                     fast_analytics = extract_spreadsheet_analytics(doc_att.name, doc_att.data, query_text)
                     if fast_analytics:
-                        doc_content = parse_document_attachment(doc_att.name, doc_att.data)
-                        memory_mgr.store_document_memory(
-                            session_id=req.session_id,
-                            doc_name=doc_att.name,
-                            chunks=[doc_content or fast_analytics],
-                            full_text=doc_content or fast_analytics,
-                            is_in_memory_direct=True
-                        )
-                        thought_queue.put("Tabular analytics calculated & verified in 0.02s")
-                        result_container["result"] = fast_analytics
-                        result_container["routed_agent"] = "SLMDataAnalyst (Tabular Fast-Path)"
-                        memory_mgr.record_turn(req.session_id, query_text, str(fast_analytics), "SLMDataAnalyst")
-                        if not getattr(thread_local_data, "output_streamed", False):
-                            for w in fast_analytics.split(" "):
-                                token_queue.put(w + " ")
-                        return
+                        doc_content = fast_analytics + "\n\n--- Full Spreadsheet Raw Data ---\n" + doc_content
 
-                doc_content = parse_document_attachment(doc_att.name, doc_att.data)
-                
                 from slm_rag import SLMRag
                 rag = SLMRag()
                 
@@ -3030,7 +3010,7 @@ def chat_endpoint(req: ChatRequest):
                     )
                     thought_queue.put(f"Document size is optimal (~{total_words} words, {total_chars} chars). Keeping entire document in active session memory.")
                     thought_queue.put("Zero-loss in-memory neural reasoning active (vector embedding bypassed for speed & complete recall).")
-                    thought_queue.put("Executing direct grounded document answering on local CPU...")
+                    thought_queue.put("Executing grounded RAG document reasoning on local CPU...")
                     
                     q = query_text if query_text else "Summarize the key information in this document."
                     rag_res = rag.query(
