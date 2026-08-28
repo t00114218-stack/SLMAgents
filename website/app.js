@@ -3586,51 +3586,51 @@ var SHOWCASE_CASES = {
       "Exact column totals, date range, and record metrics verified"
     ],
     summaryMarkdown: `
-      <div style="color: #e2e8f0; line-height: 1.6;">
-        <h3 style="color: #38bdf8; margin-bottom: 10px; font-size: 1.15rem;">📊 Executive Summary: <code>All_Invoices_With_Dates.xlsx</code></h3>
-        <ul style="margin-left: 20px; margin-bottom: 12px;">
+      <div style="color: #1e293b; line-height: 1.6;">
+        <h3 style="color: #4f46e5; margin-bottom: 10px; font-size: 1.15rem;">📊 Executive Summary: <code>All_Invoices_With_Dates.xlsx</code></h3>
+        <ul style="margin-left: 20px; margin-bottom: 12px; color: #334155;">
           <li><strong>Total Item Records</strong>: <code>21</code> <em>(excluding 1 summary footer row)</em></li>
           <li><strong>Total Columns</strong>: <code>5</code> (<code>Date</code>, <code>Invoice Number</code>, <code>Vendor Name</code>, <code>Amount</code>, <code>Filename</code>)</li>
           <li><strong>Period / Date Range</strong>: <code>01-Apr-2026</code> to <code>28-Apr-2026</code></li>
         </ul>
-        <h4 style="color: #34d399; margin-top: 14px; margin-bottom: 8px;">💰 Financial &amp; Column Aggregations:</h4>
-        <ul style="margin-left: 20px; margin-bottom: 14px;">
-          <li><strong>Total Amount</strong>: <strong style="color: #38bdf8;"><code>$464.65</code></strong> (Average: <code>$22.13</code>, Min: <code>$5.00</code>, Max: <code>$114.65</code>)</li>
+        <h4 style="color: #059669; margin-top: 14px; margin-bottom: 8px;">💰 Financial &amp; Column Aggregations:</h4>
+        <ul style="margin-left: 20px; margin-bottom: 14px; color: #334155;">
+          <li><strong>Total Amount</strong>: <strong style="color: #4f46e5;"><code>$464.65</code></strong> (Average: <code>$22.13</code>, Min: <code>$5.00</code>, Max: <code>$114.65</code>)</li>
           <li><strong>Top Vendor by Spend</strong>: <strong><code>Acme Corporation</code></strong> (<code>$185.00</code> across 4 invoices)</li>
         </ul>
-        <h4 style="color: #94a3b8; margin-bottom: 8px;">📋 Top Records Preview:</h4>
-        <div style="overflow-x: auto; background: #050811; border: 1px solid #1e293b; border-radius: 8px; padding: 8px;">
-          <table style="width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #cbd5e1;">
+        <h4 style="color: #64748b; margin-bottom: 8px;">📋 Top Records Preview:</h4>
+        <div style="overflow-x: auto; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+          <table style="width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #1e293b;">
             <thead>
-              <tr style="border-bottom: 1px solid #334155; color: #38bdf8; text-align: left;">
-                <th style="padding: 8px;">Date</th>
-                <th style="padding: 8px;">Invoice</th>
-                <th style="padding: 8px;">Vendor</th>
-                <th style="padding: 8px;">Amount</th>
-                <th style="padding: 8px;">Status</th>
+              <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; color: #4f46e5; text-align: left;">
+                <th style="padding: 8px 12px;">Date</th>
+                <th style="padding: 8px 12px;">Invoice</th>
+                <th style="padding: 8px 12px;">Vendor</th>
+                <th style="padding: 8px 12px;">Amount</th>
+                <th style="padding: 8px 12px;">Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr style="border-bottom: 1px solid #1e293b;">
-                <td style="padding: 8px;">01-Apr-2026</td>
-                <td style="padding: 8px;">INV-101</td>
-                <td style="padding: 8px;">Acme Corporation</td>
-                <td style="padding: 8px; color: #34d399;">$100.00</td>
-                <td style="padding: 8px;">Paid</td>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 8px 12px;">01-Apr-2026</td>
+                <td style="padding: 8px 12px;">INV-101</td>
+                <td style="padding: 8px 12px;">Acme Corporation</td>
+                <td style="padding: 8px 12px; color: #059669; font-weight: 700;">$100.00</td>
+                <td style="padding: 8px 12px; color: #10b981; font-weight: 600;">Paid</td>
               </tr>
-              <tr style="border-bottom: 1px solid #1e293b;">
-                <td style="padding: 8px;">05-Apr-2026</td>
-                <td style="padding: 8px;">INV-102</td>
-                <td style="padding: 8px;">Beta Cloud Ltd</td>
-                <td style="padding: 8px; color: #34d399;">$250.00</td>
-                <td style="padding: 8px;">Paid</td>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 8px 12px;">05-Apr-2026</td>
+                <td style="padding: 8px 12px;">INV-102</td>
+                <td style="padding: 8px 12px;">Beta Cloud Ltd</td>
+                <td style="padding: 8px 12px; color: #059669; font-weight: 700;">$250.00</td>
+                <td style="padding: 8px 12px; color: #10b981; font-weight: 600;">Paid</td>
               </tr>
               <tr>
-                <td style="padding: 8px;">12-Apr-2026</td>
-                <td style="padding: 8px;">INV-103</td>
-                <td style="padding: 8px;">Omega Services</td>
-                <td style="padding: 8px; color: #34d399;">$114.65</td>
-                <td style="padding: 8px;">Paid</td>
+                <td style="padding: 8px 12px;">12-Apr-2026</td>
+                <td style="padding: 8px 12px;">INV-103</td>
+                <td style="padding: 8px 12px;">Omega Services</td>
+                <td style="padding: 8px 12px; color: #059669; font-weight: 700;">$114.65</td>
+                <td style="padding: 8px 12px; color: #10b981; font-weight: 600;">Paid</td>
               </tr>
             </tbody>
           </table>
@@ -3765,8 +3765,8 @@ function animateShowcaseReplay(mode) {
           <div>${data.stdout}</div>
         </div>
 
-        <p id="showcase-final-summary" style="display: none; margin-top: 8px; color: #cbd5e1; font-size: 0.9rem; line-height: 1.55;">
-          ${data.summaryText}
+        <p id="showcase-final-summary" style="display: none; margin-top: 8px; color: #1e293b; font-size: 0.9rem; line-height: 1.55;">
+          The Python script computed the first 10 Fibonacci numbers and evaluated their primality. The prime Fibonacci numbers identified are <strong style="color: #4f46e5;">2, 3, 5, and 13</strong>.
         </p>
       `;
 
