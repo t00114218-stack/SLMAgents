@@ -3532,7 +3532,7 @@ var SHOWCASE_CASES = {
     attachment: null,
     routedAgent: "SLMCodeInterpreter (Code Interpreter)",
     duration: "1.8s CPU",
-    ram: "1.2 GB RAM",
+    ram: "2746.8 MB Local Engine RAM",
     thoughts: [
       "Analyzing query & extracting execution constraints...",
       "Direct code interpretation & algorithmic generation requested",
@@ -3577,7 +3577,7 @@ var SHOWCASE_CASES = {
     attachment: "All_Invoices_With_Dates.xlsx (22 rows, 5 columns)",
     routedAgent: "SLMDataAnalyst (Data Analyst Agent)",
     duration: "0.02s CPU",
-    ram: "42 MB RAM",
+    ram: "2746.8 MB Local Engine RAM",
     thoughts: [
       "Received document attachment: 'All_Invoices_With_Dates.xlsx'",
       "Parsing 'All_Invoices_With_Dates.xlsx' via OpenPyXL Tabular Engine...",
@@ -3663,7 +3663,7 @@ function animateShowcaseReplay(mode) {
   const data = SHOWCASE_CASES[mode] || SHOWCASE_CASES.code;
   if (titleEl) titleEl.textContent = data.title;
   if (timeBadge) timeBadge.textContent = `⏱️ ${data.duration}`;
-  if (ramBadge) ramBadge.textContent = `🧠 ${data.ram} (Peak)`;
+  if (ramBadge) ramBadge.textContent = `🧠 ${data.ram}`;
 
   let attachmentHtml = "";
   if (data.attachment) {
