@@ -2058,7 +2058,10 @@ async function fetchLiveRAMStats() {
   } catch (e) {
     // Graceful fallback
     if (ramMbEl.textContent === "-- MB") {
-      ramMbEl.textContent = "~240 MB";
+      ramMbEl.textContent = "3046.8 MB";
+    }
+    if (sysRamEl && sysRamEl.textContent === "-- GB") {
+      sysRamEl.textContent = "16.0 GB Total";
     }
   }
 }
@@ -3532,7 +3535,7 @@ var SHOWCASE_CASES = {
     attachment: null,
     routedAgent: "SLMCodeInterpreter (Code Interpreter)",
     duration: "1.8s CPU",
-    ram: "2746.8 MB Local Engine RAM",
+    ram: "3046.8 MB Local Engine RAM",
     thoughts: [
       "Analyzing query & extracting execution constraints...",
       "Direct code interpretation & algorithmic generation requested",
@@ -3577,7 +3580,7 @@ var SHOWCASE_CASES = {
     attachment: "All_Invoices_With_Dates.xlsx (22 rows, 5 columns)",
     routedAgent: "SLMDataAnalyst (Data Analyst Agent)",
     duration: "0.02s CPU",
-    ram: "2746.8 MB Local Engine RAM",
+    ram: "3046.8 MB Local Engine RAM",
     thoughts: [
       "Received document attachment: 'All_Invoices_With_Dates.xlsx'",
       "Parsing 'All_Invoices_With_Dates.xlsx' via OpenPyXL Tabular Engine...",
