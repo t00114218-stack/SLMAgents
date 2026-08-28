@@ -40,6 +40,16 @@ def generate_120_query_dataset() -> List[Dict]:
     Generates or loads the 120-query held-out evaluation dataset
     covering Financial (40), Technical API (40), and Enterprise Policy (40).
     """
+    json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rag_eval_dataset.json")
+    if os.path.exists(json_path):
+        try:
+            with open(json_path, "r") as f:
+                data = json.load(f)
+                if "queries" in data and len(data["queries"]) == 120:
+                    return data["queries"]
+        except Exception:
+            pass
+
     dataset = []
     
     # Category 1: Financial & Tabular Inquiries (40 queries)

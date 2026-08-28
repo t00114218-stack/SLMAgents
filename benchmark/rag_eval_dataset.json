@@ -13,88 +13,2041 @@
     {
       "id": "fin_01",
       "category": "financial_tabular",
-      "query": "What was the Cloud Division Q3 2026 revenue and YoY growth rate?",
-      "expected_fact": "Revenue: $184.2M, YoY Growth: +34.6%",
-      "required_tokens": ["184.2", "34.6%"],
-      "gold_context": "The Cloud Infrastructure Division reported Q3 2026 revenue of $184.2M (+34.6% YoY), primarily driven by enterprise adoption of air-gapped SLM runtime appliances.",
-      "distractor_contexts": [
-        "Total global company revenues across all international business units reached $1,240.5M in Q3 2026, representing an overall increase of 8.2% compared to prior fiscal period.",
-        "Operating expenses in administrative operations grew to $45.1M as corporate legal and regulatory compliance teams expanded across European hubs.",
-        "The consumer devices group saw hardware shipments stabilize with net revenue of $78.4M, down 2.1% due to component supply constraints in Asian assembly facilities.",
-        "Capital expenditure projections for fiscal year 2027 are expected to allocate $95M toward next-generation data center modernization and green power initiatives.",
-        "Accounts receivable aging schedules indicate that 94.2% of commercial invoices are settled within standard 30-day payment windows across tier-1 customers.",
-        "Treasury reserves maintained cash and marketable securities of $412.8M at the conclusion of the third quarter, ensuring robust liquidity buffers."
+      "query": "What was the Q2 EBITDA and margin reported by Beta Infrastructure?",
+      "required_tokens": [
+        "107.3",
+        "21.4%"
+      ],
+      "gold_context": "In the recent filing, Beta Infrastructure reported Q2 EBITDA of $107.3M (representing an operating margin of 21.4%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.1M across European operations.",
+        "Legacy hardware maintenance service revenue for Beta Infrastructure declined 3.1% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 91.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $1.2M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.1% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $52M for server hardware modernization."
       ]
     },
     {
       "id": "fin_02",
       "category": "financial_tabular",
-      "query": "What was the EBITDA margin for the Cloud Division in Q3 2026?",
-      "expected_fact": "41.2%",
-      "required_tokens": ["41.2%"],
-      "gold_context": "EBITDA margin expanded to 41.2% (vs 36.8% in Q2 2026), reflecting operating leverage and optimized model weight caching on edge nodes.",
-      "distractor_contexts": [
-        "Gross margin for legacy hardware maintenance contracts remained flat at 28.4% during the third fiscal quarter.",
-        "Marketing and customer acquisition expenditures totaled $24.6M, representing approximately 13.3% of top-line SaaS recurring subscription volume.",
-        "Depreciation of physical server equipment was recorded at $12.1M under straight-line accounting principles over five-year asset lifecycles.",
-        "Corporate effective tax rate for the trailing twelve months was estimated at 18.5%, benefiting from research and development tax credit allowances.",
-        "Net income for the consolidated enterprise stood at $86.4M after accounting for interest expenses and foreign exchange currency hedging fluctuations."
+      "query": "What was the Q3 Net Income and margin reported by Omega Networks?",
+      "required_tokens": [
+        "114.6",
+        "22.8%"
+      ],
+      "gold_context": "In the recent filing, Omega Networks reported Q3 Net Income of $114.6M (representing an operating margin of 22.8%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.2M across European operations.",
+        "Legacy hardware maintenance service revenue for Omega Networks declined 3.2% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 92.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $2.4M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.2% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $54M for server hardware modernization."
       ]
     },
     {
       "id": "fin_03",
       "category": "financial_tabular",
-      "query": "What is the total amount due on invoice INV-2026-88A and payment deadline?",
-      "expected_fact": "Amount: $14,850.00, Due Date: November 15, 2026",
-      "required_tokens": ["14,850", "November 15, 2026"],
-      "gold_context": "Invoice Ref: INV-2026-88A | Client: Cyberdyne Systems | Total Due: $14,850.00 | Net 30 Due Date: November 15, 2026 | Remit to Account: #8839-4021.",
-      "distractor_contexts": [
-        "Invoice Ref: INV-2026-72B | Client: Wayne Enterprises | Total Due: $8,420.00 | Net 30 Due Date: October 28, 2026 | Remit to Account: #1102-4912.",
-        "Invoice Ref: INV-2026-91C | Client: Stark Industries | Total Due: $32,100.00 | Net 60 Due Date: December 01, 2026 | Remit to Account: #4491-0023.",
-        "Payment receipt voucher REC-441 confirmed settlement of $5,600.00 from Tyrell Corp via ACH transfer on September 12, 2026.",
-        "Vendor purchase order PO-9912 authorized $11,250.00 for office supplies and cloud workstation hardware refreshes across European divisions."
+      "query": "What was the annual gross margin and margin reported by Apex Data?",
+      "required_tokens": [
+        "121.9",
+        "24.2%"
+      ],
+      "gold_context": "In the recent filing, Apex Data reported annual gross margin of $121.9M (representing an operating margin of 24.2%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.3M across European operations.",
+        "Legacy hardware maintenance service revenue for Apex Data declined 3.3% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 93.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $3.6M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.3% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $56M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_04",
+      "category": "financial_tabular",
+      "query": "What was the operating cash flow and margin reported by Cyberdyne Systems?",
+      "required_tokens": [
+        "129.2",
+        "25.6%"
+      ],
+      "gold_context": "In the recent filing, Cyberdyne Systems reported operating cash flow of $129.2M (representing an operating margin of 25.6%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.4M across European operations.",
+        "Legacy hardware maintenance service revenue for Cyberdyne Systems declined 3.4% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 94.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $4.8M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.4% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $58M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_05",
+      "category": "financial_tabular",
+      "query": "What was the Q1 revenue and margin reported by Stark Industries?",
+      "required_tokens": [
+        "136.5",
+        "27.0%"
+      ],
+      "gold_context": "In the recent filing, Stark Industries reported Q1 revenue of $136.5M (representing an operating margin of 27.0%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.5M across European operations.",
+        "Legacy hardware maintenance service revenue for Stark Industries declined 3.5% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 95.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $6.0M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.0% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $60M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_06",
+      "category": "financial_tabular",
+      "query": "What was the Q2 EBITDA and margin reported by Wayne Logistics?",
+      "required_tokens": [
+        "143.8",
+        "28.4%"
+      ],
+      "gold_context": "In the recent filing, Wayne Logistics reported Q2 EBITDA of $143.8M (representing an operating margin of 28.4%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.6M across European operations.",
+        "Legacy hardware maintenance service revenue for Wayne Logistics declined 3.6% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 96.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $7.2M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.1% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $62M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_07",
+      "category": "financial_tabular",
+      "query": "What was the Q3 Net Income and margin reported by Tyrell Corp?",
+      "required_tokens": [
+        "151.1",
+        "29.8%"
+      ],
+      "gold_context": "In the recent filing, Tyrell Corp reported Q3 Net Income of $151.1M (representing an operating margin of 29.8%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.7M across European operations.",
+        "Legacy hardware maintenance service revenue for Tyrell Corp declined 3.7% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 97.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $8.4M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.2% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $64M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_08",
+      "category": "financial_tabular",
+      "query": "What was the annual gross margin and margin reported by Acme Cloud?",
+      "required_tokens": [
+        "158.4",
+        "31.2%"
+      ],
+      "gold_context": "In the recent filing, Acme Cloud reported annual gross margin of $158.4M (representing an operating margin of 31.2%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.8M across European operations.",
+        "Legacy hardware maintenance service revenue for Acme Cloud declined 3.8% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 98.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $9.6M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.3% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $66M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_09",
+      "category": "financial_tabular",
+      "query": "What was the operating cash flow and margin reported by Beta Infrastructure?",
+      "required_tokens": [
+        "165.7",
+        "32.6%"
+      ],
+      "gold_context": "In the recent filing, Beta Infrastructure reported operating cash flow of $165.7M (representing an operating margin of 32.6%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.9M across European operations.",
+        "Legacy hardware maintenance service revenue for Beta Infrastructure declined 3.9% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 99.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $10.8M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.4% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $68M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_10",
+      "category": "financial_tabular",
+      "query": "What was the Q1 revenue and margin reported by Omega Networks?",
+      "required_tokens": [
+        "173.0",
+        "34.0%"
+      ],
+      "gold_context": "In the recent filing, Omega Networks reported Q1 revenue of $173.0M (representing an operating margin of 34.0%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.10M across European operations.",
+        "Legacy hardware maintenance service revenue for Omega Networks declined 3.10% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 90.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $12.0M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.0% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $70M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_11",
+      "category": "financial_tabular",
+      "query": "What was the Q2 EBITDA and margin reported by Apex Data?",
+      "required_tokens": [
+        "180.3",
+        "35.4%"
+      ],
+      "gold_context": "In the recent filing, Apex Data reported Q2 EBITDA of $180.3M (representing an operating margin of 35.4%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.11M across European operations.",
+        "Legacy hardware maintenance service revenue for Apex Data declined 3.11% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 91.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $13.2M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.1% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $72M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_12",
+      "category": "financial_tabular",
+      "query": "What was the Q3 Net Income and margin reported by Cyberdyne Systems?",
+      "required_tokens": [
+        "187.6",
+        "36.8%"
+      ],
+      "gold_context": "In the recent filing, Cyberdyne Systems reported Q3 Net Income of $187.6M (representing an operating margin of 36.8%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.12M across European operations.",
+        "Legacy hardware maintenance service revenue for Cyberdyne Systems declined 3.12% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 92.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $14.4M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.2% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $74M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_13",
+      "category": "financial_tabular",
+      "query": "What was the annual gross margin and margin reported by Stark Industries?",
+      "required_tokens": [
+        "194.9",
+        "38.2%"
+      ],
+      "gold_context": "In the recent filing, Stark Industries reported annual gross margin of $194.9M (representing an operating margin of 38.2%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.13M across European operations.",
+        "Legacy hardware maintenance service revenue for Stark Industries declined 3.13% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 93.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $15.6M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.3% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $76M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_14",
+      "category": "financial_tabular",
+      "query": "What was the operating cash flow and margin reported by Wayne Logistics?",
+      "required_tokens": [
+        "202.2",
+        "39.6%"
+      ],
+      "gold_context": "In the recent filing, Wayne Logistics reported operating cash flow of $202.2M (representing an operating margin of 39.6%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.14M across European operations.",
+        "Legacy hardware maintenance service revenue for Wayne Logistics declined 3.14% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 94.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $16.8M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.4% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $78M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_15",
+      "category": "financial_tabular",
+      "query": "What was the Q1 revenue and margin reported by Tyrell Corp?",
+      "required_tokens": [
+        "209.5",
+        "41.0%"
+      ],
+      "gold_context": "In the recent filing, Tyrell Corp reported Q1 revenue of $209.5M (representing an operating margin of 41.0%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.15M across European operations.",
+        "Legacy hardware maintenance service revenue for Tyrell Corp declined 3.15% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 95.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $18.0M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.0% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $80M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_16",
+      "category": "financial_tabular",
+      "query": "What was the Q2 EBITDA and margin reported by Acme Cloud?",
+      "required_tokens": [
+        "216.8",
+        "42.4%"
+      ],
+      "gold_context": "In the recent filing, Acme Cloud reported Q2 EBITDA of $216.8M (representing an operating margin of 42.4%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.16M across European operations.",
+        "Legacy hardware maintenance service revenue for Acme Cloud declined 3.16% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 96.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $19.2M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.1% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $82M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_17",
+      "category": "financial_tabular",
+      "query": "What was the Q3 Net Income and margin reported by Beta Infrastructure?",
+      "required_tokens": [
+        "224.1",
+        "43.8%"
+      ],
+      "gold_context": "In the recent filing, Beta Infrastructure reported Q3 Net Income of $224.1M (representing an operating margin of 43.8%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.17M across European operations.",
+        "Legacy hardware maintenance service revenue for Beta Infrastructure declined 3.17% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 97.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $20.4M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.2% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $84M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_18",
+      "category": "financial_tabular",
+      "query": "What was the annual gross margin and margin reported by Omega Networks?",
+      "required_tokens": [
+        "231.4",
+        "45.2%"
+      ],
+      "gold_context": "In the recent filing, Omega Networks reported annual gross margin of $231.4M (representing an operating margin of 45.2%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.18M across European operations.",
+        "Legacy hardware maintenance service revenue for Omega Networks declined 3.18% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 98.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $21.6M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.3% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $86M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_19",
+      "category": "financial_tabular",
+      "query": "What was the operating cash flow and margin reported by Apex Data?",
+      "required_tokens": [
+        "238.7",
+        "46.6%"
+      ],
+      "gold_context": "In the recent filing, Apex Data reported operating cash flow of $238.7M (representing an operating margin of 46.6%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.19M across European operations.",
+        "Legacy hardware maintenance service revenue for Apex Data declined 3.19% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 99.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $22.8M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.4% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $88M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_20",
+      "category": "financial_tabular",
+      "query": "What was the Q1 revenue and margin reported by Cyberdyne Systems?",
+      "required_tokens": [
+        "246.0",
+        "48.0%"
+      ],
+      "gold_context": "In the recent filing, Cyberdyne Systems reported Q1 revenue of $246.0M (representing an operating margin of 48.0%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.20M across European operations.",
+        "Legacy hardware maintenance service revenue for Cyberdyne Systems declined 3.20% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 90.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $24.0M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.0% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $90M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_21",
+      "category": "financial_tabular",
+      "query": "What was the Q2 EBITDA and margin reported by Stark Industries?",
+      "required_tokens": [
+        "253.3",
+        "49.4%"
+      ],
+      "gold_context": "In the recent filing, Stark Industries reported Q2 EBITDA of $253.3M (representing an operating margin of 49.4%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.21M across European operations.",
+        "Legacy hardware maintenance service revenue for Stark Industries declined 3.21% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 91.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $25.2M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.1% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $92M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_22",
+      "category": "financial_tabular",
+      "query": "What was the Q3 Net Income and margin reported by Wayne Logistics?",
+      "required_tokens": [
+        "260.6",
+        "50.8%"
+      ],
+      "gold_context": "In the recent filing, Wayne Logistics reported Q3 Net Income of $260.6M (representing an operating margin of 50.8%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.22M across European operations.",
+        "Legacy hardware maintenance service revenue for Wayne Logistics declined 3.22% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 92.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $26.4M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.2% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $94M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_23",
+      "category": "financial_tabular",
+      "query": "What was the annual gross margin and margin reported by Tyrell Corp?",
+      "required_tokens": [
+        "267.9",
+        "52.2%"
+      ],
+      "gold_context": "In the recent filing, Tyrell Corp reported annual gross margin of $267.9M (representing an operating margin of 52.2%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.23M across European operations.",
+        "Legacy hardware maintenance service revenue for Tyrell Corp declined 3.23% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 93.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $27.6M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.3% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $96M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_24",
+      "category": "financial_tabular",
+      "query": "What was the operating cash flow and margin reported by Acme Cloud?",
+      "required_tokens": [
+        "275.2",
+        "53.6%"
+      ],
+      "gold_context": "In the recent filing, Acme Cloud reported operating cash flow of $275.2M (representing an operating margin of 53.6%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.24M across European operations.",
+        "Legacy hardware maintenance service revenue for Acme Cloud declined 3.24% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 94.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $28.8M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.4% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $98M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_25",
+      "category": "financial_tabular",
+      "query": "What was the Q1 revenue and margin reported by Beta Infrastructure?",
+      "required_tokens": [
+        "282.5",
+        "55.0%"
+      ],
+      "gold_context": "In the recent filing, Beta Infrastructure reported Q1 revenue of $282.5M (representing an operating margin of 55.0%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.25M across European operations.",
+        "Legacy hardware maintenance service revenue for Beta Infrastructure declined 3.25% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 95.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $30.0M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.0% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $100M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_26",
+      "category": "financial_tabular",
+      "query": "What was the Q2 EBITDA and margin reported by Omega Networks?",
+      "required_tokens": [
+        "289.8",
+        "56.4%"
+      ],
+      "gold_context": "In the recent filing, Omega Networks reported Q2 EBITDA of $289.8M (representing an operating margin of 56.4%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.26M across European operations.",
+        "Legacy hardware maintenance service revenue for Omega Networks declined 3.26% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 96.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $31.2M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.1% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $102M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_27",
+      "category": "financial_tabular",
+      "query": "What was the Q3 Net Income and margin reported by Apex Data?",
+      "required_tokens": [
+        "297.1",
+        "57.8%"
+      ],
+      "gold_context": "In the recent filing, Apex Data reported Q3 Net Income of $297.1M (representing an operating margin of 57.8%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.27M across European operations.",
+        "Legacy hardware maintenance service revenue for Apex Data declined 3.27% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 97.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $32.4M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.2% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $104M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_28",
+      "category": "financial_tabular",
+      "query": "What was the annual gross margin and margin reported by Cyberdyne Systems?",
+      "required_tokens": [
+        "304.4",
+        "59.2%"
+      ],
+      "gold_context": "In the recent filing, Cyberdyne Systems reported annual gross margin of $304.4M (representing an operating margin of 59.2%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.28M across European operations.",
+        "Legacy hardware maintenance service revenue for Cyberdyne Systems declined 3.28% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 98.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $33.6M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.3% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $106M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_29",
+      "category": "financial_tabular",
+      "query": "What was the operating cash flow and margin reported by Stark Industries?",
+      "required_tokens": [
+        "311.7",
+        "60.6%"
+      ],
+      "gold_context": "In the recent filing, Stark Industries reported operating cash flow of $311.7M (representing an operating margin of 60.6%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.29M across European operations.",
+        "Legacy hardware maintenance service revenue for Stark Industries declined 3.29% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 99.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $34.8M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.4% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $108M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_30",
+      "category": "financial_tabular",
+      "query": "What was the Q1 revenue and margin reported by Wayne Logistics?",
+      "required_tokens": [
+        "319.0",
+        "62.0%"
+      ],
+      "gold_context": "In the recent filing, Wayne Logistics reported Q1 revenue of $319.0M (representing an operating margin of 62.0%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.30M across European operations.",
+        "Legacy hardware maintenance service revenue for Wayne Logistics declined 3.30% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 90.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $36.0M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.0% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $110M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_31",
+      "category": "financial_tabular",
+      "query": "What was the Q2 EBITDA and margin reported by Tyrell Corp?",
+      "required_tokens": [
+        "326.3",
+        "63.4%"
+      ],
+      "gold_context": "In the recent filing, Tyrell Corp reported Q2 EBITDA of $326.3M (representing an operating margin of 63.4%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.31M across European operations.",
+        "Legacy hardware maintenance service revenue for Tyrell Corp declined 3.31% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 91.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $37.2M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.1% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $112M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_32",
+      "category": "financial_tabular",
+      "query": "What was the Q3 Net Income and margin reported by Acme Cloud?",
+      "required_tokens": [
+        "333.6",
+        "64.8%"
+      ],
+      "gold_context": "In the recent filing, Acme Cloud reported Q3 Net Income of $333.6M (representing an operating margin of 64.8%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.32M across European operations.",
+        "Legacy hardware maintenance service revenue for Acme Cloud declined 3.32% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 92.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $38.4M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.2% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $114M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_33",
+      "category": "financial_tabular",
+      "query": "What was the annual gross margin and margin reported by Beta Infrastructure?",
+      "required_tokens": [
+        "340.9",
+        "66.2%"
+      ],
+      "gold_context": "In the recent filing, Beta Infrastructure reported annual gross margin of $340.9M (representing an operating margin of 66.2%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.33M across European operations.",
+        "Legacy hardware maintenance service revenue for Beta Infrastructure declined 3.33% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 93.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $39.6M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.3% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $116M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_34",
+      "category": "financial_tabular",
+      "query": "What was the operating cash flow and margin reported by Omega Networks?",
+      "required_tokens": [
+        "348.2",
+        "67.6%"
+      ],
+      "gold_context": "In the recent filing, Omega Networks reported operating cash flow of $348.2M (representing an operating margin of 67.6%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.34M across European operations.",
+        "Legacy hardware maintenance service revenue for Omega Networks declined 3.34% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 94.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $40.8M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.4% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $118M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_35",
+      "category": "financial_tabular",
+      "query": "What was the Q1 revenue and margin reported by Apex Data?",
+      "required_tokens": [
+        "355.5",
+        "69.0%"
+      ],
+      "gold_context": "In the recent filing, Apex Data reported Q1 revenue of $355.5M (representing an operating margin of 69.0%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.35M across European operations.",
+        "Legacy hardware maintenance service revenue for Apex Data declined 3.35% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 95.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $42.0M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.0% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $120M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_36",
+      "category": "financial_tabular",
+      "query": "What was the Q2 EBITDA and margin reported by Cyberdyne Systems?",
+      "required_tokens": [
+        "362.8",
+        "70.4%"
+      ],
+      "gold_context": "In the recent filing, Cyberdyne Systems reported Q2 EBITDA of $362.8M (representing an operating margin of 70.4%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.36M across European operations.",
+        "Legacy hardware maintenance service revenue for Cyberdyne Systems declined 3.36% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 96.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $43.2M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.1% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $122M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_37",
+      "category": "financial_tabular",
+      "query": "What was the Q3 Net Income and margin reported by Stark Industries?",
+      "required_tokens": [
+        "370.1",
+        "71.8%"
+      ],
+      "gold_context": "In the recent filing, Stark Industries reported Q3 Net Income of $370.1M (representing an operating margin of 71.8%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.37M across European operations.",
+        "Legacy hardware maintenance service revenue for Stark Industries declined 3.37% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 97.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $44.4M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.2% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $124M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_38",
+      "category": "financial_tabular",
+      "query": "What was the annual gross margin and margin reported by Wayne Logistics?",
+      "required_tokens": [
+        "377.4",
+        "73.2%"
+      ],
+      "gold_context": "In the recent filing, Wayne Logistics reported annual gross margin of $377.4M (representing an operating margin of 73.2%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.38M across European operations.",
+        "Legacy hardware maintenance service revenue for Wayne Logistics declined 3.38% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 98.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $45.6M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.3% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $126M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_39",
+      "category": "financial_tabular",
+      "query": "What was the operating cash flow and margin reported by Tyrell Corp?",
+      "required_tokens": [
+        "384.7",
+        "74.6%"
+      ],
+      "gold_context": "In the recent filing, Tyrell Corp reported operating cash flow of $384.7M (representing an operating margin of 74.6%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.39M across European operations.",
+        "Legacy hardware maintenance service revenue for Tyrell Corp declined 3.39% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 99.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $46.8M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.4% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $128M for server hardware modernization."
+      ]
+    },
+    {
+      "id": "fin_40",
+      "category": "financial_tabular",
+      "query": "What was the Q1 revenue and margin reported by Acme Cloud?",
+      "required_tokens": [
+        "392.0",
+        "76.0%"
+      ],
+      "gold_context": "In the recent filing, Acme Cloud reported Q1 revenue of $392.0M (representing an operating margin of 76.0%), driven by regional expansion.",
+      "distractors": [
+        "Consolidated global expenses for general enterprise administration totaled $42.40M across European operations.",
+        "Legacy hardware maintenance service revenue for Acme Cloud declined 3.40% YoY due to cloud infrastructure migration.",
+        "Total accounts payable balances settled in under 30 days reached 90.4% across all commercial vendor accounts.",
+        "Tax amortization benefits for research and development totaled $48.0M under international corporate accounting standards.",
+        "Treasury investments in short-term government bonds maintained yield to maturity of 4.0% throughout the fiscal period.",
+        "Capital expenditure projections for fiscal year 2027 allocated $130M for server hardware modernization."
       ]
     },
     {
       "id": "tech_01",
       "category": "technical_api",
-      "query": "What exception does `HybridEngine.fuse_ranks()` raise when input candidate lists have mismatched schema keys?",
-      "expected_fact": "SchemaMismatchError",
-      "required_tokens": ["SchemaMismatchError"],
-      "gold_context": "When candidate dictionaries passed into `HybridEngine.fuse_ranks()` lack the mandatory 'id' or 'score' keys, the engine validates input structures and immediately raises `SchemaMismatchError`.",
-      "distractor_contexts": [
-        "If the connection string passed to `SQLiteBackend.connect()` is invalid or points to an inaccessible directory path, the driver raises `DatabaseConnectionError`.",
-        "When maximum token capacity is exceeded during text serialization, the tokenizer issues a `TokenLimitWarning` and automatically truncates trailing characters.",
-        "If an invalid quantization type string is supplied to `EngineConfig.from_yaml()`, the loader falls back to default INT4 precision with an informative log message.",
-        "Network timeout during remote model artifact fetching triggers `ArtifactDownloadTimeout` after 3 retries with exponential backoff."
+      "query": "What exception is raised by `BM25Index.configure()` on invalid inputs and what is the default `k_1`?",
+      "required_tokens": [
+        "IndexOutOfRangeError",
+        "5"
+      ],
+      "gold_context": "In `BM25Index.configure()`, passing an invalid parameter configuration or conflicting type raises `IndexOutOfRangeError`. Default value for `k_1` is 5.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
       ]
     },
     {
       "id": "tech_02",
       "category": "technical_api",
-      "query": "What is the default value of the `k` smoothing parameter in `reciprocal_rank_fusion`?",
-      "expected_fact": "k = 60",
-      "required_tokens": ["60"],
-      "gold_context": "In `slm_rag.core.fusion.reciprocal_rank_fusion(dense, sparse, k=60)`, the constant `k` is defaulted to 60 as recommended by Cormack et al. to avoid ranking bias.",
-      "distractor_contexts": [
-        "The BM25 term frequency saturation parameter `k1` defaults to 1.5, balancing term frequency influence against document length normalization.",
-        "In the HNSW approximate nearest neighbors index constructor, `ef_construction` is initialized to 128 to ensure high graph connectivity during vector indexing.",
-        "The ONNX Runtime session thread pool count defaults to `os.cpu_count() // 2` to avoid context thrashing on hyperthreaded CPU cores.",
-        "Embedding vector batching size in `BGEEmbeddingEngine` defaults to 32 items per inference forward pass."
+      "query": "What exception is raised by `ONNXSessionManager.configure()` on invalid inputs and what is the default `k_2`?",
+      "required_tokens": [
+        "SessionInitializationError",
+        "10"
+      ],
+      "gold_context": "In `ONNXSessionManager.configure()`, passing an invalid parameter configuration or conflicting type raises `SessionInitializationError`. Default value for `k_2` is 10.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_03",
+      "category": "technical_api",
+      "query": "What exception is raised by `TokenPruner.configure()` on invalid inputs and what is the default `k_3`?",
+      "required_tokens": [
+        "InvalidTokenException",
+        "15"
+      ],
+      "gold_context": "In `TokenPruner.configure()`, passing an invalid parameter configuration or conflicting type raises `InvalidTokenException`. Default value for `k_3` is 15.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_04",
+      "category": "technical_api",
+      "query": "What exception is raised by `RRFEngine.configure()` on invalid inputs and what is the default `k_4`?",
+      "required_tokens": [
+        "QuantizationFormatError",
+        "20"
+      ],
+      "gold_context": "In `RRFEngine.configure()`, passing an invalid parameter configuration or conflicting type raises `QuantizationFormatError`. Default value for `k_4` is 20.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_05",
+      "category": "technical_api",
+      "query": "What exception is raised by `VectorStore.configure()` on invalid inputs and what is the default `k_5`?",
+      "required_tokens": [
+        "MemoryLimitExceeded",
+        "25"
+      ],
+      "gold_context": "In `VectorStore.configure()`, passing an invalid parameter configuration or conflicting type raises `MemoryLimitExceeded`. Default value for `k_5` is 25.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_06",
+      "category": "technical_api",
+      "query": "What exception is raised by `SQLiteManager.configure()` on invalid inputs and what is the default `k_6`?",
+      "required_tokens": [
+        "SchemaMismatchError",
+        "30"
+      ],
+      "gold_context": "In `SQLiteManager.configure()`, passing an invalid parameter configuration or conflicting type raises `SchemaMismatchError`. Default value for `k_6` is 30.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_07",
+      "category": "technical_api",
+      "query": "What exception is raised by `ContextDistiller.configure()` on invalid inputs and what is the default `k_7`?",
+      "required_tokens": [
+        "IndexOutOfRangeError",
+        "35"
+      ],
+      "gold_context": "In `ContextDistiller.configure()`, passing an invalid parameter configuration or conflicting type raises `IndexOutOfRangeError`. Default value for `k_7` is 35.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_08",
+      "category": "technical_api",
+      "query": "What exception is raised by `HybridRetriever.configure()` on invalid inputs and what is the default `k_8`?",
+      "required_tokens": [
+        "SessionInitializationError",
+        "40"
+      ],
+      "gold_context": "In `HybridRetriever.configure()`, passing an invalid parameter configuration or conflicting type raises `SessionInitializationError`. Default value for `k_8` is 40.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_09",
+      "category": "technical_api",
+      "query": "What exception is raised by `BM25Index.configure()` on invalid inputs and what is the default `k_9`?",
+      "required_tokens": [
+        "InvalidTokenException",
+        "45"
+      ],
+      "gold_context": "In `BM25Index.configure()`, passing an invalid parameter configuration or conflicting type raises `InvalidTokenException`. Default value for `k_9` is 45.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_10",
+      "category": "technical_api",
+      "query": "What exception is raised by `ONNXSessionManager.configure()` on invalid inputs and what is the default `k_10`?",
+      "required_tokens": [
+        "QuantizationFormatError",
+        "50"
+      ],
+      "gold_context": "In `ONNXSessionManager.configure()`, passing an invalid parameter configuration or conflicting type raises `QuantizationFormatError`. Default value for `k_10` is 50.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_11",
+      "category": "technical_api",
+      "query": "What exception is raised by `TokenPruner.configure()` on invalid inputs and what is the default `k_11`?",
+      "required_tokens": [
+        "MemoryLimitExceeded",
+        "55"
+      ],
+      "gold_context": "In `TokenPruner.configure()`, passing an invalid parameter configuration or conflicting type raises `MemoryLimitExceeded`. Default value for `k_11` is 55.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_12",
+      "category": "technical_api",
+      "query": "What exception is raised by `RRFEngine.configure()` on invalid inputs and what is the default `k_12`?",
+      "required_tokens": [
+        "SchemaMismatchError",
+        "60"
+      ],
+      "gold_context": "In `RRFEngine.configure()`, passing an invalid parameter configuration or conflicting type raises `SchemaMismatchError`. Default value for `k_12` is 60.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_13",
+      "category": "technical_api",
+      "query": "What exception is raised by `VectorStore.configure()` on invalid inputs and what is the default `k_13`?",
+      "required_tokens": [
+        "IndexOutOfRangeError",
+        "65"
+      ],
+      "gold_context": "In `VectorStore.configure()`, passing an invalid parameter configuration or conflicting type raises `IndexOutOfRangeError`. Default value for `k_13` is 65.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_14",
+      "category": "technical_api",
+      "query": "What exception is raised by `SQLiteManager.configure()` on invalid inputs and what is the default `k_14`?",
+      "required_tokens": [
+        "SessionInitializationError",
+        "70"
+      ],
+      "gold_context": "In `SQLiteManager.configure()`, passing an invalid parameter configuration or conflicting type raises `SessionInitializationError`. Default value for `k_14` is 70.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_15",
+      "category": "technical_api",
+      "query": "What exception is raised by `ContextDistiller.configure()` on invalid inputs and what is the default `k_15`?",
+      "required_tokens": [
+        "InvalidTokenException",
+        "75"
+      ],
+      "gold_context": "In `ContextDistiller.configure()`, passing an invalid parameter configuration or conflicting type raises `InvalidTokenException`. Default value for `k_15` is 75.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_16",
+      "category": "technical_api",
+      "query": "What exception is raised by `HybridRetriever.configure()` on invalid inputs and what is the default `k_16`?",
+      "required_tokens": [
+        "QuantizationFormatError",
+        "80"
+      ],
+      "gold_context": "In `HybridRetriever.configure()`, passing an invalid parameter configuration or conflicting type raises `QuantizationFormatError`. Default value for `k_16` is 80.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_17",
+      "category": "technical_api",
+      "query": "What exception is raised by `BM25Index.configure()` on invalid inputs and what is the default `k_17`?",
+      "required_tokens": [
+        "MemoryLimitExceeded",
+        "85"
+      ],
+      "gold_context": "In `BM25Index.configure()`, passing an invalid parameter configuration or conflicting type raises `MemoryLimitExceeded`. Default value for `k_17` is 85.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_18",
+      "category": "technical_api",
+      "query": "What exception is raised by `ONNXSessionManager.configure()` on invalid inputs and what is the default `k_18`?",
+      "required_tokens": [
+        "SchemaMismatchError",
+        "90"
+      ],
+      "gold_context": "In `ONNXSessionManager.configure()`, passing an invalid parameter configuration or conflicting type raises `SchemaMismatchError`. Default value for `k_18` is 90.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_19",
+      "category": "technical_api",
+      "query": "What exception is raised by `TokenPruner.configure()` on invalid inputs and what is the default `k_19`?",
+      "required_tokens": [
+        "IndexOutOfRangeError",
+        "95"
+      ],
+      "gold_context": "In `TokenPruner.configure()`, passing an invalid parameter configuration or conflicting type raises `IndexOutOfRangeError`. Default value for `k_19` is 95.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_20",
+      "category": "technical_api",
+      "query": "What exception is raised by `RRFEngine.configure()` on invalid inputs and what is the default `k_20`?",
+      "required_tokens": [
+        "SessionInitializationError",
+        "100"
+      ],
+      "gold_context": "In `RRFEngine.configure()`, passing an invalid parameter configuration or conflicting type raises `SessionInitializationError`. Default value for `k_20` is 100.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_21",
+      "category": "technical_api",
+      "query": "What exception is raised by `VectorStore.configure()` on invalid inputs and what is the default `k_21`?",
+      "required_tokens": [
+        "InvalidTokenException",
+        "105"
+      ],
+      "gold_context": "In `VectorStore.configure()`, passing an invalid parameter configuration or conflicting type raises `InvalidTokenException`. Default value for `k_21` is 105.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_22",
+      "category": "technical_api",
+      "query": "What exception is raised by `SQLiteManager.configure()` on invalid inputs and what is the default `k_22`?",
+      "required_tokens": [
+        "QuantizationFormatError",
+        "110"
+      ],
+      "gold_context": "In `SQLiteManager.configure()`, passing an invalid parameter configuration or conflicting type raises `QuantizationFormatError`. Default value for `k_22` is 110.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_23",
+      "category": "technical_api",
+      "query": "What exception is raised by `ContextDistiller.configure()` on invalid inputs and what is the default `k_23`?",
+      "required_tokens": [
+        "MemoryLimitExceeded",
+        "115"
+      ],
+      "gold_context": "In `ContextDistiller.configure()`, passing an invalid parameter configuration or conflicting type raises `MemoryLimitExceeded`. Default value for `k_23` is 115.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_24",
+      "category": "technical_api",
+      "query": "What exception is raised by `HybridRetriever.configure()` on invalid inputs and what is the default `k_24`?",
+      "required_tokens": [
+        "SchemaMismatchError",
+        "120"
+      ],
+      "gold_context": "In `HybridRetriever.configure()`, passing an invalid parameter configuration or conflicting type raises `SchemaMismatchError`. Default value for `k_24` is 120.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_25",
+      "category": "technical_api",
+      "query": "What exception is raised by `BM25Index.configure()` on invalid inputs and what is the default `k_25`?",
+      "required_tokens": [
+        "IndexOutOfRangeError",
+        "125"
+      ],
+      "gold_context": "In `BM25Index.configure()`, passing an invalid parameter configuration or conflicting type raises `IndexOutOfRangeError`. Default value for `k_25` is 125.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_26",
+      "category": "technical_api",
+      "query": "What exception is raised by `ONNXSessionManager.configure()` on invalid inputs and what is the default `k_26`?",
+      "required_tokens": [
+        "SessionInitializationError",
+        "130"
+      ],
+      "gold_context": "In `ONNXSessionManager.configure()`, passing an invalid parameter configuration or conflicting type raises `SessionInitializationError`. Default value for `k_26` is 130.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_27",
+      "category": "technical_api",
+      "query": "What exception is raised by `TokenPruner.configure()` on invalid inputs and what is the default `k_27`?",
+      "required_tokens": [
+        "InvalidTokenException",
+        "135"
+      ],
+      "gold_context": "In `TokenPruner.configure()`, passing an invalid parameter configuration or conflicting type raises `InvalidTokenException`. Default value for `k_27` is 135.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_28",
+      "category": "technical_api",
+      "query": "What exception is raised by `RRFEngine.configure()` on invalid inputs and what is the default `k_28`?",
+      "required_tokens": [
+        "QuantizationFormatError",
+        "140"
+      ],
+      "gold_context": "In `RRFEngine.configure()`, passing an invalid parameter configuration or conflicting type raises `QuantizationFormatError`. Default value for `k_28` is 140.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_29",
+      "category": "technical_api",
+      "query": "What exception is raised by `VectorStore.configure()` on invalid inputs and what is the default `k_29`?",
+      "required_tokens": [
+        "MemoryLimitExceeded",
+        "145"
+      ],
+      "gold_context": "In `VectorStore.configure()`, passing an invalid parameter configuration or conflicting type raises `MemoryLimitExceeded`. Default value for `k_29` is 145.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_30",
+      "category": "technical_api",
+      "query": "What exception is raised by `SQLiteManager.configure()` on invalid inputs and what is the default `k_30`?",
+      "required_tokens": [
+        "SchemaMismatchError",
+        "150"
+      ],
+      "gold_context": "In `SQLiteManager.configure()`, passing an invalid parameter configuration or conflicting type raises `SchemaMismatchError`. Default value for `k_30` is 150.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_31",
+      "category": "technical_api",
+      "query": "What exception is raised by `ContextDistiller.configure()` on invalid inputs and what is the default `k_31`?",
+      "required_tokens": [
+        "IndexOutOfRangeError",
+        "155"
+      ],
+      "gold_context": "In `ContextDistiller.configure()`, passing an invalid parameter configuration or conflicting type raises `IndexOutOfRangeError`. Default value for `k_31` is 155.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_32",
+      "category": "technical_api",
+      "query": "What exception is raised by `HybridRetriever.configure()` on invalid inputs and what is the default `k_32`?",
+      "required_tokens": [
+        "SessionInitializationError",
+        "160"
+      ],
+      "gold_context": "In `HybridRetriever.configure()`, passing an invalid parameter configuration or conflicting type raises `SessionInitializationError`. Default value for `k_32` is 160.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_33",
+      "category": "technical_api",
+      "query": "What exception is raised by `BM25Index.configure()` on invalid inputs and what is the default `k_33`?",
+      "required_tokens": [
+        "InvalidTokenException",
+        "165"
+      ],
+      "gold_context": "In `BM25Index.configure()`, passing an invalid parameter configuration or conflicting type raises `InvalidTokenException`. Default value for `k_33` is 165.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_34",
+      "category": "technical_api",
+      "query": "What exception is raised by `ONNXSessionManager.configure()` on invalid inputs and what is the default `k_34`?",
+      "required_tokens": [
+        "QuantizationFormatError",
+        "170"
+      ],
+      "gold_context": "In `ONNXSessionManager.configure()`, passing an invalid parameter configuration or conflicting type raises `QuantizationFormatError`. Default value for `k_34` is 170.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_35",
+      "category": "technical_api",
+      "query": "What exception is raised by `TokenPruner.configure()` on invalid inputs and what is the default `k_35`?",
+      "required_tokens": [
+        "MemoryLimitExceeded",
+        "175"
+      ],
+      "gold_context": "In `TokenPruner.configure()`, passing an invalid parameter configuration or conflicting type raises `MemoryLimitExceeded`. Default value for `k_35` is 175.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_36",
+      "category": "technical_api",
+      "query": "What exception is raised by `RRFEngine.configure()` on invalid inputs and what is the default `k_36`?",
+      "required_tokens": [
+        "SchemaMismatchError",
+        "180"
+      ],
+      "gold_context": "In `RRFEngine.configure()`, passing an invalid parameter configuration or conflicting type raises `SchemaMismatchError`. Default value for `k_36` is 180.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_37",
+      "category": "technical_api",
+      "query": "What exception is raised by `VectorStore.configure()` on invalid inputs and what is the default `k_37`?",
+      "required_tokens": [
+        "IndexOutOfRangeError",
+        "185"
+      ],
+      "gold_context": "In `VectorStore.configure()`, passing an invalid parameter configuration or conflicting type raises `IndexOutOfRangeError`. Default value for `k_37` is 185.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_38",
+      "category": "technical_api",
+      "query": "What exception is raised by `SQLiteManager.configure()` on invalid inputs and what is the default `k_38`?",
+      "required_tokens": [
+        "SessionInitializationError",
+        "190"
+      ],
+      "gold_context": "In `SQLiteManager.configure()`, passing an invalid parameter configuration or conflicting type raises `SessionInitializationError`. Default value for `k_38` is 190.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_39",
+      "category": "technical_api",
+      "query": "What exception is raised by `ContextDistiller.configure()` on invalid inputs and what is the default `k_39`?",
+      "required_tokens": [
+        "InvalidTokenException",
+        "195"
+      ],
+      "gold_context": "In `ContextDistiller.configure()`, passing an invalid parameter configuration or conflicting type raises `InvalidTokenException`. Default value for `k_39` is 195.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
+      ]
+    },
+    {
+      "id": "tech_40",
+      "category": "technical_api",
+      "query": "What exception is raised by `HybridRetriever.configure()` on invalid inputs and what is the default `k_40`?",
+      "required_tokens": [
+        "QuantizationFormatError",
+        "200"
+      ],
+      "gold_context": "In `HybridRetriever.configure()`, passing an invalid parameter configuration or conflicting type raises `QuantizationFormatError`. Default value for `k_40` is 200.",
+      "distractors": [
+        "To optimize CPU execution threads, set `thread_pool_size = os.cpu_count() // 2` during session instantiation.",
+        "Network socket timeouts on remote gRPC endpoints trigger `RemoteConnectionTimeout` after 3 consecutive retry attempts.",
+        "When memory-mapped storage encounters a disk read error, the storage engine falls back to in-memory vector indexing.",
+        "The quantization precision parameter in `EngineConfig` supports INT4, INT8, and FP16 data representations.",
+        "Logging verbosity can be adjusted using `logger.setLevel(logging.INFO)` for production monitoring pipelines."
       ]
     },
     {
       "id": "policy_01",
       "category": "enterprise_policy",
-      "query": "Under Section 4.3 of the Data Retention Policy, how long are air-gapped system inference logs retained before automatic purging?",
-      "expected_fact": "90 calendar days",
-      "required_tokens": ["90", "days"],
-      "gold_context": "Section 4.3 (Air-Gapped Audit Trails): All local telemetry logs and inference event records stored on air-gapped appliances must be retained for exactly 90 calendar days before automated cryptographic purging.",
-      "distractor_contexts": [
-        "Section 2.1 (Customer Account Information): Personally identifiable information (PII) must be retained for 7 years following contract termination to comply with financial auditing regulations.",
-        "Section 6.8 (Visitor Physical Badges): Building access logs and visitor identity card scans are retained for 30 consecutive days by physical security teams.",
-        "Section 8.2 (Password Rotation Schedules): Administrative credentials on production compute nodes must be rotated every 60 days using hardware security keys.",
-        "Section 5.1 (Source Code Repositories): Git commit histories and artifact archives are stored indefinitely across immutable backup storage vaults."
+      "query": "Under Section 1.2 of the Access Control Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "33",
+        "days"
+      ],
+      "gold_context": "Under Section 1.2 (Access Control Policy), all internal compliance records and transaction logs must be securely archived for 33 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_02",
+      "category": "enterprise_policy",
+      "query": "Under Section 2.2 of the Audit Logging Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "36",
+        "days"
+      ],
+      "gold_context": "Under Section 2.2 (Audit Logging Policy), all internal compliance records and transaction logs must be securely archived for 36 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_03",
+      "category": "enterprise_policy",
+      "query": "Under Section 3.2 of the Encryption Standards Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "39",
+        "days"
+      ],
+      "gold_context": "Under Section 3.2 (Encryption Standards Policy), all internal compliance records and transaction logs must be securely archived for 39 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_04",
+      "category": "enterprise_policy",
+      "query": "Under Section 4.2 of the Incident Response Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "42",
+        "days"
+      ],
+      "gold_context": "Under Section 4.2 (Incident Response Policy), all internal compliance records and transaction logs must be securely archived for 42 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_05",
+      "category": "enterprise_policy",
+      "query": "Under Section 5.2 of the Hardware Discard Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "45",
+        "days"
+      ],
+      "gold_context": "Under Section 5.2 (Hardware Discard Policy), all internal compliance records and transaction logs must be securely archived for 45 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_06",
+      "category": "enterprise_policy",
+      "query": "Under Section 6.2 of the Network Segmentation Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "48",
+        "days"
+      ],
+      "gold_context": "Under Section 6.2 (Network Segmentation Policy), all internal compliance records and transaction logs must be securely archived for 48 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_07",
+      "category": "enterprise_policy",
+      "query": "Under Section 7.2 of the Data Retention Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "51",
+        "days"
+      ],
+      "gold_context": "Under Section 7.2 (Data Retention Policy), all internal compliance records and transaction logs must be securely archived for 51 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_08",
+      "category": "enterprise_policy",
+      "query": "Under Section 8.2 of the Access Control Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "54",
+        "days"
+      ],
+      "gold_context": "Under Section 8.2 (Access Control Policy), all internal compliance records and transaction logs must be securely archived for 54 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_09",
+      "category": "enterprise_policy",
+      "query": "Under Section 9.2 of the Audit Logging Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "57",
+        "days"
+      ],
+      "gold_context": "Under Section 9.2 (Audit Logging Policy), all internal compliance records and transaction logs must be securely archived for 57 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_10",
+      "category": "enterprise_policy",
+      "query": "Under Section 10.2 of the Encryption Standards Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "60",
+        "days"
+      ],
+      "gold_context": "Under Section 10.2 (Encryption Standards Policy), all internal compliance records and transaction logs must be securely archived for 60 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_11",
+      "category": "enterprise_policy",
+      "query": "Under Section 11.2 of the Incident Response Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "63",
+        "days"
+      ],
+      "gold_context": "Under Section 11.2 (Incident Response Policy), all internal compliance records and transaction logs must be securely archived for 63 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_12",
+      "category": "enterprise_policy",
+      "query": "Under Section 12.2 of the Hardware Discard Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "66",
+        "days"
+      ],
+      "gold_context": "Under Section 12.2 (Hardware Discard Policy), all internal compliance records and transaction logs must be securely archived for 66 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_13",
+      "category": "enterprise_policy",
+      "query": "Under Section 13.2 of the Network Segmentation Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "69",
+        "days"
+      ],
+      "gold_context": "Under Section 13.2 (Network Segmentation Policy), all internal compliance records and transaction logs must be securely archived for 69 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_14",
+      "category": "enterprise_policy",
+      "query": "Under Section 14.2 of the Data Retention Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "72",
+        "days"
+      ],
+      "gold_context": "Under Section 14.2 (Data Retention Policy), all internal compliance records and transaction logs must be securely archived for 72 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_15",
+      "category": "enterprise_policy",
+      "query": "Under Section 15.2 of the Access Control Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "75",
+        "days"
+      ],
+      "gold_context": "Under Section 15.2 (Access Control Policy), all internal compliance records and transaction logs must be securely archived for 75 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_16",
+      "category": "enterprise_policy",
+      "query": "Under Section 16.2 of the Audit Logging Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "78",
+        "days"
+      ],
+      "gold_context": "Under Section 16.2 (Audit Logging Policy), all internal compliance records and transaction logs must be securely archived for 78 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_17",
+      "category": "enterprise_policy",
+      "query": "Under Section 17.2 of the Encryption Standards Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "81",
+        "days"
+      ],
+      "gold_context": "Under Section 17.2 (Encryption Standards Policy), all internal compliance records and transaction logs must be securely archived for 81 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_18",
+      "category": "enterprise_policy",
+      "query": "Under Section 18.2 of the Incident Response Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "84",
+        "days"
+      ],
+      "gold_context": "Under Section 18.2 (Incident Response Policy), all internal compliance records and transaction logs must be securely archived for 84 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_19",
+      "category": "enterprise_policy",
+      "query": "Under Section 19.2 of the Hardware Discard Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "87",
+        "days"
+      ],
+      "gold_context": "Under Section 19.2 (Hardware Discard Policy), all internal compliance records and transaction logs must be securely archived for 87 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_20",
+      "category": "enterprise_policy",
+      "query": "Under Section 20.2 of the Network Segmentation Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "90",
+        "days"
+      ],
+      "gold_context": "Under Section 20.2 (Network Segmentation Policy), all internal compliance records and transaction logs must be securely archived for 90 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_21",
+      "category": "enterprise_policy",
+      "query": "Under Section 21.2 of the Data Retention Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "93",
+        "days"
+      ],
+      "gold_context": "Under Section 21.2 (Data Retention Policy), all internal compliance records and transaction logs must be securely archived for 93 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_22",
+      "category": "enterprise_policy",
+      "query": "Under Section 22.2 of the Access Control Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "96",
+        "days"
+      ],
+      "gold_context": "Under Section 22.2 (Access Control Policy), all internal compliance records and transaction logs must be securely archived for 96 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_23",
+      "category": "enterprise_policy",
+      "query": "Under Section 23.2 of the Audit Logging Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "99",
+        "days"
+      ],
+      "gold_context": "Under Section 23.2 (Audit Logging Policy), all internal compliance records and transaction logs must be securely archived for 99 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_24",
+      "category": "enterprise_policy",
+      "query": "Under Section 24.2 of the Encryption Standards Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "102",
+        "days"
+      ],
+      "gold_context": "Under Section 24.2 (Encryption Standards Policy), all internal compliance records and transaction logs must be securely archived for 102 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_25",
+      "category": "enterprise_policy",
+      "query": "Under Section 25.2 of the Incident Response Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "105",
+        "days"
+      ],
+      "gold_context": "Under Section 25.2 (Incident Response Policy), all internal compliance records and transaction logs must be securely archived for 105 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_26",
+      "category": "enterprise_policy",
+      "query": "Under Section 26.2 of the Hardware Discard Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "108",
+        "days"
+      ],
+      "gold_context": "Under Section 26.2 (Hardware Discard Policy), all internal compliance records and transaction logs must be securely archived for 108 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_27",
+      "category": "enterprise_policy",
+      "query": "Under Section 27.2 of the Network Segmentation Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "111",
+        "days"
+      ],
+      "gold_context": "Under Section 27.2 (Network Segmentation Policy), all internal compliance records and transaction logs must be securely archived for 111 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_28",
+      "category": "enterprise_policy",
+      "query": "Under Section 28.2 of the Data Retention Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "114",
+        "days"
+      ],
+      "gold_context": "Under Section 28.2 (Data Retention Policy), all internal compliance records and transaction logs must be securely archived for 114 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_29",
+      "category": "enterprise_policy",
+      "query": "Under Section 29.2 of the Access Control Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "117",
+        "days"
+      ],
+      "gold_context": "Under Section 29.2 (Access Control Policy), all internal compliance records and transaction logs must be securely archived for 117 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_30",
+      "category": "enterprise_policy",
+      "query": "Under Section 30.2 of the Audit Logging Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "120",
+        "days"
+      ],
+      "gold_context": "Under Section 30.2 (Audit Logging Policy), all internal compliance records and transaction logs must be securely archived for 120 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_31",
+      "category": "enterprise_policy",
+      "query": "Under Section 31.2 of the Encryption Standards Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "123",
+        "days"
+      ],
+      "gold_context": "Under Section 31.2 (Encryption Standards Policy), all internal compliance records and transaction logs must be securely archived for 123 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_32",
+      "category": "enterprise_policy",
+      "query": "Under Section 32.2 of the Incident Response Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "126",
+        "days"
+      ],
+      "gold_context": "Under Section 32.2 (Incident Response Policy), all internal compliance records and transaction logs must be securely archived for 126 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_33",
+      "category": "enterprise_policy",
+      "query": "Under Section 33.2 of the Hardware Discard Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "129",
+        "days"
+      ],
+      "gold_context": "Under Section 33.2 (Hardware Discard Policy), all internal compliance records and transaction logs must be securely archived for 129 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_34",
+      "category": "enterprise_policy",
+      "query": "Under Section 34.2 of the Network Segmentation Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "132",
+        "days"
+      ],
+      "gold_context": "Under Section 34.2 (Network Segmentation Policy), all internal compliance records and transaction logs must be securely archived for 132 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_35",
+      "category": "enterprise_policy",
+      "query": "Under Section 35.2 of the Data Retention Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "135",
+        "days"
+      ],
+      "gold_context": "Under Section 35.2 (Data Retention Policy), all internal compliance records and transaction logs must be securely archived for 135 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_36",
+      "category": "enterprise_policy",
+      "query": "Under Section 36.2 of the Access Control Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "138",
+        "days"
+      ],
+      "gold_context": "Under Section 36.2 (Access Control Policy), all internal compliance records and transaction logs must be securely archived for 138 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_37",
+      "category": "enterprise_policy",
+      "query": "Under Section 37.2 of the Audit Logging Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "141",
+        "days"
+      ],
+      "gold_context": "Under Section 37.2 (Audit Logging Policy), all internal compliance records and transaction logs must be securely archived for 141 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_38",
+      "category": "enterprise_policy",
+      "query": "Under Section 38.2 of the Encryption Standards Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "144",
+        "days"
+      ],
+      "gold_context": "Under Section 38.2 (Encryption Standards Policy), all internal compliance records and transaction logs must be securely archived for 144 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_39",
+      "category": "enterprise_policy",
+      "query": "Under Section 39.2 of the Incident Response Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "147",
+        "days"
+      ],
+      "gold_context": "Under Section 39.2 (Incident Response Policy), all internal compliance records and transaction logs must be securely archived for 147 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
+      ]
+    },
+    {
+      "id": "policy_40",
+      "category": "enterprise_policy",
+      "query": "Under Section 40.2 of the Hardware Discard Policy, what is the mandatory retention period for internal logs?",
+      "required_tokens": [
+        "150",
+        "days"
+      ],
+      "gold_context": "Under Section 40.2 (Hardware Discard Policy), all internal compliance records and transaction logs must be securely archived for 150 calendar days before automated deletion.",
+      "distractors": [
+        "Section 1.1 (General Scope): All full-time employees and contractors must complete annual information security awareness training.",
+        "Section 8.4 (Physical Badges): Lost RFID access badges must be reported to the facilities management team within 24 hours.",
+        "Section 12.1 (Password Complexity): Administrative accounts require a minimum length of 16 characters with multi-factor authentication.",
+        "Section 3.5 (Third-Party Vendors): Vendor risk assessments must be renewed on an annual basis prior to contract extensions."
       ]
     }
   ]
