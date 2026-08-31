@@ -1,0 +1,13 @@
+Enterprise Record: In the design for tenant credit based routing that can spill
+
+Document ID: dsid_7a7c04eebb914edab49f734c8e814beb
+System Source: linear
+Details & Summary:
+The hysteresis windows vary by credit tier: GREEN uses 30 seconds, AMBER uses 2 minutes, and RED uses 10 minutes.
+
+- Hysteresis window durations vary by credit tier in the tenant credit based routing design.
+- The GREEN credit tier uses a hysteresis window of 30 seconds.
+- The AMBER credit tier uses a hysteresis window of 2 minutes.
+- The RED credit tier uses a hysteresis window of 10 minutes.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

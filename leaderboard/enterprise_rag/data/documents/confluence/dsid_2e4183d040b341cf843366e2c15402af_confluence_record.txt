@@ -1,0 +1,11 @@
+Enterprise Record: What is the rollout ramp schedule and time window used for t
+
+Document ID: dsid_2e4183d040b341cf843366e2c15402af
+System Source: confluence
+Details & Summary:
+The canary phase ramps traffic from 1% to 5% to 20% in 30-minute windows, with automated health checks run every 5 minutes.
+
+- The canary phase ramps traffic from 1% to 5% to 20%.
+- Each ramp step uses a 30-minute time window.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

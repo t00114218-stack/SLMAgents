@@ -1,0 +1,19 @@
+Enterprise Record: In the planned controlled failover game day on 2026-01-15 (H
+
+Document ID: dsid_865449ae95b044768f33773263bfeaad
+System Source: confluence
+Details & Summary:
+The flip/rollback oscillation was caused by noisy/false-positive reachability health signals (including a premature "recovery" signal) combined with overly permissive hold-down/anti-flap and rollback guardrails, letting the controller fail over and then roll back repeatedly. The streaming redirect disconnect/reconnect follow-up was ticket ENG-2422, targeting a production ship (behind a flag) by 2026-02-07.
+
+- The routing automation oscillation (flip/rollback) was caused by noisy or false-positive reachability health signals, including a premature recovery signal.
+- The routing automation oscillation was also enabled by overly permissive hold-down or anti-flap and rollback guardrails, which allowed repeated failover and rollback.
+- The follow-up ticket created to fix the streaming redirect disconnect/reconnect behavior was ENG-2422.
+- The target ship date for the ENG-2422 fix was 2026-02-07 (production ship behind a flag).
+- The answer must not attribute the event to the 2025-02-19 us-east-1 incident or a failover to us-west-2 (different date and regions).
+- The answer must not claim the streaming issue was an SSE stall/freeze mid-response fixed by upgrading to runtime 2.18.3; that is a different known issue than cross-region redirect reconnect.
+- The answer must not name ENG-2426 as the specific follow-up ticket for the streaming redirect reconnect fix; ENG-2426 is an action-item tracker, not the ticket called out for that fix.
+- The answer must not give 2026-02-28 as the target ship date for the streaming redirect reconnect fix; the game day follow-up ticket specifies 2026-02-07.
+- The answer must not cite SUP-25310 (support macro for transient 5xx) as the engineering follow-up ticket to fix streaming reconnect behavior.
+- The answer must not describe the resolution as a manual traffic shift/weight change procedure from the manual failover runbook; the question asks what caused automation oscillation and the specific follow-up ticket/date.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

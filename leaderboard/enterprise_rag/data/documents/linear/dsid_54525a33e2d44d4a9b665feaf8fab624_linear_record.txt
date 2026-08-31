@@ -1,0 +1,13 @@
+Enterprise Record: In the Console feature that compares canary or A-B cohorts a
+
+Document ID: dsid_54525a33e2d44d4a9b665feaf8fab624
+System Source: linear
+Details & Summary:
+The beta is gated via a Console feature flag to customers on the Dedicated and Hosted tiers (with opt-in for selected customers).
+
+- The beta is gated via a Console feature flag.
+- Customers on the Dedicated tier are allowed into the beta via the feature flag gate.
+- Customers on the Hosted tier are allowed into the beta via the feature flag gate.
+- Access to the beta is opt-in for selected customers.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

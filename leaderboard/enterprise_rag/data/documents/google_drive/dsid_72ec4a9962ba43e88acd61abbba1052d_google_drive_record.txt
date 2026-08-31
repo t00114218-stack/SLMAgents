@@ -1,0 +1,12 @@
+Enterprise Record: In a rolling investigation of a model regression on policy-r
+
+Document ID: dsid_72ec4a9962ba43e88acd61abbba1052d
+System Source: google_drive
+Details & Summary:
+In the first comparison run, the baseline build averaged 2.7 while the newer optimized build averaged 1.9, a decrease of 0.8 rubric points.
+
+- In the first comparison run, the older baseline build averaged a triage rubric score of 2.7
+- In the first comparison run, the newer optimized build averaged a triage rubric score of 1.9
+- The average triage rubric score decreased by 0.8 points from the baseline build to the newer optimized build in the first comparison run
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

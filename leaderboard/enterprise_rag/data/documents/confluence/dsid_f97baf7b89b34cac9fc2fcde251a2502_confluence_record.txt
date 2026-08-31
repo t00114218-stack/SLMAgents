@@ -1,0 +1,13 @@
+Enterprise Record: Has any customer other than Kestrel Labs reported timeouts s
+
+Document ID: dsid_f97baf7b89b34cac9fc2fcde251a2502
+System Source: confluence
+Details & Summary:
+Yes. Northwind Analytics also reported intermittent timeouts when using JSON-schema structured output on the hosted API (us-east region, atlas-13b-instruct model). The root cause for both Kestrel Labs and Northwind Analytics was long-tail latency in the constrained decoding path, especially with large or complex schemas containing combinators (anyOf/oneOf).
+
+- Yes, at least one other customer besides Kestrel Labs reported JSON-schema structured output timeouts
+- Northwind Analytics reported the same issue
+- The issue affected the hosted API in the us-east region
+- Root cause was long-tail latency in the constrained decoding path with large or complex JSON schemas
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: What change was introduced to prevent oscillations in the ne
+
+Document ID: dsid_caf02469a41c46cf8387713b83c628f3
+System Source: github
+Details & Summary:
+They added a per-model backoff cooldown mechanism in the AdaptiveScratchManager (via `cooldown_ms`) to prevent allocator oscillations that would otherwise trigger repeated micro-batch splits.
+
+- A per-model backoff cooldown mechanism was added to the AdaptiveScratchManager to prevent allocator oscillations that can trigger repeated micro-batch splits
+- The per-model cooldown mechanism is implemented via a cooldown_ms parameter
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

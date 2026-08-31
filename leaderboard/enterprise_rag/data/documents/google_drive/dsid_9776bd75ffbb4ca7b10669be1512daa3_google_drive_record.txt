@@ -1,0 +1,13 @@
+Enterprise Record: In a morning account blitz note from May 2026, what was the 
+
+Document ID: dsid_9776bd75ffbb4ca7b10669be1512daa3
+System Source: google_drive
+Details & Summary:
+For Fortis Health (renewal 2026-06-15), the note proposed mitigating the recurring inference timeouts by adding a 10% reserved burst during peak windows and enabling KV-prefix caching on their main inference route.
+
+- The healthcare customer was Fortis Health.
+- Fortis Health had a renewal date of 2026-06-15.
+- The proposed mitigation for repeated inference timeouts included adding a 10% reserved burst during peak windows.
+- The proposed mitigation also included enabling KV-prefix caching on Fortis Healths main inference route.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

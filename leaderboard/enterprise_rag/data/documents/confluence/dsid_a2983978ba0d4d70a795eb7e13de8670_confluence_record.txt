@@ -1,0 +1,14 @@
+Enterprise Record: In the customer docs plan for the opt-in quantization profil
+
+Document ID: dsid_a2983978ba0d4d70a795eb7e13de8670
+System Source: confluence
+Details & Summary:
+Before the docs can be merged, review is required from: Applied ML (Arjun Desai and Selene Huang), Runtime (Noah Patel), Platform/Console (Chloe Martin), SRE/Release (Connor O'Brien), and Security/RBAC (Naomi Feldman).
+
+- Before the documentation can be merged, review is required from Applied ML (Arjun Desai and Selene Huang).
+- Before the documentation can be merged, review is required from Runtime (Noah Patel).
+- Before the documentation can be merged, review is required from Platform/Console (Chloe Martin).
+- Before the documentation can be merged, review is required from SRE/Release (Connor O'Brien).
+- Before the documentation can be merged, review is required from Security/RBAC (Naomi Feldman).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

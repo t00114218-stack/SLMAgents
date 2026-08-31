@@ -1,0 +1,11 @@
+Enterprise Record: What was the founders statement about keeping sensitive heal
+
+Document ID: dsid_3bc3170ead63470eaef9a53ca835cec0
+System Source: hubspot
+Details & Summary:
+The founder said, "We cannot have PHI/PII leave US borders; audit trail is table stakes."
+
+- The founder stated that PHI and PII cannot leave US borders.
+- The founder stated that an audit trail (audit logging) is required for the hosted API trial.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

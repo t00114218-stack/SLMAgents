@@ -1,0 +1,10 @@
+Enterprise Record: In the recent Friday all-hands notes, what was the reported 
+
+Document ID: dsid_a227a7f316c4452eab4c05567edb9404
+System Source: slack
+Details & Summary:
+The notes reported that continuous batching reduced median token latency by approximately 8% (on the p99 test set).
+
+- The Friday all-hands notes reported that continuous batching reduced median token latency by approximately 8%.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

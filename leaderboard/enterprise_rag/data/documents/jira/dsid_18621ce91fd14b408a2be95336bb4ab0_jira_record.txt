@@ -1,0 +1,13 @@
+Enterprise Record: What caused the spike in 502 and 503 errors on the embedding
+
+Document ID: dsid_18621ce91fd14b408a2be95336bb4ab0
+System Source: jira
+Details & Summary:
+The 502/503 spike was driven by API gateway backpressure and hedged retries amplifying load on the us-east dedicated pool (dsp-6), which led the serving runtime to exhaust its process/thread limits (pthread_create failures, SIGABRT exits). A recent increase to prefetch.window_size further increased work and contributed to the overload.
+
+- The spike in 502 and 503 errors on the embeddings endpoint for the us-east dedicated pool was driven by API gateway backpressure and hedged retries that amplified load.
+- The load amplification impacted the us-east dedicated pool dsp-6.
+- The serving runtime exhausted its process or thread limits, leading to pthread_create failures and SIGABRT exits.
+- A recent increase to prefetch.window_size increased work and contributed to the overload.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: In a production incident during a staggered canary rollout i
+
+Document ID: dsid_21486610d7314d84980518cb355b6a97
+System Source: jira
+Details & Summary:
+They changed the prewarm handshake ordering so the orchestrator commits the tenant pin mapping first, and only then triggers edge affinity cookie rotation (instead of rotating cookies before the pin commit).
+
+- The autoscaler prewarm handshake was changed so the orchestrator commits the tenant pin mapping before rotating edge affinity cookies.
+- Previously, edge affinity cookies were rotated before the tenant pin mapping commit.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

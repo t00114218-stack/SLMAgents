@@ -1,0 +1,10 @@
+Enterprise Record: In the late Q3 email thread about rescuing a near-lost senio
+
+Document ID: dsid_c2ddd5240eb04e16806d82103f7646dd
+System Source: gmail
+Details & Summary:
+People Ops approved a one-time, documented band uplift for INF-324 of up to 10% above the midpoint.
+
+- People Ops approved a one-time pay-range exception allowing up to 10% above the midpoint.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

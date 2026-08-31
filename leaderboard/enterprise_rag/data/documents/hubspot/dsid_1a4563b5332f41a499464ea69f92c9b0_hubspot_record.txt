@@ -1,0 +1,11 @@
+Enterprise Record: For the outsourced customer support company planning an isol
+
+Document ID: dsid_1a4563b5332f41a499464ea69f92c9b0
+System Source: hubspot
+Details & Summary:
+They specified a peak load of about 2,000 concurrent active agents, with a p95 response-time target for real-time streaming suggestions of under ~120-200 ms (with <200 ms as the acceptance threshold).
+
+- They specified a peak load of about 2,000 concurrent active agents.
+- They specified a p95 response-time target for real-time streaming suggestions of under about 120 to 200 ms, with less than 200 ms as the acceptance threshold.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: What time was the fantasy football mock draft scheduled for,
+
+Document ID: dsid_2d829921c58b4e3db4be1d60fc0ceb3a
+System Source: slack
+Details & Summary:
+The mock draft was scheduled for 8:00 PM Pacific Standard Time (PST).
+
+- The fantasy football mock draft was scheduled for 8:00 PM.
+- The scheduled time was in Pacific Standard Time (PST).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,23 @@
+Enterprise Record: Im looking for the doc about building a fast system to store
+
+Document ID: dsid_a55032c4c2064671a4b0abf975438e1a
+System Source: linear
+Details & Summary:
+This doc describes implementing a compact, query-friendly benchmark/time-series result store plus a lightweight comparison canvas UI and an operator-focused anomaly triage playbook. It proposes an index-first design (compact columnar time-series index with a cold blob store for raw traces), supports fast p50/p95/tokens/sec lookups and top regression queries, and adds a React comparison canvas for pairwise time-aligned overlays, delta histograms, and deltas by model variant/quantization/hardware.
+
+For repeated-issue grouping, it uses fingerprint-based regression grouping (prompt hashing plus exemplar embeddings, via a 64-bit locality-preserving hash plus a sample embedding signature) to reduce duplicate alerts. Retention is high-resolution traces for 30 days and aggregated rollups for 1 year (with a review suggestion to retain raw KV-cache hit logs for 7 days), and the triage playbook includes RBAC owners, severity mapping, automatic triage suggestions, and links to infra metrics like GPU utilization and kernel selection logs.
+
+- The doc describes implementing a compact, query-friendly benchmark or time-series result store for model run histories.
+- The proposed storage design is index-first, using a compact columnar time-series index plus a cold blob store for raw traces.
+- The system supports fast lookups for metrics such as p50, p95, and tokens per second and supports top regression queries.
+- The doc includes a lightweight UI for comparing two runs, implemented as a React comparison canvas.
+- The comparison UI supports pairwise time-aligned overlays, delta histograms, and deltas broken down by model variant, quantization, and hardware.
+- For grouping repeated issues, the doc uses fingerprint-based regression grouping using prompt hashing plus exemplar embeddings.
+- The fingerprinting approach uses a 64-bit locality-preserving hash plus a sample embedding signature to reduce duplicate alerts.
+- The retention policy keeps high-resolution traces for 30 days and aggregated rollups for 1 year.
+- The doc suggests retaining raw KV-cache hit logs for 7 days.
+- The doc includes an operator-focused anomaly triage playbook for oncall investigation of detected slowdowns.
+- The triage playbook includes RBAC owners, severity mapping, and automatic triage suggestions.
+- The triage playbook links investigations to infrastructure metrics such as GPU utilization and kernel selection logs.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

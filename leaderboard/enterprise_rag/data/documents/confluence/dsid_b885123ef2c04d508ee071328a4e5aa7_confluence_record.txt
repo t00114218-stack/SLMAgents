@@ -1,0 +1,23 @@
+Enterprise Record: How do we decide whether a streaming disconnect is a client 
+
+Document ID: dsid_b885123ef2c04d508ee071328a4e5aa7
+System Source: confluence
+Details & Summary:
+Classify streaming disconnects using gateway stream-close telemetry correlated with upstream attempt signals. Mark as client_abort only when (1) the gateway observed a client-initiated close/reset before the normal terminal event and (2) there is no coincident upstream failure (no upstream 5xx/timeout/reset) in a short correlation window (default ~2s). If there is an upstream/gateway failure signal (upstream_reset, gateway_error/idle_timeout/proxy_write_error, router_failover_midstream, etc.) or attribution is ambiguous, treat it as platform-caused and count it as a bad stream.
+For SLO/error budget: client_abort/customer-cancelled disconnects are excluded from streaming reliability (and excluded from streaming/latency SLIs per the exclusion rules); platform-caused disconnects count against streaming reliability, and for streaming "availability/success" the request is only good if the stream is established and ends cleanly (terminal event + clean close).
+For SLA availability (calendar month): an Eligible streaming request is failed if it ends in a Redwood-attributable stream error/disconnect (or 5xx); client aborts/customer timeouts and customer/network issues supported by edge telemetry are excluded. If disconnect cause is ambiguous, default to counting it as Redwood-attributable for SLA/SLO accounting.
+Support response should mirror this: explain that not all streaming failures appear as a single 5xx because the stream is already open; we use terminal stream events to classify completed vs error vs client-abort. Ask for x-redwood-request-id(s), timestamps (UTC), region, client error text, whether a terminal SSE event was received, and client/proxy timeout settings; share mitigations like increasing proxy idle/read timeouts, bounding max_tokens/response duration, and ensuring the client continuously reads the stream.
+
+- Classify streaming disconnects using gateway stream-close telemetry correlated with upstream attempt signals.
+- Mark a disconnect as client_abort only if the gateway observed a client-initiated close or reset before the normal terminal event and there is no coincident upstream failure signal within a short correlation window (about 2 seconds by default).
+- If there is any upstream or gateway failure signal (such as upstream 5xx, timeout, reset, gateway idle_timeout, proxy_write_error, or router failover midstream), or if attribution is ambiguous, treat the disconnect as platform-caused and count it as a bad stream.
+- For SLO and error budget accounting, client_abort or customer-cancelled disconnects are excluded from streaming reliability and excluded from streaming and latency SLIs per the exclusion rules.
+- For SLO and error budget accounting, platform-caused disconnects count against streaming reliability.
+- For streaming availability or success accounting, a request is considered good only if the stream is established and ends cleanly (terminal event plus clean close).
+- For SLA availability over a calendar month, an eligible streaming request is failed if it ends in a platform-attributable stream error or disconnect or a 5xx response.
+- For SLA availability, client aborts, customer timeouts, and customer or network issues supported by edge telemetry are excluded.
+- If disconnect cause is ambiguous, default to counting it as platform-attributable for SLA and SLO accounting.
+- In customer-facing support responses, explain that streaming failures may not appear as a single 5xx because the stream is already open and that terminal stream events are used to classify completion vs error vs client-abort.
+- For support triage, request x-redwood-request-id values, UTC timestamps, region, client error text, whether a terminal SSE event was received, and client or proxy timeout settings.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

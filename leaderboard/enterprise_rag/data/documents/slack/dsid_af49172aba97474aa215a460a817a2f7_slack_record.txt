@@ -1,0 +1,15 @@
+Enterprise Record: What fields are included in the proposed runtime metadata JS
+
+Document ID: dsid_af49172aba97474aa215a460a817a2f7
+System Source: slack
+Details & Summary:
+In the proposed discovery JSON, apps would read `capabilities.supports_streaming` (and the suggested addition `capabilities.supports_streaming_partial_json`) and `capabilities.supports_function_calling` (with the suggested `tools_schema_refs` list) to determine streaming/tool-call support. Token ceilings are expressed under `limits` as `soft_max_tokens` (recommended) and `hard_max_tokens` (enforced), along with related fields like `max_sequence_length`; output expectations are captured by `capabilities.supported_output_formats` and `capabilities.structured_output_guarantee` (e.g., `best_effort`).
+
+- Apps determine streaming support from capabilities.supports_streaming (and optionally capabilities.supports_streaming_partial_json).
+- Apps determine tool call or function calling support from capabilities.supports_function_calling (and optionally a tools_schema_refs list).
+- Soft token ceilings are expressed under limits.soft_max_tokens (recommended).
+- Enforced token ceilings are expressed under limits.hard_max_tokens (enforced).
+- Output format expectations are captured by capabilities.supported_output_formats.
+- Structured output guarantees are captured by capabilities.structured_output_guarantee (for example, best_effort).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

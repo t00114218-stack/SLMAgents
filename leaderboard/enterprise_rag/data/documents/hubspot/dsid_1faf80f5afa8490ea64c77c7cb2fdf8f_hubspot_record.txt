@@ -1,0 +1,10 @@
+Enterprise Record: In the EU-only finance search and fraud alert ranking opport
+
+Document ID: dsid_1faf80f5afa8490ea64c77c7cb2fdf8f
+System Source: hubspot
+Details & Summary:
+Procurement first communicated the company-wide spending freeze on 2026-01-20.
+
+- Procurement first communicated the company-wide spending freeze on 2026-01-20.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

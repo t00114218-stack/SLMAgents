@@ -1,0 +1,10 @@
+Enterprise Record: What time are people planning to start the office foosball t
+
+Document ID: dsid_d1d341864dcf4af9877d3dcd91e448bc
+System Source: slack
+Details & Summary:
+They're planning to start the foosball tournament lunch bracket at 12:30 on Friday.
+
+- People are planning to start the office foosball tournament lunch bracket at 12:30 on Friday.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

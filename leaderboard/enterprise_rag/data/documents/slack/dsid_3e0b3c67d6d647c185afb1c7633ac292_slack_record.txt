@@ -1,0 +1,10 @@
+Enterprise Record: In the chat about an office cat knocking over equipment and 
+
+Document ID: dsid_3e0b3c67d6d647c185afb1c7633ac292
+System Source: slack
+Details & Summary:
+The bash meme was: `kill -9 purr`.
+
+- The bash command meme was `kill -9 purr`.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

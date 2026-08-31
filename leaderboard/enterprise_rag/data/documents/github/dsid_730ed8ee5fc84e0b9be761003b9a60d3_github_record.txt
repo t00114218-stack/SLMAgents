@@ -1,0 +1,12 @@
+Enterprise Record: In our rollout system, what is the name of the new mechanism
+
+Document ID: dsid_730ed8ee5fc84e0b9be761003b9a60d3
+System Source: github
+Details & Summary:
+It's the **TrafficEscrow** (the **traffic_escrow** service), which escrows routing/commit promotion and only releases it after a rehearse run with replayed requests and smoke checks succeeds.
+
+- The new mechanism is named TrafficEscrow.
+- TrafficEscrow is implemented as the traffic_escrow service.
+- TrafficEscrow prevents a candidate release from getting full user traffic by escrowing routing or commit promotion until a rehearse dry run with replayed requests and smoke checks succeeds.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,14 @@
+Enterprise Record: In our model serving stack, what change was proposed to redu
+
+Document ID: dsid_ee6c23c178dc428bbd71af6526c70251
+System Source: github
+Details & Summary:
+The PR proposed adding a conservative "stepped" batching policy to the serving scheduler, where you configure an ordered list of batch sizes (e.g., 1, 4, 16) with per-step max-latency budgets, and the runtime opportunistically serves smaller batches under tight latency SLOs and ramps to larger batches when throughput allows instead of waiting for a single fixed max-batch threshold.
+
+- The proposed change was to add a conservative stepped batching policy to the serving scheduler.
+- The stepped batching policy uses an ordered list of preset batch sizes (for example 1, 4, 16).
+- Each batch size step has its own maximum latency budget.
+- At runtime the scheduler serves smaller batches under tight latency SLOs and increases to larger batches when throughput allows.
+- This approach replaces waiting for a single fixed maximum batch threshold.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

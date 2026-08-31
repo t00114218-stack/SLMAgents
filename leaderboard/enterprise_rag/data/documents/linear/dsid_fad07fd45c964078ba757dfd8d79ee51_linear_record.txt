@@ -1,0 +1,24 @@
+Enterprise Record: In our internal admin UI, what are the requirements for a sm
+
+Document ID: dsid_fad07fd45c964078ba757dfd8d79ee51
+System Source: linear
+Details & Summary:
+The UI should be a compact, information-dense tenant inspector that lives as a collapsible strip in the tenant overview (fits within 340px height when collapsed) and expands into a transient overlay with per-path details, including a simplified cross-region connectivity view and a last-5-heartbeats sparkline/liveness visualization. It must surface the top 3 connectivity/health signals by default (algorithmically ranked, human-readable with severity color), provide quick actions (open runbook, route traffic to an alternate region with a cost preview, and a guarded "safe rollback" that uses a two-step confirmation and triggers a canary first), and include a conservative failover cost delta estimate (95th percentile from the cost-service) with clear units (e.g., USD/hr and monthly). Actions must be auditable (explicit warning in the confirmation flow), the panel defaults collapsed (auto-expands briefly for active incidents), supports very narrow viewports (status pill + overflow menu), and emits analytics events for expand/collapse, action clicks, and rollback confirm steps.
+
+- The tenant sidebar is a compact, information-dense tenant inspector that lives as a collapsible strip in the tenant overview.
+- When collapsed, the sidebar fits within 340px height.
+- When expanded, the sidebar becomes a transient overlay with per-path details.
+- The sidebar includes a simplified cross-region connectivity view.
+- The sidebar includes a liveness visualization showing the last 5 heartbeats (sparkline).
+- By default, the sidebar surfaces the top 3 connectivity or health signals, algorithmically ranked, human-readable, and severity color coded.
+- The sidebar provides quick actions including opening the runbook.
+- The sidebar provides an action to route traffic to an alternate region with a cost preview.
+- The sidebar provides a guarded safe rollback action that requires two-step confirmation and triggers a canary first.
+- The sidebar includes a conservative failover cost delta estimate based on the 95th percentile from the cost-service.
+- The failover cost estimate is shown with clear units such as USD per hour and monthly.
+- Remediation actions are auditable and the confirmation flow includes an explicit warning.
+- The panel defaults to collapsed and may auto-expand briefly for active incidents.
+- The sidebar supports very narrow viewports via a status pill and an overflow menu.
+- The sidebar emits analytics events for expand and collapse, action clicks, and rollback confirmation steps.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

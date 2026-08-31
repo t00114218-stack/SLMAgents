@@ -1,0 +1,11 @@
+Enterprise Record: What is the planned overnight time window in late March 2026
+
+Document ID: dsid_3f7f32874e9b4ba49ff4fe28c0ef5de0
+System Source: jira
+Details & Summary:
+The secrets rotation and KMS rekey are scheduled for the off-hours maintenance window on 2026-03-24 from 02:00 to 04:00 UTC.
+
+- The secrets rotation and KMS rekey are scheduled for 2026-03-24.
+- The planned overnight maintenance window is from 02:00 to 04:00 UTC on 2026-03-24.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

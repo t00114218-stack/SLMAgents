@@ -1,0 +1,11 @@
+Enterprise Record: What are the default size limits for file uploads and total 
+
+Document ID: dsid_ae068ee4aa9640159427cd941bef0238
+System Source: github
+Details & Summary:
+The default limits are 10 MiB per file (max_file_size) and 50 MiB total per request (max_total_request_size) for multipart uploads on the OpenAI-compatible endpoints.
+
+- The default per file upload size limit (max_file_size) for multipart uploads on OpenAI-compatible endpoints is 10 MiB.
+- The default total request size limit (max_total_request_size) for multipart uploads on OpenAI-compatible endpoints is 50 MiB.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

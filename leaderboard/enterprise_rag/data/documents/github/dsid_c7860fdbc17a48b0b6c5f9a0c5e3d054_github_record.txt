@@ -1,0 +1,12 @@
+Enterprise Record: What is the default wait time used by the new tool-call batc
+
+Document ID: dsid_c7860fdbc17a48b0b6c5f9a0c5e3d054
+System Source: github
+Details & Summary:
+The coalescing invoker uses a short grace-window wait time before dispatching tool calls: 10ms by default for Dedicated tier and 5ms by default for Hosted tier.
+
+- The new tool-call batching invoker uses a short grace-window wait time before dispatching tool calls.
+- The default wait time is 10 ms for the Dedicated tier.
+- The default wait time is 5 ms for the Hosted tier.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

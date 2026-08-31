@@ -1,0 +1,11 @@
+Enterprise Record: Where are the small on-node files stored that capture the GP
+
+Document ID: dsid_6f0be39ff1ae49c19ce0662bdd6de352
+System Source: github
+Details & Summary:
+The NCCL autotuner stores its small fingerprint files on-node in `/var/lib/redwood/nccl-fingerprints`. During cluster upgrades, ops should rotate and/or back up these files as part of the upgrade process.
+
+- The NCCL autotuner stores its small fingerprint files on-node in /var/lib/redwood/nccl-fingerprints.
+- During cluster upgrades, ops should rotate and or back up these fingerprint files as part of the upgrade process.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

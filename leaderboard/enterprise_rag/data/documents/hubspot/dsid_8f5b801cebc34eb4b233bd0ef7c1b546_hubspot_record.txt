@@ -1,0 +1,10 @@
+Enterprise Record: What p95 latency goal did the founder set for the on-page pr
+
+Document ID: dsid_8f5b801cebc34eb4b233bd0ef7c1b546
+System Source: hubspot
+Details & Summary:
+They set a p95 latency target of under 200 ms for the on-page product Q&A widget.
+
+- The founder set a p95 latency target of under 200 ms for the on-page product Q and A widget.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

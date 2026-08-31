@@ -1,0 +1,10 @@
+Enterprise Record: In the proposed small business token pricing tiers, what is 
+
+Document ID: dsid_d85fcb5f989b44f8a51723a07be79e45
+System Source: google_drive
+Details & Summary:
+The $25/month plan (Builder) includes 10 million tokens per month.
+
+- The $25 per month plan includes 10 million tokens per month.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

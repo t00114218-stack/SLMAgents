@@ -1,0 +1,10 @@
+Enterprise Record: In an ops day log about GPU rebalancing and brief west regio
+
+Document ID: dsid_6d38a7bff5c84270adff95742a3eebce
+System Source: google_drive
+Details & Summary:
+The slot-metrics dashboard target pool size for the small hosted pool (hosted-small) was 4,200 slots.
+
+- The slot-metrics dashboard target pool size for the small hosted pool (hosted-small) was 4,200 slots.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

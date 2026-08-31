@@ -1,0 +1,12 @@
+Enterprise Record: Which customers have been granted an exception to Redwood’s 
+
+Document ID: dsid_67a8c3300752435296938175e9a1daf5
+System Source: gmail
+Details & Summary:
+The approved exceptions were: Northstar Bank — payload logging disabled (0 days) and metadata retained for 30 days; Helio Health — payload retained for 7 days and metadata kept at the default 90 days; QuantaGov — payload retained for 180 days and metadata for 365 days.
+
+- Northstar Bank was granted an exception with payload logging disabled, equivalent to 0 days of payload retention, and metadata retained for 30 days.
+- Helio Health was granted an exception with payload retained for 7 days and metadata retained for the default 90 days.
+- QuantaGov was granted an exception with payload retained for 180 days and metadata retained for 365 days.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

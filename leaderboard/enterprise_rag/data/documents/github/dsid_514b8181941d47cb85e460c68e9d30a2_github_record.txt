@@ -1,0 +1,15 @@
+Enterprise Record: Is there an internal hackathon demo project that uses a smal
+
+Document ID: dsid_514b8181941d47cb85e460c68e9d30a2
+System Source: github
+Details & Summary:
+Yes. The document describes an internal hackathon project ("hackathon-2025-inference-ui-demo") that includes a small Next.js web UI and a mocked backend that simulates batching behavior and exposes synthetic instrumentation (including KV cache hit/miss stats), designed to run locally or be deployed (e.g., to Vercel) for quick demos.
+
+- There is an internal hackathon demo project called hackathon-2025-inference-ui-demo
+- The project includes a small Next.js web UI
+- The project includes a mocked or fake backend
+- The mocked backend simulates batching behavior
+- The mocked backend exposes synthetic instrumentation including KV cache hit and miss statistics
+- The project is designed to run locally or be deployed (for example to Vercel) for quick demos
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

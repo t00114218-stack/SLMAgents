@@ -1,0 +1,10 @@
+Enterprise Record: Which intake channel has the most reports of "token accounti
+
+Document ID: dsid_91abfa2001d747b3b570e8abce00ef4d
+System Source: confluence
+Details & Summary:
+Jira (customer-support SUP tickets) has the most "token accounting discrepancy" reports among the provided cases.
+
+- Jira (customer-support SUP tickets) has the most reports of token accounting discrepancy among the provided cases.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

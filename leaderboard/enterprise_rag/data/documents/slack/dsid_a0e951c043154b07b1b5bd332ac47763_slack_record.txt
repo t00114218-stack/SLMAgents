@@ -1,0 +1,10 @@
+Enterprise Record: In an internal onboarding thread for a new language model, w
+
+Document ID: dsid_a0e951c043154b07b1b5bd332ac47763
+System Source: slack
+Details & Summary:
+The thread estimated the KV cache would use about ~4GB of GPU memory for a single 8192-token sequence at batch size 1.
+
+- The onboarding thread estimated the attention key value cache would use about 4GB of GPU memory for a single 8192-token sequence at batch size 1.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

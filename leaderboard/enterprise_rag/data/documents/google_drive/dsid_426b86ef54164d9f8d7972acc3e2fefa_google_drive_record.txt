@@ -1,0 +1,12 @@
+Enterprise Record: What is the target success criteria for the internal two wee
+
+Document ID: dsid_426b86ef54164d9f8d7972acc3e2fefa
+System Source: google_drive
+Details & Summary:
+The bootcamp's success criteria include keeping alert-to-bridge (incident call/bridge) times to 5 minutes or less for synthetic tests. Other targets are at least one successful automated fallback during the live mini-sim with under 15% customer-impact traffic diverted, and 80% of participants able to list the SLO signal chain afterward.
+
+- The rehearsal success criteria include keeping alert-to-bridge (incident call or bridge) time to 5 minutes or less for synthetic tests.
+- The success criteria include at least one successful automated fallback during the live mini-sim with under 15% of customer-impact traffic diverted.
+- The success criteria include 80% of participants being able to list the SLO signal chain afterward.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

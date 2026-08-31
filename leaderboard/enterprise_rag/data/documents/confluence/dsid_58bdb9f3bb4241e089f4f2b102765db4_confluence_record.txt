@@ -1,0 +1,16 @@
+Enterprise Record: Before we re-enable paging and hook perf-canary into rollout
+
+Document ID: dsid_58bdb9f3bb4241e089f4f2b102765db4
+System Source: confluence
+Details & Summary:
+Baseline comparisons must use the fixed/immutable baseline keyed like-for-like on: model_id + model_version + runtime_build_id + kernel_set_id (kernel selection/version identifier) + hardware_sku, with region and/or capacity_tier only if we explicitly maintain separate baselines for them; explicitly do not include prompt bucket/shape, run_id, route, or other transient labels. Min-samples gate: per key per evaluation window require >=200 successful requests for latency; for tokens/sec require >=200 successful requests AND >=50,000 total generated tokens; if not met, do not change alert state. Incident-bot dedupe key must include: model_id + model_version + runtime_build_id + kernel_set_id + hardware_sku (+ region if present) + metric_type/alert_type + severity.
+
+- Baseline comparisons must use a fixed or immutable baseline keyed on model_id, model_version, runtime_build_id, kernel_set_id, and hardware_sku.
+- Region and or capacity_tier should be included in the baseline key only if separate baselines are explicitly maintained for them.
+- Prompt bucket or shape, run_id, route, and other transient labels must not be included in the baseline key.
+- Min-samples gating: for latency, require at least 200 successful requests per key per evaluation window; otherwise do not change alert state.
+- Min-samples gating: for tokens per second, require at least 200 successful requests and at least 50,000 total generated tokens per key per evaluation window; otherwise do not change alert state.
+- Incident-bot dedupe key must include model_id, model_version, runtime_build_id, kernel_set_id, hardware_sku, metric_type or alert_type, and severity.
+- Region should be included in the incident-bot dedupe key if region is present in the baseline key.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

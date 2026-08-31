@@ -1,0 +1,12 @@
+Enterprise Record: What is the recommended emergency action to temporarily simp
+
+Document ID: dsid_bec90d2205534ca9a016f244e13884e5
+System Source: google_drive
+Details & Summary:
+Enable the emergency-compact policy set to temporarily apply a simplified ruleset, e.g., call the admin API: POST /v1/admin/policies/compact with body {"reason":"latency_immediate"}.
+
+- The recommended emergency action is to enable the emergency-compact policy set to temporarily apply a simplified routing ruleset.
+- An example way to enable it is to call the admin API with POST /v1/admin/policies/compact.
+- The POST /v1/admin/policies/compact request can include a JSON body like {"reason":"latency_immediate"}.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

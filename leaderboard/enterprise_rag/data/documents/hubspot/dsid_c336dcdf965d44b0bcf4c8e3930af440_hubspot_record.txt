@@ -1,0 +1,11 @@
+Enterprise Record: For the Fortune 500 oriented customer evaluating a dedicated
+
+Document ID: dsid_c336dcdf965d44b0bcf4c8e3930af440
+System Source: hubspot
+Details & Summary:
+They asked for guaranteed burst capacity up to 1,800 requests/sec (3× their 600 req/sec baseline) for 60-second burst windows.
+
+- The customer asked the vendor to guarantee burst capacity up to 1,800 requests per second beyond their steady state rate.
+- The customer asked for this burst capacity to be guaranteed for 60-second burst windows.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

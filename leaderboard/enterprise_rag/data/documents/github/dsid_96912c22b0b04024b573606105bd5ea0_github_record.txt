@@ -1,0 +1,17 @@
+Enterprise Record: Do I need to set enable_tool_signal for tool-signal in the R
+
+Document ID: dsid_96912c22b0b04024b573606105bd5ea0
+System Source: github
+Details & Summary:
+No. Tool-signal is now automatically enabled when tool calls are present (model emits tool-call events or the request includes tools), and there is no per-request enable_tool_signal flag on the public OpenAI-compatible surface. Private deployments can disable it via server config: openai_compat.tool_signal_enabled=false. (Older PR notes mentioned an enable_tool_signal flag with default true for hosted; that is outdated.)
+
+- The answer must state that there is no per-request enable_tool_signal flag exposed on the public OpenAI-compatible surface.
+- The answer must state that tool-signal is automatically enabled when tool calls are present (e.g., tools are included or tool-call events occur).
+- The answer must state that private deployments can disable tool-signal via server configuration.
+- The answer must include the exact config key/value: openai_compat.tool_signal_enabled=false.
+- The answer may mention that earlier documentation/PR text described an enable_tool_signal flag with default true for hosted, but it must label that as outdated.
+- The answer must not claim that callers must set enable_tool_signal to get tool-signal in hosted/public usage.
+- The answer must not claim tool-signal is always enabled regardless of whether tool calls are present.
+- The answer must not introduce any additional flags or different config keys not present in the documents.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

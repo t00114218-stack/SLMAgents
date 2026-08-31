@@ -1,0 +1,11 @@
+Enterprise Record: Who volunteered to be the captain for the office summer soft
+
+Document ID: dsid_70fffe7de6d545bcbbc47b448b17164d
+System Source: slack
+Details & Summary:
+Marcus Chen volunteered to be the captain and organize practices for the office summer softball team.
+
+- Marcus Chen volunteered to be the captain for the office summer softball team
+- Marcus Chen volunteered to help organize practices for the office summer softball team
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

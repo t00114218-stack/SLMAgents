@@ -1,0 +1,13 @@
+Enterprise Record: What keyboard-only interaction model is required for the com
+
+Document ID: dsid_f02a338c2dd546b3b025b5d5d429ad4e
+System Source: linear
+Details & Summary:
+The mini-widgets must be fully operable by keyboard: users Tab to move focus onto the widget card, then use the arrow keys to navigate between the widget's internal controls, and press Enter or Space to activate the primary action.
+
+- Compact dashboard mini-widgets must be fully operable by keyboard
+- Users move focus onto the widget card using Tab
+- Once focus is on the card, users use arrow keys to navigate between the widget's internal controls
+- Users press Enter or Space to activate the primary action
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

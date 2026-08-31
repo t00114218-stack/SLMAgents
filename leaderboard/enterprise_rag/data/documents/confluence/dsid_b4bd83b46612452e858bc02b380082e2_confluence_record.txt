@@ -1,0 +1,17 @@
+Enterprise Record: What is the numeric rule that turns recent automated test sl
+
+Document ID: dsid_b4bd83b46612452e858bc02b380082e2
+System Source: confluence
+Details & Summary:
+The protocol computes a Decision Score (DS) on a 0-100 scale as DS = clamp(SS + LP + DF, 0, 100), where SS = 100 * (∑p w_p * (failure_count_p / max(1,total_calls_p)) / ∑p w_p), LP = 10 * max(0, (median_latency_ms − latency_slo_ms)/latency_slo_ms) clipped at 30, and DF = 50 * (95th-percentile embedding_drift_score normalized against baseline drift). Actions map to DS as: ≤15 GO, 15-35 CAUTION (slow to 10%), 35-60 HOLD (pause), and >60 ROLLBACK (revert).
+
+- A 0 to 100 Decision Score (DS) is computed as DS = clamp(SS + LP + DF, 0, 100).
+- The slice failure component is SS = 100 * (sum over patterns p of w_p * (failure_count_p / max(1, total_calls_p)) divided by sum over patterns p of w_p).
+- The latency penalty is LP = 10 * max(0, (median_latency_ms - latency_slo_ms) / latency_slo_ms), and LP is clipped at 30.
+- The vector drift factor is DF = 50 * (95th-percentile embedding_drift_score normalized against baseline drift).
+- Decision actions map to DS as: DS <= 15 means GO.
+- Decision actions map to DS as: 15 < DS <= 35 means CAUTION (slow rollout to 10%).
+- Decision actions map to DS as: 35 < DS <= 60 means HOLD (pause).
+- Decision actions map to DS as: DS > 60 means ROLLBACK (revert).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

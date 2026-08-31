@@ -1,0 +1,14 @@
+Enterprise Record: What caused the nightly evaluation cron jobs in the producti
+
+Document ID: dsid_429267fe79c74918a26272f6c0e48f10
+System Source: jira
+Details & Summary:
+The jobs failed because an Okta Conditional Access policy change (policy pol-2026-02-27-7) mistakenly applied device_trust enforcement to the service-account group "/Services/NonInteractive," causing Okta to revoke the non-interactive refresh tokens and return 400 invalid_grant during token refresh.
+
+- A change to an Okta Conditional Access policy caused the nightly evaluation cron jobs in the production us-east cluster to fail.
+- The specific policy change was Okta Conditional Access policy pol-2026-02-27-7.
+- The policy change mistakenly applied device_trust enforcement to the service-account group /Services/NonInteractive.
+- Applying device_trust enforcement to the non-interactive service accounts caused Okta to revoke their refresh tokens.
+- During token refresh, Okta returned a 400 invalid_grant error due to the revoked refresh tokens.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

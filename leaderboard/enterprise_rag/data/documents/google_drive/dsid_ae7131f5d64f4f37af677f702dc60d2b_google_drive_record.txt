@@ -1,0 +1,13 @@
+Enterprise Record: What are the pass fail criteria used in the quick pull reque
+
+Document ID: dsid_ae7131f5d64f4f37af677f702dc60d2b
+System Source: google_drive
+Details & Summary:
+For the quick PR smoke checks, the suite flags failure if any of these exceed the thresholds: median cosine nearest-neighbor distance deviates by more than ±6% from baseline, NDCG@10 on curated-qrels-5lang drops by 3% absolute or more, or cluster purity drops by 5 percentage points or more.
+
+- In the quick PR smoke checks, the suite flags a failure if any metric exceeds its threshold.
+- A failure is flagged if the median cosine nearest-neighbor distance deviates by more than plus or minus 6 percent from baseline.
+- A failure is flagged if NDCG@10 on curated-qrels-5lang drops by 3 percent absolute or more.
+- A failure is flagged if cluster purity drops by 5 percentage points or more.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

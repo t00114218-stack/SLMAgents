@@ -1,0 +1,30 @@
+Enterprise Record: For an enterprise ticket like SUP-1842 where streaming disco
+
+Document ID: dsid_8d97d64cfcb14cd3b13589b86b0a0c02
+System Source: confluence
+Details & Summary:
+Escalate from a Support bridge to a formal incident (#incidents) and open a status page incident when the issue is no longer customer-specific triage and meets any of the comms-alignment criteria (default to YES unless explicitly waived by IC + CS leadership). Concretely, move to #incidents and treat as incident-worthy if any are true: (1) suspected or confirmed multi-customer impact (2+ customers with the same symptom in the same region/model within 60 minutes, or duplicate inbound volume), (2) evidence or strong suspicion of regional/service degradation even if only one enterprise customer reported first, based on telemetry such as streaming resets/truncations >= 0.5% of streams for 10 minutes, 5xx >= 2% for 10 minutes, timeouts >= 1% for 10 minutes, or p95 latency >= 2x baseline for 15 minutes (do not wait for perfect metrics if impact is credible), (3) mitigation requires coordinated on-call action that changes production behavior (rollback, traffic shift, routing/fallback changes, capacity moves) or you need cross-team coordination/comms roles, (4) tier-critical impact (Enterprise/Dedicated/Private) where SLA or credits concerns are expected, or (5) impact persists beyond ~15 minutes without quick mitigation (if uncertain, open a cautious "Investigating" status incident). Once in #incidents, keep the Support bridge only for customer-specific coordination and mirror the IC as the source of truth.
+
+Customer update cadence for Enterprise: if P0, first response within 15 minutes (24/7) and meaningful updates every 30 minutes while active; if P1, first response within 30 minutes (24/7) and updates every 60 minutes while actively mitigating. For any declared incident, mirror the IC/comms lead cadence and always include the next update time; if you are blocked or there is no change, still send a time-based "still investigating/monitoring, next update at X" update.
+
+Credits wording: do not promise credits and do not write "SLA breach" or any admission of fault. Use: "If youd like to request service credits per your agreement, were reviewing the incident timeline and observed impact against the applicable SLA terms and can confirm any applicable credits once the impact assessment is finalized." For SUP-1842 specifically, if pressed, commit only to a decision timeline: "Well get back to you by Wednesday, Feb 11." Any goodwill credit or credit amount requires CS leadership approval (Jasmine Liu; coordinate via Rachel Kim) and route any contract interpretation to Legal (Sofia Mendes); default credit application is a billing adjustment on the next invoice unless CS leadership explicitly approves mid-cycle.
+
+- Escalate from a Support bridge to a formal incident in #incidents and open a status page incident when the issue is no longer customer specific triage and meets comms alignment criteria, defaulting to escalating unless explicitly waived by the Incident Commander and Customer Success leadership.
+- Treat the issue as incident worthy if there is suspected or confirmed multi customer impact, such as two or more customers with the same symptom in the same region or model within 60 minutes or a spike in duplicate inbound reports.
+- Treat the issue as incident worthy if there is evidence or strong suspicion of regional or service degradation even if only one enterprise customer reported first, based on telemetry.
+- Example telemetry thresholds that justify incident escalation include streaming resets or truncations at or above 0.5 percent of streams for 10 minutes, 5xx errors at or above 2 percent for 10 minutes, timeouts at or above 1 percent for 10 minutes, or p95 latency at or above 2x baseline for 15 minutes.
+- Do not wait for perfect metrics to escalate if customer impact is credible.
+- Treat the issue as incident worthy if mitigation requires coordinated on call action that changes production behavior, such as rollback, traffic shift, routing or fallback changes, or capacity moves, or if cross team coordination and comms roles are needed.
+- Treat the issue as incident worthy if the impact is tier critical for Enterprise or Dedicated or Private customers where SLA or credits concerns are expected.
+- Treat the issue as incident worthy if impact persists beyond about 15 minutes without quick mitigation, and if uncertain open a cautious Investigating status incident.
+- Once in #incidents, keep the Support bridge only for customer specific coordination and use the Incident Commander as the source of truth for updates.
+- For Enterprise customer communications, if severity is P0, provide the first response within 15 minutes (24/7) and meaningful updates every 30 minutes while active.
+- For Enterprise customer communications, if severity is P1, provide the first response within 30 minutes (24/7) and updates every 60 minutes while actively mitigating.
+- For any declared incident, mirror the Incident Commander or comms lead cadence and always include the next update time, even if there is no new information.
+- Credits wording should not promise credits and should not state an SLA breach or include admissions of fault.
+- Use credits language like: If youd like to request service credits per your agreement, were reviewing the incident timeline and observed impact against the applicable SLA terms and can confirm any applicable credits once the impact assessment is finalized.
+- If pressed on credits for a specific ticket, commit only to a decision timeline rather than a credit outcome.
+- Any goodwill credit or credit amount requires Customer Success leadership approval.
+- Default credit application is a billing adjustment on the next invoice unless Customer Success leadership explicitly approves mid cycle.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

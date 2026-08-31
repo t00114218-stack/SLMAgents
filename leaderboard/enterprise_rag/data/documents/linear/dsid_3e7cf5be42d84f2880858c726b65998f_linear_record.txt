@@ -1,0 +1,16 @@
+Enterprise Record: Customers behind strict corporate proxies are seeing 4xx fai
+
+Document ID: dsid_3e7cf5be42d84f2880858c726b65998f
+System Source: linear
+Details & Summary:
+Use proxy-safe, best-effort tagging: don't send new custom X-* telemetry headers by default; if you need attribution, prefer appending a fixed template name+version token to User-Agent (no install_id), and only send the full template tag header when explicitly enabled. Provide an explicit opt-out/disable switch (REDWOOD_TEMPLATE_TELEMETRY_ENABLED=false as the default; when false, send no telemetry headers). With tagging disabled (or if headers are blocked), API-derived per-install TTFS and activation (first_success tied to install_id) will be missing/partial; Analytics can only rely on CLI init/doctor funnel signals and cannot reliably compute TTFS/activation from first tagged request → first_success for those installs.
+
+- Do not send new custom X-* telemetry headers by default; use proxy-safe best-effort tagging.
+- If attribution is needed, append a fixed template name+version token to the User-Agent and do not include install_id in that token.
+- Only send the full template tag header when telemetry tagging is explicitly enabled.
+- Provide an explicit opt-out switch such as REDWOOD_TEMPLATE_TELEMETRY_ENABLED, with the default set to false.
+- When REDWOOD_TEMPLATE_TELEMETRY_ENABLED is false, send no telemetry headers.
+- If tagging is disabled or headers are blocked by proxies, API-derived per-install TTFS and activation metrics tied to install_id will be missing or partial.
+- Without tagged requests, analytics must rely on CLI init/doctor funnel signals and cannot reliably compute TTFS or activation from first tagged request to first_success for those installs.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

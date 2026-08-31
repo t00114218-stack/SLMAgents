@@ -1,0 +1,15 @@
+Enterprise Record: During a major production outage, what is the prescribed seq
+
+Document ID: dsid_25b0de9bfa854d3c9acfa961555c9d45
+System Source: confluence
+Details & Summary:
+Follow the Ten-Step Restoration Sprint: (1) Acknowledge the alert and open the incident bridge (Zoom/Meet), create the incident channel (#inc-xxxx), and post initial status (0-5m). (2) Perform quick impact triage by confirming affected services via dashboards and classifying scope (regional/global; data/control plane), then produce a short impact statement (5-10m). (3) Stabilize traffic using graduated controls (rate limits, routing/traffic division to healthy regions) and, where available, fall back to lighter model variants or reduced sequence-length modes (10-20m). (4) Execute a hotfix window by applying validated, small, reversible mitigations from the relevant service runbooks and document all changes in the incident channel (20-40m). (5) Validate restoration by running synthetic probes and verifying p95/p99 latency and error rates are returning to baseline, capturing pre/post metrics and commands used (30-50m).
+
+- The prescribed sequence is called the Ten-Step Restoration Sprint.
+- Within 0 to 5 minutes, acknowledge the alert, open the incident bridge call (Zoom or Meet), create the incident channel (for example, #inc-xxxx), and post an initial status update.
+- Within 5 to 10 minutes, perform quick impact triage by confirming affected services via dashboards, classifying scope (regional vs global and data plane vs control plane), and producing a short impact statement.
+- Within 10 to 20 minutes, stabilize traffic using graduated controls such as rate limits and routing or dividing traffic to healthy regions, and where available fall back to lighter model variants or reduced sequence-length modes.
+- Within 20 to 40 minutes, execute a hotfix window by applying validated, small, reversible mitigations from the relevant service runbooks and document all changes in the incident channel.
+- Within 30 to 50 minutes, validate restoration by running synthetic probes, verifying p95 and p99 latency and error rates are returning to baseline, and capturing pre and post metrics and the commands used.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

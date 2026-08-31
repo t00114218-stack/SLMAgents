@@ -1,0 +1,13 @@
+Enterprise Record: In a recent GPU serving load test with highly uneven prompt 
+
+Document ID: dsid_0aebc4d1e7264c6c90136b6b780a0c67
+System Source: slack
+Details & Summary:
+Adding a small per-pool workspace "watermark" (reserving ~8MB extra scratch space) prevented the paged-attn kernel from falling back when transient workspace estimates grew, and it delivered the biggest tail-latency drop (p99 down to ~310ms in the test).
+
+- A small per-pool workspace watermark was added by reserving about 8MB of extra scratch space.
+- This workspace watermark prevented the paged-attn kernel from falling back to a slower attention implementation when transient workspace estimates grew.
+- This change produced the biggest reduction in tail latency in the load test.
+- In the test, p99 latency dropped to about 310 ms after this change.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

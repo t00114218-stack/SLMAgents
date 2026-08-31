@@ -1,0 +1,22 @@
+Enterprise Record: When a tenant has a fallback model configured, which overloa
+
+Document ID: dsid_960a2981de674ebf844f7dc19d2e3cc0
+System Source: confluence
+Details & Summary:
+Smart Routing will only attempt a tenant's configured fallback after the request has been admitted past the gateway and routing is actually invoked, and only for explicit overload-derived classifications (e.g., breaker open / active load shedding / capacity unavailable or runtime saturation/queue-full). It is bounded (typically max 1 fallback) and loop-safe; if the fallback target is also overloaded, routing stops and returns the overload error.
+If the gateway rejects the request at the admission layer (e.g., gateway concurrency/rate caps, regional/gateway overload breaker behavior, or gateway-level dependency gating), routing is never called, so no fallback is possible and the gateway returns a terminal overload response (often 503 with Retry-After).
+Support should explain: these 503s are intentional overload protection (not a random outage); fallback is best-effort and only applies when the request reaches Smart Routing-early gateway shedding is designed to fail fast to protect the platform and prevent retry storms. Customers should honor Retry-After, use bounded exponential backoff with jitter and reduce concurrency, and share request/correlation IDs so Support can confirm whether the rejection happened at gateway vs routing/runtime; if they need fallback during gateway shedding, Support can escalate for a tenant-scoped policy/feature review where available.
+
+- Smart Routing attempts a tenant configured fallback only after the request has been admitted past the gateway and routing has been invoked.
+- Fallback is attempted only for explicit overload-derived classifications such as breaker open, active load shedding, capacity unavailable, or runtime saturation or queue-full.
+- Fallback is bounded (typically at most one fallback attempt) and is loop-safe.
+- If the fallback target is also overloaded, Smart Routing stops and returns the overload error rather than continuing to fallback.
+- If the gateway rejects the request at the admission layer (for example due to gateway concurrency caps, gateway rate caps, regional or gateway overload breaker behavior, or gateway-level dependency gating), routing is not called and no fallback is possible.
+- When the gateway rejects at admission, it returns a terminal overload response, often HTTP 503 with a Retry-After header.
+- Support should explain that these 503 responses are intentional overload protection and not a random outage.
+- Support should explain that fallback is best-effort and only applies when the request reaches Smart Routing, and that early gateway shedding is designed to fail fast to protect the platform and prevent retry storms.
+- Support should advise customers to honor Retry-After, use bounded exponential backoff with jitter, and reduce concurrency.
+- Support should ask customers to provide request IDs or correlation IDs so Support can confirm whether the rejection happened at the gateway versus in routing or runtime.
+- If a customer needs fallback behavior during gateway shedding, Support can escalate for a tenant-scoped policy or feature review where available.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: For a customer upgrading a private deployment in their own c
+
+Document ID: dsid_c6a6396159964deeb021d646eaaf2b0c
+System Source: gmail
+Details & Summary:
+Support said that if pre-upgrade snapshots are in place, service restoration after a failed upgrade and rollback is typically on the order of tens of minutes (with exact timing depending on the snapshot mechanism and database size).
+
+- Support said that with pre-upgrade snapshots in place, restoring service after a failed upgrade and rollback is typically on the order of tens of minutes.
+- Support said the exact restoration time depends on the snapshot mechanism and the database size.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,13 @@
+Enterprise Record: In the recent SDK update that made streaming behave the same
+
+Document ID: dsid_415b72b7d40a405e87b9671946e894d8
+System Source: github
+Details & Summary:
+It's called the **SessionDecorator**-a lightweight wrapper around the stream iterator that automatically refreshes expired credentials and supports resuming via a small persisted **ResumeToken v2** checkpoint token.
+
+- The new wrapper layer is called SessionDecorator
+- SessionDecorator is a lightweight wrapper around the stream iterator
+- SessionDecorator automatically refreshes expired credentials
+- SessionDecorator supports resuming a dropped stream using a small persisted ResumeToken v2 checkpoint token
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,10 @@
+Enterprise Record: What is the three-step message sequence used for the new cro
+
+Document ID: dsid_88b39d13bd584ef8b1422d76994808c7
+System Source: github
+Details & Summary:
+The new streaming startup handshake uses a three-step sequence: CLIENT_HELLO → AUTH_OK → SERVER_READY.
+
+- The new cross-language streaming startup handshake uses a three-step message sequence: CLIENT_HELLO, then AUTH_OK, then SERVER_READY.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: In the engineering chat about a Go refactor PR, what did the
+
+Document ID: dsid_9a3def814b274050b3d834a66deeb1b5
+System Source: slack
+Details & Summary:
+They updated `.golangci.yml` to exclude the test package directories from the gocritic `param-type` check, effectively muting that rule for tests so CI would pass.
+
+- They updated the .golangci.yml linter configuration to exclude test package directories from the gocritic param-type check.
+- This effectively muted the gocritic param-type rule for tests so CI would pass.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

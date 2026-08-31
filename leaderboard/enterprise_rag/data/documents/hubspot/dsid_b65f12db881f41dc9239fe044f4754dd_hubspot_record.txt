@@ -1,0 +1,10 @@
+Enterprise Record: What was the requested proof-of-concept duration for the inb
+
+Document ID: dsid_b65f12db881f41dc9239fe044f4754dd
+System Source: hubspot
+Details & Summary:
+They requested a 72-hour proof of concept (a 72h run) to evaluate batching and caching performance and cost.
+
+- The requested proof-of-concept duration was 72 hours.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

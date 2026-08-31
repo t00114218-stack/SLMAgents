@@ -1,0 +1,16 @@
+Enterprise Record: Before an external audit rehearsal happening in about three 
+
+Document ID: dsid_d295b7207fec4a6fb656f3e2a565d4e6
+System Source: google_drive
+Details & Summary:
+* Deployment rollback proof (missing rollback evidence for two infra rollouts): Owner Devon (Release Eng); due 2026-02-28.
+* Contractor access end date confirmation (SSO audit log contractors flagged; needs People Ops/HR attestation): Owner Maya (Identity); due 2026-02-24.
+* Encryption key rotation documentation placement (KMS rotation procedure needs to be moved to the expected Confluence location and logs attached): Owners Paulina + Infra; due 2026-02-21.
+* Two overdue third-party security questionnaires (observability + external model hosting): Owner Alex (to escalate to Procurement); due 2026-03-05.
+
+- Deployment rollback proof evidence is missing for two infrastructure rollouts and is owned by Devon (Release Eng) with due date 2026-02-28.
+- Contractor access end date confirmation is needed for contractors flagged in SSO audit logs and requires People Ops/HR attestation; it is owned by Maya (Identity) with due date 2026-02-24.
+- Encryption key rotation documentation placement requires moving the KMS rotation procedure to the expected Confluence location and attaching logs; it is owned by Paulina and Infra with due date 2026-02-21.
+- Two overdue third-party security questionnaires (observability and external model hosting) are owned by Alex (to escalate to Procurement) with due date 2026-03-05.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

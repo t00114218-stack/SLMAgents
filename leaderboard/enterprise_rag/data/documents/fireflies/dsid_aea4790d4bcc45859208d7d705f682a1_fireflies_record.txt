@@ -1,0 +1,12 @@
+Enterprise Record: In a backend inference engineer interview about multi-tenant
+
+Document ID: dsid_aea4790d4bcc45859208d7d705f682a1
+System Source: fireflies
+Details & Summary:
+He suggested minimizing KV-cache cold misses by keeping (pinning) recent active conversations on the same GPU/model shard for locality, using an LRU-style eviction policy tuned by sequence length, and optionally offloading colder KV to host memory with on-demand fetches (accepting some added latency).
+
+- The candidate proposed reducing KV-cache cold misses by keeping or pinning recent active conversations on the same GPU or model shard for locality.
+- The candidate proposed using an LRU-style eviction policy tuned by sequence length.
+- The candidate proposed optionally offloading colder KV cache to host memory and fetching it on demand, accepting added latency.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

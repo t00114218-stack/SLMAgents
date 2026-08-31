@@ -1,0 +1,11 @@
+Enterprise Record: During a failover between two active locations, what is the 
+
+Document ID: dsid_d9ca33382713461aa726403f8ff7dea0
+System Source: linear
+Details & Summary:
+The default token-grace window is 45 seconds, during which a valid resume token is accepted on the destination region before full authentication revalidation.
+
+- The default token grace window during failover is 45 seconds.
+- During this 45 second window, a valid short lived resume credential is accepted on the destination region before full authentication is performed again.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

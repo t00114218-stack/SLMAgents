@@ -1,0 +1,26 @@
+Enterprise Record: If the demo tenant starts returning 429s mid-demo and the Co
+
+Document ID: dsid_052d0c27569145c5896b910eb6f3c063
+System Source: confluence
+Details & Summary:
+Fastest recovery mid-call: switch to Backup Mode immediately (approved recording/screenshots/canned outputs) so the narrative continues, and in parallel run `rwctl demo healthcheck --org redwood-demo --include quotas,telemetry,console --format pretty` (save JSON if you can). For 429s: stop background load first (`rwctl demo traffic stop --org redwood-demo`), reduce demo app concurrency/retries, and if there may be parallel activity move to an isolated namespace project (`demo-02`, `demo-03`, etc.) using the matching scoped key; if 429s persist after the next minute window, escalate in #demo-oncall with timestamps and the healthcheck output for a temporary RPM/TPM uplift. For empty Console dashboards: confirm Console is on org `redwood-demo`, project `demo-telemetry`, and time range "Last 15 minutes"; check generator status (`rwctl demo traffic status --org redwood-demo`) and restart it (`rwctl demo traffic start --org redwood-demo --profile sales-demo --duration 12m`), then refresh after 1-2 minutes (up to 5 minutes before escalating). If still empty, run healthcheck with `telemetry,console` and escalate to #demo-oncall with `/tmp/demo-healthcheck.json`.
+
+Preventative fixes: demo tenant provisioning/reset was updated to apply the demo quota profile idempotently (so it does not fall back to self-serve limits) and to separate synthetic traffic from live demos via a dedicated telemetry project (`demo-telemetry`) and separate scoped keys. The demo healthcheck was expanded to validate quota/rate-limit drift and telemetry/Console freshness (and guide the exact commands), and the standard reset flow was updated to ensure the synthetic traffic generator is started by default so dashboards populate reliably in the last 15 minutes. Console empty-state/default selection was also improved so SEs land on the seeded telemetry project and get actionable guidance instead of blank graphs.
+
+- Fastest recovery mid-call is to switch to Backup Mode immediately using approved recordings, screenshots, or canned outputs so the narrative continues.
+- In parallel, run rwctl demo healthcheck for org redwood-demo including quotas, telemetry, and console, and save the output (preferably JSON).
+- To address 429s, stop background load first using rwctl demo traffic stop for org redwood-demo.
+- To address 429s, reduce demo app concurrency and retries.
+- If parallel activity may be causing 429s, move the demo to an isolated namespace project (for example demo-02 or demo-03) using the matching scoped key.
+- If 429s persist after the next minute window, escalate in the demo oncall channel with timestamps and the healthcheck output to request a temporary RPM or TPM uplift.
+- If Console dashboards are empty, confirm Console is on org redwood-demo, project demo-telemetry, and the time range is Last 15 minutes.
+- If Console dashboards are empty, check the synthetic traffic generator status with rwctl demo traffic status for org redwood-demo and restart it with rwctl demo traffic start using the sales-demo profile for a fixed duration.
+- After restarting synthetic traffic, refresh Console after 1 to 2 minutes and wait up to 5 minutes before escalating.
+- If dashboards are still empty, run the healthcheck for telemetry and console and escalate to demo oncall with the saved healthcheck JSON file.
+- Preventative fix: demo tenant provisioning and reset were updated to apply the demo quota profile idempotently so it does not fall back to self-serve limits.
+- Preventative fix: synthetic traffic was separated from live demos via a dedicated telemetry project named demo-telemetry and separate scoped keys.
+- Preventative fix: the demo healthcheck was expanded to validate quota or rate limit drift and telemetry and Console freshness and to guide the exact commands to run.
+- Preventative fix: the standard reset flow was updated to start the synthetic traffic generator by default so dashboards populate reliably for the last 15 minutes.
+- Preventative fix: the Console empty state and default selection were improved so users land on the seeded telemetry project and receive actionable guidance instead of blank graphs.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

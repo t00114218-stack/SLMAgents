@@ -1,0 +1,14 @@
+Enterprise Record: In our offline installer release process, how do we expose p
+
+Document ID: dsid_5d54f5f89bbc48a5b06b8dead39729b3
+System Source: github
+Details & Summary:
+We extend the private-installer release index (schema v2) to include an per-artifact `origins` block that records the source repo, build system/job ID, build commit, and optional SBOM/cosign references, populated by the indexer querying an origin-mapper service and cross-referencing artifact digests to upstream build metadata. The indexer verifies cosign signatures on the origin blobs and records the verification result, and operators can make failed/missing origin verification a hard failure by running the indexer with `--enforce-origin-verification`.
+
+- The private-installer release index schema v2 is extended to include a per-artifact origins block.
+- Each per-artifact origins block records the source repository, build system or job ID, and build commit that produced the artifact, and can also include optional SBOM and cosign references.
+- The indexer populates the origins block by querying an origin-mapper service and cross-referencing artifact digests to upstream build metadata.
+- The indexer verifies cosign signatures on the origin blobs and records the verification result in the index.
+- Operators can make missing or failed origin verification a hard failure by running the indexer with --enforce-origin-verification.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

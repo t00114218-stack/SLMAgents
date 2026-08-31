@@ -1,0 +1,14 @@
+Enterprise Record: In our model serving runtime, what is the new approach that 
+
+Document ID: dsid_fa1c733deb77445da7bc55dc472d233d
+System Source: github
+Details & Summary:
+It's the neon-orchestrated hybrid attention path: a runtime kernel tiler that dynamically chooses between a lightweight FlashAttention-style fast path for dense short sequences and a neon-prefetch tiled microkernel for long or odd-length contexts, combined with lazy-KV streaming to fetch KV slabs on demand instead of doing expensive full-KV page swaps.
+
+- The new approach is the neon-orchestrated hybrid attention path.
+- It uses a runtime kernel tiler that dynamically chooses between two attention implementations at execution time.
+- For dense short sequences it uses a lightweight FlashAttention-style fast path.
+- For long or odd-length contexts it uses a neon-prefetch tiled microkernel.
+- It uses lazy-KV streaming to fetch KV slabs on demand instead of doing expensive full-KV cache page swaps.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: When is the 60 to 90 minute technical deep dive scheduled wi
+
+Document ID: dsid_74cd6ebda84547e2a534f8f6d1b49739
+System Source: gmail
+Details & Summary:
+The 60-90 minute technical deep dive (private hosting architecture review) is scheduled for Tuesday, October 24, 2028, from 10:00 to 11:15 AM Pacific Time.
+
+- The 60 to 90 minute technical deep dive is scheduled for Tuesday, October 24, 2028.
+- The technical deep dive is scheduled from 10:00 AM to 11:15 AM Pacific Time.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

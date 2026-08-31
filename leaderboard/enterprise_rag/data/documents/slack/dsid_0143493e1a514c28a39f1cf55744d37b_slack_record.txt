@@ -1,0 +1,14 @@
+Enterprise Record: In the security incident about leaked encrypted log fragment
+
+Document ID: dsid_0143493e1a514c28a39f1cf55744d37b
+System Source: slack
+Details & Summary:
+The triage checklist was: (1) suspend partner service account keys, (2) revoke partner Vault tokens using the `-prefix partner-` option, (3) remove the decrypt IAM binding for the partner principal, (4) enable an audit sink for KMS and Vault decrypts for 90 days, and (5) search other buckets/objects for ciphertext patterns.
+
+- The triage checklist included suspending partner service account keys.
+- The triage checklist included revoking partner Vault tokens using the -prefix partner- option.
+- The triage checklist included removing the decrypt IAM binding for the partner principal.
+- The triage checklist included enabling an audit sink for KMS and Vault decrypts for 90 days.
+- The triage checklist included searching other buckets and objects for ciphertext patterns.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

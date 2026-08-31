@@ -1,0 +1,13 @@
+Enterprise Record: For a content templating company planning tens of millions o
+
+Document ID: dsid_ad14c3cb06c4494093dfcfff5098d89d
+System Source: hubspot
+Details & Summary:
+They requested a time-limited evaluation consisting of a 14-day trial with hosted API keys and a large benchmark allowance of 50 million free tokens.
+
+- They requested a time-limited evaluation.
+- The time-limited evaluation was a 14-day trial.
+- The trial included hosted API keys.
+- The evaluation included a large benchmark allowance of 50 million free tokens.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

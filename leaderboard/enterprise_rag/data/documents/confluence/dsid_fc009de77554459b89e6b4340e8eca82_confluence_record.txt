@@ -1,0 +1,13 @@
+Enterprise Record: In the disconnected installer package for the on prem produc
+
+Document ID: dsid_fc009de77554459b89e6b4340e8eca82
+System Source: confluence
+Details & Summary:
+At the bundle root (the single directory you extract to), the installer expects these top-level files: `manifest.json` (required), `manifest.sig` (required for signed/normal bundles; only optional for explicitly approved break-glass bundles), and `README.txt` (required).
+
+- The installer checks the bundle root (the single top-level directory you extract to) for required items before accepting the package.
+- manifest.json must exist at the top level of the extracted bundle and is required.
+- manifest.sig must exist at the top level for signed or normal bundles, and is only optional for explicitly approved break-glass bundles.
+- README.txt must exist at the top level of the extracted bundle and is required.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

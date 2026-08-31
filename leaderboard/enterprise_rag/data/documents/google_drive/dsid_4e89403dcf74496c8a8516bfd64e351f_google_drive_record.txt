@@ -1,0 +1,10 @@
+Enterprise Record: In our staging cluster, checkpoint downloads sometimes hang 
+
+Document ID: dsid_4e89403dcf74496c8a8516bfd64e351f
+System Source: google_drive
+Details & Summary:
+In the failing resume cases, the server sometimes responds with **HTTP 200 OK** (instead of the expected **206 Partial Content**) to a Range request, which triggers the stall.
+
+- In failing resume cases, the server sometimes responds with HTTP 200 OK to a Range request instead of the expected 206 Partial Content
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

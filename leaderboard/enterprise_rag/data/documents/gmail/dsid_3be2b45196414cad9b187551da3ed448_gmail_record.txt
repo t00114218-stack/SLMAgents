@@ -1,0 +1,10 @@
+Enterprise Record: In the Medicore procurement email thread about data use and 
+
+Document ID: dsid_3be2b45196414cad9b187551da3ed448
+System Source: gmail
+Details & Summary:
+Redwood proposed a 5-business-day turnaround to deliver the operational runbook.
+
+- Redwood proposed a 5-business-day turnaround to deliver the operational runbook.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

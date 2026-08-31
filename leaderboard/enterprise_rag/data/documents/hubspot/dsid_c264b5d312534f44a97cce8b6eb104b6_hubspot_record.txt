@@ -1,0 +1,12 @@
+Enterprise Record: What were the target responsiveness and peak simultaneous ag
+
+Document ID: dsid_c264b5d312534f44a97cce8b6eb104b6
+System Source: hubspot
+Details & Summary:
+For the 2-week POC, they targeted first-token latency under 1.5 seconds at the 95th percentile (with a 500 ms median goal) and wanted to sustain 50 concurrent agent sessions at peak during testing.
+
+- The target first-token latency was under 1.5 seconds at the 95th percentile.
+- The median first-token latency goal was 500 ms.
+- The peak simultaneous agent usage threshold was 50 concurrent agent sessions during testing.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

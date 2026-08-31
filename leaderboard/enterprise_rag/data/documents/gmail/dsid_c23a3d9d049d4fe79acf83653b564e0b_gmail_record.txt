@@ -1,0 +1,12 @@
+Enterprise Record: In the MedSecure logging and PII redaction POC email thread,
+
+Document ID: dsid_c23a3d9d049d4fe79acf83653b564e0b
+System Source: gmail
+Details & Summary:
+Redwood proposed per-tenant deterministic pseudonymization: each tenant gets a unique KMS-wrapped salt, and trace/request IDs are transformed using HMAC-SHA256 with that salt (then truncated to 16 bytes and stored as base64) so IDs correlate within a tenant but not across customers.
+
+- Redwood proposed per-tenant deterministic pseudonymization for trace or request IDs so they correlate within a tenant but not across customers.
+- Each tenant would have a unique KMS-wrapped salt used for the pseudonymization.
+- Trace or request IDs would be transformed using HMAC-SHA256 with the tenant salt, then truncated to 16 bytes and stored as base64.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

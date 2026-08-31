@@ -1,0 +1,16 @@
+Enterprise Record: For the Q2 milestone scope they locked in the chat, which it
+
+Document ID: dsid_bbce440e846642f3983104c786157597
+System Source: slack
+Details & Summary:
+They deferred to v1 the full-tenant SSO, tenant routing/per-tenant network plumbing, cross-tenant dedupe, and non-email 2FA options (SMS/TOTP). They kept in the MVP the embedding cache work, quantization, and a minimal email-only 2FA flow.
+
+- Full-tenant SSO was pushed to v1
+- Tenant routing and per-tenant network plumbing was pushed to v1
+- Cross-tenant dedupe was pushed to v1
+- Non-email 2FA options including SMS and TOTP were pushed to v1
+- Embedding cache work was kept in the MVP
+- Quantization was kept in the MVP
+- A minimal email-only 2FA flow was kept in the MVP
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

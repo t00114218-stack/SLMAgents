@@ -1,0 +1,14 @@
+Enterprise Record: For the office keycard audit, how many months of access logs
+
+Document ID: dsid_03b2db544a6d4cf886fb9869058a05f2
+System Source: jira
+Details & Summary:
+Export the last 12 months of access logs for the initial keycard cross-check (Security will expand the window only if anomalies are found); an earlier note suggested 18 months, but that has been superseded.
+
+- The answer must state that Security requested exporting access logs for the last 12 months for the initial cross-check.
+- The answer must indicate that the log window would be expanded only if anomalies are found (not expanded by default).
+- If older guidance is mentioned, the answer must note that an earlier plan suggested 18 months and that this is outdated/superseded by the 12-month request.
+- The answer must not claim the initial export window is 18 months, 24 months, or any value other than 12 months.
+- The answer must not introduce unrelated requirements (e.g., disposal categories, sweep schedule times) as part of the log-export request.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

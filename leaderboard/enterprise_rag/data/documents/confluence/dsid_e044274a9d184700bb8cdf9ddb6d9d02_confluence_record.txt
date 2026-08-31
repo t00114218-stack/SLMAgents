@@ -1,0 +1,12 @@
+Enterprise Record: What are the default significance threshold and minimum samp
+
+Document ID: dsid_e044274a9d184700bb8cdf9ddb6d9d02
+System Source: confluence
+Details & Summary:
+The handbook's default significance threshold is a two-sided p-value < 0.01 for primary SLOs. Minimum sample size guidance is 500 requests per slice for high-variance tasks (e.g., chat/long-context) and 100 requests for low-variance tasks (e.g., embeddings or deterministic reranks).
+
+- The causal regression investigation handbook default significance threshold is a two-sided p-value less than 0.01 for primary SLOs.
+- The handbook minimum sample size guideline is 500 requests per slice for high-variance tasks (for example, chat or long-context).
+- The handbook minimum sample size guideline is 100 requests per slice for low-variance tasks (for example, embeddings or deterministic reranks).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,13 @@
+Enterprise Record: In our incident response process, what is the rule for when 
+
+Document ID: dsid_01eaeaf6045941beaeaf74e6170aceea
+System Source: confluence
+Details & Summary:
+A quick Deferred Postmortem (DPM) is acceptable when the incident is single-tenant and had less than 30 minutes of customer-visible impact (with a known cause and effective mitigation applied at resolution). If it impacted multiple tenants (e.g., multi-tenant Sev2) or is Sev1, a full postmortem is required.
+
+- A quick Deferred Postmortem is acceptable when the incident is single-tenant and had less than 30 minutes of customer-visible impact.
+- A quick Deferred Postmortem is acceptable only if the cause is known and an effective mitigation was applied at resolution.
+- If an incident impacted multiple tenants, a full postmortem is required.
+- If an incident is Sev1, a full postmortem is required.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

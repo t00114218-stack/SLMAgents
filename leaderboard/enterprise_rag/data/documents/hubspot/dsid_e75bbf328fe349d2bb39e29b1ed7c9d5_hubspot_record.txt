@@ -1,0 +1,13 @@
+Enterprise Record: What was the high-percentile latency concern reported after 
+
+Document ID: dsid_e75bbf328fe349d2bb39e29b1ed7c9d5
+System Source: hubspot
+Details & Summary:
+After a smoke test with roughly 50 concurrent short streaming chats, they observed a p99 latency of about 250ms (with ~120ms median), which raised concern about tail-latency spikes.
+
+- A smoke test was run with roughly 50 concurrent short streaming chat sessions for Satellite Grove
+- The smoke test observed a p99 latency of about 250 ms
+- The smoke test observed a median latency of about 120 ms
+- The p99 latency result raised concern about tail latency spikes
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

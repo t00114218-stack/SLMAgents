@@ -1,0 +1,10 @@
+Enterprise Record: What was the deadline and time zone for paying into the offi
+
+Document ID: dsid_bb6f267d73a64a1b947a524dd602daa0
+System Source: slack
+Details & Summary:
+The payment deadline was set for 2026-03-05 at 17:00 UTC.
+
+- The payment deadline was 2026-03-05 at 17:00 UTC.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,12 @@
+Enterprise Record: Who owns the mixed-priority cgroup and soft-quota playbook f
+
+Document ID: dsid_06682ba9559b4b2192ffe6dee7a7abba
+System Source: confluence
+Details & Summary:
+The playbook is owned by infra-scheduling@redwood.com (eng-infra), with serving-runtime@redwood.com as the secondary owner. For rollout coordination, contact infra-scheduling@redwood.com or open a ticket in the #infra-scheduling Slack channel.
+
+- The mixed-priority cgroup and soft-quota playbook for multi-tenant inference is owned by infra-scheduling@redwood.com (eng-infra).
+- The secondary owner of the playbook is serving-runtime@redwood.com.
+- For rollout coordination, the best contact is infra-scheduling@redwood.com or the #infra-scheduling Slack channel.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

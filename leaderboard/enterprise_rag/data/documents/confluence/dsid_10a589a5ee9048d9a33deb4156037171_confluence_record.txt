@@ -1,0 +1,15 @@
+Enterprise Record: What does Redwood Private on-prem recommend for signing back
+
+Document ID: dsid_10a589a5ee9048d9a33deb4156037171
+System Source: confluence
+Details & Summary:
+As of Private Toolkit v1.8+, Redwood recommends signing backup manifests with Sigstore/cosign (offline key mode). Older deployments may still use GPG signatures, and both are supported during migration.
+
+- The answer must state that the current/primary recommendation is Sigstore/cosign in offline key mode.
+- The answer must mention that this cosign guidance applies as of Private Toolkit v1.8+.
+- The answer must note that older deployments may still use GPG signatures.
+- The answer must indicate that both cosign and GPG are supported during migration (not that GPG is the only supported option).
+- The answer must not claim manifests are always signed by default; it should reflect that manifests can be signed (optional capability).
+- The answer must not introduce other signing tools or methods (e.g., 'JWT signing', 'X.509 CA signing', 'keyless online Sigstore') not stated in the documents.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

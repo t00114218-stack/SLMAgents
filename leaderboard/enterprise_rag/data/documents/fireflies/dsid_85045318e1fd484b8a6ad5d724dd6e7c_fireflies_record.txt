@@ -1,0 +1,10 @@
+Enterprise Record: How many Fireflies sales-call transcripts mention a customer
+
+Document ID: dsid_85045318e1fd484b8a6ad5d724dd6e7c
+System Source: fireflies
+Details & Summary:
+8 transcripts mention a customer requirement for data residency (e.g., EU-only, UK-only, Germany-only, US-only/us‑east‑1, or strict in-country processing).
+
+- 8 Fireflies sales-call transcripts mention a customer requirement for data residency (keeping data in a specific region or country).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

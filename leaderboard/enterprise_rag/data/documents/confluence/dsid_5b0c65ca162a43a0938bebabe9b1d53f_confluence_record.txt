@@ -1,0 +1,25 @@
+Enterprise Record: Can you reconcile the current public error contract for data
+
+Document ID: dsid_5b0c65ca162a43a0938bebabe9b1d53f
+System Source: confluence
+Details & Summary:
+Canonical public contract remains ADR-022: residency policy blocks return HTTP 409 Conflict and use the standard error envelope with error.code="residency_policy_violation". SDKs should key primarily off error.code=="residency_policy_violation" (and 409) and then branch on error.subcode in {"region_not_allowed","primary_region_unavailable","policy_misconfigured"}; if subcode is missing, treat it as a generic residency_policy_violation and do not retry by default (except primary_region_unavailable may be retried with backoff without cross-region reroute).
+
+Gateway enforcement is expected to emit the ADR-022 shape/status for both streaming and non-streaming requests (409 returned before any streaming bytes; if a stream has already started, it must terminate with a final structured error event rather than downgrading to a generic 5xx).
+
+PM requirements introduced alternate top-level residency codes (e.g. "residency_region_not_allowed" and "residency_cross_region_fallback_blocked") and earlier gateway drafts referenced other variants; these should be reconciled to the ADR by keeping a single top-level error.code ("residency_policy_violation") and expressing the specific reason via subcode (region_not_allowed for targeted/outside allowed set, primary_region_unavailable for fallback-not-permitted/capacity cases, policy_misconfigured for invalid policy state). For robustness during rollout, SDKs may also treat any of the PM/gateway variant residency codes as equivalent to residency_policy_violation and map them onto the same ResidencyPolicyViolationError surface.
+
+- Canonical public contract is ADR-022 for data residency policy blocks.
+- Residency policy blocks return HTTP 409 Conflict.
+- Residency policy blocks use the standard error envelope with error.code set to residency_policy_violation.
+- SDKs should key primarily off error.code == residency_policy_violation and the 409 status.
+- SDKs should branch on error.subcode values region_not_allowed, primary_region_unavailable, or policy_misconfigured.
+- If error.subcode is missing, SDKs should treat it as a generic residency_policy_violation and not retry by default.
+- primary_region_unavailable may be retried with backoff but without cross-region reroute.
+- Gateway enforcement should emit the ADR-022 status and error shape for both streaming and non-streaming requests.
+- For streaming, 409 should be returned before any streaming bytes; if streaming has started, the stream should terminate with a final structured error event rather than a generic 5xx.
+- PM and earlier gateway drafts introduced alternate top-level residency error codes such as residency_region_not_allowed and residency_cross_region_fallback_blocked.
+- Those alternate residency codes should be reconciled by keeping the single top-level error.code residency_policy_violation and expressing the specific reason via error.subcode.
+- During rollout, SDKs may treat PM or gateway variant residency codes as equivalent to residency_policy_violation and map them to the same ResidencyPolicyViolationError surface.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

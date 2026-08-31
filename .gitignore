@@ -25,3 +25,12 @@ build/
 *.zip
 *.log
 *.code-workspace
+
+# Large DB, Parquet & raw data files (>100MB)
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+leaderboard/**/data/*.db
+leaderboard/**/data/hf_raw/
+

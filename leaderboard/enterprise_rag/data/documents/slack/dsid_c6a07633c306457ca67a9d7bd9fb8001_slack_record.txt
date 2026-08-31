@@ -1,0 +1,12 @@
+Enterprise Record: When using the python async batching helper for embeddings t
+
+Document ID: dsid_c6a07633c306457ca67a9d7bd9fb8001
+System Source: slack
+Details & Summary:
+During auth refresh the async batcher can return a singleton-wrapped dict like {"result": {"scores": [...], "meta": {...}}} instead of the expected list-of-lists shape. The sampleapp patched around it by calling the redwood.utils normalizer `ensure_rerank_groups(reranks)`.
+
+- During auth refresh the async batcher can return a singleton-wrapped dict shaped like {"result": {"scores": [...], "meta": {...}}} for rerank responses
+- The singleton-wrapped dict shape appears instead of the expected list-of-lists rerank response shape
+- The sampleapp fixed the rerank output shape by calling the redwood.utils normalizer ensure_rerank_groups(reranks)
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

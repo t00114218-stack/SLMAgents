@@ -1,0 +1,10 @@
+Enterprise Record: What was the performance goal for response time at the 95th 
+
+Document ID: dsid_f8529277bd964d6086d49ca2a30c9ac7
+System Source: hubspot
+Details & Summary:
+Their latency goal was under 300 ms at the 95th percentile (p95) for single-shot text generation.
+
+- The performance goal was a response time under 300 ms at the 95th percentile for single-request text generation.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

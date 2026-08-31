@@ -1,0 +1,11 @@
+Enterprise Record: What were the two immediate options the SRE suggested when a
+
+Document ID: dsid_3ab4d00190a1485da19d929f9f71bb5a
+System Source: slack
+Details & Summary:
+The SRE suggested two immediate options: (1) move the reservation to eu-central-1, or (2) use Dedicated plus burst capacity (temporary shared nodes) while the team tried to free up reserved units in eu-west-1.
+
+- The SRE suggested moving the reservation to eu-central-1.
+- The SRE suggested using Dedicated plus burst capacity (temporary shared nodes) while the team tried to free up reserved units in eu-west-1.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

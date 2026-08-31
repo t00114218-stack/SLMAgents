@@ -1,0 +1,11 @@
+Enterprise Record: In the runtime inference forensics walkthrough for Arcadia R
+
+Document ID: dsid_100d6362c85946ab97758b63509bc182
+System Source: fireflies
+Details & Summary:
+Arcadia's p95 latency target for interactive queries is 150 ms, and they said they would upload the sample requests by Friday.
+
+- Arcadias p95 latency target for interactive queries is 150 ms
+- They said they would upload the sample requests by Friday
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

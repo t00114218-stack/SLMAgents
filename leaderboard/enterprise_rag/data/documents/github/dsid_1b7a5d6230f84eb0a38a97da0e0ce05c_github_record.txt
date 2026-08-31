@@ -1,0 +1,11 @@
+Enterprise Record: In the service that lets clients discover which language mod
+
+Document ID: dsid_1b7a5d6230f84eb0a38a97da0e0ce05c
+System Source: github
+Details & Summary:
+The advisory 0-100 "compatibility_score" is documented in the expanded docstring for the compatibility mapping, and the release notes point to `docs/api/model-catalog.md` for examples of the field in the model catalog API.
+
+- The advisory 0 to 100 compatibility_score is documented in the expanded docstring for the compatibility mapping.
+- The release notes point to docs/api/model-catalog.md for examples of the compatibility_score field in the model catalog API.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,26 @@
+Enterprise Record: A dedicated beta customer says the Suggestions view overstat
+
+Document ID: dsid_85ee9562e05d457b9e32785343777359
+System Source: jira
+Details & Summary:
+Mismatch is mostly expectation/assumption gaps: the caching savings estimator is computed off trailing-7d baseline compute-cost attribution and assumes 100% enablement at the shown route+model scope and steady-state cache hit uplift; the customer only rolled out caching to part of traffic (so realized savings scale down roughly by rollout% and are further reduced during the first 6-12+ hours of cache warm-up). They're also comparing to net invoiced billing totals (credits/commit discounts and non-inference line items) rather than compute-cost, and on Dedicated the $ estimate can be inflated if the estimator falls back to catalog/list price because the effective rate feed is missing.
+
+Changes: UI should make the assumptions unavoidable in both list and drawer (Compute-cost estimate, not invoice; window/stale_as_of; assumes 100% traffic; expect 48-72h for warm-up) and show price basis/source (effective rate vs list-price fallback); when on Dedicated/Private with list-price fallback, hide $/day or clearly badge it and emphasize % savings instead. Estimator should incorporate an adoption/rollout factor (or let the UI scale by rollout %) and ideally model/report warm-up vs steady-state; also use effective dedicated pricing when available and downgrade confidence/flag the estimate when pricing or billed-token basis inputs are missing.
+
+- The caching savings estimator uses a trailing 7-day baseline of compute-cost attribution.
+- The estimator assumes 100 percent caching enablement for the shown route and model scope.
+- The estimator assumes a steady-state cache hit uplift rather than a ramp during rollout.
+- If caching is only enabled for part of traffic, realized savings are roughly proportional to the rollout percentage and therefore lower than the estimate.
+- Realized savings are further reduced during an initial cache warm-up period (on the order of the first 6 to 12 or more hours).
+- The customer is comparing the Suggestions estimate to net invoiced billing totals, which can include credits, commitment discounts, and non-inference line items, while the estimator is based on compute-cost.
+- On Dedicated deployments, the dollar estimate can be inflated when the estimator falls back to catalog or list price because an effective rate feed is missing.
+- The UI should clearly label the estimate as compute-cost based rather than invoice-total based.
+- The UI should disclose key assumptions including the baseline window, a stale-as-of timestamp, and the assumption of 100 percent traffic enablement.
+- The UI should set expectations about warm-up versus steady-state savings (for example, that warm-up can take 48 to 72 hours).
+- The UI should show the price basis or source used (effective rate versus list-price fallback).
+- When on Dedicated or Private where list-price fallback is used, the UI should hide the dollar-per-day value or clearly badge it and emphasize percent savings instead.
+- The estimator should incorporate an explicit adoption or rollout factor (or allow the UI to scale the estimate by rollout percentage).
+- The estimator should model or report warm-up versus steady-state savings behavior.
+- The estimator should use effective dedicated pricing when available and reduce confidence or flag the estimate when pricing or billed-token basis inputs are missing.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

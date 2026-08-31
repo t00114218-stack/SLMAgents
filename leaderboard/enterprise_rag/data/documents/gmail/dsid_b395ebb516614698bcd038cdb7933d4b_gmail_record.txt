@@ -1,0 +1,10 @@
+Enterprise Record: In the negotiation where a healthcare customer pushed for st
+
+Document ID: dsid_b395ebb516614698bcd038cdb7933d4b
+System Source: gmail
+Details & Summary:
+Redwood proposed a per-claim cap of the greater of 12 months of fees paid under the order form or $1,000,000.
+
+- Redwood proposed a per-claim liability cap equal to the greater of 12 months of fees paid under the order form or 1000000 dollars.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

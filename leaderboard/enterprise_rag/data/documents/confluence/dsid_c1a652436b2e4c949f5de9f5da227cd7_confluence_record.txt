@@ -1,0 +1,11 @@
+Enterprise Record: What noise range is considered normal in the company cafeter
+
+Document ID: dsid_c1a652436b2e4c949f5de9f5da227cd7
+System Source: confluence
+Details & Summary:
+Normal daytime cafeteria noise is typically targeted at 45-55 dB, and lunchtime peaks are allowed up to 65 dB for short periods.
+
+- Normal daytime cafeteria noise is typically targeted at 45-55 dB.
+- Lunchtime noise peaks are allowed up to 65 dB for short periods.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

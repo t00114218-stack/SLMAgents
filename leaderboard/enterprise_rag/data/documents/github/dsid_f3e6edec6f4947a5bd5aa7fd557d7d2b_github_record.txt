@@ -1,0 +1,20 @@
+Enterprise Record: Why did Northpeak Search see their Dedicated Burst Usage bil
+
+Document ID: dsid_f3e6edec6f4947a5bd5aa7fd557d7d2b
+System Source: github
+Details & Summary:
+Northpeak Search saw Dedicated Burst Usage come in higher than expected because the burst metering path was double-counting retries: when the client (and sometimes the gateway) retried on 429/overload or transient failures, the metering emitter produced a burst increment per attempt, and in some retry paths the request_id was regenerated per attempt while idempotency_key was missing/empty. Since downstream de-dupe was keyed mainly on (tenant_id, request_id), those attempts did not collapse, inflating daily burst GPU-seconds (notably 2025-06-15 to 2025-06-18).
+
+To prevent this now, burst usage is made idempotent across retries by carrying a stable request-scoped idempotency key end-to-end: the gateway accepts X-Redwood-Idempotency-Key, and if absent generates a ULID once per incoming request and reuses it across internal retry attempts; the metering event includes idempotency_key, and the central burst_usage_aggregator dedupes on (tenant_id, region, hw_class, pool_id, idempotency_key) with a bounded TTL (storing only a hash of the key). We also added export-time reconciliation/guardrails (metrics for dropped duplicates and a batch check that alerts/blocks export if duplicate keys exceed a small threshold) and backfilled the affected dates with a billing adjustment/credit.
+
+- Dedicated Burst Usage was higher than expected because the burst metering path was double-counting retry attempts.
+- When the client or gateway retried requests due to 429 overload responses or transient failures, the metering emitter produced a separate burst increment for each attempt.
+- In some retry paths the request_id was regenerated per attempt and the idempotency_key was missing or empty, preventing retries from being recognized as the same logical request.
+- Downstream deduplication was keyed mainly on (tenant_id, request_id), so retry attempts with different request_id values did not collapse and inflated billed burst GPU-seconds.
+- To prevent double-counting now, burst usage is made idempotent across retries by using a stable request-scoped idempotency key end-to-end.
+- The gateway accepts X-Redwood-Idempotency-Key and, if absent, generates a ULID once per incoming request and reuses it across internal retry attempts.
+- Metering events now include idempotency_key so retries can be deduplicated.
+- The central burst_usage_aggregator now dedupes on (tenant_id, region, hw_class, pool_id, idempotency_key) with a bounded TTL and stores only a hash of the idempotency key.
+- Export-time guardrails were added, including metrics for dropped duplicates and a batch check that alerts or blocks export if duplicate keys exceed a small threshold.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

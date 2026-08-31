@@ -1,0 +1,10 @@
+Enterprise Record: What is the default time window the company targets for rout
+
+Document ID: dsid_329e7ecd6b304c30b61a30e07919e008
+System Source: confluence
+Details & Summary:
+The target SLA for routine internal approvals is 72 business hours.
+
+- The company targets a default SLA of 72 business hours for routine internal approvals across operational requests.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,14 @@
+Enterprise Record: How does the new alerting approach group model-serving reque
+
+Document ID: dsid_c1a6a71323c04c1ba5445aadea340362
+System Source: github
+Details & Summary:
+It adds a lightweight token_stage_cohort service that computes a deterministic "cohort key" for each invocation from stage-level signals (e.g., token counts per stage, KV-cache hit patterns, decode batch size) and keeps short-lived aggregates per cohort. An alert route-matrix generator then uses those cohort rollups to build a route × stage alert matrix that attributes SLO violations to the most likely pipeline stages and biases escalation to the top-k responsible stages, reducing per-route alert noise and speeding RCA.
+
+- The approach adds a lightweight token_stage_cohort service that groups each model-serving invocation by computing a deterministic cohort key from stage-level signals.
+- Stage-level signals used to compute the cohort key can include token counts per stage, KV-cache hit patterns, and decode batch size.
+- The token_stage_cohort service maintains short-lived aggregate metrics per cohort.
+- An alert route-matrix generator uses the per-cohort rollups to build a route-by-stage alert matrix.
+- The route-by-stage alert matrix attributes SLO violations to the most likely pipeline stages and biases escalation to the top-k responsible stages, reducing per-route alert noise and speeding root cause analysis.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

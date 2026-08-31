@@ -1,0 +1,13 @@
+Enterprise Record: For the Jupiter Therapeutics rollout, if the target go-live 
+
+Document ID: dsid_675719b813ed4030b65514ca79e67ef8
+System Source: gmail
+Details & Summary:
+The canary period should start on 2028-07-15, which is 7 days before the 2028-07-22 go-live date.
+
+- The target go-live date is 2028-07-22.
+- The canary period duration is 7 days.
+- The canary period should start on 2028-07-15.
+- The canary period start date is 7 days before the go-live date.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

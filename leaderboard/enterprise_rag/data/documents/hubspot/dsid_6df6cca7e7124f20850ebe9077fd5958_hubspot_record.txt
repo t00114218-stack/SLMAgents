@@ -1,0 +1,13 @@
+Enterprise Record: For the mid sized software company building outbound sales c
+
+Document ID: dsid_6df6cca7e7124f20850ebe9077fd5958
+System Source: hubspot
+Details & Summary:
+They targeted live streaming token latency of p50 under 150 ms (with <200 ms mentioned as an earlier requirement), and an end-to-end user message → tool call → action acknowledgement latency of p95 under 800 ms during the planned 2-week evaluation.
+
+- They targeted live streaming token latency with p50 under 150 ms.
+- They had mentioned an earlier live streaming token latency requirement of under 200 ms.
+- They targeted end-to-end user message to tool call to action acknowledgement latency with p95 under 800 ms.
+- These latency targets were set during a planned 2-week evaluation.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

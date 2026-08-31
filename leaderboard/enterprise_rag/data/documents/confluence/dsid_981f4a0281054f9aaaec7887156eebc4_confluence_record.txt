@@ -1,0 +1,19 @@
+Enterprise Record: In the SLO→customer impact classifier, what score ranges map
+
+Document ID: dsid_981f4a0281054f9aaaec7887156eebc4
+System Source: confluence
+Details & Summary:
+V2 thresholds: Score ≥85 → Tier 1; 70-84 → Tier 2; 35-69 → Tier 3; <35 → Tier 4. Previous thresholds: Score ≥80 → Tier 1; 60-79 → Tier 2; 30-59 → Tier 3; <30 → Tier 4.
+
+- The answer must state the v2 tier mapping uses Score ≥85 for Tier 1.
+- The answer must state the v2 tier mapping uses 70-84 for Tier 2.
+- The answer must state the v2 tier mapping uses 35-69 for Tier 3.
+- The answer must state the v2 tier mapping uses Score <35 for Tier 4.
+- The answer must state the previous tier mapping used Score ≥80 for Tier 1.
+- The answer must state the previous tier mapping used 60-79 for Tier 2.
+- The answer must state the previous tier mapping used 30-59 for Tier 3.
+- The answer must state the previous tier mapping used Score <30 for Tier 4.
+- The answer must not invent additional tiers beyond 1-4.
+- The answer must not change the v2 Tier 1 threshold to any value other than 85 (e.g., not 80, 90, or 100).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

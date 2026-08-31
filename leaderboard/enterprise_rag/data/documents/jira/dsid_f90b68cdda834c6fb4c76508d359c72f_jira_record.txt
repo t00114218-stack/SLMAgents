@@ -1,0 +1,17 @@
+Enterprise Record: After rotating a Hosted API key in the Console, why might th
+
+Document ID: dsid_f90b68cdda834c6fb4c76508d359c72f
+System Source: jira
+Details & Summary:
+Because the Console Usage/Ad-hoc Query was serving stale/legacy cached usage rows and trace metadata keyed to the old api_key_id (not properly invalidated on rotation, with some pods still reading the legacy cache prefix), and the usage/trace indexing hadn't been remapped yet so generated trace anchors still referenced the old key, leading to trace lookups that 404. Support/SRE mitigated immediately by flushing the org's legacy Redis cache prefix and enabling a temporary console bypass so orgs with a recent rotation read live from the index instead of cache.
+
+- Console Usage/Ad-hoc Query was showing stale cached usage rows and trace metadata keyed to the old api_key_id because cache entries were not properly invalidated on key rotation (with some services still reading the legacy cache prefix).
+- Usage/trace indexing had not yet been remapped after rotation, so generated trace links still referenced the old key and trace lookups returned 404.
+- Support/SRE mitigated immediately by flushing the orgs legacy Redis cache prefix and enabling a temporary console bypass so recently rotated orgs read live from the index instead of cache.
+- The answer must not attribute the 404 trace links to saved dashboard query timeouts, analytics-engine query planner full-scan behavior, OOM/GC issues, or missing/empty trace_id payloads for >24h ranges.
+- The answer must not claim the post-rotation problem was cross-region routing/residency-claim omission that caused p95 latency spikes, nor suggest using API rotation with a residency header as the mitigation.
+- The answer must not describe tenant concurrency exhaustion or 429 bursts during key handover, nor mitigations like backoff/jitter, reducing overlap windows, or increasing concurrency limits.
+- The answer must not mention duplicate webhook deliveries from SDK retry behavior during mid-request rotation in a private/VPC deployment, nor mitigations like webhook idempotency checks or SDK version pinning.
+- The answer must not explain the symptom as intermittent 401s due to customer not updating all services, propagation delays after revocation, pasting key IDs instead of key values, or environment variable mismatches.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

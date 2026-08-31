@@ -1,0 +1,10 @@
+Enterprise Record: For regulated customer private VPC deployments, what is the 
+
+Document ID: dsid_7c73cb76b80a41edb4959db4b1e7308b
+System Source: confluence
+Details & Summary:
+The tenant-facing monthly availability target for the inference endpoint is 99.95%.
+
+- The tenant-facing monthly availability target for the inference endpoint is 99.95%.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

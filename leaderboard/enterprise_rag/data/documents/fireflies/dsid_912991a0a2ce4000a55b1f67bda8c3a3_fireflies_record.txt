@@ -1,0 +1,10 @@
+Enterprise Record: For IronCrest Bioinformatics evaluating Redwood, what was th
+
+Document ID: dsid_912991a0a2ce4000a55b1f67bda8c3a3
+System Source: fireflies
+Details & Summary:
+Using Redwood's self-serve (PLG) quickstart flow, the typical time to reach the first response token is about 15-30 minutes.
+
+- Using Redwood's self-serve quickstart flow, the typical time from signup to receiving the first response token is about 15 to 30 minutes.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

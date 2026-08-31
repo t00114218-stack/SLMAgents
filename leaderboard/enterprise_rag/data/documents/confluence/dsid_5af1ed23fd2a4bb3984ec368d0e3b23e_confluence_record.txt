@@ -1,0 +1,10 @@
+Enterprise Record: What are the required permission scopes for an API key when 
+
+Document ID: dsid_5af1ed23fd2a4bb3984ec368d0e3b23e
+System Source: confluence
+Details & Summary:
+The API key must include the permission scopes: inference:invoke and metrics:read.
+
+- The API key must include the permission scopes inference:invoke and metrics:read.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

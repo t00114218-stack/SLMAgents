@@ -1,0 +1,11 @@
+Enterprise Record: During the November 2025 us-east incident where streaming ch
+
+Document ID: dsid_1eba87b0b11b4f31a006f0cf164b8509
+System Source: jira
+Details & Summary:
+Support shared that the incident was declared internally at about 16:09 UTC and was mitigated by about 16:34 UTC.
+
+- Support said the incident was declared internally at about 16:09 UTC.
+- Support said the incident was mitigated by about 16:34 UTC.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

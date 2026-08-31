@@ -1,0 +1,10 @@
+Enterprise Record: What was the credit memo amount AWS Marketplace issued after
+
+Document ID: dsid_a1e0ff30870f40d7b692aa27bbedc194
+System Source: gmail
+Details & Summary:
+AWS Marketplace issued a credit memo for $23,412.50 (CM-1152-2026) after removing the duplicated reserved usage records and reversing the incorrectly applied VAT.
+
+- AWS Marketplace issued a credit memo for $23,412.50.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

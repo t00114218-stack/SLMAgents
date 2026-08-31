@@ -1,0 +1,13 @@
+Enterprise Record: During a multi region switchover, what is causing some custo
+
+Document ID: dsid_5402831508734a51adf649603be4b075
+System Source: linear
+Details & Summary:
+A race between epoch (quota time-boundary) transitions and the async, non-atomically versioned policy cache refresh causes proxy, orchestrator, and host rate controllers to use inconsistent epoch anchors during failover/restarts. That brief mismatch makes the burst evaluator miscompute credits (treating old/missing anchors as no-burst), leading to overly aggressive admission drops and resulting 429 spikes and some downstream 503s.
+
+- During a multi region switchover, a race occurs between quota epoch (time boundary) transitions and an asynchronous, non-atomically versioned policy cache refresh.
+- Because of this race, different rate control components (proxy, orchestrator, and host rate controllers) temporarily use inconsistent epoch anchors for quota calculations during failover or restarts.
+- The brief epoch anchor mismatch causes the burst evaluator to miscompute burst credits (for example treating old or missing anchors as no-burst).
+- The burst credit miscalculation leads to overly aggressive admission drops, producing spikes of 429 Too Many Requests responses and some downstream 503 Service Unavailable responses.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

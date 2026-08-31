@@ -1,0 +1,25 @@
+Enterprise Record: For Incident Bot v2, when responders use break-glass during 
+
+Document ID: dsid_9a5968363fce4f79af38d7702465a121
+System Source: confluence
+Details & Summary:
+When break-glass is used in a Sev0/Sev1 incident, the bot must emit audit events for the break-glass session (incident_bot.break_glass.activate and incident_bot.break_glass.deactivate when it expires/is revoked) and for each privileged read: incident_bot.config_diff.read for tenant-scoped config diff reads and incident_bot.telemetry.query for privileged tenant-scoped telemetry queries (with break_glass=true and a break_glass_session_id on calls made under break-glass). These audit events are retained 400 days in the searchable SIEM and 7 years in an immutable/WORM archive. For permissions, baseline reads use config.read:diff_redacted and telemetry.read:diagnostics_templates; break-glass uses config.read:diff_expanded_redacted for expanded redacted config diffs and telemetry.read:tenant_scoped for tenant-scoped telemetry templates.
+
+- During Sev0/Sev1 break-glass use, the bot must emit audit events for the break-glass session activation and deactivation (incident_bot.break_glass.activate and incident_bot.break_glass.deactivate).
+- During break-glass, the bot must emit an audit event for each tenant-scoped config diff read (incident_bot.config_diff.read).
+- During break-glass, the bot must emit an audit event for each privileged tenant-scoped telemetry query (incident_bot.telemetry.query).
+- Privileged read audit events emitted under break-glass must include break_glass=true and a break_glass_session_id.
+- These audit events are retained 400 days in the searchable SIEM.
+- These audit events are retained 7 years in an immutable/WORM archive.
+- Baseline (non-break-glass) config diff reads use the permission scope config.read:diff_redacted.
+- Baseline (non-break-glass) telemetry reads use the permission scope telemetry.read:diagnostics_templates.
+- Break-glass config diff reads use the permission scope config.read:diff_expanded_redacted.
+- Break-glass telemetry reads use the permission scope telemetry.read:tenant_scoped.
+- The answer must not claim break-glass is allowed for Sev2 or Sev3 incidents; it is restricted to Sev0/Sev1.
+- The answer must not say deploy metadata reads or SLO link generation require privileged audit events by default; the privileged audit requirement is for tenant-scoped config diffs and privileged telemetry.
+- The answer must not state SIEM retention is 30 days or 180 days; those are deploy-metadata data retention figures, not incident-bot privileged access audit retention.
+- The answer must not claim audit events are retained only in SIEM (or only in an archive); they must be in SIEM (400 days) and an immutable archive (7 years).
+- The answer must not replace the required break-glass lifecycle events with unrelated Slack UX events (e.g., only logging a slack action invoke) or omit break-glass activate/deactivate entirely.
+- The answer must not say the bot's baseline telemetry scope is tenant-scoped; tenant-scoped telemetry is a break-glass-only scope.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

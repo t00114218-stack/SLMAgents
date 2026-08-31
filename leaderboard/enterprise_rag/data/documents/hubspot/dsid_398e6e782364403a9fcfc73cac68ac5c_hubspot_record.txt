@@ -1,0 +1,11 @@
+Enterprise Record: What KPI targets did the customer set for improving support 
+
+Document ID: dsid_398e6e782364403a9fcfc73cac68ac5c
+System Source: hubspot
+Details & Summary:
+They want to reduce average handle time by 30% and get high-priority queue triage latency under 2 minutes.
+
+- The customer set a target to reduce average handle time by 30%.
+- The customer set a target to get high-priority queue triage latency under 2 minutes.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

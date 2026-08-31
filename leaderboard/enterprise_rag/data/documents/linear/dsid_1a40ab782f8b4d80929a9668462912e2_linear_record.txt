@@ -1,0 +1,11 @@
+Enterprise Record: In the proposal for an anchor-based trace drilldown panel th
+
+Document ID: dsid_1a40ab782f8b4d80929a9668462912e2
+System Source: linear
+Details & Summary:
+The MVP is limited to a single anchored span or correlation ID per workspace.
+
+- In the MVP, only one anchor can be pinned per workspace
+- The single pinned anchor in the MVP can be either an anchored span or a correlation ID
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

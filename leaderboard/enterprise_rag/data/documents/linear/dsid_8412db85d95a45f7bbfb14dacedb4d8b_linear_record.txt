@@ -1,0 +1,10 @@
+Enterprise Record: What are the initial weighting percentages for the signals u
+
+Document ID: dsid_8412db85d95a45f7bbfb14dacedb4d8b
+System Source: linear
+Details & Summary:
+The initial MRPI signal weights are telemetry at 50%, capacity volatility at 30%, and model compatibility at 20% before the 4-week recalibration.
+
+- Before the 4-week recalibration, the initial MRPI signal weights are telemetry at 50 percent, capacity volatility at 30 percent, and model compatibility at 20 percent.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

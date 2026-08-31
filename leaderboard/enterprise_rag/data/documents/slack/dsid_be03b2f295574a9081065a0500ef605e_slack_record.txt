@@ -1,0 +1,12 @@
+Enterprise Record: For the StrataCore joint benchmark on the S100 card, what mo
+
+Document ID: dsid_be03b2f295574a9081065a0500ef605e
+System Source: slack
+Details & Summary:
+They're benchmarking the rdx-13b model, and StrataCore specifically wants perf-per-watt (perf/W) and throughput on their S100 card. The post-run internal results bundle for signoff will include the telemetry, the SI CSVs, and BIOS snapshots.
+
+- The StrataCore joint benchmark on the S100 card is benchmarking the rdx-13b model.
+- StrataCore wants the benchmark metrics perf-per-watt (perf/W) and throughput on the S100 card.
+- The post-run internal results bundle for signoff will include telemetry, SI CSVs, and BIOS snapshots.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

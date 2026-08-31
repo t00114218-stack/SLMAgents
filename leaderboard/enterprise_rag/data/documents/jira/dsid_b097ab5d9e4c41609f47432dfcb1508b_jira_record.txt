@@ -1,0 +1,15 @@
+Enterprise Record: Why are some newly created Okta provisioned users getting a 
+
+Document ID: dsid_b097ab5d9e4c41609f47432dfcb1508b
+System Source: jira
+Details & Summary:
+Some newly provisioned users receive a 403 because auth-service can't resolve any RBAC roles from their token's group claims, so ModelObservability denies access with "no-matching-role-for-groups." The underlying issue is a type mismatch introduced by an Okta mapping update: the token now contains numeric (integer) group IDs (e.g., [123456]) but the role index and lookup logic expect group IDs as strings (e.g., "123456"), so the lookup returns an empty role set.
+
+- Some newly provisioned Okta users get a 403 because auth-service cannot resolve any RBAC roles from the group claims in their token
+- When no RBAC roles are resolved from the token group claims, ModelObservability denies access with the reason no-matching-role-for-groups
+- The missing role mapping was caused by a type mismatch introduced by an Okta mapping update
+- After the mapping update, the token group claims contain numeric integer group IDs such as [123456]
+- The role index and lookup logic expect group IDs as strings such as "123456"
+- Because of the integer versus string mismatch, the role lookup returns an empty role set
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,13 @@
+Enterprise Record: Which GPU cluster or pool was flagged as having relatively l
+
+Document ID: dsid_89e9c8a4822b471a8e132d6c2b188b80
+System Source: google_drive
+Details & Summary:
+APAC-eu1-pool-A was flagged for low average utilization (about 47%) but high entropy (0.72), meaning its headroom is unreliable due to churn during roughly 09:00-13:00 UTC.
+
+- APAC-eu1-pool-A was flagged as having relatively low average usage but high churn
+- APAC-eu1-pool-A had low average utilization of about 47 percent
+- APAC-eu1-pool-A had high entropy of 0.72 indicating churn
+- APAC-eu1-pool-A had unreliable headroom or free capacity during roughly 09:00 to 13:00 UTC
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: How many weekly status updates for Project Orion marked the 
+
+Document ID: dsid_8116cb3e580543d7bde1c57df351a3f3
+System Source: confluence
+Details & Summary:
+Three weekly status updates for Project Orion marked the project as "At Risk" (2026-01-16, 2026-01-23, and 2026-02-06).
+
+- Three weekly status updates for Project Orion were marked as At Risk
+- The At Risk weekly status updates occurred on 2026-01-16, 2026-01-23, and 2026-02-06
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

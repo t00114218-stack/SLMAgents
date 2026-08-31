@@ -1,0 +1,12 @@
+Enterprise Record: What is the proposed backend API endpoint and query paramete
+
+Document ID: dsid_702bc520c52040428799fed41c63c8ca
+System Source: google_drive
+Details & Summary:
+The playbook proposes a backend trace fetch API of `GET /v1/traces/{id}?level=grouped|full&time_window=start,end`, where `level` selects grouped vs full detail and `time_window` optionally constrains the returned data to a start/end range.
+
+- The proposed backend API endpoint to fetch a trace is GET /v1/traces/{id}.
+- The endpoint supports a level query parameter with values grouped or full to select grouped vs full detail.
+- The endpoint supports an optional time_window query parameter formatted as start,end to constrain returned data to a start and end range.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

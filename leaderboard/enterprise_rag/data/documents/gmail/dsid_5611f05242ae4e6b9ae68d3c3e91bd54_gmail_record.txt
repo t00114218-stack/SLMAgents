@@ -1,0 +1,14 @@
+Enterprise Record: INC-9821: was the degraded GPU node an OOM or intermittent d
+
+Document ID: dsid_5611f05242ae4e6b9ae68d3c3e91bd54
+System Source: gmail
+Details & Summary:
+After deeper node telemetry review (2026-09-01), Redwood concluded the degraded GPU instance was primarily experiencing intermittent driver/kernel launch stalls (not a sustained GPU OOM). Earlier triage/postmortem language had speculated about an OOM or generic kernel failure/degraded kernel behavior, but this was later corrected.
+
+- The answer must state that the later correction identified intermittent driver/kernel launch stalls on the GPU node as the primary issue.
+- The answer must explicitly state there was no sustained GPU OOM (i.e., it was not primarily an OOM).
+- The answer must indicate that earlier reporting/hypotheses mentioned OOM and/or a kernel failure/degraded kernel, and that this was later corrected.
+- The answer must not claim the incident was caused by data exfiltration or a security breach (docs state no evidence of data integrity or security issues).
+- The answer must not introduce a different root cause unrelated to autoscaler behavior + a degraded node (e.g., 'database outage', 'network misconfiguration').
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

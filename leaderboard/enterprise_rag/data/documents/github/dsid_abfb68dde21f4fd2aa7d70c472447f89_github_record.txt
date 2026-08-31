@@ -1,0 +1,19 @@
+Enterprise Record: For the Northwind Analytics long-context latency regression 
+
+Document ID: dsid_abfb68dde21f4fd2aa7d70c472447f89
+System Source: github
+Details & Summary:
+Mitigations: (1) disabled kernel auto-selection v2 for the affected Llama models on Northwind's Dedicated pool nw-analytics-ded-01 (us-east, L40S), forcing v1 behavior; (2) added a temporary deny rule so v2 cannot select the long-context prefill kernel fa3_fused_prefill_sm89 on L40S when seq_bucket=LONG (fallback to the known-stable FA2/triton prefill path). Plan/criteria to re-enable v2 safely: land the long-context fix (PR-28522) and ship it in Runtime 1.21.1, with the long-context guard/threshold adjustments and L40S-specific exception validated (L40S long-context benchmarks green); keep the deny in place until validation is complete (notably for the customer's driver/CUDA stack). Then run a controlled canary re-enable on their pool with an explicit rollback window, monitoring selection distribution plus prefill/p99 for LONG bucket; immediately roll back/disable v2 again if p99 for long-context regresses >10% versus the pre-canary baseline (and keep v2 disabled if any instability appears).
+
+- Kernel auto-selection v2 was disabled for the affected Llama models on Northwind Dedicated pool nw-analytics-ded-01 (us-east, L40S), forcing v1 behavior
+- A temporary deny rule was added to prevent v2 from selecting the long-context prefill kernel fa3_fused_prefill_sm89 on L40S when seq_bucket=LONG
+- With the deny rule in place for LONG on L40S, prefill falls back to the known-stable FA2/triton prefill path
+- To safely re-enable v2, the long-context fix PR-28522 must land and be shipped in Runtime 1.21.1
+- Re-enabling v2 requires validating the long-context guard/threshold adjustments and the L40S-specific exception, with L40S long-context benchmarks green
+- The deny rule should remain in place until validation is complete, including validation on the customer driver/CUDA stack
+- After validation, v2 should be re-enabled via a controlled canary on the customer pool with an explicit rollback window
+- During the canary, monitoring should include kernel selection distribution and prefill/p99 latency for the LONG bucket
+- If LONG-bucket p99 latency regresses by more than 10 percent versus the pre-canary baseline, v2 should be immediately rolled back/disabled again
+- v2 should remain disabled if any instability appears
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: What caused the GPU training slowdowns in one us-east rack w
+
+Document ID: dsid_f608b4d739f240c0b56d4d4b151b8cd3
+System Source: slack
+Details & Summary:
+The slowdown was driven by a rack-4 top-of-rack network issue-an uplink in the LACP group (Gi1/0/24) was flapping/noisy after a config push, causing packet loss/connection breaks that led to high same-rack latency and NCCL allreduce timeouts. The ToR symptom pointing to this was Gi1/0/24 showing heavy RX CRC errors and RX drops along with repeated port-flap alerts.
+
+- GPU training slowdowns were caused by a rack-4 top-of-rack uplink in the LACP group (Gi1/0/24) flapping or becoming noisy after a config push, leading to packet loss or connection breaks that produced high same-rack latency and NCCL allreduce timeouts.
+- The top-of-rack switch symptom was Gi1/0/24 showing heavy RX CRC errors and RX drops along with repeated port-flap alerts.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,12 @@
+Enterprise Record: For the ProofPoint pentest artifact audit-proxy escrow, what
+
+Document ID: dsid_36bdca5b925c4550b5eca1990f2d798b
+System Source: gmail
+Details & Summary:
+The default retention period is 90 days, the standard access request turnaround time is 4 business hours, and AuditWorks storage fees are billed separately to the customer (with Redwood coordinating but not billing storage fees unless otherwise agreed).
+
+- The default retention period for the audit-proxy escrow is 90 days.
+- The standard access request turnaround time is 4 business hours.
+- AuditWorks storage fees are billed separately to the customer.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,10 @@
+Enterprise Record: What is the target reduction in product manager first-touch 
+
+Document ID: dsid_7a094ff98c3b4c96a77f3949aedeb749
+System Source: linear
+Details & Summary:
+The target is to cut PM first-touch triage/consolidation time from about 5 hours (historically 4-8 hours) down to 90 minutes or less per high-touch request (<= 1.5 hours).
+
+- The target reduction is to cut PM first-touch triage or consolidation time from about 5 hours per high-touch request to 90 minutes or less (1.5 hours or less).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

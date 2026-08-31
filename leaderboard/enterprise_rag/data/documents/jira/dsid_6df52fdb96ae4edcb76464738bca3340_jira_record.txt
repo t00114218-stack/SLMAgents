@@ -1,0 +1,17 @@
+Enterprise Record: Who approves terminating STALE-ORPHAN test instances after t
+
+Document ID: dsid_6df52fdb96ae4edcb76464738bca3340
+System Source: jira
+Details & Summary:
+The ticket indicates cost-ops approval is sufficient: Priya Desai states that cost-ops approves termination after the 72h grace window. Miguel Reyes asked whether an infra manager approval is needed, but no infra-manager approval is recorded in the ticket text.
+
+- The answer must state that Priya Desai (cost-ops) says cost-ops approves termination after the grace window.
+- The answer must mention that Miguel Reyes asked about needing a short approval from the infra manager, but that this approval is not confirmed/recorded in the ticket.
+- The answer must keep the grace window as 72 hours (not a different duration).
+- The answer must not claim an infra manager explicitly approved the termination (no such approval is present).
+- The answer must not introduce names not present in the documents as the approver.
+- The answer may mention that the runbook suggests notifying owners for 48 hours before cleanup, but must not change that duration.
+- The answer must not change the stated monthly spend estimate (~$1.2k).
+- The answer must not invent additional volumes beyond vol-0a1b2c3d being snapshotted.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

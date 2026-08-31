@@ -1,0 +1,19 @@
+Enterprise Record: Which streaming event names and tool-call fields are we stan
+
+Document ID: dsid_3ad691e18be849d897506f5276c24a75
+System Source: confluence
+Details & Summary:
+Standardize SDK examples + golden fixtures on these canonical stream event types: response.started, message.delta, tool_call.delta, tool_call.final (aka tool_call.done), message.final, response.completed (aka response.done), plus response.error and response.interrupted. Tool-call fields are: tool_call_id (the stable identifier used everywhere, including tool results), name, arguments_delta (streamed fragment as a string), and arguments (complete JSON string on final); tool results are role="tool" with tool_call_id and content (typically JSON-stringified). For OpenAI-compat streaming, map each delta.tool_calls[i] to this model by setting tool_call_id = tool_calls[i].id, name = tool_calls[i].function.name, and arguments_delta = the new appended substring of tool_calls[i].function.arguments (or the provided fragment); accumulate per tool_call_id, and when the tool call is complete (finish_reason tool_calls / end of tool-call emission / message final), emit tool_call.final with arguments = the full accumulated arguments string, then JSON-parse/validate only at that point.
+
+- Canonical streaming event types for SDK examples and golden fixtures are: response.started, message.delta, tool_call.delta, tool_call.final (aka tool_call.done), message.final, response.completed (aka response.done), response.error, and response.interrupted.
+- Standardized tool-call fields are: tool_call_id (stable identifier used everywhere including tool results), name, arguments_delta (streamed fragment string), and arguments (complete JSON string on final).
+- Tool results should be represented as role="tool" messages with tool_call_id and content (typically JSON-stringified).
+- For OpenAI-compat streaming, each delta.tool_calls[i] should be mapped into the canonical model.
+- In that mapping, tool_call_id is taken from tool_calls[i].id.
+- In that mapping, name is taken from tool_calls[i].function.name.
+- In that mapping, arguments_delta is the newly appended substring of tool_calls[i].function.arguments (or the provided fragment).
+- Arguments fragments should be accumulated per tool_call_id across deltas.
+- When a tool call is complete (finish_reason tool_calls, end of tool-call emission, or message final), emit tool_call.final with arguments equal to the full accumulated arguments string.
+- JSON parsing/validation of tool-call arguments should be done only when emitting tool_call.final.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

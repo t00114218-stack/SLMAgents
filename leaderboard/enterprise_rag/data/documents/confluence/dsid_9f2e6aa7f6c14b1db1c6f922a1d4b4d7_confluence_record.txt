@@ -1,0 +1,15 @@
+Enterprise Record: Default TTL for the cross-account GPU warm-pool handoff hand
+
+Document ID: dsid_9f2e6aa7f6c14b1db1c6f922a1d4b4d7
+System Source: confluence
+Details & Summary:
+The handshake token now defaults to a 120-second TTL (2 minutes); the older runbook used a 180-second (3 minute) default.
+
+- The answer must state the current default handshake token TTL is 120 seconds.
+- The answer must indicate that 180 seconds was the previous/default TTL in the older runbook.
+- The answer must not claim the current default TTL is 180 seconds or 3 minutes.
+- The answer must not introduce any other TTL values (e.g., 60s, 90s, 300s) as the default.
+- If the answer mentions the token TTL in minutes, it must correctly map 120s to 2 minutes and 180s to 3 minutes.
+- The answer must not claim the token is long-lived or reusable; it should not contradict that the token is ephemeral/TTL-limited.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,14 @@
+Enterprise Record: What are the proposed internal time to mitigate targets by s
+
+Document ID: dsid_c83811391709468fa9534e6495c205e3
+System Source: google_drive
+Details & Summary:
+The proposed internal time-to-mitigate (TTM) targets (same for all tiers) are: Sev0 = 30 minutes, Sev1 = 2 hours, Sev2 = 1 business day, and Sev3 = 5 business days (or the next planned release train).
+
+- The proposed internal time-to-mitigate targets are the same for all customer deployment tiers.
+- The proposed time-to-mitigate target for Sev0 is 30 minutes.
+- The proposed time-to-mitigate target for Sev1 is 2 hours.
+- The proposed time-to-mitigate target for Sev2 is 1 business day.
+- The proposed time-to-mitigate target for Sev3 is 5 business days or the next planned release train.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

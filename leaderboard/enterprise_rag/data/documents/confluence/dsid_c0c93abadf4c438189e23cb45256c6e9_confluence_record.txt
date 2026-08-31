@@ -1,0 +1,11 @@
+Enterprise Record: Across all incident postmortems, which Redwood team was assi
+
+Document ID: dsid_c0c93abadf4c438189e23cb45256c6e9
+System Source: confluence
+Details & Summary:
+The **Platform** team was assigned the most follow-up action items across all incident postmortems, with **16** total.
+
+- The Platform team was assigned the most follow-up action items across all incident postmortems.
+- The Platform team had 16 total follow-up action items assigned across all incident postmortems.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

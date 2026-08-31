@@ -1,0 +1,12 @@
+Enterprise Record: What was the decision for when and how to roll out the new l
+
+Document ID: dsid_cfc80f61d84848c58d961b49d1b3a774
+System Source: google_drive
+Details & Summary:
+They decided to move the lattice scheduler into a restricted canary for low-traffic models during a Mon-Wed window next week. If p95 latency improves and there are no errors, they would expand it to medium-tier (higher traffic) models.
+
+- They decided to roll out the lattice scheduler into a restricted canary for low-traffic models.
+- The restricted canary rollout was planned for a Mon-Wed window next week.
+- They would expand the lattice scheduler to medium-tier (higher traffic) models if p95 latency improves and there are no errors.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,13 @@
+Enterprise Record: What maintenance window and expected downtime were planned f
+
+Document ID: dsid_0767a662eacd463aaf0935750dba509e
+System Source: slack
+Details & Summary:
+A canary rollout in us-west-2 was planned for Friday 2024-04-26 at 02:00 UTC, followed by a broad rollout on Mon-Tue 2024-04-29/30. Expected downtime was minimal: two ~5-minute rolling restarts affecting only control-plane agents, with the app plane unaffected (exact timing to be posted by deploy-bot).
+
+- A canary rollout in us-west-2 was planned for Friday 2024-04-26 at 02:00 UTC.
+- A broad rollout was planned for Mon-Tue 2024-04-29/30.
+- Expected downtime was minimal and consisted of two approximately 5-minute rolling restarts.
+- The rolling restarts were expected to affect only control-plane agents and not the app plane.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

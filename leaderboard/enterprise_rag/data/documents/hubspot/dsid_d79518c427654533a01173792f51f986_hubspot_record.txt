@@ -1,0 +1,13 @@
+Enterprise Record: Which fintech support-chat prospect dropped us after their l
+
+Document ID: dsid_d79518c427654533a01173792f51f986
+System Source: hubspot
+Details & Summary:
+It was Onyx Cloud Labs. Their legal/security team rejected self-attestation and required audited SOC2/ISO evidence, so they moved forward with CompetitorX, which offered an on-prem/private deployment plus formal audit paperwork.
+
+- The fintech support-chat prospect was Onyx Cloud Labs.
+- Onyx Cloud Labs dropped us because their legal or security team rejected non-audited compliance proof or self-attestation and required audited SOC2 or ISO evidence.
+- Onyx Cloud Labs chose CompetitorX instead.
+- CompetitorX could deliver an on-prem or private deployment and formal audit paperwork.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

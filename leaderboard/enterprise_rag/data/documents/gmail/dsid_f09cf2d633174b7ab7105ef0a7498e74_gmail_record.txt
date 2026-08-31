@@ -1,0 +1,12 @@
+Enterprise Record: I need the most recent vendor continuity evidence packet for
+
+Document ID: dsid_f09cf2d633174b7ab7105ef0a7498e74
+System Source: gmail
+Details & Summary:
+The continuity evidence starter packet (including the warm/cold KV cache restore timing samples) is shared in the secure folder at https://drive.redwood.example.com/s/seedbank-bcp-evidence (access via the DocuSign NDA link). The confirmed live non-prod/UAT witness demo is scheduled for 2027-08-16 09:30-10:15 ET (with 09:00-11:00 ET held as a buffer).
+
+- The continuity evidence starter packet including warm and cold KV cache restore timing samples is shared in the secure folder at https://drive.redwood.example.com/s/seedbank-bcp-evidence.
+- Access to the secure folder is via the DocuSign NDA link.
+- The confirmed live non production or UAT witness demo is scheduled for 2027-08-16 09:30 to 10:15 ET.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

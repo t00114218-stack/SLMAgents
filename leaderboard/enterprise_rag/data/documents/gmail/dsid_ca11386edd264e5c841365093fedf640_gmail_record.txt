@@ -1,0 +1,15 @@
+Enterprise Record: For the ClearSight Health pilot discussions with Redwood, wh
+
+Document ID: dsid_ca11386edd264e5c841365093fedf640
+System Source: gmail
+Details & Summary:
+Bethany Park said that anything that could be tied back to a patient should be treated as PHI for this engagement-specifically including patient name, date of birth (DOB), medical record number (MRN), invoice numbers, and full addresses.
+
+- Bethany Park said anything that could be tied back to a patient should be treated as PHI for this integration
+- Bethany Park specifically included patient name as PHI for this integration
+- Bethany Park specifically included patient date of birth (DOB) as PHI for this integration
+- Bethany Park specifically included medical record number (MRN) as PHI for this integration
+- Bethany Park specifically included invoice numbers as PHI for this integration
+- Bethany Park specifically included full addresses as PHI for this integration
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

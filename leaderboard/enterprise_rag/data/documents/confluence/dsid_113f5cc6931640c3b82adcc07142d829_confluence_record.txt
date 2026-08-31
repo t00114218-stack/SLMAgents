@@ -1,0 +1,15 @@
+Enterprise Record: What is the API endpoint to start a Unified Capacity Transit
+
+Document ID: dsid_113f5cc6931640c3b82adcc07142d829
+System Source: confluence
+Details & Summary:
+Use POST /v1/capacity/migrations/start (updated API namespace). The older POST /v1/migration/start is only a temporary legacy alias.
+
+- The answer must state that the updated start endpoint is POST /v1/capacity/migrations/start.
+- The answer must not present POST /v1/migration/start as the primary/current endpoint (it is legacy/aliased).
+- The answer may mention that POST /v1/migration/start exists as a temporary legacy alias supported behind a feature flag/planned removal post-GA.
+- The answer must not invent a different path such as /v1/capacity/migration/start (singular) or /v1/capacity/migrations/create.
+- The answer must not claim the start operation is a GET request (it is POST).
+- If the answer mentions the status/get endpoint, it must use GET /v1/capacity/migrations/{migration_id} (not /v1/capacity/migrations/status).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

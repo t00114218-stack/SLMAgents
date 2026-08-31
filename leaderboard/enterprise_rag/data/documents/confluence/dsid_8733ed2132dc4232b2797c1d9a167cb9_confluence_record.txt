@@ -1,0 +1,16 @@
+Enterprise Record: How do audit log exports access records older than the reten
+
+Document ID: dsid_8733ed2132dc4232b2797c1d9a167cb9
+System Source: confluence
+Details & Summary:
+Exports cannot pull records older than the tenant retention cutoff. The older "super-admin retention override" is deprecated; now any retrieval beyond retention requires an explicit Legal Hold using a legal_hold_id (only for tenants with Legal Hold enabled), and use of the legal_hold_id is logged to the immutable audit stream with a ticket reference.
+
+- The answer states that exports cannot retrieve audit records older than the tenant retention cutoff under normal rules.
+- The answer mentions that a prior mechanism called a "super-admin retention override" existed but is now deprecated (outdated).
+- The answer states that retrieval beyond retention now requires a Legal Hold represented by a legal_hold_id.
+- The answer states that this beyond-retention retrieval is only allowed for tenants with Legal Hold enabled.
+- The answer states that uses of legal_hold_id are logged to an immutable audit stream and include a ticket reference.
+- The answer must not claim that super-admins can currently bypass retention without a legal_hold_id.
+- The answer must not invent specific retention durations, cutoff dates, or other requirements not present in the documents.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

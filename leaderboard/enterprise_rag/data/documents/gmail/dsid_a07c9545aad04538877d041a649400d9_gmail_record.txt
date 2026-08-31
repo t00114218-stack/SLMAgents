@@ -1,0 +1,13 @@
+Enterprise Record: For the Praxis Health Redwood Private connectivity plan, wha
+
+Document ID: dsid_a07c9545aad04538877d041a649400d9
+System Source: gmail
+Details & Summary:
+Redwood recommended a hybrid setup: use AWS PrivateLink for the control plane and scoped inference access, a peered ingress VPC in the Praxis AWS account for sustained low-latency/high-throughput traffic, and a site-to-site VPN to the on-prem colo for redundancy/backfill. The proposed 30-minute follow-up call was scheduled for Monday, Nov 22, 2026 at 10:00am PST.
+
+- Redwood recommended using AWS PrivateLink for the control plane and scoped inference access.
+- Redwood recommended using a peered ingress VPC in the Praxis AWS account for sustained low latency and high throughput traffic.
+- Redwood recommended using a site to site VPN to the on prem colo for redundancy and backfill.
+- The proposed 30 minute follow up call was scheduled for Monday, Nov 22, 2026 at 10:00am PST.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,13 @@
+Enterprise Record: What is the operator procedure to put a private deployment t
+
+Document ID: dsid_c198dbbcf28a4c73ad1d705809634176
+System Source: confluence
+Details & Summary:
+To switch a tenant to local-only telemetry mode, in the control plane open the tenant config, go to Telemetry, select "no-external-telemetry" and apply; if needed, use the CLI fallback: `redwoodctl tenant update --id <TENANT> --telemetry-mode local-only`. Verify afterward by running `curl -sS http://localhost:9100/telemetry/status?tenant=<TENANT> | jq '.mode'`, which should return "local-only".
+
+- To put a tenant into local-only telemetry mode in the control plane, open the tenant config, go to Telemetry, select no-external-telemetry, and apply the change.
+- As a CLI fallback, you can set local-only telemetry mode with: redwoodctl tenant update --id <TENANT> --telemetry-mode local-only.
+- You can verify the telemetry mode by querying http://localhost:9100/telemetry/status?tenant=<TENANT> and checking the returned mode field.
+- After switching successfully, the reported mode should be local-only.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

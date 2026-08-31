@@ -1,0 +1,11 @@
+Enterprise Record: In the GPU inference runtime that mixes tiny chat requests w
+
+Document ID: dsid_061c09d8eef649eba85cd1421e28a41a
+System Source: linear
+Details & Summary:
+The target is a 35-50% reduction in worst-case (99.9th percentile) per-token latency for latency-sensitive routes, while keeping aggregate throughput degradation under 10% on mixed workloads.
+
+- The target is a 35 to 50 percent reduction in worst case (99.9th percentile) per token latency for latency sensitive traffic
+- The target keeps aggregate throughput degradation under 10 percent on mixed workloads
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

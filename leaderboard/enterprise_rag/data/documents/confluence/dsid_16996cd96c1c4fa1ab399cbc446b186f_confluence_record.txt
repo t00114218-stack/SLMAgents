@@ -1,0 +1,20 @@
+Enterprise Record: What is the expected workflow when a new Sev0 or Sev1 incide
+
+Document ID: dsid_16996cd96c1c4fa1ab399cbc446b186f
+System Source: confluence
+Details & Summary:
+For a new Sev0/Sev1 incident, incident_type=unknown (and subtype=unknown) is only a temporary triage state when there isn't enough evidence to pick a top-level type. While it's unknown, the primary owner must be set to SRE (Reliability) as a temporary owner and the incident channel must note what's known/unknown and the next steps/time to revisit. The IC is accountable for getting it classified and must set a real type/subtype within 10 minutes; if it's still unknown after 10 minutes, page SRE plus Platform Control Plane for default triage, and if still unknown at later checkpoints (T+30 and T+60) escalate to the SRE Duty Manager to force a least-wrong classification. SLA clocks still start when the incident is declared (created_at with severity set). If incident_type is unknown, the SLA system runs a Sev0/Sev1 classification grace timer (15 minutes); after that it applies incident_type="unknown" conservative/default TTM/TTF targets and SLA warnings/breach alerts run against those targets until the incident_type is updated, at which point due-times/alerts update to the correct type/subtype targets with elapsed time counted from the original start.
+
+- incident_type=unknown (and subtype=unknown) for a new Sev0 or Sev1 incident is only a temporary triage state used when there is not enough evidence to choose a top-level type
+- While incident_type is unknown, the primary owner must be set to SRE (Reliability) as the temporary owner
+- While incident_type is unknown, the incident channel must note what is known and unknown and the next steps and time to revisit
+- The Incident Commander is accountable for getting the incident classified
+- A real incident type and subtype must be set within 10 minutes of the incident being created
+- If the incident is still unknown after 10 minutes, SRE plus Platform Control Plane must be paged for default triage
+- If the incident is still unknown at later checkpoints T+30 and T+60, escalation goes to the SRE Duty Manager to force a least-wrong classification
+- SLA clocks start when the incident is declared, based on created_at with severity set
+- If incident_type is unknown, the SLA system runs a Sev0 or Sev1 classification grace timer of 15 minutes
+- After the grace timer, the SLA system applies conservative default TTM and TTF targets for incident_type=unknown and runs SLA warnings and breach alerts against those targets until incident_type is updated
+- When incident_type is updated, due times and alerts update to the correct type and subtype targets, with elapsed time still counted from the original SLA start
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

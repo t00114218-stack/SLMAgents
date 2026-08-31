@@ -1,0 +1,20 @@
+Enterprise Record: How should we automate the creation and teardown of short-li
+
+Document ID: dsid_3d745c88c7e4426c9548350824f0d9b8
+System Source: jira
+Details & Summary:
+Implement a single auditable orchestration (e.g., a lightweight Lambda/worker) triggered by creating a Jira issue in the "Sandbox Requests" project. On trigger, have it (1) create a team-scoped Jira namespace/subproject with templated issue types (Experiment, Runbook, Cleanup), (2) instantiate Confluence child pages from the "Sandbox Playbook" template and link them to the Jira workspace, and (3) create a private Slack channel named `sandbox-{team}-{shortid}` inviting the requester and the approver group (e.g., `model-eval-admins`). Keep the Slack channel inactive/muted until an approval step is completed (via Slack approval flow or Okta group-based approver validation), then enable access.
+
+For teardown, store a TTL per sandbox (default 30 days) and run an archive job when it expires, with a grace/renew option via a single Slack command limited to the owner (and/or approvers). At archive time, export an audit bundle to S3 at `s3://redwood-audit/sandboxes/{sandbox-id}/` containing a Confluence snapshot plus a channel membership CSV, encrypted with SSE-KMS and controlled by a reviewed bucket policy and retention rules; also emit step-by-step logs to the central ops log index and publish success/failure metrics.
+
+- Use a single auditable orchestration service (for example, a lightweight Lambda or worker) triggered by creation of a Jira issue in a Sandbox Requests project.
+- On trigger, automatically create a team-scoped Jira workspace (namespace or subproject) with templated issue types such as Experiment, Runbook, and Cleanup.
+- On trigger, automatically instantiate Confluence child pages from a Sandbox Playbook template and link them to the Jira workspace.
+- On trigger, automatically create a private Slack channel named sandbox-{team}-{shortid} and invite the requester and an approver group (for example, model-eval-admins).
+- Keep the Slack channel inactive or muted until an approval step is completed, then enable access (approval can be via a Slack approval flow or Okta group-based approver validation).
+- Store a per-sandbox TTL with a default of 30 days (one month) and run an archive or teardown job when the TTL expires.
+- Provide a simple renewal or extension mechanism via a single Slack command restricted to the sandbox owner and or approvers.
+- At teardown time, export an audit bundle to object storage (for example, S3 under s3://redwood-audit/sandboxes/{sandbox-id}/) that includes a Confluence snapshot and a Slack channel membership CSV.
+- Encrypt the stored audit bundle using SSE-KMS and enforce access and retention through a reviewed bucket policy and retention rules.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

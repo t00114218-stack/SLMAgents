@@ -1,0 +1,24 @@
+Enterprise Record: In a Redwood Private (VPC/on-prem) upgrade using the private
+
+Document ID: dsid_fd73df34040d4e0f8f944ccc9f0b5e70
+System Source: confluence
+Details & Summary:
+Cause: the migration job was blocked because another Postgres session (typically left over from a prior failed/aborted upgrade) was still holding the Postgres advisory lock, so the new migration pod kept waiting. Resolution: under Support guidance the customer's DBA identified the stale lock-holding session and terminated it, after which migrations proceeded and the upgrade completed. Collect before any retry/rollback: installer logs/output around when it entered "Running migrations" (including migration runner stdout/stderr) and start/stuck timestamps; versions (from/to platform version and installer version); Kubernetes artifacts for the migration job/pod (kubectl get jobs, get pods filtered for migrat/upgrade/install, describe the migration pod, logs from the migration pod/all containers with a tail or since window); recent namespace events (kubectl get events tail); and, for external Postgres, a DB-side lock/activity snapshot showing the advisory-lock holder/long-lived sessions (as available from the DBA).
+
+- The migration job was blocked because another Postgres session was still holding the Postgres advisory lock.
+- The lock holding session was typically left over from a prior failed or aborted upgrade.
+- Because the advisory lock was held, the new migration pod repeatedly waited on the Postgres advisory lock and migrations did not progress.
+- Under Support guidance, the customers DBA identified the stale session holding the advisory lock and terminated it.
+- After the stale lock holding session was terminated, migrations proceeded and the upgrade completed.
+- Before attempting a retry or rollback, collect the private installer logs and output from when the UI entered Running migrations, including migration runner stdout and stderr and start and stuck timestamps.
+- Before attempting a retry or rollback, collect the from and to platform versions and the installer version.
+- Before attempting a retry or rollback, collect Kubernetes artifacts for the migration job and pod, including kubectl get jobs, kubectl get pods filtered for migration or upgrade or install, and kubectl describe of the migration pod.
+- Before attempting a retry or rollback, collect logs from the migration pod for all containers, using an appropriate tail or since window.
+- Before attempting a retry or rollback, collect recent namespace events such as kubectl get events output.
+- Because Postgres is externally managed, collect a database side lock and activity snapshot showing the advisory lock holder and any long lived sessions.
+- The answer must not claim the Postgres database is the in-cluster StatefulSet (or advise kubectl exec into postgres-0) since the scenario specifies externally managed Postgres.
+- The answer must not attribute the stall to network/DNS/database reachability failures or storage/node DiskPressure/OOM; the key symptom is repeatedly waiting on a Postgres advisory lock.
+- The answer must not say the issue was resolved solely by restarting/deleting the migration pod or rerunning the installer without addressing the lock holder; the successful action was terminating the stale session holding the advisory lock.
+- The answer must not recommend manual schema downgrades as part of rollback; rollback requires confirming migration state and collecting diagnostics first.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

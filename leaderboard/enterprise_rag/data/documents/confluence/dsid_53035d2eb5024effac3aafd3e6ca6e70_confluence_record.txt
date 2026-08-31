@@ -1,0 +1,19 @@
+Enterprise Record: After the Feb 22, 2026 SEV-2 where Console rollout actions c
+
+Document ID: dsid_53035d2eb5024effac3aafd3e6ca6e70
+System Source: confluence
+Details & Summary:
+It wrongly retried HTTP 409 Conflict. The fix was to require a server-side Idempotency-Key for rollback requests so retries return the same result. Per the Dedicated staged rollouts audit-log spec, the dedicated-pool-rollouts-service must emit the canonical audit events, and retries are de-duplicated using the idempotency_key (with event_id used by the audit pipeline as the unique dedupe/primary key).
+
+- HTTP 409 Conflict was wrongly treated as retryable during the incident.
+- Rollback requests were changed to require a server-side Idempotency-Key so that retries return the same result.
+- Per the Dedicated staged rollouts audit-log spec, the dedicated-pool-rollouts-service must emit the canonical audit events.
+- Retry de-duplication uses the idempotency_key, with event_id used by the audit pipeline as the unique dedupe or primary key.
+- The answer must not say the wrongly retryable status code was 429, 5xx, 503, or 404; the incident was specifically about retrying 409 Conflict.
+- The answer must not claim the fix was only a Console/UI change; the postmortem specifies a server-side idempotency key requirement for rollback actions.
+- The answer must not state that Console emits audit events; the audit-log spec explicitly says Console must not emit audit events directly.
+- The answer must not state that the policy engine emits the canonical audit events; the spec requires the control plane service (dedicated-pool-rollouts-service) to emit them even for policy-engine-initiated actions.
+- The answer must not claim retries are de-duplicated using request_id alone; request_id is per attempt, while idempotency_key is for deduping retries and event_id is the audit pipeline's dedupe/primary key.
+- The answer must not reference the Private upgrades rollback loop workaround involving deleting the installer-rollback-lock ConfigMap; that is a different rollback loop scenario unrelated to the Feb 22, 2026 Console rollout incident.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

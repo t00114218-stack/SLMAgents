@@ -1,0 +1,10 @@
+Enterprise Record: For the upcoming joint demo with a Japan-based logistics cus
+
+Document ID: dsid_182c34ee62c54118b48c1390e77cd3ba
+System Source: gmail
+Details & Summary:
+Kyoto Logistics preferred a one-page LOA (Letter of Authorization) for the trial instead of a full purchase order.
+
+- Kyoto Logistics preferred a one-page LOA (Letter of Authorization) document for trial procurement instead of a full purchase order.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

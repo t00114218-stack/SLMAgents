@@ -1,0 +1,12 @@
+Enterprise Record: What service credit percentages were proposed in the tiered 
+
+Document ID: dsid_03af1e44970d4d6db6e85bc2c5fce8de
+System Source: hubspot
+Details & Summary:
+In Redwood's tiered uptime SLA counteroffer, the proposed service credits were 10% for 99.9-99.95% uptime, 30% for 99.5-99.9%, and 60% for uptime below 99.5%.
+
+- The tiered uptime SLA counteroffer proposed a 10% service credit for 99.9 to 99.95% uptime.
+- The tiered uptime SLA counteroffer proposed a 30% service credit for 99.5 to 99.9% uptime.
+- The tiered uptime SLA counteroffer proposed a 60% service credit for uptime below 99.5%.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

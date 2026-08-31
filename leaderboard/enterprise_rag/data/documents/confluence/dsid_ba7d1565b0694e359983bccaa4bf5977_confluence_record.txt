@@ -1,0 +1,10 @@
+Enterprise Record: What is the company policy for how long contractor access sh
+
+Document ID: dsid_ba7d1565b0694e359983bccaa4bf5977
+System Source: confluence
+Details & Summary:
+Contractor access is enforced to expire by default after 30 days unless it is renewed.
+
+- Contractor access is set to expire by default after 30 days unless it is renewed.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

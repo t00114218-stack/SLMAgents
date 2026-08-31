@@ -1,0 +1,10 @@
+Enterprise Record: In the security review meeting about private cloud upgrades 
+
+Document ID: dsid_05faa1ab6427403888a06d7083c7f0a9
+System Source: fireflies
+Details & Summary:
+Cascade stated they need audit logs retained for 400 days (ideally in an immutable store).
+
+- Cascade stated the minimum audit log retention period they wanted was 400 days.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

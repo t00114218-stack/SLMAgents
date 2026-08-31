@@ -1,0 +1,12 @@
+Enterprise Record: What was the temporary mitigation applied for the enterprise
+
+Document ID: dsid_9619c1f3ff3c4626a2bd029e907e1f76
+System Source: jira
+Details & Summary:
+Support temporarily mitigated the issue by pinning Slateware's traffic to a more stable edge pool to avoid edge proxy handoffs (connection affinity flips), which eliminated the truncation failures during streaming.
+
+- Support temporarily mitigated the issue by pinning the customers traffic to a more stable edge pool
+- The pinning was done to avoid edge proxy handoffs (connection affinity flips)
+- Pinning to the stable edge pool eliminated the streaming response truncation failures
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

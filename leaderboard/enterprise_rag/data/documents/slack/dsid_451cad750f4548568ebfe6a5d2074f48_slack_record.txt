@@ -1,0 +1,12 @@
+Enterprise Record: What dates did the team set for the three stage launch of th
+
+Document ID: dsid_451cad750f4548568ebfe6a5d2074f48
+System Source: slack
+Details & Summary:
+They planned a staged rollout with Pilot (restricted) running Aug 7-21, Beta (broader preview) running Aug 22-Sept 12, and GA (public release) on Sept 20.
+
+- The restricted trial stage (Pilot) was scheduled for Aug 7 through Aug 21.
+- The broader preview stage (Beta) was scheduled for Aug 22 through Sept 12.
+- The public release stage (GA) was scheduled for Sept 20.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

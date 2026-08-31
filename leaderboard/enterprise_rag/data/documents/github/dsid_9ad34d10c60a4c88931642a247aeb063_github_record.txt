@@ -1,0 +1,11 @@
+Enterprise Record: What is the HTTP endpoint and method for the new service tha
+
+Document ID: dsid_9ad34d10c60a4c88931642a247aeb063
+System Source: github
+Details & Summary:
+The new service is exposed as a POST request to the endpoint `/optimize/v1/suggestions`.
+
+- The new service uses the HTTP POST method.
+- The HTTP endpoint for the new service is /optimize/v1/suggestions.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

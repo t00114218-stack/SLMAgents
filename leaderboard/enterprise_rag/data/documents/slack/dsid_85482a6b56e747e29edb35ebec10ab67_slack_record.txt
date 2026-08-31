@@ -1,0 +1,12 @@
+Enterprise Record: For the 90-day AcmeSec eval, what do they need to send to ge
+
+Document ID: dsid_85482a6b56e747e29edb35ebec10ab67
+System Source: slack
+Details & Summary:
+To wire up Splunk HEC audit log exports, AcmeSec needs to send their Splunk HEC endpoint and HEC token. Sam (Solutions) is responsible for wiring the HEC export, and Kevin (Sales-Eng) is responsible for sending the pricing quote.
+
+- AcmeSec must send their Splunk HEC endpoint and HEC token to wire up Splunk HEC audit log exports.
+- Sam from Solutions is responsible for wiring the HEC export.
+- Kevin from Sales-Eng is responsible for sending the pricing quote.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

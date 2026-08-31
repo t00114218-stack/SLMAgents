@@ -1,0 +1,21 @@
+Enterprise Record: What is the procedure for an emergency rollback of a Serving
+
+Document ID: dsid_840703a1cc37438a84e9beb68029d80b
+System Source: confluence
+Details & Summary:
+For an emergency rollback of a Serving Runtime release in Hosted and Dedicated, first pause/freeze any in-flight progressive rollout so it cannot auto-advance, then re-pin the runtime to a known-good prior runtime release tag, trigger a redeploy, and verify fleet health (e.g., 5xx rate, p95 TTFT, GPU OOMs) before closing the incident/change record. For Hosted, apply the rollback across regions in order (non-critical/canary first, then remaining canary, then all affected regions) and lock the tag to prevent re-advance; for Dedicated, identify impacted tenant clusters, pin and redeploy per cluster (coordinating customer comms as required), and keep the incident open until metrics are stable (≈30 minutes Hosted, ≈60 minutes Dedicated) while capturing CI/CD job links, affected regions/clusters, tags, timings, and verification evidence.
+
+- In an emergency rollback of a Serving Runtime release, first pause or freeze any in-flight progressive rollout so it cannot auto-advance.
+- Re-pin the serving runtime to a known-good prior runtime release tag.
+- Trigger a redeploy after re-pinning the runtime tag.
+- Verify fleet health after the rollback using metrics such as 5xx rate, p95 TTFT, and GPU OOMs.
+- Close the incident or change record only after verification is complete.
+- For Hosted, apply the rollback across regions in order: non-critical or canary first, then remaining canary, then all affected regions.
+- For Hosted, lock the runtime tag to prevent re-advance after rollback.
+- For Dedicated, identify the impacted tenant clusters.
+- For Dedicated, pin and redeploy per impacted tenant cluster.
+- For Dedicated, coordinate customer communications as required during the rollback.
+- Keep the incident open until metrics are stable, approximately 30 minutes for Hosted and approximately 60 minutes for Dedicated.
+- Capture incident evidence including CI/CD job links, affected regions or clusters, runtime tags, timings, and verification evidence.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,18 @@
+Enterprise Record: In the EU hosted API, streaming generate requests over HTTP/
+
+Document ID: dsid_ab50b630b14e4bfda87847286157b739
+System Source: slack
+Details & Summary:
+Root cause was the midproxy NGINX rejecting the request because the client's ~12KB base64 X-User-Meta header exceeded its default header/buffer limits ("client sent too large header"), causing NGINX to abort the upstream connection and the edge Envoy to surface it as an intermittent HTTP/2 streaming 502 ("disconnect/reset before headers"). Mitigation deployed was an edge header-filter that drops X-User-Meta when it is >4096 bytes (oversized header is removed so the request can proceed), which stopped the 502s.
+
+- The root cause was the midproxy NGINX rejecting requests because the X-User-Meta header of about 12KB exceeded its default header or buffer limits (client sent too large header).
+- NGINX aborting the upstream connection caused the edge Envoy to surface the failure as an intermittent HTTP/2 streaming 502 (disconnect or reset before headers).
+- The mitigation was an edge header filter that drops the X-User-Meta header when it is larger than 4096 bytes so the request can proceed.
+- Dropping oversized X-User-Meta headers at the edge stopped the 502s.
+- The answer must not attribute the issue to X-Client-Meta or multipart/form-data requests, nor claim the fix was increasing large_client_header_buffers/proxy_buffer_size on the frontdoor (those relate to a different incident).
+- The answer must not say the client was receiving an explicit 431 response as the primary symptom; in this EU case the client symptom was 502 due to upstream abort, and the mitigation was header dropping at the edge.
+- The answer must not describe a us-west ALB + keepalive/idle-timeout streaming stall problem involving large aggregated auth/cookie headers; that is a separate scenario.
+- The answer must not describe a us-east BrightCart sidecar X-RW-Meta-* header growth issue or a mitigation involving disabling proxy_buffering for a customer-specific location block.
+- The answer must not claim the mitigation was changing proxy_read_timeout/idle timeouts or rolling back a routing-config deployment; the EU fix was an edge rule dropping oversized X-User-Meta > 4096 bytes.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: In the on-prem cutover readiness weekly sync meeting, who at
+
+Document ID: dsid_b9025f196ac14b2cb7a2905654dd42d7
+System Source: fireflies
+Details & Summary:
+Attendees were Samir Patel, Lila Novak, Diego Ramos (Redwood) and Marco Rivera, Priya Singh, Ethan Cole (Aurelia). They scheduled a pre-soak check on 2026-10-06 and a full post-soak review on 2026-10-08.
+
+- The attendees of the on-prem cutover readiness weekly sync meeting were Samir Patel, Lila Novak, Diego Ramos (Redwood), Marco Rivera, Priya Singh, and Ethan Cole (Aurelia).
+- Two checkpoint meetings around the staging soak test were scheduled: a pre-soak check on 2026-10-06 and a full post-soak review on 2026-10-08.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

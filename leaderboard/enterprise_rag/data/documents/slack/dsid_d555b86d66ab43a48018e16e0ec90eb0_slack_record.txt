@@ -1,0 +1,12 @@
+Enterprise Record: What remediation timeline by severity did the security team 
+
+Document ID: dsid_d555b86d66ab43a48018e16e0ec90eb0
+System Source: slack
+Details & Summary:
+They proposed a remediation SLA of 7 days for Critical findings, 30 days for High, and 90 days for Medium.
+
+- The proposed remediation SLA for Critical findings was 7 days
+- The proposed remediation SLA for High findings was 30 days
+- The proposed remediation SLA for Medium findings was 90 days
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

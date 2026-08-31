@@ -1,0 +1,13 @@
+Enterprise Record: What were the performance goals for the multilingual enterpr
+
+Document ID: dsid_e9dd560753924c1e8438cdf9c2afcf68
+System Source: hubspot
+Details & Summary:
+The target for retrieval plus reranking was p50 under 120ms and p95 under 350ms in EU/NA regions. Yes-Japanese and Chinese (JA/ZH) were allowed a slightly higher tail latency, with the tail budget noted at around 450ms.
+
+- The performance goal for retrieval plus reranking was p50 under 120ms in EU/NA regions.
+- The performance goal for retrieval plus reranking was p95 under 350ms in EU/NA regions.
+- Japanese and Chinese were allowed a slightly higher tail latency than EU/NA targets.
+- The tail latency budget for Japanese and Chinese was around 450ms.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

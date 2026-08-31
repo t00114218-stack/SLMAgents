@@ -1,0 +1,12 @@
+Enterprise Record: In the partner sales planning call between a vendor and an I
+
+Document ID: dsid_cc2f84330d014d03b8c49f8e92063b07
+System Source: fireflies
+Details & Summary:
+Orbital (the ISV) committed to send the pilot inputs-target account list, topology, and sample prompts-by 12/22. Redwood (the vendor) committed to send the co-sell one-pager and pricing spreadsheet by 12/23, and to deliver benchmark results by 12/29.
+
+- Orbital (the ISV) committed to send the pilot inputs (target account list, topology, and sample prompts) by 12/22.
+- Redwood (the vendor) committed to send the co-sell one-pager and pricing spreadsheet by 12/23.
+- Redwood (the vendor) committed to deliver benchmark results by 12/29.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

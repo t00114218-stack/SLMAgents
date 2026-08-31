@@ -47,24 +47,40 @@ class SLMEmbeddingsServer:
 
         candidate_paths = [
             self.model_path,
+            os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "mxbai-embed-large-v1-onnx"),
+            "./models/mxbai-embed-large-v1-onnx",
+            "../models/mxbai-embed-large-v1-onnx",
+            os.path.expanduser("~/Documents/SLMAgents/models/mxbai-embed-large-v1-onnx"),
             os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models", "all-minilm-l6-v2-onnx"),
             "./models/all-minilm-l6-v2-onnx",
-            "../models/all-minilm-l6-v2-onnx",
-            os.path.expanduser("~/Documents/SLMAgents/models/all-minilm-l6-v2-onnx")
+            "../models/all-minilm-l6-v2-onnx"
         ]
 
         for p in candidate_paths:
             if p and os.path.exists(p):
-                model_file = os.path.join(p, "onnx", "model.onnx") if os.path.exists(os.path.join(p, "onnx", "model.onnx")) else os.path.join(p, "model.onnx")
+                model_file = None
+                for sub in ["onnx/model_quantized.onnx", "model_quantized.onnx", "onnx/model.onnx", "model.onnx"]:
+                    full_p = os.path.join(p, sub)
+                    if os.path.exists(full_p):
+                        model_file = full_p
+                        break
+
                 tok_file = os.path.join(p, "tokenizer.json")
-                if os.path.exists(model_file) and os.path.exists(tok_file) and Tokenizer is not None:
+                if not os.path.exists(tok_file):
+                    tok_file = os.path.join(p, "onnx", "tokenizer.json")
+
+                if model_file and os.path.exists(tok_file) and Tokenizer is not None:
                     try:
                         opts = ort.SessionOptions()
-                        opts.intra_op_num_threads = int(os.environ.get("SLM_N_THREADS", 2))
+                        opts.intra_op_num_threads = int(os.environ.get("SLM_N_THREADS", 4))
                         opts.inter_op_num_threads = 1
                         self.session = ort.InferenceSession(model_file, opts, providers=["CPUExecutionProvider"])
                         self.tokenizer = Tokenizer.from_file(tok_file)
                         self.model_path = p
+                        if "mxbai" in p.lower():
+                            self.vector_dim = 1024
+                            self.MODEL_NAME = "mixedbread-ai/mxbai-embed-large-v1"
+                            print(f"[SLMEmbeddingsServer] Loaded Mixbread AI SOTA Embedding Model ({self.MODEL_NAME}, 1024 dimensions)")
                         return
                     except Exception as e:
                         print(f"[SLMEmbeddingsServer] ONNX load note: {e}")

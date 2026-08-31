@@ -1,0 +1,11 @@
+Enterprise Record: Which issue filed after two customer escalations describes t
+
+Document ID: dsid_a2c7dc70aacc470894c953b6c7499228
+System Source: linear
+Details & Summary:
+The issue is "SAML assertion ordering + session stitching causes transient admin privilege or unexpected permission denial," and it was reproduced on both hosted and dedicated (internal prod-like) environments.
+
+- The issue filed after two customer escalations is described as SAML assertion ordering plus session stitching causing transient admin privilege or unexpected permission denial after SSO.
+- The issue was reproduced on both hosted and dedicated (internal prod-like) environments.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,13 @@
+Enterprise Record: What was the short-term mitigation suggested to stabilize RD
+
+Document ID: dsid_826b680a80e74a1a81273f1dbeb0d3d8
+System Source: slack
+Details & Summary:
+They proposed a short-term mitigation of lowering the affected hosts' NIC MTU to 1500 (starting with a small canary like gpu-node-12/13) and restarting RDMA, to avoid jumbo-frame drops and stabilize RDMA traffic.
+
+- The suggested short-term mitigation was to lower the affected hosts NIC MTU to 1500
+- The MTU change was to be rolled out starting with a small canary such as gpu-node-12 and gpu-node-13
+- After lowering MTU, RDMA was to be restarted on the affected hosts
+- The goal of lowering MTU was to avoid jumbo-frame drops and stabilize RDMA traffic
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

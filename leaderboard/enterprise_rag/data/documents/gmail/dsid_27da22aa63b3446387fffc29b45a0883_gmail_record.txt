@@ -1,0 +1,11 @@
+Enterprise Record: What audit log retention period did Redwood commit to for pi
+
+Document ID: dsid_27da22aa63b3446387fffc29b45a0883
+System Source: gmail
+Details & Summary:
+Redwood committed to enabling immutable audit logs with a 12-month retention window for pilot accounts.
+
+- Redwood committed to enabling immutable audit logs for pilot accounts during the 2027 API model migration
+- Redwood committed to a 12-month audit log retention period for pilot accounts
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

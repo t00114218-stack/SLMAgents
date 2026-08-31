@@ -1,0 +1,15 @@
+Enterprise Record: After moving a HIPAA customers production private VPC enviro
+
+Document ID: dsid_0c8ea3b2a7fd4392b1f480fe5f0c4725
+System Source: jira
+Details & Summary:
+The service account's exchanged token was being issued (and/or filtered) with only default `service:*` scopes due to a token-broker mapping/cache staleness after the private control-plane upgrade, and identity-proxy's allowed-scope table for service accounts was also stale. As a result the token lacked `admin:impersonate`/`admin:users`, so impersonated admin calls returned 403 `insufficient_scope`, while the human admin's own token already had the required admin scopes and succeeded.
+
+- The automation-run service identity was using an exchanged token that was issued and or filtered with only default service:* scopes after the move to the new internal token exchange service.
+- The reason the exchanged token only had default service:* scopes was stale token-broker mapping or cache state after the private control-plane upgrade.
+- Identity-proxy also had a stale allowed-scope table for service accounts, contributing to the scope filtering issue.
+- Because of the scope issue, the exchanged token lacked required admin scopes such as admin:impersonate and admin:users.
+- When the service identity tried to make impersonated admin user-management calls with the exchanged token, the calls returned 403 insufficient_scope.
+- The same action succeeded with the human admins own token because it already included the required admin scopes.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

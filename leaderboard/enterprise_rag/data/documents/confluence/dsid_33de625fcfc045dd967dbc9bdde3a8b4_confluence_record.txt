@@ -1,0 +1,14 @@
+Enterprise Record: Which bank client got a temporary signoff to keep normal pro
+
+Document ID: dsid_33de625fcfc045dd967dbc9bdde3a8b4
+System Source: confluence
+Details & Summary:
+The client was NordBank AB, and the temporary exception allowing US (us-east) failover only during DR tests or when eu-west is degraded (with payload logging disabled) ran from 2025-02-15 through 2025-05-31.
+
+- The bank client was NordBank AB.
+- The temporary allowance permitted traffic to switch to the US (us-east) site only during disaster recovery tests or when the eu-west cluster was degraded.
+- Payload logging was disabled under the temporary allowance.
+- The temporary allowance started on 2025-02-15.
+- The temporary allowance ended on 2025-05-31.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

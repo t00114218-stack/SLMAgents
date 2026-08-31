@@ -1,0 +1,15 @@
+Enterprise Record: In the cost-aware model routing proposal, what telemetry fie
+
+Document ID: dsid_27bd877a9fb74bcaa4e93871f28f3f4d
+System Source: slack
+Details & Summary:
+Jess suggested emitting the following telemetry fields: route_decision, estimated_token_cost, chosen_variant, quality_score, fallback_trigger, and token_counts.
+
+- The proposal suggested emitting a telemetry field named route_decision.
+- The proposal suggested emitting a telemetry field named estimated_token_cost.
+- The proposal suggested emitting a telemetry field named chosen_variant.
+- The proposal suggested emitting a telemetry field named quality_score.
+- The proposal suggested emitting a telemetry field named fallback_trigger.
+- The proposal suggested emitting a telemetry field named token_counts.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

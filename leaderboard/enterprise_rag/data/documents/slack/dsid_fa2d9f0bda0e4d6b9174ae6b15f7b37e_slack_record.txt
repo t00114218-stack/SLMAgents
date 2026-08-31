@@ -1,0 +1,12 @@
+Enterprise Record: What was the temporary mitigation applied to the internal lo
+
+Document ID: dsid_fa2d9f0bda0e4d6b9174ae6b15f7b37e
+System Source: slack
+Details & Summary:
+They applied an MTU/MSS clamp on the internal L4 load balancer frontends for the gen-infer VIPs (clamping to 1500), which immediately brought TCP retransmits down.
+
+- A temporary mitigation was to apply an MTU/MSS clamp on the internal L4 load balancer frontends serving the gen-infer VIPs.
+- The MTU/MSS clamp set the value to 1500.
+- Applying the MTU/MSS clamp immediately reduced TCP retransmits.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

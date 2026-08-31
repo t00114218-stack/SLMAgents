@@ -1,0 +1,11 @@
+Enterprise Record: In our hiring workflow, what happens when a candidate is str
+
+Document ID: dsid_0a2cd37d53ff47d4aced289cd9a76fe8
+System Source: confluence
+Details & Summary:
+An offer at about 20% above the band midpoint falls into the +10% to +25% range, so it requires sign-off from the Hiring Manager and the HR Business Partner (HRBP).
+
+- An offer about 20 percent above the band midpoint falls into the plus 10 percent to plus 25 percent range.
+- An offer in the plus 10 percent to plus 25 percent range requires sign-off from the Hiring Manager and the HR Business Partner (HRBP).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

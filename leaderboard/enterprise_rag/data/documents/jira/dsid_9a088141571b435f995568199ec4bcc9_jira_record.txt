@@ -1,0 +1,10 @@
+Enterprise Record: In the incident where a CI runner service token was suspecte
+
+Document ID: dsid_9a088141571b435f995568199ec4bcc9
+System Source: jira
+Details & Summary:
+They decided to audit artifact uploads and git pushes between 2026-03-13T17:50Z and 2026-03-13T18:20Z.
+
+- The team decided to audit artifact uploads and repository pushes between 2026-03-13T17:50Z and 2026-03-13T18:20Z.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

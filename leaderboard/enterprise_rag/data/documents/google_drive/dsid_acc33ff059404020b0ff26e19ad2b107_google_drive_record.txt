@@ -1,0 +1,12 @@
+Enterprise Record: What was the target goal for average router queue time for v
+
+Document ID: dsid_acc33ff059404020b0ff26e19ad2b107
+System Source: google_drive
+Details & Summary:
+The goal was to reduce average router queue time for 1-8 token sequences by 10% from the 28 ms baseline, targeting about 25 ms.
+
+- The target applied to very short sequences of 1 to 8 tokens.
+- The goal was a 10% reduction in average router queue time from the 28 ms baseline.
+- The target average router queue time was about 25 ms.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

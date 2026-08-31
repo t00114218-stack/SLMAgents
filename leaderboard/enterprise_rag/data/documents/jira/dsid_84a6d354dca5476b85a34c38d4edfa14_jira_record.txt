@@ -1,0 +1,12 @@
+Enterprise Record: In a customer owned cloud network peered to our control plan
+
+Document ID: dsid_84a6d354dca5476b85a34c38d4edfa14
+System Source: jira
+Details & Summary:
+The transit provider's policy change caused ICMP "Fragmentation Needed" (Type 3, Code 4) messages to be filtered or rate-limited, so Path MTU Discovery failed and larger TCP/TLS/HTTP2 packets for big shard range downloads blackholed, leaving long-lived multiplexed streams stalled until timeout. Lowering the worker node MTU (e.g., to 1400) reduced packet sizes so they no longer exceeded the path MTU, avoiding the need for those ICMP messages and allowing streaming to complete normally.
+
+- A transit provider policy change caused ICMP Fragmentation Needed (Type 3 Code 4) messages to be filtered or rate-limited on the path.
+- Because those ICMP messages were blocked, Path MTU Discovery failed and larger TCP/TLS/HTTP2 packets for big artifact downloads exceeded the path MTU and were blackholed, causing long-lived multiplexed streams to hang until timeout.
+- Lowering the worker node MTU (for example to 1400) reduced packet sizes so they no longer exceeded the path MTU, avoiding reliance on ICMP Fragmentation Needed and allowing downloads to complete normally.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,23 @@
+Enterprise Record: What is Redwood Inference's end-to-end process for rotating 
+
+Document ID: dsid_a898d2541b944cdebeec03ec9d9ba130
+System Source: confluence
+Details & Summary:
+For planned rotation, the owning service team identifies the secret (Vault path) and **all consumers** via the Credential Dependencies inventory, confirms tier/cadence and access, then rotates using a repeatable pattern: preferably **dual-valid overlap** (generate new credential → write as a new Vault version without deleting old → deploy/update consumers to read latest and, if applicable, accept old+new → monitor auth/health for ≥30 minutes (≥60 for Tier 0) → disable/deprecate the old credential at the issuer → remove the old Vault version after the overlap window, default 7 days) or, if overlap isn't possible, a **cutover** (scheduled change window → change issuer-side credential → immediately update Vault → restart/redeploy all consumers → validate/rollback if needed). After any rotation, they complete the verification checklist (ensure all rollouts/reloads completed, monitor auth/dependency metrics, run critical canaries, confirm audit logs and that any break-glass access is revoked) and record the event in a change record.
+
+For **emergency rotation** (suspected compromise/exposure/anomalies), an incident is opened and "emergency secret rotation" is declared (secret names/paths only), break-glass may be used via the approved workflow for **time-limited (60 min)** Tier 0/1 rotate access with full audit logging; the IC/Security/SRE prioritize and rotate **Tier 0 then Tier 1**, selecting dual-valid where possible or cutover otherwise, updating issuer + Vault and restarting/redeploying all consumers, pausing to reassess if impact worsens, recording exact timestamps, then revoking break-glass immediately and documenting rotated secrets/services plus any follow-up rotations (derived/cached tokens) in the incident timeline and post-incident summary for Security review.
+
+- For planned rotation, the owning service team identifies the secret (Vault path) and all consumers via the Credential Dependencies inventory.
+- For planned rotation, the owning service team confirms tier and cadence and access before rotating.
+- Preferred planned rotation method is dual-valid overlap: generate a new credential, write it as a new Vault version without deleting the old, deploy/update consumers to read the latest and if applicable accept both old and new, monitor authentication and service health for at least 30 minutes (at least 60 minutes for Tier 0), then disable or deprecate the old credential at the issuer, and remove the old Vault version after the overlap window (default 7 days).
+- If overlap is not possible, planned rotation uses a cutover: schedule a change window, change the credential at the issuer, immediately update Vault, restart or redeploy all consumers, and validate with rollback if needed.
+- After any rotation, the team completes a verification checklist that includes ensuring all rollouts/reloads completed, monitoring auth/dependency metrics, running critical canaries, confirming audit logs, and revoking any break-glass access.
+- After any rotation, the rotation event is recorded in a change record.
+- For emergency rotation (suspected compromise, exposure, or anomalies), an incident is opened and emergency secret rotation is declared using secret names/paths only.
+- During emergency rotation, break-glass access may be used via the approved workflow for time-limited (60 minute) Tier 0/1 rotate access with full audit logging.
+- During emergency rotation, IC/Security/SRE prioritize rotating Tier 0 then Tier 1.
+- During emergency rotation, they use dual-valid overlap where possible or cutover otherwise, update the issuer and Vault, and restart/redeploy all consumers.
+- During emergency rotation, they pause to reassess if impact worsens and record exact timestamps.
+- After emergency rotation, break-glass access is revoked immediately and the rotated secrets/services and any follow-up rotations (derived/cached tokens) are documented in the incident timeline and post-incident summary for Security review.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

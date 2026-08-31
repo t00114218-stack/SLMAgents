@@ -1,0 +1,16 @@
+Enterprise Record: We saw quality regressions after enabling an INT8/mixed-prec
+
+Document ID: dsid_ad70fa7335294e2988193e2a6645a5ba
+System Source: confluence
+Details & Summary:
+Set the request header X-RW-Cache-Mode: bypass to bypass the KV cache. For the interactive-chat dynamic quant handoff policy, only route to a quant variant when KV-cache hit-rate is at least 60% and the request sequence length is at most 2048 tokens.
+
+- Setting the request header X-RW-Cache-Mode: bypass bypasses the KV cache.
+- For the interactive-chat dynamic quant handoff policy, routing to a quant variant requires a KV-cache hit-rate of at least 60%.
+- For the interactive-chat dynamic quant handoff policy, routing to a quant variant requires the request sequence length to be at most 2048 tokens.
+- The answer must not use a different cache-bypass header name (e.g., anything other than X-RW-Cache-Mode: bypass).
+- The answer must not claim the interactive-chat route's minimum KV-cache hit-rate is 30% or 0% (those appear for other routes in the routing matrix).
+- The answer must not claim the interactive-chat route's max sequence length for quant routing is 8192 or 1024 (those limits belong to other routes in the routing matrix).
+- The answer must not substitute general quantization rollback/eval thresholds (RSI, fidelity deltas, etc.) in place of the routing requirements requested.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

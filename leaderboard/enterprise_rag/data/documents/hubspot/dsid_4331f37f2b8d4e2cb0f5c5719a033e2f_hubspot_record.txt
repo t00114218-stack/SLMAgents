@@ -1,0 +1,10 @@
+Enterprise Record: What summary turnaround time after transcription completion 
+
+Document ID: dsid_4331f37f2b8d4e2cb0f5c5719a033e2f
+System Source: hubspot
+Details & Summary:
+They're targeting about 2-3 seconds of summary latency after the transcription job completes.
+
+- The targeted summary turnaround time after transcription completion is about 2 to 3 seconds.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

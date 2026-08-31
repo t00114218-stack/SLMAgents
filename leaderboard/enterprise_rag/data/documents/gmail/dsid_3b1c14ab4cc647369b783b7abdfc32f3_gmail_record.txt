@@ -1,0 +1,11 @@
+Enterprise Record: In the dedicated GPU hosting plan with prepaid overage credi
+
+Document ID: dsid_3b1c14ab4cc647369b783b7abdfc32f3
+System Source: gmail
+Details & Summary:
+The default cooldown window is 15 minutes after a surge event; any additional spikes within that 15-minute window are treated as part of the same billable overage (surge) event.
+
+- In the dedicated GPU hosting plan with prepaid overage credits, the default cooldown window after a surge event is 15 minutes.
+- Any additional demand spikes within the 15-minute window are treated as part of the same billable overage (surge) event.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

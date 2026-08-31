@@ -1,0 +1,19 @@
+Enterprise Record: Our Key Management Standard says we must not cache plaintext
+
+Document ID: dsid_d64b62cc422c45108871fb097066e6f8
+System Source: confluence
+Details & Summary:
+Follow the Key Management Standard's intent: never persist or long-term cache plaintext DEKs. The only permitted "cache" is the ADR-007 constrained optimization: short-lived, in-process-only reuse of plaintext DEKs that are already in memory for request handling (bounded TTL/size, no disk/DB/distributed cache, disable-able in regulated environments). In customer-facing rotation/outage materials, describe it as: Redwood uses envelope encryption; DEKs are wrapped by the customer's KEK in KMS/HSM; Redwood may retain short-lived in-memory cryptographic material for active workloads but does not rely on indefinite caching of KMS responses. If KMS is unavailable/degraded, operations that require wrap/unwrap may fail fast with explicit errors; Redwood uses timeouts, bounded retries with backoff/jitter, circuit breaker/backpressure to prevent retry storms. Do not promise continued decrypt during a KMS outage or disclose exact timeout/retry/breaker thresholds. During rotation, mention dual-decrypt/rollback, and that we do not fan out across keys on timeout/throttling-only bounded fallback for key-mismatch/InvalidCiphertext-type cases.
+
+- Policy should follow the Key Management Standard intent: never persist or long term cache plaintext DEKs.
+- The only permitted DEK caching is the ADR-007 constrained optimization: short lived, in process only reuse of plaintext DEKs already in memory for request handling.
+- Permitted DEK reuse must be bounded by TTL and cache size, must not use disk, database, or distributed caches, and must be disableable in regulated environments.
+- Customer facing materials should state that Redwood uses envelope encryption and that DEKs are wrapped by the customers KEK in KMS or an HSM.
+- Customer facing materials should state that Redwood may retain short lived in memory cryptographic material for active workloads, but does not rely on indefinite caching of KMS responses.
+- Customer facing materials should state that if KMS is unavailable or degraded, operations requiring wrap or unwrap may fail fast with explicit errors.
+- Customer facing materials should state that Redwood uses timeouts, bounded retries with backoff and jitter, and circuit breaker or backpressure to prevent retry storms during KMS issues.
+- Customer facing materials should not promise continued decrypt during a KMS outage and should not disclose exact timeout, retry, or circuit breaker thresholds.
+- Rotation materials should mention dual decrypt and rollback behavior.
+- Rotation materials should state that on timeout or throttling Redwood does not fan out across keys, and only performs bounded fallback for key mismatch or InvalidCiphertext type cases.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

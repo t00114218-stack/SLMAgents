@@ -1,0 +1,11 @@
+Enterprise Record: Who is responsible for the stock canyon hero placeholder ima
+
+Document ID: dsid_a8a5eac6e7a243319426769963506277
+System Source: google_drive
+Details & Summary:
+Priya Desai is responsible for the hero-placeholder-canyon.jpg stock canyon hero image, and its current status is "needs crop."
+
+- Priya Desai is responsible for the hero-placeholder-canyon.jpg stock canyon hero placeholder image suggested for demo slides.
+- The current status of the hero-placeholder-canyon.jpg stock canyon hero image is needs crop.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

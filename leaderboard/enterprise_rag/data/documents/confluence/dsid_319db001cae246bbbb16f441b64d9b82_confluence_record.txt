@@ -1,0 +1,12 @@
+Enterprise Record: When are production changes normally allowed to be deployed,
+
+Document ID: dsid_319db001cae246bbbb16f441b64d9b82
+System Source: confluence
+Details & Summary:
+Production changes are normally deployed during the default change window and are not allowed during declared change freezes. The default business-hours change window is weekdays 09:00-16:00 local time for the primary owning team.
+
+- Production changes are normally deployed during the default change window.
+- Production changes are not allowed during declared change freezes.
+- The default business-hours change window is weekdays 09:00 to 16:00 local time for the primary owning team.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

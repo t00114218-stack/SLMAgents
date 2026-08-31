@@ -1,0 +1,10 @@
+Enterprise Record: What is the standard amount of time a new hire buddy is expe
+
+Document ID: dsid_005f7a937cad4b3cbb30d9d93199e22a
+System Source: confluence
+Details & Summary:
+The buddy is expected to spend about 1 hour per day with the new hire during the first two weeks.
+
+- During the first two weeks, the new hire buddy is expected to spend about 1 hour per day with the new hire.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

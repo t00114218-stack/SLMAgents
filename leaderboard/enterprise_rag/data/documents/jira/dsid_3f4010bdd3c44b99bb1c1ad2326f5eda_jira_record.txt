@@ -1,0 +1,14 @@
+Enterprise Record: Why would Apple Silicon MacBooks coming back from logic boar
+
+Document ID: dsid_3f4010bdd3c44b99bb1c1ad2326f5eda
+System Source: jira
+Details & Summary:
+Because the company image includes a legacy third-party VPN kernel extension that isn't properly notarized/compatible for Apple Silicon, it can hook the network stack early after a logic board swap and leave interfaces "not ready." DEP check-in succeeds, but mdm-agent times out on network initialization, so the MDM management profile push stalls and the SSO certificate/profile never installs.
+
+- The company image includes a legacy third party VPN kernel extension that is not properly notarized or compatible with Apple Silicon
+- After a logic board swap, the VPN kernel extension can hook the network stack early and leave network interfaces not ready
+- DEP check in can still succeed in this state
+- The mdm agent can time out while waiting for network initialization
+- Because of the network initialization timeout, the MDM management profile push stalls and the SSO certificate or profile never installs
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

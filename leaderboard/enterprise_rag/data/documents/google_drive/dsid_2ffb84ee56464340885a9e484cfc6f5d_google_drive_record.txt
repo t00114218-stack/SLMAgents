@@ -1,0 +1,11 @@
+Enterprise Record: In the internal routing performance memo that compared a nea
+
+Document ID: dsid_2ffb84ee56464340885a9e484cfc6f5d
+System Source: google_drive
+Details & Summary:
+For the mid-thread (medium-length) workload, the centralized batching approach (core-tiling-multiplex) had the lowest cost at $0.062 per 1k tokens.
+
+- For the mid-thread (medium-length) workload, the centralized batching approach (core-tiling-multiplex) had the lowest cost per 1k tokens.
+- For the mid-thread (medium-length) workload, the lowest cost was $0.062 per 1k tokens.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

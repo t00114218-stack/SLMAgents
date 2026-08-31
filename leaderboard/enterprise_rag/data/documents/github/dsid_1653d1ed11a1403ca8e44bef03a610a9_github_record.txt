@@ -1,0 +1,11 @@
+Enterprise Record: In the recent observability change for tool invocation track
+
+Document ID: dsid_1653d1ed11a1403ca8e44bef03a610a9
+System Source: github
+Details & Summary:
+It's gated behind the experiment flag "obs.route_tags_tool_calls" and rolls out as three days in canary, then staged to 25% of traffic, then to full rollout assuming no regressions.
+
+- The change is gated behind the experiment flag obs.route_tags_tool_calls.
+- The staged rollout schedule is three days in canary, then staged to 25% of traffic, then full rollout assuming no regressions.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

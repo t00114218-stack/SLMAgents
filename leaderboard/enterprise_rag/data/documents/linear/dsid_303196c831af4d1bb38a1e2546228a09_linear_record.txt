@@ -1,0 +1,11 @@
+Enterprise Record: In the mid March 2026 incident where a regional dedicated se
+
+Document ID: dsid_303196c831af4d1bb38a1e2546228a09
+System Source: linear
+Details & Summary:
+On-call rolled the runtime back to build runtime-1.21.4 (from runtime-1.21.7) to restore autoscaler function and capacity headroom.
+
+- On-call reverted the runtime to build runtime-1.21.4 to restore capacity headroom.
+- The rollback was from runtime-1.21.7 to runtime-1.21.4.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: For the private customer collector debug bundle upload 403 e
+
+Document ID: dsid_402f0ac3cd174f30b3a306c2e4def472
+System Source: slack
+Details & Summary:
+They're updating support ticket #SUP-4219, and if escalating to infra they should include request ID req-2026-11-07-9a12b3c4.
+
+- The support ticket being updated is SUP-4219.
+- If escalating to infra, include request ID req-2026-11-07-9a12b3c4.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

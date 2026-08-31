@@ -1,0 +1,19 @@
+Enterprise Record: What is the recommended two-stage process for rotating the s
+
+Document ID: dsid_f1b208f3637e4987aeab371242a5bea5
+System Source: confluence
+Details & Summary:
+The document recommends a two-phase credential rotation protocol. **Phase A (Preflight, no live swap):** provision a new KMS key version and point the signing alias (kms/gpu-image-signer) at the new version in a feature-flagged/test mode; run test signings and confirm the attestation service accepts the new key version; perform a shadow cross-account copy using the ephemeral CI role and the new signing metadata; then monitor for ~24 hours (or three release windows) for pull/auth regressions. **Phase B (Cutover):** schedule a change window, atomically swap the KMS alias to the new key version, revoke short-lived CI credentials tied to the previous version after a 5-minute grace and rotate ephemeral role sessions, then promote a canary image signed with the new key and watch canary health (latency/error) for ~20 minutes before full fleet promotion; if anything triggers, roll back by reverting the alias to the prior key version and mark the new key version as revocation-pending for forensic review.
+
+- The recommended credential rotation uses a two-phase protocol: Phase A (Preflight, no live swap) and Phase B (Cutover).
+- In Phase A, provision a new KMS key version and point the signing alias (kms/gpu-image-signer) at the new version in a feature-flagged or test mode.
+- In Phase A, run test signings and confirm the attestation service accepts the new key version.
+- In Phase A, perform a shadow cross-account copy using the ephemeral CI role and the new signing metadata.
+- In Phase A, monitor for about 24 hours (or three release windows) for pull or auth regressions before cutting over.
+- In Phase B, schedule a change window and atomically swap the KMS alias to the new key version.
+- After the Phase B swap, revoke short-lived CI credentials tied to the previous version after a 5-minute grace period and rotate ephemeral role sessions.
+- In Phase B, promote a canary image signed with the new key and watch canary health (latency and error) for about 20 minutes before full fleet promotion.
+- If issues occur, roll back by reverting the alias to the prior key version.
+- After rollback, mark the new key version as revocation-pending for forensic review.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

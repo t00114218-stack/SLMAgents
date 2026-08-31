@@ -1,0 +1,13 @@
+Enterprise Record: In March 2026, which deployment offering-Hosted API, Dedicat
+
+Document ID: dsid_8dff963a50774cdd84131d9ae5e4f4f3
+System Source: jira
+Details & Summary:
+In March 2026, the **Hosted API** offering had the most customer support escalations with **request timeouts** as the primary symptom (**3 escalations**, versus **2** for Dedicated and **1** for Private).
+
+- In March 2026, the Hosted API offering had the most customer support escalations where the primary symptom was request timeouts.
+- In March 2026, Hosted API had 3 such escalations.
+- In March 2026, Dedicated had 2 such escalations.
+- In March 2026, Private had 1 such escalation.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

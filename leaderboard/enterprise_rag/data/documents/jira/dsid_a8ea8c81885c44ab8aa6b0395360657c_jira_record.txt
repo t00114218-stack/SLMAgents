@@ -1,0 +1,13 @@
+Enterprise Record: How does the temporary cross team sandbox get automatically 
+
+Document ID: dsid_a8ea8c81885c44ab8aa6b0395360657c
+System Source: jira
+Details & Summary:
+The integration playground has a default lifetime of 14 days. A scheduled expiry job checks for expired playgrounds and triggers an archive workflow that archives the Jira project, Confluence space, and Slack channel; owners are emailed a warning 72 hours before the expiry/archival (and can extend once per archive cycle).
+
+- The temporary cross team sandbox (integration playground) has a default lifetime of 14 days.
+- A scheduled expiry job checks for expired sandboxes and triggers an archive workflow.
+- The archive workflow archives the associated Jira project, Confluence space, and Slack channel.
+- Owners are emailed a warning 72 hours before the expiry and archival.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,14 @@
+Enterprise Record: What caused the brief p99 latency jump on the hosted text ge
+
+Document ID: dsid_321eee6325824623833bbe754bf83a0b
+System Source: slack
+Details & Summary:
+The p99 spike was triggered by tenant-32 sending a burst of long-context (seq≈2048) requests, which caused heavy KV-cache eviction and kernel-selector churn with repeated fallbacks from the fast 8-bit attention kernel to an aux float kernel due to allocator fragmentation under eviction pressure. The team mitigated it by isolating tenant-32 with an 8-concurrent rate limit and routing large-context requests to a dedicated aux pool with reserved kernels, which reduced eviction/queue depth and brought p99 back down.
+
+- The p99 latency spike was triggered by tenant-32 sending a burst of long-context (around seq 2048) requests.
+- The burst of long-context requests caused heavy KV-cache eviction and kernel-selector churn, including repeated fallbacks from the fast 8-bit attention kernel to an auxiliary float kernel due to allocator fragmentation under eviction pressure.
+- Mitigation included isolating tenant-32 with an 8-concurrent rate limit.
+- Mitigation also included routing large-context requests to a dedicated auxiliary pool with reserved kernels.
+- These mitigations reduced eviction and queue depth and brought p99 latency back down.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,12 @@
+Enterprise Record: In the HyperOnboard 30-60-90 onboarding template, what are t
+
+Document ID: dsid_5c05d2a74c484906852925d1cf1daa70
+System Source: google_drive
+Details & Summary:
+The escalation triggers are: if the new hire is not shipping a measurable artifact by day 30, if access blockers persist for more than 48 hours, or if there are repeated missed meetings.
+
+- An escalation email should be sent to people ops and the hiring manager if the new hire is not shipping a measurable artifact by day 30
+- An escalation email should be sent to people ops and the hiring manager if access blockers persist for more than 48 hours
+- An escalation email should be sent to people ops and the hiring manager if there are repeated missed meetings
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

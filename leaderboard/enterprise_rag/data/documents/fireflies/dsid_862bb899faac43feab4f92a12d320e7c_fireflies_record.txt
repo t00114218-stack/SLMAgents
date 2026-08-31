@@ -1,0 +1,11 @@
+Enterprise Record: In the security review call about buying an LLM inference se
+
+Document ID: dsid_862bb899faac43feab4f92a12d320e7c
+System Source: fireflies
+Details & Summary:
+They said cross-region failover (cross-region fallback) is not enabled by default for the hosted regional endpoint-requests are processed in the selected region unless the customer explicitly turns on cross-region fallback.
+
+- Cross-region failover is not enabled by default for the hosted regional endpoint
+- Requests are processed in the selected region unless the customer explicitly turns on cross-region failover
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

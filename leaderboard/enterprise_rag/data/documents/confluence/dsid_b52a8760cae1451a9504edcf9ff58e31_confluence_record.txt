@@ -1,0 +1,18 @@
+Enterprise Record: For a shadow evaluation running in a private deployment usin
+
+Document ID: dsid_b52a8760cae1451a9504edcf9ff58e31
+System Source: confluence
+Details & Summary:
+Each shadow probe telemetry record must include: probe_id, tenant_id, deployed_model, deployment_variant, quant_profile, hardware_tag, prompt_family, seed_context_hash, latency_ms, tokens_input, tokens_generated, top_level_metrics, error_code, timestamp_utc. The evaluator must emit these run-lifecycle telemetry events: eval.run.start, eval.run.progress, eval.run.complete.
+
+- Each shadow probe telemetry record must include probe_id, tenant_id, deployed_model, deployment_variant, quant_profile, hardware_tag, prompt_family, seed_context_hash, latency_ms, tokens_input, tokens_generated, top_level_metrics, error_code, and timestamp_utc.
+- The evaluator must emit the eval.run.start run-lifecycle telemetry event.
+- The evaluator must emit the eval.run.progress run-lifecycle telemetry event.
+- The evaluator must emit the eval.run.complete run-lifecycle telemetry event.
+- Do not include optional probe fields like raw_response_snippet, annotator_score, or kv_cache_hit as required fields.
+- Do not use the anchored shadow fleet per-request fields (e.g., request_id, origin_route, model_variant, tokens_in/tokens_out, scorer_metrics, exposure_tag) in place of the private shadow probe record fields.
+- Do not use the slice handoff/shadow fields (e.g., bundle_id, slice_id, token_count, perplexity_window, rsi, safety_flag) as the required fields for each private shadow probe telemetry record.
+- Do not list non-lifecycle telemetry such as backpressure decision events/metrics (e.g., eval.backpressure.* or telemetry/backpressure schema) as required run-lifecycle events.
+- Do not replace the required run-lifecycle events with artifact/index output requirements (e.g., index.json fields like started_at, completed_at, checksums, telemetry_digest).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

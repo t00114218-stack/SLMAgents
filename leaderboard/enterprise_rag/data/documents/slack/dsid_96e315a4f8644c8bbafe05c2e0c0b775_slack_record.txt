@@ -1,0 +1,12 @@
+Enterprise Record: During the Feb 14, 2026 APAC region outage where vector gene
+
+Document ID: dsid_96e315a4f8644c8bbafe05c2e0c0b775
+System Source: slack
+Details & Summary:
+The oncall flipped the model-cache service circuit breaker to a "soft" state (via the admin API) to reduce fanout to downstream slow nodes and cut the retry storm.
+
+- The oncall changed the model-cache service circuit breaker to a soft state
+- The circuit breaker was flipped via the admin API
+- The purpose of flipping the circuit breaker was to reduce fanout to downstream slow nodes and cut the retry storm
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

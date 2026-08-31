@@ -1,0 +1,12 @@
+Enterprise Record: During a late morning April 2025 incident, why did an intera
+
+Document ID: dsid_618649e367d24a1eb3bdcacc0a2d7da7
+System Source: gmail
+Details & Summary:
+The long bursty token delivery was caused by a memory-pressure cascade on the westus-edge-3 shards: long-context streams plus a recent model change increased per-token KV size, pushing KV cache over a threshold and triggering backpressure that deferred token emission until background eviction cycles (creating 15-30s gaps). As an immediate workaround to keep sessions responsive, Redwood recommended setting a 10s client-side streaming timeout and automatically retrying once (with non-streaming /generate as a fallback for critical flows).
+
+- The bursty token delivery was caused by a memory-pressure cascade on the westus-edge-3 shards.
+- Long-context streams plus a recent model change increased per-token KV size, pushing the KV cache over a threshold and triggering backpressure that deferred token emission until background eviction cycles, creating 15 to 30 second gaps.
+- The immediate workaround recommended was to set a 10 second client-side streaming timeout and automatically retry once, using non-streaming /generate as a fallback for critical flows.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

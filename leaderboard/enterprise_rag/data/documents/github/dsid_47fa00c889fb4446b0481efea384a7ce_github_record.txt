@@ -1,0 +1,11 @@
+Enterprise Record: How is the baseline token cost computed for the per-span cos
+
+Document ID: dsid_47fa00c889fb4446b0481efea384a7ce
+System Source: github
+Details & Summary:
+The baseline token cost is computed using a rolling median of the first 32 tokens for the given route/model combination, and it's periodically recomputed by a background aggregator.
+
+- The baseline token cost is computed using a rolling median of the first 32 tokens for the given route/model combination
+- The baseline token cost is periodically recomputed by a background aggregator
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,14 @@
+Enterprise Record: What caused the brief period where a few tenants were not be
+
+Document ID: dsid_a3fdfc45905f46f3988ad13f55ecce93
+System Source: linear
+Details & Summary:
+A race condition between the sticky-shard mapping update during shard reassignment and a runtime policy hot-reload caused fast-path cache entries for per-key overrides to reference a stale in-memory credit pointer. Because the pointer was only validated by shard ID (not tenant ID), burst credits could be applied to the wrong tenant's bucket, and the fast-path cache would incorrectly return "allow," leading to a brief under-enforcement window.
+
+- A race condition occurred between the sticky shard mapping update during shard reassignment and the runtime policy hot reload.
+- The race condition caused fast path cache entries for per key overrides to reference a stale in memory credit pointer.
+- The stale credit pointer was validated only by shard ID and not by tenant ID.
+- Burst credits could be applied to the wrong tenant bucket, causing the fast path cache to incorrectly return allow.
+- The incorrect allow decisions created a brief window of throttling under enforcement for a few tenants.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

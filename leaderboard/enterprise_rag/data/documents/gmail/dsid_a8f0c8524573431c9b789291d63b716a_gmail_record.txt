@@ -1,0 +1,10 @@
+Enterprise Record: In the email thread about renewing the feature flag vendor f
+
+Document ID: dsid_a8f0c8524573431c9b789291d63b716a
+System Source: gmail
+Details & Summary:
+The 24-month (multi-year) renewal option proposed a peak throughput SLA supporting bursts up to 4 million evaluations per minute.
+
+- The 24-month multi-year renewal option proposed a peak throughput SLA supporting bursts up to 4 million evaluations per minute.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

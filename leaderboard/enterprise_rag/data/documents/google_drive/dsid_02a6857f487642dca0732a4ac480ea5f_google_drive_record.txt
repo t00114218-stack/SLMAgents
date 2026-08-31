@@ -1,0 +1,12 @@
+Enterprise Record: For the tiny production experiment that tweaks how the model
+
+Document ID: dsid_02a6857f487642dca0732a4ac480ea5f
+System Source: google_drive
+Details & Summary:
+During the first 60 minutes, the canary fails if the hosted-api 5xx rate spikes by more than 0.1% relative to baseline, or if p99 (tail) latency increases by more than +10 ms versus the baseline/pinned cohort.
+
+- The thresholds apply during the first 60 minutes (first hour) of the canary.
+- The canary fails if the hosted-api 5xx error rate increases by more than 0.1 percentage points relative to baseline.
+- The canary fails if p99 (tail) latency increases by more than 10 ms versus the baseline or pinned cohort.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

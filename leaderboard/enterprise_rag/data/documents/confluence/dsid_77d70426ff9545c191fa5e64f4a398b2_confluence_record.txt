@@ -1,0 +1,20 @@
+Enterprise Record: A non-burst Dedicated tenant is seeing tail latency spikes d
+
+Document ID: dsid_77d70426ff9545c191fa5e64f4a398b2
+System Source: confluence
+Details & Summary:
+First confirm this is not "burst traffic spilled onto their GPUs": check routing/policy audit logs and capacity attribution that the non-burst tenant remained pinned to its reserved dedicated pool (burst_enabled=false, no fallback/override events, per-node tenant tags show no cross-tenant placement). If isolation is intact, look next for shared-path coupling that can create head-of-line blocking during a burst window: router/ingress queue depth and CPU, scheduler boundary queueing, and especially admission/policy evaluation health (p99 admission decision latency, timeouts, CPU throttling) since some implementations still do a shared capability/policy fetch even for non-burst routes. Also check telemetry freshness/lag, since over-admission (or late denials) can push shared control-plane and routing components into contention even if GPUs are isolated.
+
+Mitigation order is baseline-first. If you see early or moderate neighbor impact, immediately reduce burst pressure in the impacted region/hardware pool (tighten fleet safety cap / lower effective max_burst_ratio, clamp top-talker tenant burst caps, increase cooldown, and if needed pause the specific sustained-burst tenant) to bring router/admission load down quickly. If non-burst p95/p99 regression crosses the guardrail and is sustained, the SLO regression gate should flip from ALLOW to REDUCE (clamp burst ratio) and then to DISABLE if severe or if it persists past the configured window; if the regression remains after reduction or admission/router health is clearly unstable, engage the regional circuit breaker / disable burst for that region+hardware to hard-stop new burst admissions.
+
+Burst customers will see denial reason SLO_GATED when the SLO gate is active. If the fleet safety circuit breaker is open they will see FLEET_SAFETY_CIRCUIT_OPEN (some surfaces/logs may label this as GLOBAL_CIRCUIT_OPEN); otherwise denials will show the binding guardrail such as POOL_SATURATED, FLEET_SAFETY_CAP, TENANT_BURST_CAP_REACHED, COOLDOWN_ACTIVE, or ADMISSION_TIMEOUT/TELEMETRY_STALE when control-plane signals are degraded.
+
+- First check that burst traffic did not spill onto the non-burst tenant GPUs by verifying in routing or policy audit logs and capacity attribution that the tenant stayed pinned to its reserved dedicated pool (burst_enabled=false) with no fallback or override events and no cross-tenant placement.
+- If GPU isolation is intact, next check for shared-path coupling during the burst window such as router or ingress queue depth and CPU, scheduler boundary queueing, and admission or policy evaluation health (p99 admission decision latency, timeouts, CPU throttling), plus telemetry freshness or lag.
+- When there is early or moderate neighbor impact, reduce burst pressure first by tightening the fleet safety cap or lowering effective max_burst_ratio, clamping the top-talker tenant burst caps, increasing cooldown, or pausing a sustained-burst tenant.
+- If non-burst p95 or p99 latency regression crosses the guardrail and is sustained, the SLO regression gate should flip from ALLOW to REDUCE (clamp burst ratio) and then to DISABLE if severe or if it persists past the configured window.
+- If the regression remains after reduction or router or admission health is clearly unstable, trigger the regional circuit breaker and disable burst for that region and hardware to stop new burst admissions.
+- When the SLO gate is active, burst customers will see denial reason code SLO_GATED.
+- When the fleet safety circuit breaker is open, burst customers will see denial reason code FLEET_SAFETY_CIRCUIT_OPEN (sometimes labeled GLOBAL_CIRCUIT_OPEN).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

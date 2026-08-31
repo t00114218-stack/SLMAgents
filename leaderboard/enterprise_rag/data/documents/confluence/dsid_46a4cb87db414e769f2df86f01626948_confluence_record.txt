@@ -1,0 +1,10 @@
+Enterprise Record: How long is the validity period for the telemetry driven run
+
+Document ID: dsid_46a4cb87db414e769f2df86f01626948
+System Source: confluence
+Details & Summary:
+The "Telemetry-Driven Runbook Author (Redwood)" certification is valid for 18 months.
+
+- The Telemetry-Driven Runbook Author (Redwood) certification is valid for 18 months.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

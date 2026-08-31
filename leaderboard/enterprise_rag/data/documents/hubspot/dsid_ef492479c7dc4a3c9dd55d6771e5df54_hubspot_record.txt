@@ -1,0 +1,13 @@
+Enterprise Record: For the fintech prospect doing merchant reconciliation and d
+
+Document ID: dsid_ef492479c7dc4a3c9dd55d6771e5df54
+System Source: hubspot
+Details & Summary:
+They said they need SOC 2 evidence (specifically a SOC 2 Type II report/pack) before expanding beyond the POC, and their ops/compliance team flagged SSO and audit logs as blockers. Security also asked for the SAML SSO flow/metadata documentation and notes on KMS integration.
+
+- They require SOC 2 evidence specifically a SOC 2 Type II report or pack before moving past the pilot or POC.
+- Their ops and compliance team flagged SSO and audit logs as blockers to moving past the pilot.
+- Security requested documentation for the SAML SSO flow and SAML metadata.
+- Security requested notes on KMS integration.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

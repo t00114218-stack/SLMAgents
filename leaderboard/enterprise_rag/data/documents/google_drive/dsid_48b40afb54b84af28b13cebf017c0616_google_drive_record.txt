@@ -1,0 +1,11 @@
+Enterprise Record: In the SOC2 readiness notes, what log retention duration is 
+
+Document ID: dsid_48b40afb54b84af28b13cebf017c0616
+System Source: google_drive
+Details & Summary:
+The notes mention that in some environments logs are only retained for 90 days, which is flagged as a potential risk.
+
+- In some environments, logs are only retained for 90 days.
+- The 90 day log retention duration is flagged as a potential risk in the SOC2 readiness notes.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,12 @@
+Enterprise Record: What were the final concession terms approved for the retail
+
+Document ID: dsid_7d925287f5224f72b641acbd515beb2a
+System Source: gmail
+Details & Summary:
+The final approved concession was a 30% discount off list price for the first 12 months. The referral/partner payout was set at 15% rev-share for the first two quarters after go-live, stepping down to 8% thereafter unless renewed via executive review.
+
+- The final approved concession was a 30% discount off list price for the first 12 months.
+- The referral or partner payout was set at 15% revenue share for the first two quarters after go-live.
+- After the first two quarters post launch, the referral or partner payout stepped down to 8% unless renewed via executive review.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

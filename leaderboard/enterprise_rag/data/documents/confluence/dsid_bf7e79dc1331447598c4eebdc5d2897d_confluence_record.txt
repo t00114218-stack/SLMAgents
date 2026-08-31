@@ -1,0 +1,14 @@
+Enterprise Record: How many internal incident writeups at Redwood Inference des
+
+Document ID: dsid_bf7e79dc1331447598c4eebdc5d2897d
+System Source: confluence
+Details & Summary:
+4 internal incident writeups describe activating automatic fallback as part of mitigation (2025-02-11, 2025-03-03, 2025-06-08, and 2025-07-22).
+
+- 4 internal incident writeups at Redwood Inference describe activating automatic fallback as part of mitigation
+- The incident writeup dated 2025-02-11 describes activating automatic fallback as part of mitigation
+- The incident writeup dated 2025-03-03 describes activating automatic fallback as part of mitigation
+- The incident writeup dated 2025-06-08 describes activating automatic fallback as part of mitigation
+- The incident writeup dated 2025-07-22 describes activating automatic fallback as part of mitigation
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

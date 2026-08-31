@@ -1,0 +1,11 @@
+Enterprise Record: When is the updated on-call runbook due to be pushed to Conf
+
+Document ID: dsid_c054271735b541ba91e42c4dbe8a4883
+System Source: fireflies
+Details & Summary:
+The updated on-call runbook is due to be pushed to Confluence by 2026-08-16, and the Confluence path is internal/runbooks/oncall.
+
+- The updated on-call runbook is due to be pushed to Confluence by 2026-08-16.
+- The Confluence path for the on-call runbook is internal/runbooks/oncall.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

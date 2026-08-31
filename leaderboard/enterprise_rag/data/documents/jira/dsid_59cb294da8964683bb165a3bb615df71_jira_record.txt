@@ -1,0 +1,13 @@
+Enterprise Record: What was identified as the root cause of the intermittent VP
+
+Document ID: dsid_59cb294da8964683bb165a3bb615df71
+System Source: jira
+Details & Summary:
+The root cause was a bug in edge-sw-7's switch firmware (version 1.2.3) that triggered incorrect proxy-ARP behavior under high multicast load, causing the switch to advertise ARP for VPN-assigned IPs and leading to duplicate IP conflicts and intermittent routing blackholes.
+
+- The root cause was a bug in edge-sw-7 switch firmware version 1.2.3
+- The firmware bug triggered incorrect proxy-ARP behavior under high multicast load
+- The incorrect proxy-ARP caused the switch to advertise ARP responses for VPN-assigned IP addresses
+- The switch advertising ARP for VPN-assigned IPs led to duplicate IP warnings and intermittent VPN connectivity blackholes
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

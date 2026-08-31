@@ -1,0 +1,14 @@
+Enterprise Record: What is the phased rollout schedule for removing the legacy 
+
+Document ID: dsid_c53d4b486a1e485186a7e4b9d1c3f3ef
+System Source: linear
+Details & Summary:
+Phase 0 runs nightly dry-run migrations for 3 days with manual report review. Phase 1 (Canary) migrates 1-2 canary clusters (~3% traffic) for 6 hours; Phase 2 expands to 20% over 24 hours if stable; Phase 3 ramps to 60% for 24 hours with automated health checks and on-call coverage; Phase 4 goes to 100% traffic with a deprecation notice and archives v1 artifacts.
+
+- Phase 0 runs nightly dry-run migrations for 3 days with manual report review.
+- Phase 1 (Canary) migrates 1 to 2 canary clusters (about 3 percent of traffic) for 6 hours.
+- Phase 2 expands the migration to 20 percent of traffic over 24 hours if stable.
+- Phase 3 ramps the migration to 60 percent of traffic for 24 hours with automated health checks and on-call coverage.
+- Phase 4 migrates 100 percent of traffic, issues a deprecation notice, and archives v1 artifacts.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

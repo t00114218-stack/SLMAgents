@@ -1,0 +1,13 @@
+Enterprise Record: For the Usage Insights reconciliation drift alert, what drif
+
+Document ID: dsid_81208556437644a0a4dedf168baf81b5
+System Source: github
+Details & Summary:
+The reconciliation drift alert warns when the absolute drift exceeds 0.5% for 2 hours, and pages when it exceeds 1.0% for 1 hour. The warn-level alert includes workspace_id in its labels, while the page-level alert does not.
+
+- The reconciliation drift alert warns when the absolute drift exceeds 0.5% for 2 hours.
+- The reconciliation drift alert pages when the absolute drift exceeds 1.0% for 1 hour.
+- The warn-level reconciliation drift alert includes workspace_id in its labels.
+- The page-level reconciliation drift alert does not include workspace_id in its labels.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

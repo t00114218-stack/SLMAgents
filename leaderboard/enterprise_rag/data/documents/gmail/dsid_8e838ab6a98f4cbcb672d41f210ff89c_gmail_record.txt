@@ -1,0 +1,13 @@
+Enterprise Record: What failover sequence and recovery targets did MedThink spe
+
+Document ID: dsid_8e838ab6a98f4cbcb672d41f210ff89c
+System Source: gmail
+Details & Summary:
+MedThink's preferred failover hierarchy is EU primary → EU warm standby → US emergency failover. They set a target RPO of 15 minutes for active datasets and an RTO target of 30 minutes for critical APIs, and allow shifting to the US only during declared, pre-approved emergency windows capped at 4 hours.
+
+- MedThink specified a failover hierarchy of EU primary to EU warm standby to US emergency failover for an EU region outage.
+- MedThink set an RPO target of 15 minutes for active datasets.
+- MedThink set an RTO target of 30 minutes for critical APIs.
+- MedThink allows shifting traffic to the US only during declared, pre-approved emergency windows capped at 4 hours.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

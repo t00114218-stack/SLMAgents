@@ -1,0 +1,14 @@
+Enterprise Record: What was the root cause of the customer invoice overcharge w
+
+Document ID: dsid_3b9483f629fd423d81ac49a7efff89c9
+System Source: jira
+Details & Summary:
+The reconciliation run (run-45) merged dedicated and hosted-overflow metering events, but for a subset of hosted-overflow records the gateway tag/owner_id was not propagated, leaving owner_id empty. The allocation-service then hit a faulty fallback path that treated the org-level promo credit as distributable (using the wrong owner/allocation group) and reallocated it into positive charges across child subaccounts instead of applying it to the paying parent account.
+
+- During reconciliation run run-45, dedicated and hosted-overflow metering events were merged
+- For a subset of hosted-overflow records, the gateway tag or owner_id was not propagated, leaving owner_id empty
+- The allocation-service had a faulty fallback path triggered by the missing owner_id
+- That fallback treated the organization-level promotional credit as distributable using the wrong owner or allocation group
+- The promo credit was reallocated into positive charges across child subaccounts instead of being applied to the paying parent account
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

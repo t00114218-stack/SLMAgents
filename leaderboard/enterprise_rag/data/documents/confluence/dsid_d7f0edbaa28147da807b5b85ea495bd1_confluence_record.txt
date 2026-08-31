@@ -1,0 +1,10 @@
+Enterprise Record: What is the expected turnaround time for security to approve
+
+Document ID: dsid_d7f0edbaa28147da807b5b85ea495bd1
+System Source: confluence
+Details & Summary:
+For high-risk roles requiring security review, the expected security approval turnaround time is 3 business days.
+
+- For high-risk internal tool roles requiring security review in Redwood's tool access governance process, the expected security approval turnaround time is 3 business days.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

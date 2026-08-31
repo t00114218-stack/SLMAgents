@@ -1,0 +1,11 @@
+Enterprise Record: For a mid sized subscription software company adding AI powe
+
+Document ID: dsid_a15c0247e9de4e128293bd820fc4c659
+System Source: hubspot
+Details & Summary:
+The notes set a peak batch embedding throughput target of about 400 queries/embeddings per second during nightly vectorization windows, and an interactive semantic search end-to-end latency target of under 150 ms to return and re-rank the top 10 results.
+
+- The pre sales notes set a peak batch embedding throughput target of about 400 queries or embeddings per second during overnight or nightly vectorization windows.
+- The pre sales notes set an interactive semantic search end to end latency target of under 150 ms to return and rerank the top 10 results.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

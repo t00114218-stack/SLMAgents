@@ -1,0 +1,14 @@
+Enterprise Record: For extraction, what price-normalization correctness is repo
+
+Document ID: dsid_89c0c31e220c4777b15c3c6ff0eff61d
+System Source: confluence
+Details & Summary:
+The updated mini-results report ~96% price-normalization correctness at temp=0.0 when using strict JSON plus canonicalization rules; this is compared to an earlier ~89% figure from scratch runs that did not include canonicalization.
+
+- The answer must state that the updated reported price-normalization correctness at temp=0.0 (with strict JSON + canonicalization rules) is ~96%.
+- The answer must state that this updated result is compared against an earlier ~89% figure.
+- The answer must attribute the improvement to adding canonicalization rules (e.g., stripping currency symbols), not to unrelated changes.
+- The answer must not claim the earlier result was ~96% or that the updated result was ~89%.
+- The answer must not introduce other percentages (e.g., 92%, 98%) as the reported temp=0.0 extraction normalization correctness.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: From a partner intro call with a services firm that resells 
+
+Document ID: dsid_a9d76bcb3bc1475abc9d6f8f83a6eba8
+System Source: fireflies
+Details & Summary:
+They were told a Private (isolated) VPC deployment in an EU region typically takes about 2-4 weeks to provision, depending on infrastructure readiness and the KMS/HSM key-management setup.
+
+- The expected lead time for standing up an isolated customer environment in an EU region with customer key management required was typically about 2 to 4 weeks.
+- The 2 to 4 week provisioning time could vary depending on infrastructure readiness and the KMS or HSM key-management setup.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

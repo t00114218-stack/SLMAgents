@@ -1,0 +1,12 @@
+Enterprise Record: For the PayRight Redwood DPA negotiation, what incident noti
+
+Document ID: dsid_326387eb70834053ab4447fc1596da38
+System Source: gmail
+Details & Summary:
+PayRight requested 24-hour incident notification, and Redwood's final proposed tracked wording offered a 48-hour notification window (with immediate notice for high-severity incidents).
+
+- PayRight requested a 24-hour incident notification timeframe at the start of the negotiation.
+- Redwoods final proposed tracked wording before sending the DocuSign link offered a 48-hour incident notification window.
+- Redwoods final proposed tracked wording also called for immediate notice for high-severity incidents.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

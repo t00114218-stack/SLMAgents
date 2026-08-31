@@ -1,0 +1,14 @@
+Enterprise Record: On Streamly AI's dedicated pool dp-132-usw, what % of intera
+
+Document ID: dsid_8ffbd9fe82df457ca67d4fbc9ff1090c
+System Source: google_drive
+Details & Summary:
+Reserve 30% of interactive burst credits exclusively for priority=high routes on dp-132-usw (an earlier suggestion was 20%, but the applied/updated target is 30%).
+
+- The answer must state that the updated reservation target is 30% of interactive burst credits exclusively for priority=high routes on dp-132-usw.
+- The answer may mention that an earlier/internal suggestion was 20%, but it must clearly indicate 30% is the current/applied target.
+- The answer must not claim the reservation target is 20% as the final/current value.
+- The answer must not introduce other percentages (e.g., 25%, 40%) not supported by the documents.
+- The answer must not attribute the burst reservation change to a different pool or region; it is for dp-132-usw (us-west).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,16 @@
+Enterprise Record: In the internal workshop where we deliberately sabotage a cl
+
+Document ID: dsid_77351104a57140ac8e065d0a6bcf2046
+System Source: confluence
+Details & Summary:
+The lab's golden trace must be a JSON file with a top-level array of spans, and each span must include these string fields: trace_id, span_id, parent_id (nullable; use an empty string if none), name, start_ts (ISO 8601), end_ts (ISO 8601), and attributes (a single flattened comma-separated key=value string that includes at least model_variant, token_count, route_key, and billing_unit).
+
+- The saved run trace must be a JSON file with a top-level array of spans.
+- Each span entry must include the fields trace_id, span_id, parent_id, name, start_ts, end_ts, and attributes.
+- The per-span fields trace_id, span_id, parent_id, name, start_ts, end_ts, and attributes are string fields.
+- The parent_id field is nullable and should be an empty string if there is no parent span.
+- The start_ts and end_ts fields must be ISO 8601 timestamps.
+- The attributes field must be a single flattened comma-separated key=value string.
+- The attributes string must include at least model_variant, token_count, route_key, and billing_unit.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

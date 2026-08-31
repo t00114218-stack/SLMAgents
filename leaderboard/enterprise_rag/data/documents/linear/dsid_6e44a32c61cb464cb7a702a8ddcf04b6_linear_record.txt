@@ -1,0 +1,11 @@
+Enterprise Record: During the initial staging rollout of decision breadcrumbs, 
+
+Document ID: dsid_6e44a32c61cb464cb7a702a8ddcf04b6
+System Source: linear
+Details & Summary:
+The initial staging rollout is planned to use 1% deterministic sampling (by tenant hash) for selected tenants, and Liam O'Connor said it would start by the end of the week.
+
+- The initial staging rollout is planned to use 1% deterministic sampling by tenant hash for selected tenants.
+- Liam O'Connor said it would start by the end of the week.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,23 @@
+Enterprise Record: What audit event names and required fields should we emit fo
+
+Document ID: dsid_23c10bc09bb345d987d7464224247263
+System Source: google_drive
+Details & Summary:
+Emit rollback audit events using the taxonomy-compliant names (at minimum): optimization_config.rollback.requested, optimization_config.rollback.completed, optimization_config.rollback.failed (some exports/allowlists expect the rolled-back form, e.g. optimization_config.rolled_back, so the emitted name must exactly match what the exporter allowlists). Required fields: event_name/event_version, occurred_at (and ideally emitted_at), environment, outcome/result (success/failure/denied/partial) + failure reason/class if not success; actor attribution (actor_type, actor_id, actor_email if user, actor_role, authn_method, authz_policy); request correlation (request_id and ideally trace_id, source/console_session_id if from Console); scope identifiers (tenant_id, model_id, region, deployment_mode); config identifiers including previous_version_id (from/previous_config_version) and target/new_version_id (to/new_config_version), plus optimization_config_id and rollback_id/change_id if available; reason and ticket/incident reference. If rollback succeeds in Console but never appears in SIEM export, check (1) control-plane logs confirm an event was emitted, (2) the event_name matches the exporter allowlist (common drop: rollback endpoint emits optimization_config.rollback but exporter only accepts optimization_config.rolled_back), (3) the payload includes all required schema fields-especially both previous/from and new/to version fields and scope/actor/request_id-otherwise schema validation drops it, and (4) rollback endpoint is using the same audit emitter path/schema as apply/promote.
+
+- Rollback audit events should use taxonomy-compliant names including optimization_config.rollback.requested, optimization_config.rollback.completed, and optimization_config.rollback.failed.
+- Some SIEM exports or allowlists may expect a different rolled-back form such as optimization_config.rolled_back, so the emitted event_name must exactly match what the exporter allowlists.
+- Rollback audit events should include required fields for event identity and timing: event_name, event_version, and occurred_at (and ideally emitted_at).
+- Rollback audit events should include environment.
+- Rollback audit events should include outcome or result (for example success, failure, denied, partial) and include a failure reason or class when outcome is not success.
+- Rollback audit events should include actor attribution such as actor_type, actor_id, actor_email if the actor is a user, actor_role, authn_method, and authz_policy.
+- Rollback audit events should include request correlation such as request_id and ideally trace_id and a source or console_session_id when initiated from Console.
+- Rollback audit events should include scope identifiers such as tenant_id, model_id, region, and deployment_mode.
+- Rollback audit events should include config identifiers including previous_version_id (from or previous_config_version) and target or new_version_id (to or new_config_version), plus optimization_config_id and a rollback_id or change_id if available.
+- Rollback audit events should include a reason and an associated ticket or incident reference.
+- If rollback succeeds in Console but never appears in SIEM export, check control-plane logs to confirm an audit event was emitted.
+- If rollback succeeds in Console but never appears in SIEM export, check that the event_name matches the exporter allowlist because mismatches can cause the event to be dropped.
+- If rollback succeeds in Console but never appears in SIEM export, check that the payload includes all required schema fields (especially previous/from and new/to version fields and scope, actor, and request_id) because schema validation may drop incomplete events.
+- If rollback succeeds in Console but never appears in SIEM export, check that the rollback endpoint uses the same audit emitter path and schema as apply or promote.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

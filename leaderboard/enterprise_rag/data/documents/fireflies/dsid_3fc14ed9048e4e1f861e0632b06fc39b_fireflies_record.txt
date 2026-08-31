@@ -1,0 +1,10 @@
+Enterprise Record: In the partner integration call about getting a third party 
+
+Document ID: dsid_3fc14ed9048e4e1f861e0632b06fc39b
+System Source: fireflies
+Details & Summary:
+The security lead (Liam) targeted 2025-03-24 to complete the pre-publication AMI/image security smoke test (security QA).
+
+- The security lead targeted 2025-03-24 for completing the pre-publication AMI or image security smoke test (security QA).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

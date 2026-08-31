@@ -1,0 +1,12 @@
+Enterprise Record: What latency goals did the founder of Birch Branch Apps ment
+
+Document ID: dsid_7e3d8cd8246142a0b803eddffbeaed87
+System Source: hubspot
+Details & Summary:
+Connor said they're targeting about 200-400 ms median latency for short chat turns, with p95 under 800 ms, and that they could start at around a 500 ms median during the trial.
+
+- Connor mentioned a target median latency of about 200-400 ms for short in-app chat turns
+- Connor mentioned a target p95 latency under 800 ms for short in-app chat turns
+- Connor said they could start at around a 500 ms median latency during the trial
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

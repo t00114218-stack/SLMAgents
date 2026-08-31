@@ -1,0 +1,24 @@
+Enterprise Record: In a Private deployment incident in early March 2026, a sche
+
+Document ID: dsid_7159e8c7b7a84c45aa51b71fdfc837fc
+System Source: linear
+Details & Summary:
+Root cause was a KMS rotation race: the audit-forwarder tried to re-encrypt buffered/batched audit events during envelope key rotation, hit transient 403 plus a key-ID mapping change and (due to incorrect retry handling) dropped events, while the SSO assertion cache's invalidation (tied to the signing key fingerprint) lagged the signer-fingerprint index update, allowing stale attributes to be served and RBAC reconciliation to read stale state. Immediate mitigation/hotfix was to pause auto-rotation, run a manual backfill/re-ingest from the forwarder's local buffer, enable strict assertion-cache invalidation on fingerprint drift, and deploy a hotpatch to make the audit-forwarder treat key-ID drift/rotation errors as retryable and buffer events until re-encrypt succeeds.
+
+- The root cause was a KMS envelope key rotation race affecting the audit-forwarder and SSO assertion cache.
+- During envelope key rotation, the audit-forwarder attempted to re-encrypt buffered or batched audit events and encountered transient KMS 403 errors plus a key-ID mapping change.
+- Because of incorrect retry handling, the audit-forwarder dropped some audit events instead of retrying and buffering until re-encryption succeeded.
+- The SSO assertion cache invalidation was tied to the signing key fingerprint and lagged the signer-fingerprint index update, so stale SSO attributes were served.
+- Stale SSO attributes caused RBAC reconciliation to read stale state.
+- Immediate mitigation included pausing automatic KMS key rotation.
+- Immediate mitigation included manually backfilling or re-ingesting audit events from the audit-forwarders local buffer.
+- A hotfix enabled strict SSO assertion-cache invalidation on signing-key fingerprint drift.
+- A hotpatch changed the audit-forwarder to treat key-ID drift or rotation errors as retryable and to buffer events until re-encryption succeeds.
+- The answer must not attribute the incident to SAML group sync / SAML reconciliation being non-atomic or to a transactional outbox change; that is a different Private incident description.
+- The answer must not describe the problem as a 3-hour audit gap caused by audit-sink replay schema incompatibility (event_v1 vs event_v2) or an IdP failover; that is a separate postmortem.
+- The answer must not claim the root cause was delayed SSO assertion processing leading to placeholder/missing KMS envelope IDs and KMS_DECRYPT_FAIL; that is a different issue.
+- The answer must not cite SAML claim normalization (NameID/role prefix handling) regressions or KMS DEK tombstones as the primary cause; those belong to another ticket.
+- The answer must not say the fix was to reject SAML assertions missing an audience ('aud') claim or to change RBAC mapping to fail closed; that is a different security bug.
+- The answer must not state that the mitigation was disabling parallel SAML sync jobs or rolling back a KMS rotation for a specific customer as the main immediate action; those mitigations are from a different incident.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,12 @@
+Enterprise Record: What was the agreed condition and timing for approving the a
+
+Document ID: dsid_614b42d654ba42e1abaa5163da75bc13
+System Source: gmail
+Details & Summary:
+The additional senior infra hire was agreed to be a gated approval: run a 6-week gate review requiring demonstrable latency and incident improvements (including a >20% incident reduction), and if the metrics meet the threshold, Finance will greenlight the hire for Q4.
+
+- Approval of the additional senior infrastructure engineering hire was gated on a 6-week gate review.
+- The 6-week gate review required demonstrable latency and incident improvements, including more than a 20 percent incident reduction.
+- If the metrics met the threshold, Finance would approve the hire for Q4.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

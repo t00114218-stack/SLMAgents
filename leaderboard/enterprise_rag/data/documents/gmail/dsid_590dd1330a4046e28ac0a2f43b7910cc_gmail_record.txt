@@ -1,0 +1,13 @@
+Enterprise Record: In the email thread about an AI service pilot for a payments
+
+Document ID: dsid_590dd1330a4046e28ac0a2f43b7910cc
+System Source: gmail
+Details & Summary:
+In their first markup, Greenfield's procurement and counsel asked for changes in four areas: (1) data residency (US-only) plus a 30-day data export guarantee, (2) audit logs and retention (7 years) and SOC 2 evidence, (3) a lower liability cap for the pilot phase, and (4) minor tweaks to IP/derivative works language.
+
+- Changes related to data residency being US-only and a 30-day data export guarantee
+- Changes related to audit logs and retention for 7 years and providing SOC 2 evidence
+- Changes related to lowering the liability cap for the pilot phase
+- Changes related to minor tweaks to the IP and derivative works language
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

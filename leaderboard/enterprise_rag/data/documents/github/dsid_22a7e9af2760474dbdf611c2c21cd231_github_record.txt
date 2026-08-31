@@ -1,0 +1,11 @@
+Enterprise Record: In the recent change that made low bit math safer for infere
+
+Document ID: dsid_22a7e9af2760474dbdf611c2c21cd231
+System Source: github
+Details & Summary:
+The default pass-rate threshold is 0.92 (i.e., 92% of the microbenchmark runs must pass) before a node is allowed to step down from the safest precision.
+
+- The default pass-rate threshold is 0.92.
+- A node is allowed to step down from the safest precision only if at least 92% of the microbenchmark runs pass.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

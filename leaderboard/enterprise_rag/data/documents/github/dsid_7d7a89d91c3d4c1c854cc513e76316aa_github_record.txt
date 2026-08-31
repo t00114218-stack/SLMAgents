@@ -1,0 +1,16 @@
+Enterprise Record: For a chat style server sent events stream that must survive
+
+Document ID: dsid_7d7a89d91c3d4c1c854cc513e76316aa
+System Source: github
+Details & Summary:
+The PR introduces a "streaming session snapshot" protocol with server-emitted checkpoint markers via a `resume_token` (with `session_id` and `seq`) and explicit client ACK semantics: the server only commits tool-call/side-effect fences after receiving an `ack` for the last checkpoint (or a soft timeout), so a disconnected client can reconnect and resume safely. It keeps OpenAI-style compatibility by exposing `resume_token` as a top-level SSE event named `resume_token` and accepting the resume/session headers while preserving standard `text/event-stream` framing.
+
+- A streaming session snapshot protocol was introduced.
+- The server emits checkpoint markers using a resume_token that includes a session_id and a seq.
+- The client explicitly ACKs the last checkpoint marker to confirm receipt.
+- The server only commits tool-call or side-effect fences after receiving an ACK for the last checkpoint or after a soft timeout.
+- A disconnected client can reconnect and resume safely from the last acknowledged checkpoint using the resume_token.
+- OpenAI-style streaming compatibility is kept by exposing resume_token as a top-level SSE event named resume_token.
+- The server accepts resume and session headers while preserving standard text/event-stream framing.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

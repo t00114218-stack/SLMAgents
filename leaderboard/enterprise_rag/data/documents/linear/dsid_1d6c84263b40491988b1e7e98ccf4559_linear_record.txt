@@ -1,0 +1,11 @@
+Enterprise Record: When the audit event buffer is full or the local durable que
+
+Document ID: dsid_1d6c84263b40491988b1e7e98ccf4559
+System Source: linear
+Details & Summary:
+For must-log (must-audit) admin actions, if the in-memory buffer is full the system should fall back to writing the event to the local WAL; if the WAL can't be written (or if the WAL hits its size cap), the admin action must fail closed and return HTTP 503 (with a deterministic, documented "audit pipeline not healthy/audit unavailable" error code).
+
+- If the in-memory audit event buffer is full, must-log (must-audit) admin actions should fall back to writing the audit event to the local WAL.
+- If the local WAL cannot be written or has hit its size cap, the must-log admin action must fail closed and return HTTP 503.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

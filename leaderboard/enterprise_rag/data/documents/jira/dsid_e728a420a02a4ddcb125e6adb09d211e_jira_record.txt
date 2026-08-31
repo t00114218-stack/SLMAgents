@@ -1,0 +1,12 @@
+Enterprise Record: After a recent network change at the SoMa office, users on c
+
+Document ID: dsid_e728a420a02a4ddcb125e6adb09d211e
+System Source: jira
+Details & Summary:
+The office bridge (Ubiquiti UBB-Edge v2) was mistakenly provisioned in "Gateway (NAT)" mode with NAT/MASQUERADE enabled instead of being in passthrough/bridge mode, which caused the source IP rewrite.
+
+- The office bridge was a Ubiquiti UBB-Edge v2.
+- The office bridge was mistakenly provisioned in Gateway NAT mode instead of passthrough or bridge mode.
+- NAT or MASQUERADE was enabled on the office bridge, causing the source IP rewrite.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

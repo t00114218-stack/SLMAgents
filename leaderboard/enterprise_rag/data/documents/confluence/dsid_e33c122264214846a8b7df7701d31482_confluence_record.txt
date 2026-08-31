@@ -1,0 +1,19 @@
+Enterprise Record: Do we need to recalculate or annotate Dedicated throughput S
+
+Document ID: dsid_e33c122264214846a8b7df7701d31482
+System Source: confluence
+Details & Summary:
+Don't do an automatic backfill/recalculation of Dedicated throughput SLO compliance for the pre-PR-19422 period; instead, annotate any SLO reports/dashboards spanning that boundary because streaming workloads could have inflated tokens/sec (masking real misses). If a customer requests credits tied to that period, Support should not pre-approve; gather the impact window/deployment/tier, engage SRE/Observability to validate the breach using corrected accounting (prefer finalized usage completion tokens rather than the old streaming counter), confirm exclusions, then run the standard credit-review/approval workflow (Product entitlement check + Finance/Legal as needed) and communicate the decision.
+
+- Do not automatically backfill or recalculate Dedicated throughput SLO compliance for the pre-PR-19422 period.
+- Annotate SLO reports or dashboards that span the pre-PR-19422 boundary.
+- Streaming-heavy workloads before the fix could have inflated tokens per second and masked real SLO misses.
+- If a customer requests credits for that period, Support should not pre-approve the request.
+- Support should gather the impact window, deployment, and tier details for any credit request tied to that period.
+- Support should engage SRE or Observability to validate whether a breach occurred using corrected accounting.
+- For validation, prefer finalized usage completion tokens rather than the old streaming counter.
+- Support should confirm any applicable exclusions before proceeding with credits.
+- Support should run the standard credit review and approval workflow, including a product entitlement check and involving Finance or Legal as needed.
+- Support should communicate the final credit decision to the customer.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

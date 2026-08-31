@@ -1,0 +1,12 @@
+Enterprise Record: After a recent refactor to request grouping and the per requ
+
+Document ID: dsid_88f1c9800dd54a75bad05653b7f07a93
+System Source: google_drive
+Details & Summary:
+If cache key canonicalization strips vs. preserves a trailing slash inconsistently, two different callers (or even different tenants) can end up mapping distinct requests to the same KV-cache entry. In a multi-customer environment this can cause cross-tenant cache collisions/cache poisoning, leading to incorrect or leaked responses and silent correctness issues.
+
+- If cache key canonicalization inconsistently strips versus preserves a trailing slash, distinct requests can map to the same KV-cache entry
+- In a multi-customer environment, this can cause cross-tenant cache collisions or cache poisoning
+- Such cross-tenant cache collisions can lead to incorrect responses or leaked responses and silent correctness issues
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

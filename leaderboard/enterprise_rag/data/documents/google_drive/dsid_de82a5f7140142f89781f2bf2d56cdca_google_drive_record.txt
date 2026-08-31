@@ -1,0 +1,14 @@
+Enterprise Record: From the internal sandbox microbench in the EU West lab arou
+
+Document ID: dsid_de82a5f7140142f89781f2bf2d56cdca
+System Source: google_drive
+Details & Summary:
+For the long-generate workload (~300 tokens) using rw-70b-fp16 on a single A100 40GB in fastpath (no batching) mode, the estimated cost was $31.6 per 1M tokens.
+
+- The workload was the long-generate workload of about 300 tokens per response.
+- The biggest model tested was rw-70b-fp16.
+- The model was run on a single A100 40GB GPU.
+- The mode used was fastpath no batching (low latency).
+- The estimated cost was 31.6 dollars per 1 million tokens.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

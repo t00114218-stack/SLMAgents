@@ -1,0 +1,13 @@
+Enterprise Record: When an employee is marked for immediate termination in Work
+
+Document ID: dsid_8138b96e181940418cc5067b2630064e
+System Source: jira
+Details & Summary:
+Because the SaaS vendor applies its own 14-day grace period after receiving the Okta SCIM deactivation (a PATCH setting the account to inactive). The user is deactivated on the vendor side, but the vendor treats it as a soft deprovision and keeps the seat billable until the grace window expires unless an escalated/manual hard-revoke is arranged.
+
+- The SaaS vendor can apply its own approximately 14-day grace period after receiving an Okta SCIM deactivation.
+- Okta SCIM deactivation is sent as a PATCH that sets the vendor account to inactive.
+- The vendor may treat the deactivation as a soft deprovision, keeping the seat billable until the grace period expires.
+- The seat may stop being billable sooner only if a manual or escalated hard-revoke is arranged with the vendor.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

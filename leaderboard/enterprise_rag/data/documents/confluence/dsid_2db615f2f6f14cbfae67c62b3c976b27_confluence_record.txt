@@ -1,0 +1,65 @@
+Enterprise Record: What is Redwood Inference's end-to-end process for making a 
+
+Document ID: dsid_2db615f2f6f14cbfae67c62b3c976b27
+System Source: confluence
+Details & Summary:
+For the **Hosted API and Console**, a **production change** is **any change in any environment serving external customer traffic (including canary/regional prod)** that could affect **confidentiality, integrity, availability, latency, cost, or correctness** (e.g., prod deploys, routing/model-selection policies, auth/RBAC/quotas/billing, schema migrations/backfills, capacity/failover, or observability changes that reduce visibility). The change owner must create a durable **change record** (ticket) with **summary + customer impact assessment, risk checklist, verification plan, explicit rollback plan, links to PRs/builds/dashboards/runbooks/migration plan, and captured approvals**, and schedule within the default **weekday 09:00-16:00 local** window while obeying **error-budget/incident change control** (Green: normal approvals; Yellow: add **SRE on-call**; Red: freeze except incident/security fixes requiring **IC + service owner + SRE on-call**).
+
+**Required approvals depend on change type and risk:** *Standard* needs **1 peer**; *Normal* (most deploys) needs **peer + service owner** and additionally **SRE gate** for capacity/SLO-sensitive/traffic routing/failover changes and **Security review** for auth/session/RBAC/secrets/encryption/audit logging/PII/retention/network exposure or security-relevant dependency upgrades (with threat summary, affected assets, security verification, safe rollback, and reviewer approval recorded); *Emergency* changes require **IC + service owner (as available)** and a completed change record/retrospective within **24 hours**.
+
+**Pre-deploy verification (gates) for every release (unless an approved, documented exemption):** provide build identifiers (image digest/build #), release-notes snippet, change record link, PR/test links; ensure **green unit + integration tests** (exceptions approved by service owner), **perf sanity** when request-path/caching/batching changes, confirm **current SLO posture** (p95 latency/error rate normal), **capacity headroom ≥20%** or an **SRE-approved** plan when changing scaling/concurrency/batching, ensure **backward-compatible migrations** with rollback/forward plan, and complete any required **security gate** checks.
+
+**Deploy execution:** always follow the relevant runbook and **announce internally in `#eng-releases`** (change record, owner/approvers, services/regions, canary plan, rollback trigger). For **Hosted API**, perform pre-deploy checks (dashboards, no conflicting incidents, error-budget posture), deploy a **mandatory canary** (typically **1 region or 1% traffic**) and hold **≥15 minutes** steady-state; pass criteria include **≤0.2% absolute error-rate regression**, **≤10% p95 latency regression**, and no sustained saturation (GPU/CPU/memory/queue depth), plus smoke tests (e.g., **/v1/chat/completions** streaming & non-streaming, **/v1/embeddings**) and metering validation if billing changed; then roll out region-by-region (default order **us-west-2 canary → us-east-1 → eu-central-1**) avoiding concurrent multi-region/router+gateway rollouts unless explicitly approved. For the **Console**, deploy **console-api first, then console-web**, prefer **feature-flag dark launches** and (when feasible) canary to an **internal staff cohort**; validate key workflows (login, org switching, API key creation, usage dashboard, settings), flag evaluation health, and watch for auth errors (401/403); publish the new web bundle with cache invalidation while keeping the prior bundle available for fast revert.
+
+**Customer and internal communications:** internal heads-up in `#eng-releases` is **always required**; **customer comms** (status page notice and, for major impact, direct email) are required for expected downtime/degradation, breaking API/SDK/auth/quota changes, billing/usage reporting risk, or maintenance reducing redundancy-using **≥24h lead** for minor and **≥72h + email** for major maintenance (emergency: ASAP), including what/impact/times/regions/products/mitigations/status-page link/support contact, with updates at least **hourly** during the window and a final completion update.
+
+**Rollback and post-change requirements:** "stop the line" and **rollback immediately** if canary/post-deploy gates fail or if there's plausible Sev2+ impact (including the explicit triggers: **>0.2%** sustained error-rate increase, **>10%** sustained p95 latency increase, saturation/timeouts, or customer reports); rollback by **pausing further rollout**, reverting **highest-leverage toggles first** (feature flags, routing/policy bundles), then **redeploying the last known-good image digest/bundle** (Hosted API typically region-by-region starting with the most impacted), with special handling/escalation for **schema migrations** and validation of **positive/negative authz** for auth/RBAC changes. After any change (successful or rolled back), perform **functional smoke tests**, verify **observability** (dashboards/logs/alerts), validate **billing integrity** if relevant, and keep **enhanced monitoring for ≥60 minutes**; only close the change record once it documents final build state (or rollback), evidence/links of observed outcomes, timestamps, and any follow-up tickets.
+
+- For Hosted API and Console, a production change is any change in any environment serving external customer traffic, including canary or regional prod.
+- A production change includes changes that could affect confidentiality, integrity, availability, latency, cost, or correctness.
+- The change owner must create a durable change record (ticket) for the production change.
+- The change record must include a summary, customer impact assessment, risk checklist, verification plan, explicit rollback plan, links to relevant PRs/builds/dashboards/runbooks/migration plan, and captured approvals.
+- Production changes should be scheduled within the default weekday 09:00 to 16:00 local window.
+- Production changes must obey error-budget or incident change control: Green allows normal approvals, Yellow adds SRE on-call involvement, and Red freezes changes except incident or security fixes requiring IC plus service owner plus SRE on-call.
+- Standard changes require approval from one peer.
+- Normal changes require approval from a peer and the service owner.
+- Normal changes also require an SRE gate for capacity, SLO-sensitive, traffic routing, or failover changes.
+- Normal changes require Security review for auth, session, RBAC, secrets, encryption, audit logging, PII, retention, network exposure, or security-relevant dependency upgrades, with the review recorded.
+- Emergency changes require IC approval and service owner involvement as available, and a completed change record or retrospective within 24 hours.
+- Pre-deploy verification is required for every release unless there is an approved, documented exemption.
+- Pre-deploy verification includes providing build identifiers and links to release notes, change record, and PRs or tests.
+- Pre-deploy verification requires green unit and integration tests unless exceptions are approved by the service owner.
+- Pre-deploy verification requires a performance sanity check when request-path, caching, or batching changes are made.
+- Pre-deploy verification includes confirming current SLO posture such as p95 latency and error rate being normal.
+- Pre-deploy verification requires at least 20 percent capacity headroom or an SRE-approved plan when changing scaling, concurrency, or batching.
+- Pre-deploy verification requires backward-compatible migrations with rollback and forward plans for schema changes.
+- Pre-deploy verification requires completing any required security gate checks.
+- Deploy execution must follow the relevant runbook.
+- Deploy execution requires an internal announcement in #eng-releases including change record, owner and approvers, services and regions, canary plan, and rollback trigger.
+- For Hosted API deploys, pre-deploy checks include dashboards review, confirming no conflicting incidents, and checking error-budget posture.
+- For Hosted API deploys, a mandatory canary is required, typically one region or 1 percent traffic, held for at least 15 minutes at steady state.
+- Hosted API canary pass criteria include no more than 0.2 percent absolute error-rate regression, no more than 10 percent p95 latency regression, and no sustained resource saturation.
+- Hosted API deploy verification includes smoke tests and metering validation when billing is changed.
+- After Hosted API canary success, rollout proceeds region-by-region in the default order us-west-2 canary, then us-east-1, then eu-central-1.
+- Hosted API deploys should avoid concurrent multi-region or router-plus-gateway rollouts unless explicitly approved.
+- For Console deploys, console-api is deployed first and then console-web.
+- Console deploys should prefer feature-flag dark launches and, when feasible, canary to an internal staff cohort.
+- Console deploy verification includes validating key workflows such as login, org switching, API key creation, usage dashboard, and settings, and watching for auth errors like 401 or 403.
+- Console deploys publish the new web bundle with cache invalidation while keeping the prior bundle available for fast revert.
+- Internal communication in #eng-releases is always required for production changes.
+- Customer communications (status page notice and for major impact direct email) are required for expected downtime or degradation, breaking API or SDK or auth or quota changes, billing or usage reporting risk, or maintenance that reduces redundancy.
+- Customer communications should provide at least 24 hours lead time for minor maintenance and at least 72 hours lead time plus email for major maintenance, with emergency communications sent as soon as possible.
+- Customer communications should include what is changing, impact, timing, regions, products, mitigations, a status-page link, and a support contact.
+- During the maintenance window, customer communications should be updated at least hourly and include a final completion update.
+- Rollback is required immediately if canary or post-deploy gates fail or if there is plausible Sev2 or higher impact.
+- Explicit rollback triggers include sustained error-rate increase greater than 0.2 percent, sustained p95 latency increase greater than 10 percent, saturation or timeouts, or customer reports.
+- Rollback execution includes pausing further rollout, reverting highest-leverage toggles first such as feature flags or routing or policy bundles, and redeploying the last known-good build.
+- Hosted API rollback typically proceeds region-by-region starting with the most impacted region.
+- Rollback requires special handling and escalation for schema migrations and validating authorization behavior for auth or RBAC changes.
+- After any change, successful or rolled back, functional smoke tests must be performed.
+- After any change, observability must be verified, including dashboards, logs, and alerts.
+- After any change, billing integrity must be validated when relevant.
+- After any change, enhanced monitoring must be maintained for at least 60 minutes.
+- The change record can be closed only after documenting the final build state or rollback, evidence and links of outcomes, timestamps, and any follow-up tickets.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

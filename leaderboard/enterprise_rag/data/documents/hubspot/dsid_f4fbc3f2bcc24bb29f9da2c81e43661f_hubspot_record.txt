@@ -1,0 +1,11 @@
+Enterprise Record: After the procurement kickoff call that requested a draft SL
+
+Document ID: dsid_f4fbc3f2bcc24bb29f9da2c81e43661f
+System Source: hubspot
+Details & Summary:
+They wanted interactive IDE edits to have <80 ms median token latency, and streaming token delivery for editor integration to be <50 ms.
+
+- The bank wanted interactive IDE edits to have less than 80 ms median token latency
+- The bank wanted streaming token delivery for editor integration to be less than 50 ms
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

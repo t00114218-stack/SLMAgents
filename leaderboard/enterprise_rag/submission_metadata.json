@@ -1,0 +1,30 @@
+{
+  "submission_name": "SLMAgents-SLMRag-Hybrid-RRF",
+  "system_type": "Open Source",
+  "description": "CPU-optimized, privacy-preserving enterprise RAG pipeline utilizing hybrid BM25 + dense ONNX vector embeddings with Reciprocal Rank Fusion (RRF) and local ONNX Small Language Model generation.",
+  "repository_url": "https://github.com/revathysuryaprakash/SLMAgents",
+  "leaderboard": "EnterpriseRAG-Bench",
+  "hardware_requirements": {
+    "device": "CPU (Multi-threaded)",
+    "recommended_threads": 4,
+    "peak_memory_mb": 1150,
+    "gpu_required": false
+  },
+  "pipeline_components": {
+    "retrieval": {
+      "lexical": "Okapi BM25 with token expansion and sub-word matching",
+      "dense_embeddings": "sentence-transformers/all-MiniLM-L6-v2 (ONNX Runtime, 384 dimensions)",
+      "fusion": "Reciprocal Rank Fusion (RRF, k=60, dynamic category weighting)"
+    },
+    "generation": {
+      "runtime": "ONNX Runtime GenAI",
+      "context_distillation": "350-token salient evidence extractor with strict context grounding",
+      "temperature": 0.0,
+      "max_tokens": 220
+    }
+  },
+  "contact": {
+    "maintainer": "SLMAgents Core Team",
+    "contact_email": "revathysuryaprakash@gmail.com"
+  }
+}

@@ -1,0 +1,25 @@
+Enterprise Record: For the Trident Financial Private VPC deal, what is our appr
+
+Document ID: dsid_98d7acbda29a4260a413c8d6da7207a3
+System Source: confluence
+Details & Summary:
+Approved stance for Trident Private (VPC): we can commit that customer content (prompts/outputs) is processed and stored within the agreed US region/VPC; we should not agree to absolute "no processing outside the US/no cross-border access ever" language-admin/support access should be framed as controlled, least-privilege, customer-policy-restrictable, and auditable (and avoid "US persons only" as an absolute). For the 7-year audit log requirement: we support audit logging and audit log export; Trident should meet 7-year retention by exporting logs to Trident-controlled storage/SIEM and retaining them there, rather than requiring Redwood to retain audit logs for 7 years. Evidence pack artifacts to share to substantiate this: SOC 2 Type II (under NDA), data residency/region availability statement, data retention policy statement, audit log sample (redacted) + field reference, audit log export patterns overview, plus architecture artifacts (data flow/request processing diagram and network boundary overview; optionally encryption overview). Share via the evidence pack process only: submit an evidence request with prospect/recipients + NDA status + specific artifacts needed; Security/GRC shares via a secure, access-controlled link (recipient-specific/expiring, SOC2 watermarked); do not email SOC2 as an attachment and track recipients/date/NDAs in the deal record/CRM.
+
+- For the Trident Financial Private VPC deal, we can commit that customer content (prompts and outputs) is processed and stored within the agreed US region and VPC.
+- For the Trident Financial Private VPC deal, we should not agree to absolute language such as no processing outside the US or no cross-border access ever.
+- Admin and support access should be framed as controlled, least-privilege, customer-policy-restrictable, and auditable rather than as an absolute US-persons-only guarantee.
+- We support audit logging and audit log export for the Trident Financial Private VPC deal.
+- The 7-year audit log retention requirement should be met by Trident exporting logs to Trident-controlled storage or a SIEM and retaining them there, rather than requiring Redwood to retain audit logs for 7 years.
+- Evidence pack artifacts to share include SOC 2 Type II, provided under NDA.
+- Evidence pack artifacts to share include a data residency or region availability statement.
+- Evidence pack artifacts to share include a data retention policy statement.
+- Evidence pack artifacts to share include a redacted audit log sample and an audit log field reference.
+- Evidence pack artifacts to share include an audit log export patterns overview.
+- Evidence pack artifacts to share include architecture artifacts such as a data flow or request processing diagram and a network boundary overview.
+- Evidence pack artifacts may optionally include an encryption overview.
+- Artifacts should be shared only via the evidence pack process by submitting an evidence request that includes the prospect, recipients, NDA status, and the specific artifacts needed.
+- Security or GRC should share artifacts via a secure, access-controlled link that is recipient-specific or expiring and includes a watermarked SOC 2 report.
+- SOC 2 should not be emailed as an attachment.
+- Recipients, dates, and NDAs for shared artifacts should be tracked in the deal record or CRM.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

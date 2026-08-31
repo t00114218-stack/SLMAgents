@@ -1,0 +1,12 @@
+Enterprise Record: In our GPU inference service that merges many request stream
+
+Document ID: dsid_908e8464927742829dcdfe0c6165299b
+System Source: github
+Details & Summary:
+They added a KV-cache-aware scheduling hint and a jitter-resilient continuous-batching policy: requests are tagged with estimated KV working-set deltas so the scheduler avoids coalescing batches that trigger abrupt KV footprint jumps/evictions, and the batcher uses small adaptive hold windows to align jittery streams without materially increasing median latency.
+
+- A KV-cache-aware scheduling hint was added.
+- Requests are tagged with estimated KV working-set delta so the scheduler avoids forming batches that would cause abrupt KV footprint jumps or evictions.
+- A jitter-resilient continuous-batching policy was added that uses small adaptive hold windows to align jittery streams without materially increasing median latency.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

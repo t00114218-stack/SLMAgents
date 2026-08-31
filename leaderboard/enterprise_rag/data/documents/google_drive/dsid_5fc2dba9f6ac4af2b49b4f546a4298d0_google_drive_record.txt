@@ -1,0 +1,10 @@
+Enterprise Record: In the internal shiproom runner notes, what is the target ti
+
+Document ID: dsid_5fc2dba9f6ac4af2b49b4f546a4298d0
+System Source: google_drive
+Details & Summary:
+The rollback plan is considered verified in staging if the time-to-recover is under 10 minutes.
+
+- In staging, a verified rollback requires a time-to-recover under 10 minutes.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

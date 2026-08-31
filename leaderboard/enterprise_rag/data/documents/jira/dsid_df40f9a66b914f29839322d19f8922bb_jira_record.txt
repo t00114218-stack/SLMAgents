@@ -1,0 +1,12 @@
+Enterprise Record: During a gradual rollout of a new large model on a single pr
+
+Document ID: dsid_df40f9a66b914f29839322d19f8922bb
+System Source: jira
+Details & Summary:
+They hotfixed the edge route-resolver to enforce the pin header at selection time: if a request includes an explicit model pin, the router rejects any fallback variant whose tokenizer family doesn't match the pinned model (preventing routing to the quantized q4 build when the pin is provided).
+
+- A hotfix was applied to the edge route-resolver (request router).
+- The hotfix enforced the model pin header during model selection.
+- When a request includes an explicit model pin, the router rejects any fallback variant whose tokenizer family does not match the pinned model (preventing routing to the quantized q4 build when pinned).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

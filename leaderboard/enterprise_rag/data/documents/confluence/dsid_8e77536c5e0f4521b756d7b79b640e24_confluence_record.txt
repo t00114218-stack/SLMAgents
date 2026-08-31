@@ -1,0 +1,13 @@
+Enterprise Record: For the Acme AI dedicated failover incident with intermitten
+
+Document ID: dsid_8e77536c5e0f4521b756d7b79b640e24
+System Source: confluence
+Details & Summary:
+Set incident_type/subtype to capacity_fleet.provisioning_lag (insufficient warm capacity during failover; note routing_fallback as a contributing system) with primary owner = Infrastructure/Fleet. For customer updates (Dedicated Sev1), use TTM target 45 minutes and TTF target 3 business days.
+
+- The v1 incident type and subtype should be set to capacity_fleet.provisioning_lag.
+- The primary owner for the incident should be Infrastructure/Fleet.
+- For Dedicated Sev1 customer updates, the time-to-mitigate target should be 45 minutes.
+- For Dedicated Sev1 customer updates, the time-to-fix target should be 3 business days.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

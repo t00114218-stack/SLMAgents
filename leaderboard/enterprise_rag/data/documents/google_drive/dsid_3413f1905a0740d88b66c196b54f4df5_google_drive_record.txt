@@ -1,0 +1,13 @@
+Enterprise Record: In the quick A100 microbenchmark notes comparing 4-bit weigh
+
+Document ID: dsid_3413f1905a0740d88b66c196b54f4df5
+System Source: google_drive
+Details & Summary:
+For the simplest A100 batch=1 run, NF4 post-training quantization on the 7B model achieved about a 1.8× token-throughput speedup versus fp16, with an estimated quality hit of roughly +0.6 perplexity on a small set of story prompts.
+
+- The simplest run was on an A100 with batch size 1 on a 7B model
+- The simplest run used NF4 post-training 4-bit weight quantization and compared it against fp16
+- NF4 achieved about a 1.8x token-throughput speedup versus fp16
+- The estimated quality hit was roughly +0.6 perplexity
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

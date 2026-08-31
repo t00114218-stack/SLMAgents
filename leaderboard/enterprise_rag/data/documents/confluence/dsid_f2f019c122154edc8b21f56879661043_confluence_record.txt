@@ -1,0 +1,12 @@
+Enterprise Record: What is the recommended liability cap language in the procur
+
+Document ID: dsid_f2f019c122154edc8b21f56879661043
+System Source: confluence
+Details & Summary:
+The SOP's recommended limitation of liability language is: "Except for willful misconduct or breach of confidentiality, liability shall not exceed the greater of (i) USD 1,000,000 or (ii) the fees paid in the 12 months preceding the claim." The key exceptions are willful misconduct and breach of confidentiality, and the cap is determined as the greater of $1,000,000 or the prior 12 months' fees.
+
+- The procurement legal triage SOP recommends limitation of liability language stating that liability shall not exceed the greater of (i) USD 1,000,000 or (ii) the fees paid in the 12 months preceding the claim.
+- The key exceptions to the SOPs liability cap are willful misconduct and breach of confidentiality.
+- The cap amount is determined as the greater of USD 1,000,000 or the fees paid in the 12 months prior to the claim.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

@@ -1,0 +1,11 @@
+Enterprise Record: In the resilient streaming schema proposal, what resume succ
+
+Document ID: dsid_b4443ecc53154934902652d496c9d12e
+System Source: linear
+Details & Summary:
+The success metrics target a resume success rate of at least 98% for reconnects within 24 hours. During rollout, rollback would be triggered if resume_success_rate drops below 95% for 4 hours.
+
+- The success metrics target a resume success rate of at least 98% for reconnects within 24 hours.
+- A rollback during rollout is triggered if resume_success_rate drops below 95% for 4 hours.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

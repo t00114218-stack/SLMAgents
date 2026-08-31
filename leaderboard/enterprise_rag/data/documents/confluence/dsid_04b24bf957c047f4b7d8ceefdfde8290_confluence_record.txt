@@ -1,0 +1,20 @@
+Enterprise Record: What are the required fields that each entry in the contract
+
+Document ID: dsid_04b24bf957c047f4b7d8ceefdfde8290
+System Source: confluence
+Details & Summary:
+Each contract conformance results ledger entry must include: timestamp, service_a, service_a_version, service_b, service_b_version, endpoint, dcts_version, test_case_id, result (pass|fail), failure_reason, and run_id.
+
+- Each contract conformance results ledger entry must include a timestamp
+- Each contract conformance results ledger entry must include service_a
+- Each contract conformance results ledger entry must include service_a_version
+- Each contract conformance results ledger entry must include service_b
+- Each contract conformance results ledger entry must include service_b_version
+- Each contract conformance results ledger entry must include an endpoint
+- Each contract conformance results ledger entry must include dcts_version
+- Each contract conformance results ledger entry must include test_case_id
+- Each contract conformance results ledger entry must include a result value of pass or fail
+- Each contract conformance results ledger entry must include failure_reason
+- Each contract conformance results ledger entry must include run_id
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

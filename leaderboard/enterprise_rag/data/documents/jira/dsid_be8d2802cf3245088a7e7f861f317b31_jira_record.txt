@@ -1,0 +1,14 @@
+Enterprise Record: Which template telemetry header format are we standardizing 
+
+Document ID: dsid_be8d2802cf3245088a7e7f861f317b31
+System Source: jira
+Details & Summary:
+We're standardizing on a single allow-listed header, x-redwood-template-tags, containing semicolon-separated k=v pairs for the rw.template.* fields (name/lang/version/install_id/channel). Quickstart templates make this telemetry opt-in (default: not sent), so behind a corporate proxy that blocks unknown headers the template still works by default; only if a user explicitly enables the header would the proxy potentially return a 4xx, in which case telemetry should be turned back off.
+
+- The standardized template telemetry header is a single allow-listed header named x-redwood-template-tags.
+- The x-redwood-template-tags header contains semicolon-separated k=v pairs for rw.template.* fields (name, lang, version, install_id, channel).
+- Quickstart templates make sending this telemetry header opt-in and do not send it by default.
+- If a corporate proxy blocks unknown headers, quickstart templates still work by default because the telemetry header is not sent.
+- If a user explicitly enables the telemetry header, the corporate proxy may return a 4xx response, and telemetry should be turned back off in that case.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

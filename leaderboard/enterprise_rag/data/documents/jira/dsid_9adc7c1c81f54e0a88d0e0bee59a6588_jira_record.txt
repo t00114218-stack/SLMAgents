@@ -1,0 +1,13 @@
+Enterprise Record: During a traffic surge in the US East production cluster for
+
+Document ID: dsid_9adc7c1c81f54e0a88d0e0bee59a6588
+System Source: jira
+Details & Summary:
+Because the edge rate-shedding policy in prod-us-east didn't include an explicit exemption for pinned sessions, the edge proxy marked traffic with a shed tag and the routing layer's shed-handling logic deprioritized the pinned route and reordered candidates for capacity/SLOs, intermittently selecting the gpt-large-v1 canary fallback instead of the pinned gpt-large-v1.
+
+- The edge rate-shedding policy in prod-us-east did not explicitly exempt pinned sessions.
+- During the surge, the edge proxy marked some traffic with a shed tag.
+- The routing layer's shed-handling logic deprioritized the pinned route and reordered routing candidates based on capacity and SLOs.
+- Because of this, requests that were supposed to be pinned sometimes got routed to the gpt-large-v1 canary (experimental fallback) instead of the pinned gpt-large-v1.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

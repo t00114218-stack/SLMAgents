@@ -1,0 +1,12 @@
+Enterprise Record: What change reduced out of memory failures for long context 
+
+Document ID: dsid_49d64735870b48b79f1e6f2724f1e7e2
+System Source: github
+Details & Summary:
+The PR reduced long-context OOMs by introducing an opt-in activation checkpointing mode (trading some recompute for lower activation memory) and refactoring CUDA scratch buffers so temporary GPU allocations are reused across micro-batches in the continuous-batching loop. On an A100 40GB at seq≈4096, it cut peak GPU memory by about 36% (with expected savings up to ~40% on long-sequence workloads).
+
+- The change refactored CUDA scratch or temporary GPU buffers so allocations are reused across microbatches in the continuous batching loop.
+- The change added an opt-in activation checkpointing or recompute mode that trades extra recomputation for lower activation memory use.
+- On an A100 40GB at about 4096 tokens, peak GPU memory usage dropped by about 36 percent.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

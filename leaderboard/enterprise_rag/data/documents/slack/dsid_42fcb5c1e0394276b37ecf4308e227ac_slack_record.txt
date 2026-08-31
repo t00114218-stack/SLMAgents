@@ -1,0 +1,11 @@
+Enterprise Record: In a recent GPU incident in us-east after a driver update, w
+
+Document ID: dsid_42fcb5c1e0394276b37ecf4308e227ac
+System Source: slack
+Details & Summary:
+A load balancer config change on lb-us-east-1 that lowered the MTU to 1400 was suspected of contributing to the NCCL watchdog timeouts and GPU Xid errors.
+
+- A load balancer config change on lb-us-east-1 lowered the MTU to 1400
+- The MTU reduction to 1400 was suspected of contributing to NCCL watchdog timeouts and GPU Xid errors
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

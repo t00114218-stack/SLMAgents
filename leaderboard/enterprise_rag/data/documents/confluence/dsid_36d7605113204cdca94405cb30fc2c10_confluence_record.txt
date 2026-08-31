@@ -1,0 +1,12 @@
+Enterprise Record: Where can I find the internal one stop reference page that s
+
+Document ID: dsid_36d7605113204cdca94405cb30fc2c10
+System Source: confluence
+Details & Summary:
+Use the Confluence page titled **"Operational Flows and Policy Gallery"**-it's the single-entry reference that summarizes approval paths and SLAs for access, change management, data retention, procurement, vendor onboarding, and travel. The standard request templates are linked in the **"Templates and artifacts (canonical)"** section (e.g., /confluence/templates/access-request-template, /confluence/templates/change-request-template, /confluence/templates/data-deletion-request, /confluence/templates/vendor-onboarding-checklist, /confluence/templates/requisition-lowvalue, /confluence/templates/expense-report-template).
+
+- The internal one stop reference page is a Confluence page titled "Operational Flows and Policy Gallery".
+- The "Operational Flows and Policy Gallery" page is a single-entry reference that summarizes approval paths and SLAs for access requests, change management, data retention, procurement, vendor onboarding, and business travel.
+- The standard request templates are linked in the "Templates and artifacts (canonical)" section of the "Operational Flows and Policy Gallery" page.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

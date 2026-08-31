@@ -1,0 +1,11 @@
+Enterprise Record: In our hosted chat streaming, a corporate gateway forces the
+
+Document ID: dsid_23438eef0a4c47f1a8921f4a74353a2b
+System Source: jira
+Details & Summary:
+Until the server-side fix is rolled out, customers should either enable direct SSE passthrough for the hosted API endpoints (so the gateway doesn't downgrade to long-polling) or increase the proxy/gateway keepalive timeout to at least 60 seconds to avoid the reconnect that triggers truncation and missing finish metadata.
+
+- Short term mitigation is to enable direct SSE passthrough for the hosted API endpoints so the corporate gateway does not downgrade the stream to long polling
+- Alternative short term mitigation is to increase the proxy or gateway keepalive timeout to at least 60 seconds to avoid the reconnect that causes truncated assistant output and missing final completion status metadata
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

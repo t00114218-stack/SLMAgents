@@ -1,0 +1,11 @@
+Enterprise Record: In the rollout plan for the internal service that only hands
+
+Document ID: dsid_6713194be8d54a0f8de8f8d89347ecf6
+System Source: google_drive
+Details & Summary:
+The tamper-evident audit trail defaults to 90 days of hot retention and 1 year of cold retention.
+
+- The tamper-evident audit trail has a default hot retention period of 90 days.
+- The tamper-evident audit trail has a default cold retention period of 1 year.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

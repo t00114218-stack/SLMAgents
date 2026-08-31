@@ -1,0 +1,14 @@
+Enterprise Record: After our single sign on provider URL changed, access approv
+
+Document ID: dsid_37c24c697d9d462fad0e3afeeea9d8c0
+System Source: jira
+Details & Summary:
+The Okta issuer domain swap left some approval/assertion tokens and existing RBAC grants still stamped with the old issuer (okta-old.redwood). Because both the identity-proxy validation and the RBAC grant lookup are issuer-dependent, tokens with the old `iss` were rejected or didn't match any stored grants, so the UI showed "Granted" but the runbook/console still returned 403 (missing RBAC grant).
+
+- The Okta issuer domain change left some approval or assertion tokens and existing RBAC grants stamped with the old issuer domain (okta-old.redwood).
+- Identity proxy token validation is dependent on the issuer value (iss).
+- RBAC grant lookup is dependent on the issuer value (iss).
+- Tokens with the old iss were rejected or did not match any stored RBAC grants.
+- As a result, the internal approval UI could show Granted while the privileged tools returned 403 due to a missing RBAC grant.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

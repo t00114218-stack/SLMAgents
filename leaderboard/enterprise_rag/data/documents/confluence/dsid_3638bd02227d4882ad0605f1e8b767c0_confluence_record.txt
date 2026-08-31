@@ -1,0 +1,16 @@
+Enterprise Record: In the Feb 25, 2026 incident where Redwood Console traces sh
+
+Document ID: dsid_3638bd02227d4882ad0605f1e8b767c0
+System Source: confluence
+Details & Summary:
+Span drops were caused by the span-ingester queue having a low max size with a drop-on-full policy, which started dropping under peak burst load after a deploy increased span volume per request (more attributes). The immediate mitigation was to scale up ingester replicas and temporarily raise the queue limits, bringing drop rates back to baseline.
+
+- Span drops were caused by the span-ingester queue having a low max size with a drop-on-full policy.
+- The span-ingester queue began dropping spans under peak burst load after a deploy increased span volume per request by adding more attributes.
+- The immediate mitigation was to scale up span-ingester replicas and temporarily raise the queue limits to bring drop rates back to baseline.
+- The answer must not attribute the Feb 25, 2026 missing spans to a third-party Datadog vendor-side ingestion delay, 503s, or rate limiting, or to mitigations like reducing trace sampling or enabling an S3 fallback sink.
+- The answer must not claim the issue was caused by trace sampling being near zero or being toggled off on a gateway service, nor that the fix was setting TRACE_SAMPLING to 100% or deploying a header/x-request-id re-injection proxy filter.
+- The answer must not describe a staging-only metrics/Mimir cardinality explosion (e.g., route_id raw path labels, max_series_per_user rejections) or mitigations involving rolling back otel-collector/router in staging.
+- The answer must not describe missing spans caused by ETL/aggregator problems such as consumer offset jumps, null customer_id grouping bugs, leader failover/partial commits, commit_marker races, or any backfill/replay plan.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

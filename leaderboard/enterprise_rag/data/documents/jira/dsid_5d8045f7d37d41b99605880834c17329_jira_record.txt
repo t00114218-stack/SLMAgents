@@ -1,0 +1,14 @@
+Enterprise Record: What caused the March 2026 morning spike where a dedicated e
+
+Document ID: dsid_5d8045f7d37d41b99605880834c17329
+System Source: jira
+Details & Summary:
+The spike was caused by a KV prefix cache miss storm in the us-east dedicated pool that drove CPU pressure and triggered a router backpressure safety path, which began resetting long-lived streaming connections (truncating replies). Clients then retried, and an idempotency gap in the billing ingestion/ack pipeline for early-terminated streams led to duplicate acknowledgement events and a brief overcounting of usage charges.
+
+- The March 2026 morning spike was caused by a KV prefix cache miss storm in the us-east dedicated pool.
+- The cache miss storm drove CPU pressure and triggered a router backpressure safety path.
+- The router backpressure safety path reset long-lived streaming connections, cutting off live generated replies mid stream.
+- Client retries plus an idempotency gap in the billing ingestion/ack pipeline for early-terminated streams caused duplicate acknowledgement events.
+- The duplicate acknowledgement events briefly overcounted usage charges.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

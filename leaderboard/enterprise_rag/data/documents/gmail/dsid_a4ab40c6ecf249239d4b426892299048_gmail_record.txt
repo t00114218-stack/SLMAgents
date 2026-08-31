@@ -1,0 +1,12 @@
+Enterprise Record: For the Helios vendor onboarding kickoff and demo, which mee
+
+Document ID: dsid_a4ab40c6ecf249239d4b426892299048
+System Source: gmail
+Details & Summary:
+They locked in Wed, 2027-04-21 from 10:00-11:00 AM PT. Redwood committed that within 48 hours after the call they would upload a redacted audit-log sample and complete the Evidence Matrix as much as possible.
+
+- The Helios vendor onboarding kickoff and demo was scheduled for Wednesday, 2027-04-21 from 10:00 to 11:00 AM PT.
+- Redwood committed that within 48 hours after the call they would upload a redacted audit-log sample.
+- Redwood committed that within 48 hours after the call they would complete the Evidence Matrix as much as possible.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

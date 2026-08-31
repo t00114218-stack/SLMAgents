@@ -1,0 +1,13 @@
+Enterprise Record: Why were SSE streaming connections getting cleanly closed af
+
+Document ID: dsid_98525cb72fd948ef9797c6d35b504b9d
+System Source: slack
+Details & Summary:
+The edge proxy was enforcing an ~60s idle timeout because it effectively treated the SSE comment-only heartbeats (lines starting with ":") as not keeping the stream active, so it terminated the connection even though the app thought it was sending heartbeats. The mitigation was to switch the heartbeat to a real SSE `data:` event (e.g., `data: ping` / non-empty `data` payload) every ~25 seconds so the edge would see application bytes and not idle-close the stream.
+
+- SSE streaming connections were being cleanly closed after about 60 seconds only when going through the edge proxy because the edge proxy enforced an approximately 60 second idle timeout.
+- The edge proxy effectively treated SSE comment-only heartbeats (lines starting with a colon) as not keeping the stream active, so it considered the connection idle and terminated it.
+- To mitigate the issue, the heartbeat was changed from comment-only heartbeats to real SSE data events with a non-empty data payload (for example, data: ping).
+- The new data heartbeat was sent approximately every 25 seconds so the edge proxy would see application bytes and not idle-close the stream.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

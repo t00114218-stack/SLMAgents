@@ -1,0 +1,19 @@
+Enterprise Record: In the hosted API incident in late April 2026 where streamin
+
+Document ID: dsid_0b0595a6d39247ada6238d8311b587f8
+System Source: google_drive
+Details & Summary:
+It was triggered by an edge configuration change that cut upstream connection keepalive/TTL from 90s to 10s, increasing connection churn and exposing a streaming-proxy TCP write-stall bug that caused 502/504 on streaming and sharp tail-latency for non-streaming. Service was restored by rolling restarting the streaming-proxy fleet to clear stuck buffers, rolling back the edge TTL/keepalive setting to 90s, and applying temporary traffic shaping (soft concurrency limits and rejecting new sessions on overloaded proxies).
+
+- The incident was triggered by an edge configuration change that reduced upstream connection keepalive or connection TTL from 90 seconds to 10 seconds.
+- Reducing keepalive or TTL increased upstream connection churn.
+- The increased connection churn exposed a streaming-proxy TCP write-stall bug, leading to 502 and 504 errors on streaming requests and sharp tail-latency increases on non-streaming requests.
+- Service was restored by rolling restarting the streaming-proxy fleet to clear stuck buffers.
+- Service was restored by rolling back the edge keepalive or TTL setting from 10 seconds back to 90 seconds.
+- Service was restored by applying temporary traffic shaping such as soft concurrency limits and rejecting new sessions on overloaded proxies.
+- The answer must not describe the 2026-04-11 incident involving scheduler coalescing, acceptor backoff/hedge loop regressions, or forced KV-lease refresh as the root cause or mitigations.
+- The answer must not describe the 2026-04-18 incident where session-checkpoint serialization/compression and synchronous session-store writes caused stalls, nor list mitigations like disabling compression or switching session persistence to best-effort.
+- The answer must not describe the March 2026 us-east-1 streaming stall event mitigated by disabling NGINX ingress proxy buffering, changing chunk flush intervals, or per-client rate limiting.
+- The answer must not claim the mitigation was primarily manual scaling of model pools or enabling a fallback model variant for /v1/generate (those actions are from a separate watch digest).
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.

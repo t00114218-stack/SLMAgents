@@ -1,0 +1,10 @@
+Enterprise Record: What percent reduction in monthly model or token spend was t
+
+Document ID: dsid_30a16502953a4088b59266c8990d52d6
+System Source: hubspot
+Details & Summary:
+The founder was targeting a 30-50% reduction in monthly model/token spend while maintaining acceptable latency.
+
+- The founder was targeting a 30-50% reduction in monthly model or token spend while maintaining acceptable latency.
+
+Additional Enterprise Context: Verified in production cluster telemetry and internal system documentation.
