@@ -38,8 +38,10 @@ leaderboard/**/data/*.db*
 leaderboard/**/data/hf_raw/
 leaderboard/**/data/documents/
 leaderboard/**/data/bird_train_*.jsonl
+leaderboard/**/data/*verification*.jsonl
 leaderboard/**/output/
 test_*.py
+
 
 
 
