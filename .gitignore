@@ -28,9 +28,13 @@ build/
 
 # Large DB, Parquet & raw data files (>100MB)
 *.db
+*.db-*
 *.sqlite
+*.sqlite-*
 *.sqlite3
+*.sqlite3-*
 *.parquet
-leaderboard/**/data/*.db
+leaderboard/**/data/*.db*
 leaderboard/**/data/hf_raw/
+
 

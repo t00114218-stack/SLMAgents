@@ -18,12 +18,8 @@ from typing import List, Dict, Optional
 
 _curr_dir = os.path.dirname(os.path.abspath(__file__))
 _root_dir = os.path.abspath(os.path.join(_curr_dir, "..", ".."))
-if _root_dir not in sys.path:
-    sys.path.insert(0, _root_dir)
-for folder in ["slm_rag", "slm_embeddings", "slm_search_orchestrator"]:
-    pkg_path = os.path.join(_root_dir, folder)
-    if os.path.exists(pkg_path) and pkg_path not in sys.path:
-        sys.path.insert(0, pkg_path)
+if _curr_dir not in sys.path:
+    sys.path.insert(0, _curr_dir)
 
 from hybrid_retriever import EnterpriseHybridRetriever, EnterpriseDocument
 
