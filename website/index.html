@@ -270,7 +270,29 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Mobile Responsive Optimizations for Showcase Section */
+    /* Mobile Responsive Optimizations for Showcase & Layout */
+    .showcase-assistant-body,
+    .showcase-user-bubble,
+    .showcase-thought-steps,
+    .showcase-agent-pill {
+      word-break: break-word !important;
+      overflow-wrap: anywhere !important;
+      box-sizing: border-box !important;
+    }
+
+    .showcase-assistant-body code {
+      word-break: break-all !important;
+      white-space: normal !important;
+    }
+
+    .showcase-code-body,
+    .showcase-stdout-container {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+      white-space: pre !important;
+      word-break: normal !important;
+    }
+
     @media (max-width: 768px) {
       .showcase-section {
         padding: 0.5rem 0 1.5rem 0;
@@ -310,11 +332,11 @@
         width: 100%;
         justify-content: center;
         font-size: 0.74rem;
-        padding: 5px 8px;
+        padding: 6px 8px;
         box-sizing: border-box;
         white-space: normal;
         text-align: center;
-        line-height: 1.3;
+        line-height: 1.35;
       }
       .showcase-telemetry-group {
         width: 100%;
@@ -342,7 +364,7 @@
         white-space: nowrap;
       }
       .showcase-chat-feed {
-        padding: 12px 10px;
+        padding: 12px 10px 2rem 10px !important;
         gap: 0.9rem;
       }
       .showcase-user-bubble {
@@ -408,6 +430,9 @@
         max-width: 96%;
         font-size: 0.80rem;
       }
+      .blog-stats-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
     }
   </style>
 
@@ -463,6 +488,7 @@
           <li><a href="index.html" class="active">Home</a></li>
           <li><a href="chat.html">Chat Studio</a></li>
           <li><a href="playground.html">Playground</a></li>
+          <li><a href="blogs.html">Blogs</a></li>
           <li>
             <a href="https://github.com/t00114218-stack/SLMAgents" target="_blank" class="btn-github-nav">
               <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
@@ -487,6 +513,12 @@
           </div>
           <span>SLM Agents</span>
         </a>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Research &amp; Blogs</div>
+        <ul class="sidebar-list">
+          <li class="sidebar-item"><a href="blogs.html" class="sidebar-link" style="display: flex; align-items: center; gap: 6px;"><span style="color:#6366f1;">📝</span> Engineering Blogs</a></li>
+        </ul>
       </div>
       <div class="sidebar-group">
         <div class="sidebar-group-title">Active Libraries</div>
@@ -1113,6 +1145,79 @@ for idx, num in enumerate(fib, 1):
       </div>
   </section>
 
+  <!-- Engineering Blog Section -->
+  <section class="blogs-section" id="blogs" style="padding: 3rem 0 3.5rem 0; border-top: 1px solid #e2e8f0; margin-top: 2rem;">
+    <div class="section-header">
+      <div class="hero-badge" style="margin-bottom: 0.75rem;">
+        <span style="display:inline-block; width:8px; height:8px; background:#6366f1; border-radius:50%; margin-right:6px; box-shadow:0 0 8px #6366f1;"></span>
+        <span>Engineering Deep Dives &amp; Benchmarks</span>
+      </div>
+      <h2 class="section-title">Research &amp; Technical Blogs</h2>
+      <p class="section-subtitle">Real empirical ablations, CPU optimization breakdowns, and architectural guides from the SLMAgents team.</p>
+    </div>
+
+    <div class="blog-featured-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(15,23,42,0.06); max-width: 960px; margin: 0 auto; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span style="background: #e0e7ff; color: #4338ca; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;">Featured Case Study</span>
+          <span style="background: #ecfdf5; color: #065f46; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;">100% CPU RAG</span>
+          <span style="color: #64748b; font-size: 0.82rem;">8 min read • Medium</span>
+        </div>
+        <span style="color: #94a3b8; font-size: 0.82rem; font-family: 'JetBrains Mono', monospace;">August 2026</span>
+      </div>
+
+      <h3 style="font-size: 1.4rem; color: #0f172a; margin-bottom: 10px; line-height: 1.35; font-weight: 800;">
+        <a href="https://medium.com/@cvsuryaprakash/context-distillation-for-cpu-rag-a-controlled-study-on-sub-3b-models-f9244339c09f" target="_blank" style="color: #0f172a; text-decoration: none; transition: color 0.15s ease;">
+          Context Distillation for CPU RAG: A Controlled Study on Sub-3B Models
+        </a>
+      </h3>
+
+      <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 18px;">
+        Why small local models fall apart with bloated context, controlled ablation benchmarks on CPU hardware, evaluation methodology on 120 held-out queries, and how hybrid RRF + 350-token distillation delivers 95.8% grounded accuracy.
+      </p>
+
+      <div class="blog-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 20px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #f1f5f9;">
+        <div style="text-align: center;">
+          <div style="font-size: 1.25rem; font-weight: 800; color: #059669; font-family: 'JetBrains Mono', monospace;">95.8%</div>
+          <div style="font-size: 0.72rem; color: #64748b; font-weight: 600;">Grounded Accuracy</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 1.25rem; font-weight: 800; color: #4f46e5; font-family: 'JetBrains Mono', monospace;">1.15s</div>
+          <div style="font-size: 0.72rem; color: #64748b; font-weight: 600;">Total Latency p50</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 1.25rem; font-weight: 800; color: #0284c7; font-family: 'JetBrains Mono', monospace;">0.10s</div>
+          <div style="font-size: 0.72rem; color: #64748b; font-weight: 600;">TTFT p50</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 1.25rem; font-weight: 800; color: #7c3aed; font-family: 'JetBrains Mono', monospace;">3.0 GB</div>
+          <div style="font-size: 0.72rem; color: #64748b; font-weight: 600;">Engine RAM Footprint</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: #4f46e5; color: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem;">
+            SP
+          </div>
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: #1e293b;">Suryaprakash C V</div>
+            <div style="font-size: 0.74rem; color: #64748b;">Creator, SLMAgents • Published on Medium</div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <a href="blogs.html" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.84rem; border-radius: 8px;">
+            Read on Site
+          </a>
+          <a href="https://medium.com/@cvsuryaprakash/context-distillation-for-cpu-rag-a-controlled-study-on-sub-3b-models-f9244339c09f" target="_blank" class="btn btn-primary" style="padding: 8px 18px; font-size: 0.84rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
+            <span>Read on Medium</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Call to Action -->
   <section class="cta-banner">
@@ -1192,6 +1297,6 @@ for idx, num in enumerate(fib, 1):
     </div>
   </div>
 
-  <script src="app.js?v=52.0"></script>
+  <script src="app.js?v=53.0"></script>
 </body>
 </html>

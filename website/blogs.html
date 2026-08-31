@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="canonical" href="https://www.slmagents.ai/blogs.html">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineering Blogs & Research Case Studies | SLMAgents</title>
+  <meta name="description" content="Technical engineering blogs, controlled CPU RAG ablations, SLM quantization benchmarks, and offline AI architecture guides from the SLMAgents team.">
+  <link rel="stylesheet" href="style.css?v=53.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+  <!-- OpenGraph / Social Meta Tags -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.slmagents.ai/blogs.html">
+  <meta property="og:title" content="Engineering Blogs & Research Case Studies | SLMAgents">
+  <meta property="og:description" content="Technical engineering blogs, controlled CPU RAG ablations, SLM quantization benchmarks, and offline AI architecture guides from the SLMAgents team.">
+  <meta property="og:site_name" content="SLMAgents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Engineering Blogs & Research Case Studies | SLMAgents">
+  <meta name="twitter:description" content="Technical engineering blogs, controlled CPU RAG ablations, SLM quantization benchmarks, and offline AI architecture guides from the SLMAgents team.">
+
+  <style>
+    .blog-hero {
+      padding: 2rem 0 1.5rem 0;
+      text-align: center;
+    }
+    .blog-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1rem 4rem 1rem;
+    }
+    .blog-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+      margin-bottom: 2rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .blog-card:hover {
+      box-shadow: 0 16px 40px rgba(79, 70, 229, 0.1);
+      border-color: #c7d2fe;
+    }
+    .blog-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin: 12px 0;
+      color: #0f172a;
+    }
+    .blog-title a {
+      color: #0f172a;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .blog-title a:hover {
+      color: #4f46e5;
+    }
+    .blog-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .blog-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .blog-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .tag-purple { background: #e0e7ff; color: #4338ca; }
+    .tag-green { background: #ecfdf5; color: #065f46; }
+    .tag-blue { background: #e0f2fe; color: #0369a1; }
+    
+    .blog-excerpt {
+      font-size: 0.98rem;
+      color: #475569;
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 24px;
+    }
+    .metric-item {
+      text-align: center;
+    }
+    .metric-val {
+      font-size: 1.3rem;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .metric-lbl {
+      font-size: 0.72rem;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .blog-author-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding-top: 18px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .author-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #4f46e5;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 768px) {
+      .blog-card {
+        padding: 20px 16px;
+      }
+      .blog-title {
+        font-size: 1.25rem;
+      }
+      .metrics-bar {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px;
+      }
+      .metric-val {
+        font-size: 1.1rem;
+      }
+      .blog-author-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav-container">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+        <a href="index.html" class="logo">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span>SLM Agents</span>
+        </a>
+      </div>
+
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="chat.html">Chat Studio</a></li>
+          <li><a href="playground.html">Playground</a></li>
+          <li><a href="blogs.html" class="active">Blogs</a></li>
+          <li>
+            <a href="https://github.com/t00114218-stack/SLMAgents" target="_blank" class="btn-github-nav">
+              <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+              </svg>
+              GitHub
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="layout-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top-brand" style="padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between;">
+        <a href="index.html" class="logo" style="text-decoration: none;">
+          <div class="logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span>SLM Agents</span>
+        </a>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Navigation</div>
+        <ul class="sidebar-list">
+          <li class="sidebar-item"><a href="index.html" class="sidebar-link">Overview &amp; Showcases</a></li>
+          <li class="sidebar-item"><a href="chat.html" class="sidebar-link">AI Chat Studio</a></li>
+          <li class="sidebar-item"><a href="playground.html" class="sidebar-link">Agent Playground</a></li>
+          <li class="sidebar-item"><a href="blogs.html" class="sidebar-link active">Engineering Blogs</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-group">
+        <div class="sidebar-group-title">Featured Articles</div>
+        <ul class="sidebar-list">
+          <li class="sidebar-item"><a href="https://medium.com/@cvsuryaprakash/context-distillation-for-cpu-rag-a-controlled-study-on-sub-3b-models-f9244339c09f" target="_blank" class="sidebar-link">CPU RAG Distillation Study ↗</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="blog-hero">
+        <div class="hero-badge" style="margin-bottom: 0.75rem;">
+          <span style="display:inline-block; width:8px; height:8px; background:#6366f1; border-radius:50%; margin-right:6px; box-shadow:0 0 8px #6366f1;"></span>
+          <span>Technical Research &amp; Benchmarks</span>
+        </div>
+        <h1 style="font-size: 2.2rem; margin-bottom: 8px;">Engineering Blogs</h1>
+        <p style="color: var(--text-secondary); max-width: 680px; margin: 0 auto 1.5rem auto; font-size: 1.05rem; line-height: 1.5;">
+          Practical empirical studies, CPU optimization techniques, and architecture breakdowns for running lightweight agents on commodity hardware.
+        </p>
+      </div>
+
+      <div class="blog-container">
+        
+        <!-- Article 1: Featured CPU RAG Study -->
+        <article class="blog-card">
+          <div class="blog-meta-row">
+            <div class="blog-tags">
+              <span class="blog-tag tag-purple">Controlled Benchmark</span>
+              <span class="blog-tag tag-green">100% CPU RAG</span>
+              <span class="blog-tag tag-blue">Edge AI</span>
+            </div>
+            <div style="font-size: 0.82rem; color: #94a3b8; font-family: 'JetBrains Mono', monospace;">
+              August 2026 • 8 min read
+            </div>
+          </div>
+
+          <h2 class="blog-title">
+            <a href="https://medium.com/@cvsuryaprakash/context-distillation-for-cpu-rag-a-controlled-study-on-sub-3b-models-f9244339c09f" target="_blank">
+              Context Distillation for CPU RAG: A Controlled Study on Sub-3B Models
+            </a>
+          </h2>
+
+          <p class="blog-excerpt">
+            There is a pattern almost every local RAG tutorial follows: chop your documents into 500-token pieces, pull the top 5 to 8 matches from a vector database, and dump all of it — 2,000 to 3,000 tokens — into the prompt. When run on sub-3B models on CPU, prefill latency explodes and hallucination rates surge. We ran a controlled 120-query ablation to prove why context purity beats model size.
+          </p>
+
+          <div class="metrics-bar">
+            <div class="metric-item">
+              <div class="metric-val" style="color: #059669;">95.8%</div>
+              <div class="metric-lbl">Grounded Accuracy (±1.8% SE)</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-val" style="color: #4f46e5;">1.15s</div>
+              <div class="metric-lbl">Total Latency p50 (1.23s p95)</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-val" style="color: #0284c7;">0.10s</div>
+              <div class="metric-lbl">TTFT p50 (75% Faster)</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-val" style="color: #7c3aed;">3,049 MB</div>
+              <div class="metric-lbl">Peak Memory Footprint</div>
+            </div>
+          </div>
+
+          <div class="blog-author-row">
+            <div class="author-info">
+              <div class="author-avatar">SP</div>
+              <div>
+                <div style="font-weight: 700; font-size: 0.9rem; color: #0f172a;">Suryaprakash C V</div>
+                <div style="font-size: 0.76rem; color: #64748b;">Creator, SLMAgents • Published on Medium</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <a href="https://github.com/t00114218-stack/SLMAgents/blob/main/benchmark/run_rag_ablation.py" target="_blank" class="btn btn-secondary" style="padding: 9px 16px; font-size: 0.85rem; border-radius: 8px;">
+                Inspect Code
+              </a>
+              <a href="https://medium.com/@cvsuryaprakash/context-distillation-for-cpu-rag-a-controlled-study-on-sub-3b-models-f9244339c09f" target="_blank" class="btn btn-primary" style="padding: 9px 20px; font-size: 0.85rem; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px;">
+                <span>Read on Medium</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js?v=53.0"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Chat Studio: Local Multi-Agent SLM Orchestrator | SLMAgents</title>
   <meta name="description" content="Full-page private AI Chat Studio powered by local SLM agents. Run code interpretation, Text-to-SQL, document RAG, and multi-agent workflows offline on CPU.">
-  <link rel="stylesheet" href="chat.css?v=2.0">
+  <link rel="stylesheet" href="chat.css?v=2.1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -69,11 +69,16 @@
           <span class="sidebar-logo-text">SLM Agents</span>
         </a>
 
-        <!-- Pure Icon Action Buttons (Home and New Chat) -->
+        <!-- Pure Icon Action Buttons (Home, Blogs, and New Chat) -->
         <div class="sidebar-icon-actions">
           <a href="index.html" class="sidebar-action-icon" title="Home">
             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+          </a>
+          <a href="blogs.html" class="sidebar-action-icon" title="Engineering Blogs">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
             </svg>
           </a>
           <button class="sidebar-action-icon" id="btn-new-chat" onclick="createNewChatSession()" title="New Chat">

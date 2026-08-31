@@ -63,15 +63,8 @@ class SLMRag:
     """
     A CPU-optimized Retrieval-Augmented Generation (RAG) runner powered by a local
     Small Language Model (SLM) running via ONNX Runtime GenAI.
-    Answers user questions based on provided document chunks while strictly adhering
-    to user instructions.
-
-    Configuration can be set via constructor arguments OR environment variables:
-      SLM_RAG_CACHE_DIR   — Override model download/cache directory
-      SLM_RAG_N_THREADS   — Number of CPU threads (default: 4)
-      SLM_RAG_N_CTX       — Context window size (default: 8192)
-      SLM_RAG_MAX_TOKENS  — Default max tokens per answer (default: 256)
-      SLM_RAG_CONFIG      — Path to a custom config.yaml file
+    Provides native BM25 + INT8 Cross-Encoder neural reranking, multi-document evidence
+    aggregation, and strict negative abstention constraints.
     """
     def __init__(self, model_path=None, cache_dir=None, n_ctx=None, n_threads=None):
         global _SHARED_RAG_MODEL, _SHARED_RAG_TOKENIZER
@@ -288,6 +281,9 @@ class SLMRag:
         )
 
         
+        if instruction:
+            system_prompt += f"\n\nInstruction: {instruction}"
+
         if tools and tool_executor:
             system_prompt += (
                 f"\n\nAvailable Tools:\n{json.dumps(tools, indent=2)}\n"

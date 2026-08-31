@@ -1231,7 +1231,8 @@ html, body {
     top: 0 !important;
     bottom: 0 !important;
     height: 100vh !important;
-    width: 285px !important;
+    width: min(290px, 86vw) !important;
+    max-width: 100vw !important;
     min-width: 0 !important;
     z-index: 1000 !important;
     margin-left: 0 !important;
@@ -1239,12 +1240,27 @@ html, body {
     box-shadow: 12px 0 36px rgba(0, 0, 0, 0.28) !important;
     visibility: hidden;
     pointer-events: none;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
   }
 
   .chat-sidebar.open {
     transform: translateX(0) !important;
     visibility: visible !important;
     pointer-events: auto !important;
+  }
+
+  .ram-footprint-card {
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  .ram-header-row,
+  .ram-detail-row,
+  .ram-footer-actions {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
   }
 
   .chat-main-pane {
@@ -1301,7 +1317,8 @@ html, body {
   }
 
   .chat-messages-viewport {
-    padding: 14px 12px 110px !important;
+    padding: 14px 10px 135px !important;
+    box-sizing: border-box !important;
   }
 
   .welcome-suggestions-grid {
@@ -1311,11 +1328,30 @@ html, body {
 
   .chat-floating-dock-container {
     padding: 0 10px 12px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   .chat-command-form {
     padding: 6px 8px !important;
     border-radius: 16px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .chat-command-textarea {
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    word-break: break-word !important;
+  }
+
+  .chat-dock-footer {
+    word-break: break-word !important;
+    font-size: 0.62rem !important;
+    text-align: center !important;
+    line-height: 1.3 !important;
   }
 
   .btn-dock-icon {

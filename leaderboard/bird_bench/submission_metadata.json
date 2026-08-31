@@ -1,0 +1,32 @@
+{
+  "submission_name": "SLMAgents-Text2SQL-CPU",
+  "system_type": "Open Source / Local SLM",
+  "description": "Ultra-lightweight, 100% CPU-optimized Text-to-SQL translation agent powered by ONNX Runtime GenAI. Features evidence-grounded reasoning, foreign-key schema link pruning, and dynamic SQLite in-memory compilation self-correction.",
+  "repository_url": "https://github.com/t00114218-stack/SLMAgents",
+  "leaderboard": "BIRD-Bench (BIg Bench for Large-scale Database Grounded Text-to-SQLs)",
+  "benchmark_url": "https://bird-bench.github.io/",
+  "hardware_requirements": {
+    "device": "CPU (Multi-threaded)",
+    "recommended_threads": 4,
+    "peak_memory_mb": 1950,
+    "gpu_required": false
+  },
+  "pipeline_components": {
+    "evidence_handling": "Dynamic domain evidence knowledge injection and terminology disambiguation",
+    "schema_pruning": "Foreign-key bidirectional dependency path traversal (top-24 table retention cap)",
+    "agentic_self_correction": "Ephemeral SQLite in-memory compilation verification with typed dummy constraint injection",
+    "generation": {
+      "model": "Qwen/Qwen2.5-Coder-1.5B-Instruct / Qwen2.5-Coder-3B-Instruct (INT4 Block-Wise Quantized ONNX GenAI)",
+      "runtime": "ONNX Runtime GenAI on CPU",
+      "temperature": 0.0,
+      "decoding": "Greedy deterministic decoding",
+      "context_window": 4096,
+      "max_tokens": 512
+    }
+  },
+  "contact": {
+    "maintainer": "SLMAgents Core Team",
+    "contact_email": "suryaprakash.c.v@gmail.com",
+    "submission_email": "bird.bench23@gmail.com"
+  }
+}
