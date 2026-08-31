@@ -269,6 +269,146 @@
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* Mobile Responsive Optimizations for Showcase Section */
+    @media (max-width: 768px) {
+      .showcase-section {
+        padding: 0.5rem 0 1.5rem 0;
+        margin-bottom: 1.5rem;
+      }
+      .showcase-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 4px 6px 10px 6px;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .showcase-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .showcase-tab-btn {
+        padding: 7px 13px;
+        font-size: 0.78rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+        border-radius: 20px;
+      }
+      .showcase-chat-window {
+        border-radius: 12px;
+        margin: 0;
+      }
+      .showcase-chat-header {
+        padding: 10px 12px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .showcase-agent-pill {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.74rem;
+        padding: 5px 8px;
+        box-sizing: border-box;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.3;
+      }
+      .showcase-telemetry-group {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: nowrap;
+      }
+      .showcase-telemetry-badge {
+        font-size: 0.70rem;
+        padding: 4px 6px;
+        flex: 1 1 0;
+        min-width: 0;
+        justify-content: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        box-sizing: border-box;
+      }
+      .showcase-replay-btn {
+        padding: 4px 8px !important;
+        font-size: 0.72rem !important;
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+      .showcase-chat-feed {
+        padding: 12px 10px;
+        gap: 0.9rem;
+      }
+      .showcase-user-bubble {
+        max-width: 92%;
+        font-size: 0.84rem;
+        padding: 9px 12px;
+        border-radius: 14px 14px 2px 14px;
+        line-height: 1.45;
+      }
+      .showcase-assistant-row {
+        gap: 8px;
+      }
+      .showcase-bot-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+      }
+      .showcase-bot-avatar svg {
+        width: 14px;
+        height: 14px;
+      }
+      .showcase-thought-acc-header {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+      }
+      .showcase-thought-steps {
+        padding: 8px 10px;
+        font-size: 0.74rem;
+        line-height: 1.4;
+      }
+      .showcase-code-top {
+        padding: 6px 10px;
+        font-size: 0.70rem;
+      }
+      .showcase-code-body {
+        padding: 8px 10px;
+        font-size: 0.74rem;
+        line-height: 1.35;
+      }
+      .showcase-stdout-container {
+        padding: 8px 10px;
+        font-size: 0.74rem;
+        line-height: 1.35;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .showcase-telemetry-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .showcase-replay-btn {
+        grid-column: 1 / -1;
+        justify-content: center;
+        width: 100%;
+        padding: 6px 10px !important;
+      }
+      .showcase-telemetry-badge {
+        width: 100%;
+      }
+      .showcase-user-bubble {
+        max-width: 96%;
+        font-size: 0.80rem;
+      }
+    }
   </style>
 
   <!-- Structured Data / Schema Markup -->
@@ -1052,6 +1192,6 @@ for idx, num in enumerate(fib, 1):
     </div>
   </div>
 
-  <script src="app.js?v=51.0"></script>
+  <script src="app.js?v=52.0"></script>
 </body>
 </html>
