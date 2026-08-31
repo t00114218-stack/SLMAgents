@@ -36,5 +36,9 @@ build/
 *.parquet
 leaderboard/**/data/*.db*
 leaderboard/**/data/hf_raw/
+leaderboard/**/data/documents/
+leaderboard/**/data/bird_train_*.jsonl
+test_*.py
+
 
 
