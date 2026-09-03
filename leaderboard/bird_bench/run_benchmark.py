@@ -199,7 +199,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run BIRD benchmark evaluation and generate submission files.")
     parser.add_argument("--samples", type=int, default=50, help="Number of samples to evaluate (default: 50, use -1 for all).")
     parser.add_argument("--split", type=str, default="mini", choices=["mini", "full"], help="Dataset split: 'mini' (500 samples) or 'full' (1534 samples).")
-    parser.add_argument("--threads", type=int, default=4, help="CPU threads for ONNX runtime.")
+    parser.add_argument("--threads", type=int, default=8, help="CPU inference threads (default: 8)")
     parser.add_argument("--pruned_tables", type=int, default=24, help="Max pruned tables per schema.")
     
     args = parser.parse_args()

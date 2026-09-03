@@ -326,9 +326,9 @@ class EnterpriseHybridRetriever:
           Stage 1: FTS5 BM25 retrieves candidate documents with balanced text/title weighting & source filtering.
           Stage 2: BGE INT8 Neural Cross-Encoder Reranker re-scores ALL candidate documents with deep cross-attention.
         """
-        candidate_count = 35
-        if question_type in ("semantic", "completeness", "project_related"):
-            candidate_count = 45
+        candidate_count = 50
+        if question_type in ("semantic", "completeness", "project_related", "conflicting_info", "constrained"):
+            candidate_count = 65
 
         bm25_candidates = self.bm25_search(query, top_k=candidate_count, question_type=question_type, source_filter=source_filter)
         if not bm25_candidates:
@@ -343,11 +343,11 @@ class EnterpriseHybridRetriever:
             reranked = [(score, doc) for score, doc in bm25_candidates]
 
         # Dynamic Top-K per category
-        effective_k = top_k
+        effective_k = max(top_k, 10)
         if question_type == "completeness":
-            effective_k = min(10, max(top_k, 8))
+            effective_k = max(effective_k, 10)
         elif question_type == "project_related":
-            effective_k = min(8, max(top_k, 5))
+            effective_k = max(effective_k, 10)
         elif question_type == "info_not_found":
             if reranked and reranked[0][0] < -8.0:
                 return []
